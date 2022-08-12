@@ -1,0 +1,73 @@
+import * as dotenv from 'dotenv';
+import { ValidationPipe } from './core/pipe/validation.pipe';
+import { CacheModule, Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { CoreModule } from './core/core.module';
+import DatabaseConfigService from '@config/database.config';
+import { I18nJsonLoader, I18nModule, QueryResolver } from 'nestjs-i18n';
+import * as path from 'path';
+import { APP_GUARD, APP_PIPE } from '@nestjs/core';
+import { BootModule } from '@nestcloud/boot';
+import { resolve } from 'path';
+import { HttpClientModule } from '@core/components/http-client/http-client.module';
+import { KongGatewayModule } from '@core/components/kong-gateway/kong-gateway.module';
+import { ConsulModule } from '@nestcloud/consul';
+import { ServiceModule } from '@nestcloud/service';
+import { BOOT, CONSUL } from '@nestcloud/common';
+import { AuthModule } from '@components/auth/auth.module';
+import { AuthorizationGuard } from '@core/guards/authorization.guard';
+import * as redisStore from 'cache-manager-redis-store';
+import type { ClientOpts } from 'redis';
+
+dotenv.config();
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    I18nModule.forRoot({
+      fallbackLanguage: 'vi',
+      loader: I18nJsonLoader,
+      loaderOptions: {
+        path: path.join(__dirname, '/i18n/'),
+        watch: true,
+      },
+      resolvers: [{ use: QueryResolver, options: ['lang', 'locale', 'l'] }],
+    }),
+    MongooseModule.forRootAsync({
+      useClass: DatabaseConfigService,
+    }),
+    BootModule.forRoot({
+      filePath: resolve(__dirname, '../config.yaml'),
+    }),
+    CacheModule.register<ClientOpts>({
+      store: redisStore,
+      host: process.env.REDIS_CACHE_HOST || 'redis_cache',
+      port: parseInt(process.env.REDIS_CACHE_PORT) || 6379,
+      ttl: 10,
+      isGlobal: true,
+    }),
+    HttpClientModule,
+    ConsulModule.forRootAsync({ inject: [BOOT] }),
+    ServiceModule.forRootAsync({ inject: [BOOT, CONSUL] }),
+    KongGatewayModule.forRootAsync(),
+    CoreModule,
+    AuthModule,
+  ],
+  controllers: [AppController],
+  providers: [
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AuthorizationGuard,
+    },
+    AppService,
+  ],
+})
+export class AppModule {}
