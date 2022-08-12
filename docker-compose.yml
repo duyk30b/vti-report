@@ -4,7 +4,7 @@ version: '3.8'
 services:
   report-service:
     container_name: ${NODE_ENV}-report-service
-    image: ${DOCKER_REGISTRY}/snp_smartwms/source/be/report-service:master
+    image: ${DOCKER_REGISTRY}/snp_smartwms/source/be/report-service:develop
     env_file:
       - .env
     build:
