@@ -1,5 +1,5 @@
-import { FORMAT_CODE_PERMISSION } from '@constant/common';
-import { StatusPermission } from '@utils/common';
+import { FORMAT_CODE_PERMISSION } from '../../constant/common';
+import { StatusPermission } from '../common';
 
 export const PERMISSION_USER_GROUP_PERMISSION = {
   name: 'Phân quyền',

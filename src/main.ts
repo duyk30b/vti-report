@@ -7,7 +7,7 @@ import {
 } from '@nestjs/platform-fastify';
 import { FilterQueryPipe } from '@core/pipe/filter-query.pipe';
 import { SortQueryPipe } from '@core/pipe/sort-query.pipe';
-import { ExceptionEnterceptor } from '@core/interceptors/exception.interceptor';
+import { ExceptionInterceptor } from '@core/interceptors/exception.interceptor';
 import fastifyMultipart from 'fastify-multipart';
 import { TcpOptions, Transport } from '@nestjs/microservices';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -63,7 +63,7 @@ async function bootstrap() {
   app.register(require('@fastify/cors'), corsOptions);
   app.useGlobalPipes(new SortQueryPipe());
   app.useGlobalPipes(new FilterQueryPipe());
-  app.useGlobalInterceptors(new ExceptionEnterceptor());
+  app.useGlobalInterceptors(new ExceptionInterceptor());
 
   await app.listen(new ConfigService().get('httpPort'), '0.0.0.0');
 }
