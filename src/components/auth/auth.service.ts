@@ -3,12 +3,14 @@ import { AuthServiceInterface } from '@components/auth/interface/auth.service.in
 import { HttpService } from '@nestjs/axios';
 import { InjectService } from '@nestcloud/service';
 import { catchError, firstValueFrom, map, of, retry } from 'rxjs';
-import { genericRetryStrategy } from '@utils/rxjs-util';
+import { genericRetryStrategy } from '@core/utils/rxjs-util';
 
 @Injectable()
 export class AuthService implements AuthServiceInterface {
   private httpConfig;
+
   private endpoint;
+
   constructor(
     private httpClientService: HttpService,
     @InjectService()

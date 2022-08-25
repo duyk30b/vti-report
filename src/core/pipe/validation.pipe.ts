@@ -6,10 +6,10 @@ import {
 } from '@nestjs/common';
 import { validate, ValidationError } from 'class-validator';
 import { plainToClass } from 'class-transformer';
-import { ApiError } from '@utils/api.error';
-import { ResponseCodeEnum } from '@constant/response-code.enum';
 import { I18nService } from 'nestjs-i18n';
+import { ApiError } from '@core/utils/api.error';
 import { DEFAULT_LANG } from '@utils/constant';
+import { ResponseCodeEnum } from '@core/response-code.enum';
 
 const classValidationPatterns = {
   IS_INSTANCE:
@@ -157,6 +157,7 @@ const classValidationPatterns = {
 @Injectable()
 export class ValidationPipe implements PipeTransform<any> {
   constructor(private readonly i18n: I18nService) {}
+
   async transform(value, metadata: ArgumentMetadata) {
     const { metatype } = metadata;
     if (!metatype || !this.toValidate(metatype)) {

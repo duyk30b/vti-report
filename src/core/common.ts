@@ -3,7 +3,7 @@ import { CollationOptions } from 'mongodb';
 dotenv.config();
 
 export enum APIPrefix {
-  Version = 'api/v1',
+  Version = 'api/v1/reports',
 }
 export const FORMAT_CODE_PERMISSION = 'REPORT_';
 

@@ -17,7 +17,7 @@ export function IsNoSqlId(
     {
       name: IS_NOSQL_ID,
       validator: {
-        validate: (value, args): boolean => isNoSqlId(value),
+        validate: (value): boolean => isNoSqlId(value),
         defaultMessage: buildMessage(
           (eachPrefix) => eachPrefix + '$property must be a valid NoSQL ID',
           validationOptions,

@@ -11,8 +11,8 @@ import { Reflector } from '@nestjs/core';
 import { PERMISSION_CODE } from '@core/decorator/get-code.decorator';
 import { AuthServiceInterface } from '@components/auth/interface/auth.service.interface';
 import { IS_PUBLIC_KEY } from '@core/decorator/set-public.decorator';
-import { ConfigService } from '@config/config.service';
 import { isEmpty } from 'lodash';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable({ scope: Scope.REQUEST })
 export class AuthorizationGuard implements CanActivate {

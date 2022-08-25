@@ -1,7 +1,4 @@
-import {
-  PERMISSION_USER_GROUP_PERMISSION,
-  PERMISSION_USER_PERMISSION,
-} from './permission-setting';
+import { PERMISSION_USER_GROUP_PERMISSION } from './permission-setting';
 
 export const PERMISSION = [];
 

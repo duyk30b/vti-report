@@ -3,7 +3,7 @@ import * as os from 'os';
 export const getIPAddress = () => {
   const interfaces = os.networkInterfaces();
   for (const devName in interfaces) {
-    if (!interfaces.hasOwnProperty(devName)) {
+    if (!interfaces.hasOwnProperty.call(devName)) {
       continue;
     }
 
