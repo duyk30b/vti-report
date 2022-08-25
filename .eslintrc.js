@@ -6,6 +6,7 @@ module.exports = {
   },
   plugins: ['@typescript-eslint/eslint-plugin'],
   extends: [
+    'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
   ],
@@ -23,5 +24,14 @@ module.exports = {
     "prettier/prettier": ["error", {
       "endOfLine":"auto"
     }],
+    'lines-between-class-members': ['error', 'always'],
+    '@typescript-eslint/naming-convention': [
+      'error',
+      {
+        selector: ['class', 'interface', 'enum'],
+        format: ['PascalCase'],
+      },
+    ],
   },
+  
 };

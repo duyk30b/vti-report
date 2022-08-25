@@ -1,5 +1,5 @@
+import { isJson } from '@core/helper/string.helper';
 import { PipeTransform, Injectable, ArgumentMetadata } from '@nestjs/common';
-import { isJson } from 'src/helper/string.helper';
 
 @Injectable()
 export class SortQueryPipe implements PipeTransform {
