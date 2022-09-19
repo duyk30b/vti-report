@@ -2,7 +2,7 @@ import { BaseModel } from '@core/model/base.model';
 import { FilterQuery, Model, Types } from 'mongoose';
 import { BaseInterfaceRepository } from './base.interface.repository';
 
-export abstract class BaseAbstractRepository<T extends BaseModel>
+export abstract class BaseAbstractRepository<T>
   implements BaseInterfaceRepository<T>
 {
   protected model: Model<T>;

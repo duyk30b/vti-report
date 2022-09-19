@@ -18,11 +18,11 @@ import { ServiceModule } from '@nestcloud/service';
 import { BOOT, CONSUL } from '@nestcloud/common';
 import { AuthModule } from '@components/auth/auth.module';
 import { AuthorizationGuard } from '@core/guards/authorization.guard';
-import { ExampleModule } from '@components/example/example.module';
 import DatabaseConfigService from '@core/config/database.config';
 import { ClientOpts } from '@nestjs/microservices/external/redis.interface';
 import * as redisStore from 'cache-manager-redis-store';
 import { SyncModule } from '@components/sync/sync.module';
+import { ExportModule } from '@components/export/export.module';
 
 dotenv.config();
 @Module({
@@ -60,8 +60,8 @@ dotenv.config();
     KongGatewayModule.forRootAsync(),
     CoreModule,
     AuthModule,
-    ExampleModule,
     SyncModule,
+    ExportModule,
   ],
   controllers: [AppController],
   providers: [
