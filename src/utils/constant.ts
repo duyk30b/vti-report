@@ -13,6 +13,7 @@ export const DATE_FOMAT_EXCELL = 'DD/MM/YYYY';
 export const DATE_FOMAT_EXCELL_FILE = 'DDMMYYYY';
 export const FONT_NAME = 'Times New Roman';
 export const COLOR = '000000';
+export const CELL_A = 'A';
 export const EXCEL_COLUMN = [
   'A',
   'B',
@@ -46,11 +47,25 @@ export const FONT_BOLD_10 = {
   size: 10,
 };
 
+export const FONT_BOLD_14 = {
+  name: FONT_NAME,
+  color: { argb: COLOR },
+  bold: true,
+  size: 14,
+};
+
 export const FONT_BOLD_8 = {
   name: FONT_NAME,
   color: { argb: COLOR },
   bold: true,
   size: 8,
+};
+
+export const FONT_BOLD_9 = {
+  name: FONT_NAME,
+  color: { argb: COLOR },
+  bold: true,
+  size: 9,
 };
 
 export const FONT_NORMAL_10 = {
@@ -138,53 +153,6 @@ export const ALIGNMENT_BOTTOM_LEFT = {
   horizontal: 'left',
   vertical: 'bottom',
 };
-// W001	Báo cáo thống kê phiếu nhập kho chưa nhập kho trên EBS	Chưa_NK_EBS
-// W002	Báo cáo vật tư đã nhập kho chưa cất vào vị trí	NK_chưa cất
-// W003	Báo cáo phiếu xuất kho chưa xuất kho trên EBS	Chưa_XK_EBS
-// W004	Báo cáo phiếu chuyển kho chưa chuyển kho trên EBS	Chưa_CK_EBS
-// W005	Báo cáo hàng tồn kho dưới mức tồn kho an toàn	Tồn_dưới_mức_an_toàn
-// W006	Báo cáo hàng tồn kho dưới dưới mức tồn kho tối thiểu	Tồn_dưới_mức_tối_thiểu
-// W007	Thống kê tồn kho	Thống_kê_tồn
-// W008	Thống kê đơn nhập kho theo yêu cầu cấp vật tư	NK_theo_yêu_cầu
-// W009	Thống kê tuổi hàng tồn kho	Thống_kê_tuổi_hàng_tồn
-// W010	Báo cáo vật tư tồn kho	Báo_cáo_tồn
-// W011	Thống kê tình hình nhập kho	Thống_kê_NK
-// W012	Thống kê tình hình xuất kho	Thống_kê_XK
-// W013	Thông kê tình hình chuyển kho	Thống_kê_CK
-// W014	Thống kê tình hình kiểm kê theo kỳ	Thống_kê_kiểm_kê
-// W015	Thống kê vật tư đã được nhập kho nhưng chưa được in mã QR code	NK_chưa_in_QRcode
-// W016	Thống kê  vật tư xuất kho theo giấy đề nghị xuất vật tư	XK_theo_ĐNXK
-
-// "REPORT_ITEM_INVENTORY_BELOW_MINIMUM": {
-//   "TITLE": "BÁO CÁO HÀNG TỒN KHO DƯỚI MỨC TỒN KHO TỐI THIỂU\n{property}",
-//   "FILE_NAME": "W006-Báo cáo hàng tồn kho dưới mức tồn kho tối thiểu_{property}",
-//   "SHEET_NAME": "W006-Tồn_dưới_mức_tối_thiểu_{property}"
-// },
-// "ITEM_INVENTORY_BELOW_SAFE": {
-//   "TITLE": "BÁO CÁO HÀNG TỒN KHO DƯỚI MỨC TỒN KHO AN TOÀN\n{property}",
-//   "FILE_NAME": "W005-Báo cáo hàng tồn kho dưới mức tồn kho an toàn_{property}",
-//   "SHEET_NAME": "W005-Tồn_dưới_mức_an_toàn_{property}"
-// },
-// "ORDER_TRANSFER_INCOMPLETED": {
-//   "TITLE": "BÁO CÁO PHIẾU CHUYỂN KHO CHƯA CHUYỂN KHO TRÊN EBS\n{property}",
-//   "FILE_NAME": "W004-Báo cáo phiếu chuyển kho chưa chuyển kho_{property}",
-//   "SHEET_NAME": "W004-Chưa_CK_EBS_{property}"
-// },
-// "ORDER_EXPORT_INCOMPLETED": {
-//   "TITLE": "BÁO CÁO PHIẾU XUẤT KHO CHƯA XUẤT KHO TRÊN EBS\n{property}",
-//   "FILE_NAME": "W003-Báo cáo phiếu xuất kho chưa xuất kho trên EBS_{property}",
-//   "SHEET_NAME": "W003-Chưa_XK_EBS{property}"
-// },
-// "ORDER_IMPORT_INCOMPLETED": {
-//   "TITLE": "BÁO CÁO THỐNG KÊ PHIẾU NHẬP KHO CHƯA NHẬP KHO TRÊN EBS\n{property}",
-//   "FILE_NAME": "W001-Báo cáo thống kê phiếu nhập kho chưa nhập kho trên EBS_{property}",
-//   "SHEET_NAME": "W001-Chưa_NK_EBS{property}"
-// },
-// "ITEM_IMPORTED_BUT_NOT_PUT_TO_POSITION": {
-//   "TITLE": "BÁO CÁO THỐNG KÊ PHIẾU NHẬP KHO CHƯA NHẬP KHO TRÊN EBS\n{property}",
-//   "FILE_NAME": "W001-Báo cáo thống kê phiếu nhập kho chưa nhập kho trên EBS_{property}",
-//   "SHEET_NAME": "W001-Chưa_NK_EBS{property}"
-// }
 
 export const REPORT_INFO = {
   [ReportType[ReportType.ITEM_INVENTORY_BELOW_MINIMUM]]: {
@@ -275,17 +243,23 @@ export const BORDER_T_B_R = {
   right: { style: 'thin' },
 };
 
-export const STATUS_IMPORT = {
-  [OrderStatus[OrderStatus.IMPORTING]]: {
-    value: 'Đang nhập kho',
-  },
-  [OrderStatus[OrderStatus.IMPORTED]]: {
-    value: 'Đã nhập kho',
-  },
-  [OrderStatus[OrderStatus.IMPORT_INCOMPLETED]]: {
-    value: 'Chưa nhập kho',
-  },
-};
-
+export const CELL_PARENT_COMPANY = 'A1';
+export const CELL_CHILD_COMPANY = 'A2';
+export const CELL_ADDRESS_CHILD_COMPANY = 'A3';
+export const CELL_REPORT_NUMBER = 'A4';
+export const CELL_TITLE_REPORT = 'A5';
+export const CEll_REPORT_TIME = 'A6';
 export const MONTHS = 'months';
 export const YEARS = 'years';
+export const COLUMN_COLOR = {
+  type: 'pattern',
+  pattern: 'solid',
+  fgColor: { argb: 'd6d6d6' },
+};
+
+export const INDEX_REPORT_TITLE = 5;
+export const HEIGHT_REPORT_TITLE = 36.75;
+export const INDEX_REPORT_TIME = 6;
+export const KEY_COLUMN = 'child';
+export const ROW_WHEN_HAVE_HEADER = 8;
+export const ROW_WHEN_NOT_HAVE_HEADER = 1;

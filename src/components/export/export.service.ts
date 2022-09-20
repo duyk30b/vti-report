@@ -14,6 +14,7 @@ import * as moment from 'moment';
 import { DailyWarehouseItemStockRepository } from '@repositories/daily-warehouse-item-stock.repository';
 import { ExportType } from '@enums/export-type.enum';
 import { ReportOrderItemRepository } from '@repositories/report-order-item.repository';
+import { reportItemInventoryBelowMinimumExcelMapping } from '@mapping/excels/report-item-inventory-below-minimum.excel.mapping';
 
 @Injectable()
 export class ExportService {
@@ -36,8 +37,6 @@ export class ExportService {
   async getReport(
     request: ReportRequest,
   ): Promise<ResponsePayload<ReportResponse>> {
-    console.log(112312);
-
     try {
       let dataReturn;
       switch (request.reportType) {
@@ -113,17 +112,15 @@ export class ExportService {
       }
 
       if (!dataReturn)
-        return new ResponseBuilder<any>('data not found!')
+        return new ResponseBuilder<any>()
           .withCode(ResponseCodeEnum.BAD_REQUEST)
-          .withMessage(await this.i18n.translate('error.BAD_REQUEST'))
+          .withMessage(await this.i18n.translate('error.NOT_FOUND'))
           .build();
       return new ResponseBuilder<any>(dataReturn)
         .withCode(ResponseCodeEnum.SUCCESS)
         .withMessage('success')
         .build();
     } catch (e) {
-      console.log(e);
-
       return new ResponseBuilder<any>(e)
         .withCode(ResponseCodeEnum.BAD_REQUEST)
         .withMessage(await this.i18n.translate('error.BAD_REQUEST'))
@@ -449,7 +446,13 @@ export class ExportService {
     if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
-        return;
+        const { nameFile, dataBase64 } =
+          await reportItemInventoryBelowMinimumExcelMapping(
+            request,
+            data,
+            this.i18n,
+          );
+        return { result: dataBase64, nameFile };
       case ExportType.WORD:
         return;
       default:
