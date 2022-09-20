@@ -1,5 +1,3 @@
-import { BaseModel } from '@core/model/base.model';
-
 export interface BaseInterfaceRepository<T> {
   create(data: T | any): Promise<T>;
 

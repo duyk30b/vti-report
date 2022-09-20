@@ -177,7 +177,7 @@ export interface TableAgeOfItemStock {
 export interface ReportModel<T> {
   parentCompany: string;
   childCompany: string;
-  AddressChildCompany: string;
+  addressChildCompany: string;
   tableColumn: TableColumn[];
   tableData: TableData<T>[] | T;
   header: boolean;
