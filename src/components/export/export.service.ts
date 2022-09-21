@@ -15,6 +15,13 @@ import { DailyWarehouseItemStockRepository } from '@repositories/daily-warehouse
 import { ExportType } from '@enums/export-type.enum';
 import { ReportOrderItemRepository } from '@repositories/report-order-item.repository';
 import { reportItemInventoryBelowMinimumExcelMapping } from '@mapping/excels/report-item-inventory-below-minimum.excel.mapping';
+import { reportItemInventoryBelowSafeExcelMapping } from '@mapping/excels/report-item-inventory-below-safe.excel.mapping';
+import { reportOrderTransferIncompletedExcelMapping } from '@mapping/excels/report-order-transfer-incompleted.excel.mapping';
+import { reportOrderExportIncompletedExcelMapping } from '@mapping/excels/report-order-export-incompleted.excel.mapping';
+import { reportOrderImportIncompletedExcelMapping } from '@mapping/excels/report-order-import-incompleted.excel.mapping';
+import { reportItemImportedButNotPutToPositionExcelMapping } from '@mapping/excels/report-item-imported-but-not-put-to-position.excel.mapping';
+import { reportOrderImportByRequestForItemExcelMapping } from '@mapping/excels/report-order-import-by-request-for-item.excel.mapping';
+import { reportInventoryExcelMapping } from '@mapping/excels/report-Inventory.excel.mapping';
 
 @Injectable()
 export class ExportService {
@@ -342,7 +349,13 @@ export class ExportService {
     if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
-        return;
+        const { nameFile, dataBase64 } =
+          await reportOrderImportByRequestForItemExcelMapping(
+            request,
+            data,
+            this.i18n,
+          );
+        return { result: dataBase64, nameFile };
       case ExportType.WORD:
         return;
       default:
@@ -355,7 +368,12 @@ export class ExportService {
     if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
-        return;
+        const { nameFile, dataBase64 } = await reportInventoryExcelMapping(
+          request,
+          data,
+          this.i18n,
+        );
+        return { result: dataBase64, nameFile };
       case ExportType.WORD:
         return;
       default:
@@ -373,7 +391,13 @@ export class ExportService {
     if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
-        return;
+        const { nameFile, dataBase64 } =
+          await reportItemImportedButNotPutToPositionExcelMapping(
+            request,
+            data,
+            this.i18n,
+          );
+        return { result: dataBase64, nameFile };
       case ExportType.WORD:
         return;
       default:
@@ -392,7 +416,13 @@ export class ExportService {
     if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
-        return;
+        const { nameFile, dataBase64 } =
+          await reportOrderImportIncompletedExcelMapping(
+            request,
+            data,
+            this.i18n,
+          );
+        return { result: dataBase64, nameFile };
       case ExportType.WORD:
         return;
       default:
@@ -411,7 +441,13 @@ export class ExportService {
     if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
-        return;
+        const { nameFile, dataBase64 } =
+          await reportOrderExportIncompletedExcelMapping(
+            request,
+            data,
+            this.i18n,
+          );
+        return { result: dataBase64, nameFile };
       case ExportType.WORD:
         return;
       default:
@@ -429,7 +465,13 @@ export class ExportService {
     if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
-        return;
+        const { nameFile, dataBase64 } =
+          await reportOrderTransferIncompletedExcelMapping(
+            request,
+            data,
+            this.i18n,
+          );
+        return { result: dataBase64, nameFile };
       case ExportType.WORD:
         return;
       default:
@@ -469,7 +511,13 @@ export class ExportService {
     if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
-        return;
+        const { nameFile, dataBase64 } =
+          await reportItemInventoryBelowSafeExcelMapping(
+            request,
+            data,
+            this.i18n,
+          );
+        return { result: dataBase64, nameFile };
       case ExportType.WORD:
         return;
       default:

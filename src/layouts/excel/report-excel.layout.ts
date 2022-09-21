@@ -51,7 +51,6 @@ export const generateTable = async (
     model.dateFrom,
     model.dateTo,
   );
-  // const path = process.cwd() + '//';
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet(sheetName, {
     views: [{ showGridLines: false }],
@@ -148,7 +147,6 @@ export const generateTable = async (
     );
   }
 
-  // await workbook.xlsx.writeFile(path + `${nameFile || 'default_name'}.xlsx`);
   const buffer = await workbook.xlsx.writeBuffer();
   const str = (buffer as Buffer).toString('base64');
   return {
