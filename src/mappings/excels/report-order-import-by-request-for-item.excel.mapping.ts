@@ -22,39 +22,39 @@ export async function reportOrderImportByRequestForItemExcelMapping(
   i18n: I18nRequestScopeService,
 ) {
   const textSatus = {
-    imported: await i18n.translate('report.IMPORTED'),
-    importing: await i18n.translate('report.IMPORTING'),
-    not_yet_import: await i18n.translate('report.NOT_YET_IMPORT'),
+    imported: i18n.translate('report.IMPORTED'),
+    importing: i18n.translate('report.IMPORTING'),
+    notYetImport: i18n.translate('report.NOT_YET_IMPORT'),
   };
-  const groupByWarehouseCode = data.reduce((prev, cur, index) => {
-    const warehouseCode = cur.warehouseCode + ' - ' + cur.warehouseName;
-    if (!prev[warehouseCode]) {
-      prev[cur.warehouseCode] = [];
+  const groupByWarehouseCode = data.reduce((prev, cur) => {
+    if (cur.warehouseCode && cur.warehouseName) {
+      const warehouseCode = cur.warehouseCode + ' - ' + cur.warehouseName;
+      if (!prev[warehouseCode]) {
+        prev[warehouseCode] = [];
+      }
+      const stockQuantity = minus(cur.planQuantity, cur.actualQuantity);
+      let status = '';
+      if (stockQuantity === 0) {
+        status = textSatus.imported;
+      } else if (stockQuantity > 0 && stockQuantity < cur.planQuantity) {
+        status = textSatus.importing;
+      } else if (stockQuantity === cur.planQuantity) {
+        status = textSatus.notYetImport;
+      }
+      const data: ReportOrderImportByRequestForItemModel = {
+        index: 0,
+        orderImportRequireCode: cur.orderCode,
+        orderCode: cur.orderCode,
+        itemCode: cur.itemCode,
+        itemName: cur.itemName,
+        dateImport: cur.planDate,
+        planQuantity: cur.planQuantity,
+        actualQuantity: cur.actualQuantity,
+        status: status,
+      };
+      prev[warehouseCode].push(data);
+      return prev;
     }
-    const stockQuantity = minus(cur.planQuantity, cur.actualQuantity);
-    let status = '';
-    if (stockQuantity === 0) {
-      status = textSatus.imported;
-    }
-    if (stockQuantity > 0 && stockQuantity < cur.planQuantity) {
-      status = textSatus.importing;
-    }
-    if (stockQuantity === cur.planQuantity) {
-      status = textSatus.not_yet_import;
-    }
-    const data: ReportOrderImportByRequestForItemModel = {
-      index: index + 1,
-      orderImportRequireCode: cur.orderCode,
-      orderCode: cur.orderCode,
-      itemCode: cur.itemCode,
-      itemName: cur.itemName,
-      dateImport: cur.planDate,
-      planQuantity: cur.planQuantity,
-      actualQuantity: cur.actualQuantity,
-      status: status,
-    };
-    prev[cur.warehouseCode].push(data);
-    return prev;
   }, {});
 
   const dataExcell: TableData<ReportOrderImportByRequestForItemModel>[] = [];
@@ -80,8 +80,8 @@ export async function reportOrderImportByRequestForItemExcelMapping(
 
   const model: ReportModel<ReportOrderImportByRequestForItemModel> = {
     parentCompany: i18n.translate('report.PARENT_COMPANY'),
-    childCompany: data[0].companyName,
-    addressChildCompany: data[0].companyAddress,
+    childCompany: data[0]?.companyName,
+    addressChildCompany: data[0]?.companyAddress,
     tableColumn: REPORT_ORDER_IMPORT_BY_REQUEST_FOR_ITEM_MODEL,
     tableData: dataExcell,
     header: false,
@@ -89,9 +89,9 @@ export async function reportOrderImportByRequestForItemExcelMapping(
     aligmentCell: formatByKey,
     dateFrom: request.dateFrom,
     dateTo: request.dateTo,
-    warehouse: request.warehouseId ? data[0].warehouseName : null,
+    warehouse: request?.warehouseId ? data[0]?.warehouseName : null,
     key: REPORT_INFO[ReportType[ReportType.ORDER_IMPORT_BY_REQUEST_FOR_ITEM]]
-      .key,
+      ?.key,
   };
 
   const { dataBase64, nameFile } = await generateTable(

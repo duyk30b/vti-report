@@ -20,24 +20,25 @@ export async function reportOrderExportIncompletedExcelMapping(
   data: ReportOrderItem[],
   i18n: I18nRequestScopeService,
 ) {
-  const groupByWarehouseCode = data.reduce((prev, cur, index) => {
-    const warehouseCode = cur.warehouseCode + ' - ' + cur.warehouseName;
-
-    if (!prev[warehouseCode]) {
-      prev[cur.warehouseCode] = [];
+  const groupByWarehouseCode = data.reduce((prev, cur) => {
+    if (cur.warehouseCode && cur.warehouseName) {
+      const warehouseCode = cur.warehouseCode + ' - ' + cur.warehouseName;
+      if (!prev[warehouseCode]) {
+        prev[warehouseCode] = [];
+      }
+      const data: OrderExportIncompleteModel = {
+        index: 0,
+        orderId: cur.orderId,
+        itemCode: cur.itemCode,
+        itemName: cur.itemName,
+        unit: cur.unit,
+        quantity: cur.planQuantity,
+        construction: cur.constructionName,
+        receiver: cur.performerName,
+      };
+      prev[warehouseCode].push(data);
+      return prev;
     }
-    const data: OrderExportIncompleteModel = {
-      index: 0,
-      orderId: cur.orderId,
-      itemCode: cur.itemCode,
-      itemName: cur.itemName,
-      unit: cur.unit,
-      quantity: cur.planQuantity,
-      construction: cur.constructionName,
-      receiver: cur.performerName,
-    };
-    prev[cur.warehouseCode].push(data);
-    return prev;
   }, {});
   const dataExcell: TableData<OrderExportIncompleteModel>[] = [];
 

@@ -21,19 +21,21 @@ export async function reportItemInventoryBelowMinimumExcelMapping(
   i18n: I18nRequestScopeService,
 ) {
   const groupByWarehouseCode = data.reduce((prev, cur) => {
-    const warehouseCode = cur.warehouseCode + ' - ' + cur.warehouseName;
-    if (!prev[warehouseCode]) {
-      prev[cur.warehouseCode] = [];
+    if (cur.warehouseCode && cur.warehouseName) {
+      const warehouseCode = cur.warehouseCode + ' - ' + cur.warehouseName;
+      if (!prev[warehouseCode]) {
+        prev[warehouseCode] = [];
+      }
+      prev[warehouseCode].push({
+        index: 0,
+        itemCode: cur.itemCode,
+        itemName: cur.itemName,
+        unit: cur.unit,
+        stockQuantity: cur.stockQuantity,
+        minInventoryLimit: cur.minInventoryLimit,
+      });
+      return prev;
     }
-    prev[cur.warehouseCode].push({
-      index: 0,
-      itemCode: cur.itemCode,
-      itemName: cur.itemName,
-      unit: cur.unit,
-      stockQuantity: cur.stockQuantity,
-      minInventoryLimit: cur.minInventoryLimit,
-    });
-    return prev;
   }, {});
   const dataExcell: TableData<ReportInventoryBelowMinimumModel>[] = [];
 

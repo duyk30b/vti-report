@@ -21,22 +21,24 @@ export async function reportOrderTransferIncompletedExcelMapping(
   i18n: I18nRequestScopeService,
 ) {
   const groupByWarehouseCode = data.reduce((prev, cur) => {
-    const warehouseCode = cur.warehouseCode + ' - ' + cur.warehouseName;
-    if (!prev[warehouseCode]) {
-      prev[cur.warehouseCode] = [];
+    if (cur.warehouseCode && cur.warehouseName) {
+      const warehouseCode = cur.warehouseCode + ' - ' + cur.warehouseName;
+      if (!prev[warehouseCode]) {
+        prev[warehouseCode] = [];
+      }
+      const data: OrderTransferIncompleteModel = {
+        index: 0,
+        orderId: cur.orderId,
+        itemCode: cur.itemCode,
+        itemName: cur.itemName,
+        unit: cur.unit,
+        planQuantity: cur.planQuantity,
+        construction: cur.constructionName,
+        performerName: cur.performerName,
+      };
+      prev[warehouseCode].push(data);
+      return prev;
     }
-    const data: OrderTransferIncompleteModel = {
-      index: 0,
-      orderId: cur.orderId,
-      itemCode: cur.itemCode,
-      itemName: cur.itemName,
-      unit: cur.unit,
-      planQuantity: cur.planQuantity,
-      construction: cur.constructionName,
-      performerName: cur.performerName,
-    };
-    prev[cur.warehouseCode].push(data);
-    return prev;
   }, {});
   const dataExcell: TableData<OrderTransferIncompleteModel>[] = [];
 
