@@ -1,8 +1,8 @@
 import { ReportType } from '@enums/report-type.enum';
 import { generateTable } from '@layout/excel/report-excel.layout';
-import { INVENTORY_COLUMN } from '@layout/excel/table-column-excel/report-inventory';
+import { ITEM_INVENTORY_IMPORTED_NO_QR_CODE_COLUMN } from '@layout/excel/table-column-excel/Item-inventory-imported-no-qr-code-column';
 import { reportGroupByWarehouseTemplateData } from '@layout/excel/table-data-excel/reportGroupByWarehouse.template-data';
-import { InventoryModel } from '@models/inventory.model';
+import { ItemInventoryImportedNoQRCodeModel } from '@models/Item-inventory-imported-no-qr-code.model';
 import {
   TableData,
   FormatByKey,
@@ -11,14 +11,13 @@ import {
 } from '@models/report.model';
 
 import { ReportRequest } from '@requests/report.request';
-import { DailyLotLocatorStock } from '@schemas/daily-lot-locator-stock.schema';
+import { ReportOrderItemLot } from '@schemas/report-order-item-lot.schema';
 import { REPORT_INFO } from '@utils/constant';
-import * as moment from 'moment';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 
-export async function reportInventoryExcelMapping(
+export async function reportItemInventoryImportedNoQRCodeExcelMapping(
   request: ReportRequest,
-  data: DailyLotLocatorStock[],
+  data: ReportOrderItemLot[],
   i18n: I18nRequestScopeService,
 ) {
   const groupByWarehouseCode = data.reduce((prev, cur) => {
@@ -27,22 +26,23 @@ export async function reportInventoryExcelMapping(
       if (!prev[warehouseCode]) {
         prev[warehouseCode] = [];
       }
-      const data: InventoryModel = {
+      const data: ItemInventoryImportedNoQRCodeModel = {
         index: 0,
+        orderCode: cur.orderCode,
         itemCode: cur.itemCode,
         itemName: cur.itemName,
         unit: cur.unit,
         lotNumber: cur.lotNumber,
-        stockQuantity: cur.stockQuantity,
-        positision: cur.locatorCode,
+        locationCode: cur.locationCode,
+        actualQuantity: cur.actualQuantity,
         unitPrice: cur.cost,
-        totalPrice: cur.cost * cur.stockQuantity,
+        totalPrice: cur.actualQuantity * cur.cost,
       };
       prev[warehouseCode].push(data);
       return prev;
     }
   }, {});
-  const dataExcell: TableData<InventoryModel>[] = [];
+  const dataExcell: TableData<ItemInventoryImportedNoQRCodeModel>[] = [];
 
   for (const key in groupByWarehouseCode) {
     dataExcell.push({
@@ -51,30 +51,32 @@ export async function reportInventoryExcelMapping(
     });
   }
 
-  const formatByKey: FormatByKey<InventoryModel> = {
+  const formatByKey: FormatByKey<ItemInventoryImportedNoQRCodeModel> = {
     index: Alignment.CENTER,
+    orderCode: Alignment.LEFT,
     itemCode: Alignment.LEFT,
     itemName: Alignment.LEFT,
     unit: Alignment.CENTER,
     lotNumber: Alignment.CENTER,
-    stockQuantity: Alignment.RIGHT,
-    positision: Alignment.LEFT,
+    locationCode: Alignment.LEFT,
+    actualQuantity: Alignment.RIGHT,
     unitPrice: Alignment.RIGHT,
     totalPrice: Alignment.RIGHT,
   };
 
-  const model: ReportModel<InventoryModel> = {
+  const model: ReportModel<ItemInventoryImportedNoQRCodeModel> = {
     parentCompany: i18n.translate('report.PARENT_COMPANY'),
-    childCompany: data[0]?.companyName,
-    addressChildCompany: data[0]?.companyAddress,
-    tableColumn: INVENTORY_COLUMN,
+    childCompany: data[0].companyName,
+    addressChildCompany: data[0].companyAddress,
+    tableColumn: ITEM_INVENTORY_IMPORTED_NO_QR_CODE_COLUMN,
     tableData: dataExcell,
     header: false,
     columnLevel: 1,
     aligmentCell: formatByKey,
-    key: REPORT_INFO[ReportType[ReportType.INVENTORY]].key,
+    key: REPORT_INFO[ReportType[ReportType.ITEM_INVENTORY_IMPORTED_NO_QR_CODE]]
+      .key,
     dateFrom: request.dateFrom,
-    dateTo: request?.dateTo,
+    dateTo: request.dateTo,
     warehouse: request.warehouseId ? data[0].warehouseName : null,
   };
 

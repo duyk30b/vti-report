@@ -17,11 +17,13 @@ import { ReportOrderItemRepository } from '@repositories/report-order-item.repos
 import { reportItemInventoryBelowMinimumExcelMapping } from '@mapping/excels/report-item-inventory-below-minimum.excel.mapping';
 import { reportItemInventoryBelowSafeExcelMapping } from '@mapping/excels/report-item-inventory-below-safe.excel.mapping';
 import { reportOrderTransferIncompletedExcelMapping } from '@mapping/excels/report-order-transfer-incompleted.excel.mapping';
-import { reportOrderExportIncompletedExcelMapping } from '@mapping/excels/report-order-export-incompleted.excel.mapping';
 import { reportOrderImportIncompletedExcelMapping } from '@mapping/excels/report-order-import-incompleted.excel.mapping';
 import { reportItemImportedButNotPutToPositionExcelMapping } from '@mapping/excels/report-item-imported-but-not-put-to-position.excel.mapping';
 import { reportOrderImportByRequestForItemExcelMapping } from '@mapping/excels/report-order-import-by-request-for-item.excel.mapping';
 import { reportInventoryExcelMapping } from '@mapping/excels/report-Inventory.excel.mapping';
+import { reportItemInventoryImportedNoQRCodeExcelMapping } from '@mapping/excels/report-item-Inventory-imported-no-qr-code.excel.mapping';
+import { reportOrderExportIncompletedExcelMapping } from '@mapping/excels/report-order-export-incompleted.excel.mapping';
+import { reportOrderExportByRequestForItem } from '@mapping/excels/report-order-export-by-request-for-item.excel.mapping';
 
 @Injectable()
 export class ExportService {
@@ -282,7 +284,9 @@ export class ExportService {
     if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
-        return;
+        const { nameFile, dataBase64 } =
+          await reportOrderExportByRequestForItem(request, data, this.i18n);
+        return { result: dataBase64, nameFile };
       case ExportType.WORD:
         return;
       default:
@@ -300,7 +304,13 @@ export class ExportService {
     if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
-        return;
+        const { nameFile, dataBase64 } =
+          await reportItemInventoryImportedNoQRCodeExcelMapping(
+            request,
+            data,
+            this.i18n,
+          );
+        return { result: dataBase64, nameFile };
       case ExportType.WORD:
         return;
       default:

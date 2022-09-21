@@ -21,28 +21,30 @@ export async function reportItemImportedButNotPutToPositionExcelMapping(
   i18n: I18nRequestScopeService,
 ) {
   const groupByWarehouseCode = data.reduce((prev, cur) => {
-    const warehouseCode = cur.warehouseCode + ' - ' + cur.warehouseName;
-    if (!prev[warehouseCode]) {
-      prev[cur.warehouseCode] = [];
+    if (cur.warehouseCode && cur.warehouseName) {
+      const warehouseCode = cur.warehouseCode + ' - ' + cur.warehouseName;
+      if (!prev[warehouseCode]) {
+        prev[warehouseCode] = [];
+      }
+      const data: ItemImportedButNotStoreToPositionModel = {
+        index: 0,
+        orderCode: cur.orderCode,
+        orderNumberEbs: cur.orderNumberEbs,
+        reason: cur.reason,
+        explain: cur.explain,
+        itemCode: cur.itemCode,
+        itemName: cur.itemName,
+        unit: cur.unit,
+        lotNumber: cur.lotNumber,
+        actualQuantity: cur.actualQuantity,
+        receivedQuantity: cur.receivedQuantity,
+        receiveQuantity: cur.actualQuantity - cur.receivedQuantity,
+        note: cur.note,
+        receiver: cur.performerName,
+      };
+      prev[warehouseCode].push(data);
+      return prev;
     }
-    const data: ItemImportedButNotStoreToPositionModel = {
-      index: 0,
-      orderCode: cur.orderCode,
-      orderNumberEbs: cur.orderNumberEbs,
-      reason: cur.reason,
-      explain: cur.explain,
-      itemCode: cur.itemCode,
-      itemName: cur.itemName,
-      unit: cur.unit,
-      lotNumber: cur.lotNumber,
-      actualQuantity: cur.actualQuantity,
-      receivedQuantity: cur.receivedQuantity,
-      receiveQuantity: cur.actualQuantity - cur.receivedQuantity,
-      note: cur.note,
-      receiver: cur.performerName,
-    };
-    prev[cur.warehouseCode].push(data);
-    return prev;
   }, {});
   const dataExcell: TableData<ItemImportedButNotStoreToPositionModel>[] = [];
 

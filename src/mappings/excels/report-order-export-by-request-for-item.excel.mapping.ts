@@ -1,8 +1,8 @@
 import { ReportType } from '@enums/report-type.enum';
 import { generateTable } from '@layout/excel/report-excel.layout';
-import { INVENTORY_COLUMN } from '@layout/excel/table-column-excel/report-inventory';
+import { REPORT_ORDER_EXPORT_BY_REQUEST_FOR_ITEM_MODEL } from '@layout/excel/table-column-excel/report-order-export-by-request-for-item-column';
 import { reportGroupByWarehouseTemplateData } from '@layout/excel/table-data-excel/reportGroupByWarehouse.template-data';
-import { InventoryModel } from '@models/inventory.model';
+import { ReportOrderExportByRequestForItemModel } from '@models/order-export-by-request-for-item.model';
 import {
   TableData,
   FormatByKey,
@@ -11,14 +11,13 @@ import {
 } from '@models/report.model';
 
 import { ReportRequest } from '@requests/report.request';
-import { DailyLotLocatorStock } from '@schemas/daily-lot-locator-stock.schema';
+import { ReportOrderItem } from '@schemas/report-order-item.schema';
 import { REPORT_INFO } from '@utils/constant';
-import * as moment from 'moment';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 
-export async function reportInventoryExcelMapping(
+export async function reportOrderExportByRequestForItem(
   request: ReportRequest,
-  data: DailyLotLocatorStock[],
+  data: ReportOrderItem[],
   i18n: I18nRequestScopeService,
 ) {
   const groupByWarehouseCode = data.reduce((prev, cur) => {
@@ -27,22 +26,21 @@ export async function reportInventoryExcelMapping(
       if (!prev[warehouseCode]) {
         prev[warehouseCode] = [];
       }
-      const data: InventoryModel = {
+      const data: ReportOrderExportByRequestForItemModel = {
         index: 0,
         itemCode: cur.itemCode,
         itemName: cur.itemName,
-        unit: cur.unit,
-        lotNumber: cur.lotNumber,
-        stockQuantity: cur.stockQuantity,
-        positision: cur.locatorCode,
-        unitPrice: cur.cost,
-        totalPrice: cur.cost * cur.stockQuantity,
+        orderExportRequireCode: cur.proposalExport,
+        orderCode: cur.orderCode,
+        dateExported: cur.planDate,
+        planQuantity: cur.planQuantity,
+        exportedQuantity: cur.exportedQuantity,
       };
       prev[warehouseCode].push(data);
       return prev;
     }
   }, {});
-  const dataExcell: TableData<InventoryModel>[] = [];
+  const dataExcell: TableData<ReportOrderExportByRequestForItemModel>[] = [];
 
   for (const key in groupByWarehouseCode) {
     dataExcell.push({
@@ -51,30 +49,30 @@ export async function reportInventoryExcelMapping(
     });
   }
 
-  const formatByKey: FormatByKey<InventoryModel> = {
+  const formatByKey: FormatByKey<ReportOrderExportByRequestForItemModel> = {
     index: Alignment.CENTER,
     itemCode: Alignment.LEFT,
     itemName: Alignment.LEFT,
-    unit: Alignment.CENTER,
-    lotNumber: Alignment.CENTER,
-    stockQuantity: Alignment.RIGHT,
-    positision: Alignment.LEFT,
-    unitPrice: Alignment.RIGHT,
-    totalPrice: Alignment.RIGHT,
+    orderExportRequireCode: Alignment.LEFT,
+    orderCode: Alignment.LEFT,
+    dateExported: Alignment.CENTER,
+    planQuantity: Alignment.RIGHT,
+    exportedQuantity: Alignment.RIGHT,
   };
 
-  const model: ReportModel<InventoryModel> = {
+  const model: ReportModel<ReportOrderExportByRequestForItemModel> = {
     parentCompany: i18n.translate('report.PARENT_COMPANY'),
-    childCompany: data[0]?.companyName,
-    addressChildCompany: data[0]?.companyAddress,
-    tableColumn: INVENTORY_COLUMN,
+    childCompany: data[0].companyName,
+    addressChildCompany: data[0].companyAddress,
+    tableColumn: REPORT_ORDER_EXPORT_BY_REQUEST_FOR_ITEM_MODEL,
     tableData: dataExcell,
     header: false,
     columnLevel: 1,
     aligmentCell: formatByKey,
-    key: REPORT_INFO[ReportType[ReportType.INVENTORY]].key,
+    key: REPORT_INFO[ReportType[ReportType.ORDER_EXPORT_BY_REQUEST_FOR_ITEM]]
+      .key,
     dateFrom: request.dateFrom,
-    dateTo: request?.dateTo,
+    dateTo: request.dateTo,
     warehouse: request.warehouseId ? data[0].warehouseName : null,
   };
 
@@ -85,7 +83,7 @@ export async function reportInventoryExcelMapping(
   );
 
   return {
-    dataBase64,
     nameFile,
+    dataBase64,
   };
 }
