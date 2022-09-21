@@ -95,9 +95,9 @@
         "SHEET_NAME": "W001-Chưa_NK_EBS-{property}"
     },
     "ITEM_IMPORTED_BUT_NOT_PUT_TO_POSITION": {
-        "TITLE": "BÁO CÁO THỐNG KÊ PHIẾU NHẬP KHO CHƯA NHẬP KHO TRÊN EBS\n{property}",
-        "FILE_NAME": "W001-Báo cáo thống kê phiếu nhập kho chưa nhập kho trên EBS-{property}",
-        "SHEET_NAME": "W001-Chưa_NK_EBS-{property}"
+        "TITLE": "BÁO CÁO VẬT TƯ ĐÃ NHẬP KHO CHƯA CẤT VÀO VỊ TRÍ\n{property}",
+        "FILE_NAME": "W002-Báo cáo vật tư đã nhập kho chưa cất vào vị trí-{property}",
+        "SHEET_NAME": "W002-NK_chưa cất-{property}"
     },
     "ITEM_INVENTORY": {
         "TITLE": "BÁO CÁO VẬT TƯ TỒN KHO\n{property}",

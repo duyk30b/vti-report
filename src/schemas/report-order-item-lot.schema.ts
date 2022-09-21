@@ -16,6 +16,9 @@ export class ReportOrderItemLot {
   orderCreatedAt: Date;
 
   @Prop({ required: false })
+  orderNumberEbs: string;
+
+  @Prop({ required: false })
   itemId: number;
 
   @Prop({ required: false })

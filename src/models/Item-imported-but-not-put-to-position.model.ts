@@ -1,7 +1,7 @@
 export interface ItemImportedButNotStoreToPositionModel {
   index: number;
-  orderId: number;
   orderCode: string;
+  orderNumberEbs: string;
   reason: string;
   explain: string;
   itemCode: string;
