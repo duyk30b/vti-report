@@ -14,7 +14,7 @@ import * as moment from 'moment';
 import { DailyWarehouseItemStockRepository } from '@repositories/daily-warehouse-item-stock.repository';
 import { ExportType } from '@enums/export-type.enum';
 import { ReportOrderItemRepository } from '@repositories/report-order-item.repository';
-import { reportItemInventoryBelowMinimumExcelMapping } from '@mapping/excels/report-item-inventory-below-minimum.excel.mapping';
+import { reportItemInventoryBelowMinimumWordMapping } from '@mapping/words/report-item-inventory-below-minium.word.mapping';
 import { reportItemInventoryBelowSafeExcelMapping } from '@mapping/excels/report-item-inventory-below-safe.excel.mapping';
 import { reportOrderTransferIncompletedExcelMapping } from '@mapping/excels/report-order-transfer-incompleted.excel.mapping';
 import { reportOrderImportIncompletedExcelMapping } from '@mapping/excels/report-order-import-incompleted.excel.mapping';
@@ -498,15 +498,9 @@ export class ExportService {
     if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
-        const { nameFile, dataBase64 } =
-          await reportItemInventoryBelowMinimumExcelMapping(
-            request,
-            data,
-            this.i18n,
-          );
-        return { result: dataBase64, nameFile };
-      case ExportType.WORD:
         return;
+      case ExportType.WORD:
+        return reportItemInventoryBelowMinimumWordMapping(request, data);
       default:
         return;
     }
