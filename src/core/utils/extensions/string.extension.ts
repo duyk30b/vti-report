@@ -1,4 +1,4 @@
-import { SORT_CONST, SortOrder } from '@constant/common';
+import { SortOrder, SORT_CONST } from '@core/common';
 
 declare global {
   interface String {

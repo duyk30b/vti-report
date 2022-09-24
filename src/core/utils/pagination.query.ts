@@ -1,5 +1,6 @@
 import { BaseDto } from '@core/dto/base.dto';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { EnumSort } from '@utils/common';
 import { Transform, Type } from 'class-transformer';
 import {
   Allow,
@@ -9,7 +10,6 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { EnumSort } from './common';
 
 export class Sort {
   @ApiProperty()
