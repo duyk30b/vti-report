@@ -27,9 +27,6 @@
       "@database/*": [
         "src/database/*"
       ],
-      "@config/*": [
-        "src/config/*"
-      ],
       "@constant/*": [
         "src/constant/*"
       ],
@@ -44,6 +41,22 @@
       ],
       "@core/*": [
         "src/core/*"
+      ],
+      "@enums/*": [
+        "src/enums/*"
+      ],
+      "@models/*": [
+        "src/models/*"
+      ],
+      "@requests/*": [
+        "src/requests/*"
+      ],
+      "@responses/*": [
+        "src/responses/*"
+      ]
+      ,
+      "@schemas/*": [
+        "src/schemas/*"
       ]
     }
   }

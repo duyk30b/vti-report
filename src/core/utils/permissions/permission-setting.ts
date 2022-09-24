@@ -1,4 +1,4 @@
-import { FORMAT_CODE_PERMISSION } from '@constant/common';
+import { FORMAT_CODE_PERMISSION } from '@core/common';
 import { StatusPermission } from '@utils/common';
 
 export const PERMISSION_USER_GROUP_PERMISSION = {

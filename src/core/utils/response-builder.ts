@@ -1,4 +1,4 @@
-import { ResponseCodeEnum, getMessage } from '@constant/response-code.enum';
+import { getMessage, ResponseCodeEnum } from '@core/response-code.enum';
 import { ResponsePayload } from './response-payload';
 
 export class ResponseBuilder<T> {

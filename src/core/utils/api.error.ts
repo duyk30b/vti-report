@@ -1,7 +1,7 @@
 // import { config } from '@config/app';
-import { getMessage, ResponseCodeEnum } from '@constant/response-code.enum';
-import { ResponseBuilder } from '@utils/response-builder';
-import { ResponsePayload } from '@utils/response-payload';
+import { getMessage, ResponseCodeEnum } from '@core/response-code.enum';
+import { ResponseBuilder } from './response-builder';
+import { ResponsePayload } from './response-payload';
 
 export class ApiError extends Error {
   private readonly _errorCode: ResponseCodeEnum;

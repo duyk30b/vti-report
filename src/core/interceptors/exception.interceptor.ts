@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Injectable()
-export class ExceptionEnterceptor implements NestInterceptor {
+export class ExceptionInterceptor implements NestInterceptor {
   intercept(
     context: ExecutionContext,
     next: CallHandler<any>,

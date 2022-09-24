@@ -1,4 +1,4 @@
-import { ResponseCodeEnum } from '@constant/response-code.enum';
+import { ResponseCodeEnum } from '@core/response-code.enum';
 
 export interface ResponsePayload<T> {
   statusCode: ResponseCodeEnum;
