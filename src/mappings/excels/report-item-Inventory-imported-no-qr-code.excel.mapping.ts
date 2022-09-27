@@ -1,7 +1,7 @@
 import { ReportType } from '@enums/report-type.enum';
 import { generateTable } from '@layout/excel/report-excel.layout';
 import { ITEM_INVENTORY_IMPORTED_NO_QR_CODE_COLUMN } from '@layout/excel/table-column-excel/Item-inventory-imported-no-qr-code-column';
-import { reportGroupByWarehouseTemplateData } from '@layout/excel/table-data-excel/reportGroupByWarehouse.template-data';
+import { reportGroupByWarehouseTemplateData } from '@layout/excel/table-data-excel/report-group-by-warehouse.template-data';
 import { ItemInventoryImportedNoQRCodeModel } from '@models/Item-inventory-imported-no-qr-code.model';
 import {
   TableData,
@@ -65,13 +65,11 @@ export async function reportItemInventoryImportedNoQRCodeExcelMapping(
   };
 
   const model: ReportModel<ItemInventoryImportedNoQRCodeModel> = {
-    parentCompany: i18n.translate('report.PARENT_COMPANY'),
     childCompany: data[0].companyName,
     addressChildCompany: data[0].companyAddress,
     tableColumn: ITEM_INVENTORY_IMPORTED_NO_QR_CODE_COLUMN,
     tableData: dataExcell,
     header: false,
-    columnLevel: 1,
     aligmentCell: formatByKey,
     key: REPORT_INFO[ReportType[ReportType.ITEM_INVENTORY_IMPORTED_NO_QR_CODE]]
       .key,

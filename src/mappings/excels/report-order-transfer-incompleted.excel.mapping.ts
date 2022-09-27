@@ -1,7 +1,7 @@
 import { ReportType } from '@enums/report-type.enum';
 import { generateTable } from '@layout/excel/report-excel.layout';
 import { REPORT_ORDER_TRANSFER_INCOMPLETE_COLUMN } from '@layout/excel/table-column-excel/report-order-transfer-incomplete-column';
-import { reportGroupByWarehouseTemplateData } from '@layout/excel/table-data-excel/reportGroupByWarehouse.template-data';
+import { reportGroupByWarehouseTemplateData } from '@layout/excel/table-data-excel/report-group-by-warehouse.template-data';
 import { OrderTransferIncompleteModel } from '@models/order-transfer incomplete.model';
 import {
   TableData,
@@ -28,13 +28,13 @@ export async function reportOrderTransferIncompletedExcelMapping(
       }
       const data: OrderTransferIncompleteModel = {
         index: 0,
-        orderId: cur.orderId,
+        orderCode: cur.orderCode,
         itemCode: cur.itemCode,
         itemName: cur.itemName,
         unit: cur.unit,
         planQuantity: cur.planQuantity,
         construction: cur.constructionName,
-        performerName: cur.performerName,
+        warehouseImport: [cur.warehouseTargetName, cur.warehouseCode].join('_'),
       };
       prev[warehouseCode].push(data);
       return prev;
@@ -51,23 +51,21 @@ export async function reportOrderTransferIncompletedExcelMapping(
 
   const formatByKey: FormatByKey<OrderTransferIncompleteModel> = {
     index: Alignment.CENTER,
-    orderId: Alignment.LEFT,
+    orderCode: Alignment.LEFT,
     itemCode: Alignment.LEFT,
     itemName: Alignment.LEFT,
     unit: Alignment.CENTER,
     planQuantity: Alignment.RIGHT,
     construction: Alignment.LEFT,
-    performerName: Alignment.LEFT,
+    warehouseImport: Alignment.LEFT,
   };
 
   const model: ReportModel<OrderTransferIncompleteModel> = {
-    parentCompany: i18n.translate('report.PARENT_COMPANY'),
     childCompany: data[0]?.companyName,
     addressChildCompany: data[0]?.companyAddress,
     tableColumn: REPORT_ORDER_TRANSFER_INCOMPLETE_COLUMN,
     tableData: dataExcell,
     header: true,
-    columnLevel: 1,
     aligmentCell: formatByKey,
     key: REPORT_INFO[ReportType[ReportType.ORDER_TRANSFER_INCOMPLETED]].key,
     dateFrom: request.dateFrom,

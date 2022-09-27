@@ -1,18 +1,26 @@
-export interface SituationTransferModel {
-  index: number;
-  transferCode: string;
-  orderCreatedAt: string;
-  orderCode: string;
-  importWarehouse: string;
-  explain: string;
+export interface SituationTransferItem {
   itemCode: string;
   itemName: string;
-  lot: string;
-  accountDebt: string;
-  accountDebtNumber: number;
+  lotNumber: string;
+  accountDebt: number;
+  accountHave: number;
   unit: string;
-  quantity: number;
-  positionName: string;
-  unitPrice: number;
+  planQuantity: number;
+  locationCode: string;
+  cost: number;
   totalPrice: number;
+}
+export interface SituationTransferGroupByPostCode {
+  orderCode: string;
+  orderCreatedAt: Date;
+  warehouseImport: string;
+  explain: string;
+  totalPrice: number;
+  items: Array<SituationTransferItem>;
+}
+
+export interface TableDataSituationTransfer {
+  warehouseCode: string;
+  totalPrice: number;
+  orders: Array<SituationTransferGroupByPostCode>;
 }

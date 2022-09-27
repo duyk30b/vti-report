@@ -25,11 +25,12 @@ import {
   FONT_BOLD_10,
   FONT_BOLD_14,
   FONT_BOLD_9,
-  FONT_NORMAL_10,
+  FONT_NORMAL_8,
   HEIGHT_REPORT_TITLE,
   INDEX_REPORT_TIME,
   INDEX_REPORT_TITLE,
-  KEY_COLUMN,
+  LV1,
+  LV3,
   ROW_WHEN_HAVE_HEADER,
   ROW_WHEN_NOT_HAVE_HEADER,
 } from '@utils/constant';
@@ -51,6 +52,7 @@ export const generateTable = async (
     model.dateFrom,
     model.dateTo,
   );
+
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet(sheetName, {
     views: [{ showGridLines: false }],
@@ -69,74 +71,65 @@ export const generateTable = async (
     properties: { tabColor: { argb: '6B5B95' }, defaultRowHeight: 18.75 },
   });
 
-  const index = getColumnIndex(model.tableColumn, KEY_COLUMN, worksheet);
+  const index = getChildNestedOfArray(model.tableColumn, 'child', worksheet);
   //header
   if (model.header) {
-    if (model.columnLevel !== 1) {
-      worksheet.mergeCells(
-        `${CELL_TITLE_REPORT}:${EXCEL_COLUMN[index - 1]}${INDEX_REPORT_TITLE}`,
-      );
-      worksheet.mergeCells(
-        `${CEll_REPORT_TIME}:${EXCEL_COLUMN[index - 1]}${INDEX_REPORT_TIME}`,
-      );
-    } else {
-      const lengthColumn = model.tableColumn.length;
-
-      worksheet.mergeCells(
-        `${CELL_TITLE_REPORT}:${
-          EXCEL_COLUMN[lengthColumn - 1]
-        }${INDEX_REPORT_TITLE}`,
-      );
-      worksheet.mergeCells(
-        `${CEll_REPORT_TIME}:${
-          EXCEL_COLUMN[lengthColumn - 1]
-        }${INDEX_REPORT_TIME}`,
-      );
-    }
-
+    worksheet.mergeCells(
+      `${CELL_TITLE_REPORT}:${EXCEL_COLUMN[index - 2]}${INDEX_REPORT_TITLE}`,
+    );
+    worksheet.mergeCells(
+      `${CEll_REPORT_TIME}:${EXCEL_COLUMN[index - 2]}${INDEX_REPORT_TIME}`,
+    );
     worksheet.getRow(INDEX_REPORT_TITLE).height = HEIGHT_REPORT_TITLE;
 
-    const cellParentCompany = worksheet.getCell(CELL_PARENT_COMPANY);
-    const cellChildCompany = worksheet.getCell(CELL_CHILD_COMPANY);
-    const cellAddressChildCompany = worksheet.getCell(
-      CELL_ADDRESS_CHILD_COMPANY,
-    );
-    const cellReportNumber = worksheet.getCell(CELL_REPORT_NUMBER);
-    const cellTitle = worksheet.getCell(CELL_TITLE_REPORT);
-    const cellReportTime = worksheet.getCell(CEll_REPORT_TIME);
+    configCells(worksheet, i18n, [
+      {
+        nameCell: CELL_PARENT_COMPANY,
+        value: 'PARENT_COMPANY',
+        font: FONT_BOLD_10,
+        aligment: ALIGNMENT_LEFT,
+        translate: true,
+      },
+      {
+        nameCell: CELL_CHILD_COMPANY,
+        value: model.childCompany,
+        font: FONT_BOLD_10,
+        aligment: ALIGNMENT_LEFT,
+        translate: false,
+      },
 
-    cellParentCompany.value = model.parentCompany;
-    cellChildCompany.value = model.childCompany;
-    cellAddressChildCompany.value = model.addressChildCompany;
-    cellReportNumber.value = i18n.translate('report.REPORT_NUMBER');
-    cellTitle.value = title;
-    cellReportTime.value = reportTime;
-
-    cellParentCompany.font = FONT_BOLD_10;
-    cellChildCompany.font = FONT_BOLD_10;
-    cellAddressChildCompany.font = FONT_BOLD_10;
-    cellReportNumber.font = FONT_NORMAL_10;
-    cellTitle.font = FONT_BOLD_14;
-    cellReportTime.font = FONT_BOLD_10;
-
-    cellParentCompany.alignment = ALIGNMENT_LEFT as any;
-    cellChildCompany.alignment = ALIGNMENT_LEFT as any;
-    cellAddressChildCompany.alignment = ALIGNMENT_LEFT as any;
-    cellReportNumber.alignment = ALIGNMENT_LEFT as any;
-    cellTitle.alignment = ALIGNMENT_CENTER as any;
-    cellReportTime.alignment = ALIGNMENT_CENTER as any;
+      {
+        nameCell: CELL_ADDRESS_CHILD_COMPANY,
+        value: model.addressChildCompany,
+        font: FONT_BOLD_10,
+        aligment: ALIGNMENT_LEFT,
+        translate: false,
+      },
+      {
+        nameCell: CELL_REPORT_NUMBER,
+        value: 'REPORT_NUMBER',
+        font: FONT_NORMAL_8,
+        aligment: ALIGNMENT_LEFT,
+        translate: true,
+      },
+      {
+        nameCell: CELL_TITLE_REPORT,
+        value: title,
+        font: FONT_BOLD_14,
+        aligment: ALIGNMENT_CENTER,
+        translate: false,
+      },
+      {
+        nameCell: CEll_REPORT_TIME,
+        value: reportTime,
+        font: FONT_BOLD_10,
+        aligment: ALIGNMENT_CENTER,
+        translate: false,
+      },
+    ]);
   }
   let rowIndex = model.header ? ROW_WHEN_HAVE_HEADER : ROW_WHEN_NOT_HAVE_HEADER;
-
-  generateColumnTable(
-    worksheet,
-    model.tableColumn,
-    rowIndex,
-    model.columnLevel,
-    i18n,
-  );
-
-  rowIndex += model.columnLevel;
+  rowIndex += generateColumnTable(worksheet, model.tableColumn, rowIndex, i18n);
   if (typeof generateDataTable == 'function') {
     generateDataTable(
       rowIndex,
@@ -146,7 +139,8 @@ export const generateTable = async (
       i18n,
     );
   }
-
+  const path = process.cwd() + '/upload/';
+  await workbook.xlsx.writeFile(path + `${nameFile || 'default_name'}.xlsx`);
   const buffer = await workbook.xlsx.writeBuffer();
   const str = (buffer as Buffer).toString('base64');
   return {
@@ -158,127 +152,128 @@ export const generateTable = async (
 const generateColumnTable = (
   worksheet: ExcelJS.Worksheet,
   tableColumn: TableColumn[],
-  rowIndex: number,
-  columnLevel: number,
+  rowIdx: number,
   i18n: I18nRequestScopeService,
 ) => {
-  if (columnLevel === 1) {
-    const heightOfRow = 36;
-    worksheet.getRow(rowIndex).height = heightOfRow;
-    for (const [index, column] of tableColumn.entries()) {
-      configColumn(
-        worksheet,
-        i18n,
-        `${EXCEL_COLUMN[index] + rowIndex}`,
-        column.name,
-        BORDER,
-        FONT_BOLD_9,
-        ALIGNMENT_CENTER_BOTTOM,
-        false,
-        COLUMN_COLOR,
-      );
-    }
-  } else {
-    let columnIndex = 0;
-    for (const lv1 of tableColumn) {
-      //gen column lv 3
-      if (lv1.child[0]?.child) {
-        let numberChild = getNumberChill(lv1, 'child');
+  const checkLevel = tableColumn.some((column) => column['child']);
+  const columnsByLevel = tableColumn.map((item, index) => {
+    const lv = {
+      lv1: [],
+      lv2: [],
+      lv3: [],
+    };
+    genLevelColumn([item], 'child', lv);
+    return lv;
+  });
 
-        //MERGER LV1
-        const cellTobeMerge = `${EXCEL_COLUMN[columnIndex] + rowIndex}:${
-          EXCEL_COLUMN[columnIndex + numberChild - 1] + rowIndex
-        }`;
-        configColumn(
-          worksheet,
-          i18n,
-          cellTobeMerge,
-          lv1.name,
-          BORDER,
-          FONT_BOLD_9,
-          ALIGNMENT_CENTER_BOTTOM,
-          true,
-          COLUMN_COLOR,
-        );
-
-        //MERGER LV2
-        for (const lv2 of lv1.child) {
-          const cellTobeMerge = `${
-            EXCEL_COLUMN[columnIndex] + (rowIndex + 1)
-          }:${
-            EXCEL_COLUMN[columnIndex + (lv2.child.length - 1)] + (rowIndex + 1)
+  let curColumn = 0;
+  const cells: ConfigCells[] = [];
+  for (const column of columnsByLevel) {
+    if (column.lv3.length) {
+      const cellLv1 = `${EXCEL_COLUMN[curColumn] + rowIdx}:${
+        EXCEL_COLUMN[curColumn + column.lv3.length - 1] + rowIdx
+      }`;
+      let index = curColumn;
+      cells.push(
+        {
+          nameCell: cellLv1,
+          value: column.lv1[0].name,
+          font: FONT_BOLD_9,
+          aligment: ALIGNMENT_CENTER_BOTTOM,
+          border: BORDER,
+          fill: COLUMN_COLOR,
+          translate: true,
+          merge: true,
+        },
+        ...column.lv2.map((lv2) => {
+          const cellLv2 = `${EXCEL_COLUMN[index] + (rowIdx + 1)}:${
+            EXCEL_COLUMN[index + lv2.child.length - 1] + (rowIdx + 1)
           }`;
-
-          configColumn(
-            worksheet,
-            i18n,
-            cellTobeMerge,
-            lv2.name,
-            BORDER,
-            FONT_BOLD_9,
-            ALIGNMENT_CENTER_BOTTOM,
-            true,
-            COLUMN_COLOR,
-          );
-        }
-        //MERGER LV3
-        let currentColumnIndex_lv3 = columnIndex;
-        for (const lv2 of lv1.child) {
-          for (const lv3 of lv2.child) {
-            const cell_lv3 = `${
-              EXCEL_COLUMN[currentColumnIndex_lv3] + (rowIndex + 2)
-            }`;
-            configColumn(
-              worksheet,
-              i18n,
-              cell_lv3,
-              lv3.name,
-              BORDER,
-              FONT_BOLD_9,
-              ALIGNMENT_CENTER_BOTTOM,
-              true,
-              COLUMN_COLOR,
-            );
-            currentColumnIndex_lv3++;
-          }
-        }
-
-        columnIndex += numberChild;
-      } else {
-        //gen column lv 2
-        const cellTobeMerge = `${EXCEL_COLUMN[columnIndex] + rowIndex}:${
-          EXCEL_COLUMN[columnIndex + lv1.child.length - 1] + (rowIndex + 1)
+          index += lv2.child.length;
+          return {
+            nameCell: cellLv2,
+            value: lv2.name,
+            font: FONT_BOLD_9,
+            aligment: ALIGNMENT_CENTER_BOTTOM,
+            border: BORDER,
+            fill: COLUMN_COLOR,
+            translate: true,
+            merge: true,
+          };
+        }),
+        ...column.lv3.map((lv2, index) => {
+          const cellLv2 = `${EXCEL_COLUMN[curColumn + index] + (rowIdx + 2)}`;
+          return {
+            nameCell: cellLv2,
+            value: lv2.name,
+            font: FONT_BOLD_9,
+            aligment: ALIGNMENT_CENTER_BOTTOM,
+            border: BORDER,
+            fill: COLUMN_COLOR,
+            translate: true,
+          };
+        }),
+      );
+      curColumn += column.lv3.length;
+      continue;
+    }
+    if (column.lv2.length) {
+      const cellLv1 = `${EXCEL_COLUMN[curColumn] + rowIdx}:${
+        EXCEL_COLUMN[curColumn + column.lv2.length - 1] + (rowIdx + 1)
+      }`;
+      cells.push(
+        {
+          nameCell: cellLv1,
+          value: column.lv1[0].name,
+          font: FONT_BOLD_9,
+          aligment: ALIGNMENT_CENTER_BOTTOM,
+          border: BORDER,
+          fill: COLUMN_COLOR,
+          merge: true,
+          translate: true,
+        },
+        ...column.lv2.map((lv2, index) => {
+          const cellLv2 = `${EXCEL_COLUMN[curColumn + index] + (rowIdx + 2)}`;
+          return {
+            nameCell: cellLv2,
+            value: lv2.name,
+            font: FONT_BOLD_9,
+            aligment: ALIGNMENT_CENTER_BOTTOM,
+            border: BORDER,
+            fill: COLUMN_COLOR,
+            translate: true,
+          };
+        }),
+      );
+      curColumn += column.lv2.length;
+      continue;
+    }
+    if (column.lv1.length) {
+      let cellLv1;
+      if (checkLevel) {
+        cellLv1 = `${EXCEL_COLUMN[curColumn] + rowIdx}:${
+          EXCEL_COLUMN[curColumn] + (rowIdx + 2)
         }`;
-
-        configColumn(
-          worksheet,
-          i18n,
-          cellTobeMerge,
-          lv1.name,
-          BORDER,
-          FONT_BOLD_9,
-          ALIGNMENT_CENTER_BOTTOM,
-          true,
-          COLUMN_COLOR,
-        );
-        for (const [index, lv2] of lv1.child.entries()) {
-          const cellLv2 = EXCEL_COLUMN[columnIndex + index] + (rowIndex + 2);
-          configColumn(
-            worksheet,
-            i18n,
-            cellLv2,
-            lv2.name,
-            BORDER,
-            FONT_BOLD_9,
-            ALIGNMENT_CENTER_BOTTOM,
-            true,
-            COLUMN_COLOR,
-          );
-        }
-        columnIndex += lv1.child.length;
+      } else {
+        const heightOfRow = HEIGHT_REPORT_TITLE;
+        cellLv1 = `${EXCEL_COLUMN[curColumn] + rowIdx}`;
+        worksheet.getRow(rowIdx).height = heightOfRow;
       }
+      cells.push({
+        nameCell: cellLv1,
+        value: column?.lv1[0]?.name,
+        font: FONT_BOLD_9,
+        aligment: ALIGNMENT_CENTER_BOTTOM,
+        border: BORDER,
+        fill: COLUMN_COLOR,
+        merge: true,
+        translate: true,
+      });
+      curColumn++;
     }
   }
+  configCells(worksheet, i18n, cells);
+  return checkLevel ? LV3 : LV1;
 };
 
 const getReportInfo = (
@@ -347,54 +342,94 @@ const getReportInfo = (
   };
 };
 
-function getColumnIndex(
-  arr: Array<TableColumn>,
-  key: string,
-  worksheet: ExcelJS.Worksheet,
-  index = 1,
-): number {
-  if (arr.length == 0) {
-    return;
-  }
-  for (const column of arr) {
-    if (column[key]) {
-      getColumnIndex(column[key], key, worksheet, index + 1);
-    } else {
-      worksheet.getColumn(index).width = column.width;
-      index++;
-    }
-  }
-  return index;
+export interface ConfigCells {
+  nameCell: string;
+  value?: any;
+  font?: any;
+  aligment?: any;
+  translate?: boolean;
+  border?: any;
+  fill?: any;
+  merge?: boolean;
+  numFmt?: string;
+  heightRow?: { value: number; index: number };
 }
-
-function configColumn(
+export function configCells(
   worksheet: ExcelJS.Worksheet,
   i18n: I18nRequestScopeService,
-  cell: string,
-  value: string,
-  border: any,
-  font: any,
-  aligment: any,
-  merge: boolean,
-  fill?: any,
+  cells: ConfigCells[],
 ) {
-  const curCell = worksheet.getCell(cell);
-  if (merge) worksheet.mergeCells(cell);
-  if (fill) curCell.fill = fill;
-  curCell.value = i18n.translate(`report.${value}`);
-  curCell.border = border;
-  curCell.font = font;
-  curCell.alignment = aligment;
+  cells.forEach((cell) => {
+    const curCell = worksheet.getCell(cell.nameCell);
+    if (cell.heightRow) {
+      worksheet.getRow(cell.heightRow.index).height = cell.heightRow.value;
+    }
+    if (cell?.merge) worksheet.mergeCells(cell.nameCell);
+    if (typeof cell.value !== 'undefined') {
+      if (cell.translate) {
+        curCell.value = i18n.translate(`report.${cell.value}`);
+      } else {
+        curCell.value = cell.value;
+      }
+    }
+    if (cell?.border) curCell.border = cell.border;
+    if (cell?.fill) curCell.fill = cell.fill;
+    if (cell?.numFmt) curCell.numFmt = cell.numFmt;
+
+    if (cell.font) curCell.font = cell.font;
+    if (cell.aligment) curCell.alignment = cell.aligment;
+  });
 }
 
-function getNumberChill(ob, key, index = { number: 0 }) {
-  for (const item of ob[key]) {
-    if (item[key]) {
-      index.number += 1;
-      getNumberChill(item, key, index);
+function genLevelColumn(
+  ob: Array<any>,
+  key: string,
+  levelColumn: {
+    lv1: any[];
+    lv2: any[];
+    lv3: any[];
+  },
+  position = 1,
+) {
+  for (const child of ob) {
+    if (child[key]) {
+      position = genLevelColumn(child[key], key, levelColumn, position + 1);
+      genLevelColumnSwitch(child, position, levelColumn);
     } else {
-      index.number += 1;
+      genLevelColumnSwitch(child, position, levelColumn);
     }
   }
-  return index.number;
+  return position - 1;
+}
+
+function genLevelColumnSwitch(child, ps, levelColumn) {
+  switch (ps) {
+    case 1:
+      levelColumn.lv1.push(child);
+      break;
+    case 2:
+      levelColumn.lv2.push(child);
+      break;
+    case 3:
+      levelColumn.lv3.push(child);
+      break;
+  }
+}
+
+function getChildNestedOfArray(
+  arr: Array<any>,
+  key: string,
+  worksheet: ExcelJS.Worksheet,
+  result = 1,
+) {
+  for (const item of arr) {
+    if (item[key]) {
+      result = getChildNestedOfArray(item[key], key, worksheet, result);
+    } else {
+      worksheet.getColumn(result).width = item.width;
+      result++;
+    }
+  }
+
+  return result;
 }
