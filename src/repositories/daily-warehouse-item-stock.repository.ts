@@ -6,6 +6,7 @@ import { ReportRequest } from '@requests/report.request';
 import { DailyWarehouseItemRequest } from '@requests/sync-daily.request';
 import { DailyWarehouseItemStock } from '@schemas/daily-warehouse-item-stock.schema';
 import { plus } from '@utils/common';
+import * as moment from 'moment';
 import { Model } from 'mongoose';
 
 @Injectable()
@@ -92,10 +93,13 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
         break;
     }
 
-    if (request?.dateTo)
+    if (request?.dateTo) {
+      const today = moment(request?.dateTo).startOf('day');
+      const tomorrow = moment(today).endOf('day');
       condition['$and'].push({
-        reportDate: { $eq: request?.dateTo },
+        reportDate: { $gte: today, $lte: tomorrow },
       });
+    }
 
     if (request?.companyId)
       condition['$and'].push({

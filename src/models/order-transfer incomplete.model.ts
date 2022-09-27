@@ -1,10 +1,10 @@
 export interface OrderTransferIncompleteModel {
   index: number;
-  orderId: number;
+  orderCode: string;
   itemCode: string;
   itemName: string;
   unit: string;
   planQuantity: number;
   construction: string;
-  performerName: string;
+  warehouseImport: string;
 }

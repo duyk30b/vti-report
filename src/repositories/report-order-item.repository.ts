@@ -137,12 +137,12 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
 
     if (request?.dateFrom)
       condition['$and'].push({
-        orderCreatedAt: { $gte: request?.dateFrom },
+        orderCreatedAt: { $gte: new Date(request?.dateFrom) },
       });
 
     if (request?.dateTo)
       condition['$and'].push({
-        orderCreatedAt: { $lte: request?.dateTo },
+        orderCreatedAt: { $lte: new Date(request?.dateTo) },
       });
 
     switch (type) {
@@ -186,7 +186,7 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
 
     return this.reportOrderItem
       .find(condition)
-      .sort({ warehouseCode: 1, orderCode: 1, itemCode: 1 })
+      .sort({ warehouseCode: -1, orderCode: -1, itemCode: -1 })
       .lean();
   }
 }

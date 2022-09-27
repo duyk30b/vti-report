@@ -1,7 +1,7 @@
 import { ReportType } from '@enums/report-type.enum';
 import { generateTable } from '@layout/excel/report-excel.layout';
 import { REPORT_ORDER_IMPORT_BY_REQUEST_FOR_ITEM_MODEL } from '@layout/excel/table-column-excel/report-order-import-by-request-for-item-column';
-import { reportGroupByWarehouseTemplateData } from '@layout/excel/table-data-excel/reportGroupByWarehouse.template-data';
+import { reportGroupByWarehouseTemplateData } from '@layout/excel/table-data-excel/report-group-by-warehouse.template-data';
 import { ReportOrderImportByRequestForItemModel } from '@models/order-import-by-request-for-item.model';
 import {
   TableData,
@@ -79,13 +79,11 @@ export async function reportOrderImportByRequestForItemExcelMapping(
   };
 
   const model: ReportModel<ReportOrderImportByRequestForItemModel> = {
-    parentCompany: i18n.translate('report.PARENT_COMPANY'),
     childCompany: data[0]?.companyName,
     addressChildCompany: data[0]?.companyAddress,
     tableColumn: REPORT_ORDER_IMPORT_BY_REQUEST_FOR_ITEM_MODEL,
     tableData: dataExcell,
     header: false,
-    columnLevel: 1,
     aligmentCell: formatByKey,
     dateFrom: request.dateFrom,
     dateTo: request.dateTo,

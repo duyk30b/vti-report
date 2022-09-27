@@ -1,7 +1,7 @@
 import { ReportType } from '@enums/report-type.enum';
 import { generateTable } from '@layout/excel/report-excel.layout';
 import { ITEM_INVENTORY_BELOW_MINIMUM } from '@layout/excel/table-column-excel/report-inventory-below-minimum';
-import { reportGroupByWarehouseTemplateData } from '@layout/excel/table-data-excel/reportGroupByWarehouse.template-data';
+import { reportGroupByWarehouseTemplateData } from '@layout/excel/table-data-excel/report-group-by-warehouse.template-data';
 import { ReportInventoryBelowMinimumModel } from '@models/item-inventory-below-minimum.model';
 import {
   Alignment,
@@ -56,13 +56,11 @@ export async function reportItemInventoryBelowMinimumExcelMapping(
   };
 
   const model: ReportModel<ReportInventoryBelowMinimumModel> = {
-    parentCompany: i18n.translate('report.PARENT_COMPANY'),
     childCompany: data[0]?.companyName,
     addressChildCompany: data[0]?.companyAddress,
     tableColumn: ITEM_INVENTORY_BELOW_MINIMUM,
     tableData: dataExcell,
     header: true,
-    columnLevel: 1,
     aligmentCell: formatByKey,
     key: REPORT_INFO[ReportType[ReportType.ITEM_INVENTORY_BELOW_MINIMUM]].key,
     dateFrom: request.dateFrom,

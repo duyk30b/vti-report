@@ -154,6 +154,11 @@ export const ALIGNMENT_BOTTOM_LEFT = {
   vertical: 'bottom',
 };
 
+export const ALIGNMENT_BOTTOM_RIGHT = {
+  wrapText: true,
+  horizontal: 'right',
+  vertical: 'bottom',
+};
 export const REPORT_INFO = {
   [ReportType[ReportType.ITEM_INVENTORY_BELOW_MINIMUM]]: {
     key: 'ITEM_INVENTORY_BELOW_MINIMUM',
@@ -216,6 +221,19 @@ export const BORDER = {
 
 export const BORDER_L = {
   left: { style: 'thin' },
+};
+
+export const BORDER_T_R_B = {
+  top: { style: 'thin' },
+  right: { style: 'thin' },
+
+  bottom: { style: 'thin' },
+};
+
+export const BORDER_T_L_B = {
+  top: { style: 'thin' },
+  left: { style: 'thin' },
+  bottom: { style: 'thin' },
 };
 
 export const BORDER_R = {
@@ -287,3 +305,6 @@ export const INDEX_REPORT_TIME = 6;
 export const KEY_COLUMN = 'child';
 export const ROW_WHEN_HAVE_HEADER = 8;
 export const ROW_WHEN_NOT_HAVE_HEADER = 1;
+
+export const LV1 = 1;
+export const LV3 = 3;

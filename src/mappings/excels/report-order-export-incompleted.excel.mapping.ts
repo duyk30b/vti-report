@@ -1,7 +1,7 @@
 import { ReportType } from '@enums/report-type.enum';
 import { generateTable } from '@layout/excel/report-excel.layout';
 import { REPORT_ORDER_EXPORT_INCOMPLETE_COLUMN } from '@layout/excel/table-column-excel/report-order-exported-incomplete-column';
-import { reportGroupByWarehouseTemplateData } from '@layout/excel/table-data-excel/reportGroupByWarehouse.template-data';
+import { reportGroupByWarehouseTemplateData } from '@layout/excel/table-data-excel/report-group-by-warehouse.template-data';
 import { OrderExportIncompleteModel } from '@models/order-exported-incomplete.model';
 import {
   TableData,
@@ -61,13 +61,11 @@ export async function reportOrderExportIncompletedExcelMapping(
   };
 
   const model: ReportModel<OrderExportIncompleteModel> = {
-    parentCompany: i18n.translate('report.PARENT_COMPANY'),
     childCompany: data[0]?.companyName,
     addressChildCompany: data[0]?.companyAddress,
     tableColumn: REPORT_ORDER_EXPORT_INCOMPLETE_COLUMN,
     tableData: dataExcell,
     header: true,
-    columnLevel: 1,
     aligmentCell: formatByKey,
     key: REPORT_INFO[ReportType[ReportType.ORDER_EXPORT_INCOMPLETED]].key,
     dateFrom: request.dateFrom,

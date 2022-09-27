@@ -3,15 +3,15 @@ export interface ItemInventoryModel {
   itemCode: string;
   itemName: string;
   unit: string;
-  lot: string;
-  unitPrice: number;
-  inventoryBeginningQuantity: number;
-  inventoryBeginningTotal: number;
-  importInPeriodQuantity: number;
-  importInPeriodTotal: number;
-  exportInPeriodQuantity: number;
-  exportInPeriodTotal: number;
-  inventoryEndQuantity: number;
-  inventoryEndTotal: number;
+  lotNumber: string;
+  cost: number;
+  stockStart: number;
+  totalStockStart: number;
+  importIn: number;
+  totalImportIn: number;
+  exportIn: number;
+  totalExportIn: number;
+  stockEnd: number;
+  totalStockEnd: number;
   note: string;
 }

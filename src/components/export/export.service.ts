@@ -24,6 +24,13 @@ import { reportInventoryExcelMapping } from '@mapping/excels/report-Inventory.ex
 import { reportItemInventoryImportedNoQRCodeExcelMapping } from '@mapping/excels/report-item-Inventory-imported-no-qr-code.excel.mapping';
 import { reportOrderExportIncompletedExcelMapping } from '@mapping/excels/report-order-export-incompleted.excel.mapping';
 import { reportOrderExportByRequestForItem } from '@mapping/excels/report-order-export-by-request-for-item.excel.mapping';
+import { reportItemInventoryBelowMinimumExcelMapping } from '@mapping/excels/report-item-inventory-below-minimum.excel.mapping';
+import { reportSituationTransferExcelMapping } from '@mapping/excels/report-situation-transfer.excel.mapping';
+import { reportSituationInventoryPeriodExcelMapping } from '@mapping/excels/report-situation-inventory-period.excel.mapping';
+import { reportSituationImportPeriodExcelMapping } from '@mapping/excels/report-situation-import-period.excel.mapping';
+import { reportSituationExportPeriodExcelMapping } from '@mapping/excels/report-situation-export-period.excel.mapping';
+import { reportAgeOfItemsExcelMapping } from '@mapping/excels/report-age-of-items.excel.mapping';
+import { reportItemInventoryExcelMapping } from '@mapping/excels/report-item-Inventory.excel.mapping';
 
 @Injectable()
 export class ExportService {
@@ -76,7 +83,7 @@ export class ExportService {
           break;
 
         case ReportType.ITEM_INVENTORY:
-          dataReturn = await this.reportItemInventory(request); // do later -------------------
+          dataReturn = await this.reportItemInventory(request);
 
           break;
 
@@ -112,7 +119,7 @@ export class ExportService {
           break;
 
         case ReportType.AGE_OF_ITEM_STOCK:
-          dataReturn = await this.reportAgeOfItemStock(request); // -----------
+          dataReturn = await this.reportAgeOfItemStock(request);
           break;
 
         default:
@@ -138,62 +145,19 @@ export class ExportService {
   }
 
   async reportAgeOfItemStock(request: ReportRequest): Promise<ReportResponse> {
-    const sixMonthAgo = moment().subtract(6, MONTHS).format(DATE_FOMAT);
-    const oneYearAgo = moment().subtract(1, YEARS).format(DATE_FOMAT);
-    const twoYearAgo = moment().subtract(1, YEARS).format(DATE_FOMAT);
-    const threeYearAgo = moment().subtract(1, YEARS).format(DATE_FOMAT);
-    const fourYearAgo = moment().subtract(1, YEARS).format(DATE_FOMAT);
-    const fiveYearAgo = moment().subtract(1, YEARS).format(DATE_FOMAT);
-
-    const [
-      dataSixMonth,
-      dataSixMonthToOneYear,
-      dataOneYearToTwoYear,
-      dataTwoYearToTwoYear,
-      dataThreeYearToTwoYear,
-      dataFourYearToTwoYear,
-      dataFiveYear,
-    ] = await Promise.all([
-      this.dailyLotLocatorStockRepository.getReportAgeOfItemStock(
+    const data =
+      await this.dailyLotLocatorStockRepository.getReportAgeOfItemStock(
         request,
-        sixMonthAgo,
-        null,
-      ),
-      this.dailyLotLocatorStockRepository.getReportAgeOfItemStock(
-        request,
-        oneYearAgo,
-        sixMonthAgo,
-      ),
-      this.dailyLotLocatorStockRepository.getReportAgeOfItemStock(
-        request,
-        twoYearAgo,
-        oneYearAgo,
-      ),
-      this.dailyLotLocatorStockRepository.getReportAgeOfItemStock(
-        request,
-        threeYearAgo,
-        twoYearAgo,
-      ),
-      this.dailyLotLocatorStockRepository.getReportAgeOfItemStock(
-        request,
-        fourYearAgo,
-        threeYearAgo,
-      ),
-      this.dailyLotLocatorStockRepository.getReportAgeOfItemStock(
-        request,
-        fiveYearAgo,
-        fourYearAgo,
-      ),
-      this.dailyLotLocatorStockRepository.getReportAgeOfItemStock(
-        request,
-        null,
-        fiveYearAgo,
-      ),
-    ]);
-
+      );
+    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
-        return;
+        const { nameFile, dataBase64 } = await reportAgeOfItemsExcelMapping(
+          request,
+          data,
+          this.i18n,
+        );
+        return { result: dataBase64, nameFile };
       case ExportType.WORD:
         return;
       default:
@@ -204,14 +168,21 @@ export class ExportService {
   async reportSituationExportPeriod(
     request: ReportRequest,
   ): Promise<ReportResponse> {
-    const data = await this.reportOrderItemLotRepository.getReports(
-      request,
-      OrderType.EXPORT,
-    );
+    const data =
+      await this.reportOrderItemLotRepository.getReportsGroupByWarehouse(
+        request,
+        OrderType.EXPORT,
+      );
     if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
-        return;
+        const { nameFile, dataBase64 } =
+          await reportSituationExportPeriodExcelMapping(
+            request,
+            data,
+            this.i18n,
+          );
+        return { result: dataBase64, nameFile };
       case ExportType.WORD:
         return;
       default:
@@ -222,14 +193,21 @@ export class ExportService {
   async reportSituationImportPeriod(
     request: ReportRequest,
   ): Promise<ReportResponse> {
-    const data = await this.reportOrderItemLotRepository.getReports(
-      request,
-      OrderType.IMPORT,
-    );
+    const data =
+      await this.reportOrderItemLotRepository.getReportsGroupByWarehouse(
+        request,
+        OrderType.IMPORT,
+      );
     if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
-        return;
+        const { nameFile, dataBase64 } =
+          await reportSituationImportPeriodExcelMapping(
+            request,
+            data,
+            this.i18n,
+          );
+        return { result: dataBase64, nameFile };
       case ExportType.WORD:
         return;
       default:
@@ -240,14 +218,21 @@ export class ExportService {
   async reportSituationInventoryPeriod(
     request: ReportRequest,
   ): Promise<ReportResponse> {
-    const data = await this.reportOrderItemLotRepository.getReports(
-      request,
-      OrderType.INVENTORY,
-    );
+    const data =
+      await this.reportOrderItemLotRepository.getReportsGroupByWarehouse(
+        request,
+        OrderType.INVENTORY,
+      );
     if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
-        return;
+        const { nameFile, dataBase64 } =
+          await reportSituationInventoryPeriodExcelMapping(
+            request,
+            data,
+            this.i18n,
+          );
+        return { result: dataBase64, nameFile };
       case ExportType.WORD:
         return;
       default:
@@ -258,15 +243,17 @@ export class ExportService {
   async reportSituationTransfer(
     request: ReportRequest,
   ): Promise<ReportResponse> {
-    const data = await this.reportOrderItemLotRepository.getReports(
-      request,
-      OrderType.TRANSFER,
-    );
-
+    const data =
+      await this.reportOrderItemLotRepository.getReportsGroupByWarehouse(
+        request,
+        OrderType.TRANSFER,
+      );
     if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
-        return;
+        const { nameFile, dataBase64 } =
+          await reportSituationTransferExcelMapping(request, data, this.i18n);
+        return { result: dataBase64, nameFile };
       case ExportType.WORD:
         return;
       default:
@@ -319,28 +306,17 @@ export class ExportService {
   }
 
   async reportItemInventory(request: ReportRequest): Promise<ReportResponse> {
-    const dataInventoryFrom =
-      await this.dailyLotLocatorStockRepository.getReportsByDate(
-        request,
-        request?.dateFrom,
-      );
-    const dataInventoryTo =
-      await this.dailyLotLocatorStockRepository.getReportsByDate(
-        request,
-        request?.dateTo,
-      );
-    const dataImport = await this.reportOrderItemLotRepository.getReports(
-      request,
-      OrderType.IMPORT,
-    );
-    const dataExport = await this.reportOrderItemLotRepository.getReports(
-      request,
-      OrderType.EXPORT,
-    );
-
+    const data =
+      await this.dailyLotLocatorStockRepository.getReportItemInventory(request);
+    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
-        return;
+        const { nameFile, dataBase64 } = await reportItemInventoryExcelMapping(
+          request,
+          this.i18n,
+          data,
+        );
+        return { result: dataBase64, nameFile };
       case ExportType.WORD:
         return;
       default:
@@ -418,7 +394,7 @@ export class ExportService {
   async reportOrderImportIncompleted(
     request: ReportRequest,
   ): Promise<ReportResponse> {
-    const data = await this.reportOrderItemLotRepository.getReports(
+    const data = await this.reportOrderItemRepository.getReports(
       request,
       OrderType.IMPORT,
     );
@@ -498,7 +474,14 @@ export class ExportService {
     if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
-        return;
+        const { nameFile, dataBase64 } =
+          await reportItemInventoryBelowMinimumExcelMapping(
+            request,
+            data,
+            this.i18n,
+          );
+        return { result: dataBase64, nameFile };
+
       case ExportType.WORD:
         return reportItemInventoryBelowMinimumWordMapping(request, data);
       default:

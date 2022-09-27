@@ -40,6 +40,9 @@ export class DailyLotLocatorStock {
   @Prop({ required: false })
   storageDate: Date;
 
+  @Prop({ required: false })
+  account: Date;
+
   @Prop({ required: false, default: 0 })
   storageCost: number;
 

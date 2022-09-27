@@ -1,7 +1,7 @@
 import { ReportType } from '@enums/report-type.enum';
 import { generateTable } from '@layout/excel/report-excel.layout';
 import { INVENTORY_BELOW_SAFE } from '@layout/excel/table-column-excel/report-inventory-below-safe';
-import { reportGroupByWarehouseTemplateData } from '@layout/excel/table-data-excel/reportGroupByWarehouse.template-data';
+import { reportGroupByWarehouseTemplateData } from '@layout/excel/table-data-excel/report-group-by-warehouse.template-data';
 import { ReportInventoryBelowSafeModel } from '@models/item-inventory-below-safe.model';
 import {
   TableData,
@@ -56,13 +56,11 @@ export async function reportItemInventoryBelowSafeExcelMapping(
   };
 
   const model: ReportModel<ReportInventoryBelowSafeModel> = {
-    parentCompany: i18n.translate('report.PARENT_COMPANY'),
     childCompany: data[0]?.companyName,
     addressChildCompany: data[0]?.companyAddress,
     tableColumn: INVENTORY_BELOW_SAFE,
     tableData: dataExcell,
     header: true,
-    columnLevel: 1,
     aligmentCell: formatByKey,
     key: REPORT_INFO[ReportType[ReportType.ITEM_INVENTORY_BELOW_SAFE]].key,
     dateFrom: request.dateFrom,

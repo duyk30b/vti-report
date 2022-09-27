@@ -1,7 +1,7 @@
 import { ReportType } from '@enums/report-type.enum';
 import { generateTable } from '@layout/excel/report-excel.layout';
 import { INVENTORY_COLUMN } from '@layout/excel/table-column-excel/report-inventory';
-import { reportGroupByWarehouseTemplateData } from '@layout/excel/table-data-excel/reportGroupByWarehouse.template-data';
+import { reportGroupByWarehouseTemplateData } from '@layout/excel/table-data-excel/report-group-by-warehouse.template-data';
 import { InventoryModel } from '@models/inventory.model';
 import {
   TableData,
@@ -64,13 +64,11 @@ export async function reportInventoryExcelMapping(
   };
 
   const model: ReportModel<InventoryModel> = {
-    parentCompany: i18n.translate('report.PARENT_COMPANY'),
     childCompany: data[0]?.companyName,
     addressChildCompany: data[0]?.companyAddress,
     tableColumn: INVENTORY_COLUMN,
     tableData: dataExcell,
     header: false,
-    columnLevel: 1,
     aligmentCell: formatByKey,
     key: REPORT_INFO[ReportType[ReportType.INVENTORY]].key,
     dateFrom: request.dateFrom,
