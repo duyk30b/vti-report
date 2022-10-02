@@ -19,10 +19,9 @@ stages:
   - clean
 
 before_script:
-  - docker version
   - docker login $PRIVATE_REGISTRY_HOST -u $PRIVATE_REGISTRY_USERNAME -p $PRIVATE_REGISTRY_PASSWD
-  - chmod +x ./setup_env.sh
-  - ./setup_env.sh
+  # - chmod +x ./setup_env.sh
+  # - ./setup_env.sh
 
 build:
   stage: build
@@ -62,30 +61,29 @@ build_staging:
     - docker build --tag $CONTAINER_STAGING_IMAGE .
     - docker push $CONTAINER_STAGING_IMAGE
   only:
-    - staging
-
+    - projects/avenue_wmsx_hq_stg
 deploy_staging:
   stage: deploy_staging
   variables:
     GIT_STRATEGY: none
   only:
-    - staging
+    - projects/avenue_wmsx_hq_stg
   script:
     - eval `ssh-agent -s`
 
     - bash -c 'echo "$SSH_PRIVATE_KEY" | ssh-add -'
     - mkdir -p ~/.ssh
 
-    - ssh-keyscan -H $SSH_SERVER_IP >> ~/.ssh/known_hosts
+    - ssh-keyscan -H 10.1.47.52 >> ~/.ssh/known_hosts
 
     - mkdir -p ~/.ssh
 
     - chmod 644 ~/.ssh/known_hosts
 
     - >
-      ssh $SSH_STAGING_USER@$SSH_STAGING_SERVER_IP
+      ssh $SSH_STAGING_USER@10.1.47.52
       "docker login ${PRIVATE_REGISTRY_HOST} -u ${PRIVATE_REGISTRY_USERNAME} -p ${PRIVATE_REGISTRY_PASSWD};
-       cd ${PATH_TO_STAGING_PROJECT};
+      cd /home/stg_core/app/projects/avenue_wmsx_hq/be/services/report-service;
       docker pull ${CONTAINER_STAGING_IMAGE};
       docker-compose down;
       docker-compose -f docker-compose.yml -f docker-compose.production.yml up -d;
