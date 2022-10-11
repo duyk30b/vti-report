@@ -3,20 +3,28 @@ import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { KongGatewayServiceInterface } from './interface/kong-gateway.service.interface';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom, map, of, retry } from 'rxjs';
-import { genericRetryStrategy } from '@utils/rxjs-util';
+import { genericRetryStrategy } from '@core/utils/rxjs-util';
 
 @Injectable()
 export class KongGatewayService
   implements KongGatewayServiceInterface, OnApplicationBootstrap
 {
   private host: string;
+
   private port: string;
+
   private upstreamName: string;
+
   private upstreamNameWS: string;
+
   private dns: string;
+
   private serviceName: string;
+
   private apiPath: string;
+
   private wsPath: string;
+
   private readonly logger = new Logger(KongGatewayService.name);
 
   constructor(

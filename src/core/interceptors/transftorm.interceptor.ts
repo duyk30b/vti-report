@@ -1,3 +1,4 @@
+import { ResponsePayload } from '@core/utils/response-payload';
 import {
   Injectable,
   NestInterceptor,
@@ -6,7 +7,6 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ResponsePayload } from 'src/utils/response-payload';
 
 @Injectable()
 export class TransformInterceptor<T>

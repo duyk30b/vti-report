@@ -2,11 +2,11 @@ import { InjectService } from '@nestcloud/service';
 import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
-import { genericRetryStrategy } from '@utils/rxjs-util';
 import { catchError, firstValueFrom, map, of, retry } from 'rxjs';
 import { HttpClientServiceInterface } from './interface/http-client.service.interface';
 import * as qs from 'qs';
-import { ConfigService } from '@config/config.service';
+import { ConfigService } from '@nestjs/config';
+import { genericRetryStrategy } from '@core/utils/rxjs-util';
 @Injectable({ scope: Scope.REQUEST })
 export class HttpClientService implements HttpClientServiceInterface {
   constructor(
@@ -92,6 +92,7 @@ export class HttpClientService implements HttpClientServiceInterface {
       ),
     );
   }
+
   async delete(url: string, params?: any, options?: any): Promise<any> {
     if (options && options.callInternalService === true) {
       this.httpService.axiosRef.defaults.headers.common[

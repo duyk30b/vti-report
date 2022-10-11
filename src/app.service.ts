@@ -1,6 +1,6 @@
-import { ResponseCodeEnum } from '@constant/response-code.enum';
+import { ResponseBuilder } from '@core/utils/response-builder';
 import { Injectable } from '@nestjs/common';
-import { ResponseBuilder } from '@utils/response-builder';
+import { ResponseCodeEnum } from '@core/response-code.enum';
 
 @Injectable()
 export class AppService {
