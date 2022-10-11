@@ -1,12 +1,11 @@
 import * as dotenv from 'dotenv';
-import { ValidationPipe } from './core/pipe/validation.pipe';
+import { ValidationPipe } from '@core/pipe/validation.pipe';
 import { CacheModule, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CoreModule } from './core/core.module';
-import DatabaseConfigService from '@config/database.config';
+import { CoreModule } from '@core/core.module';
 import { I18nJsonLoader, I18nModule, QueryResolver } from 'nestjs-i18n';
 import * as path from 'path';
 import { APP_GUARD, APP_PIPE } from '@nestjs/core';
@@ -19,8 +18,11 @@ import { ServiceModule } from '@nestcloud/service';
 import { BOOT, CONSUL } from '@nestcloud/common';
 import { AuthModule } from '@components/auth/auth.module';
 import { AuthorizationGuard } from '@core/guards/authorization.guard';
+import DatabaseConfigService from '@core/config/database.config';
+import { ClientOpts } from '@nestjs/microservices/external/redis.interface';
 import * as redisStore from 'cache-manager-redis-store';
-import type { ClientOpts } from 'redis';
+import { SyncModule } from '@components/sync/sync.module';
+import { ExportModule } from '@components/export/export.module';
 
 dotenv.config();
 @Module({
@@ -43,6 +45,7 @@ dotenv.config();
     BootModule.forRoot({
       filePath: resolve(__dirname, '../config.yaml'),
     }),
+
     CacheModule.register<ClientOpts>({
       store: redisStore,
       host: process.env.REDIS_CACHE_HOST || 'redis_cache',
@@ -50,12 +53,15 @@ dotenv.config();
       ttl: 10,
       isGlobal: true,
     }),
+
     HttpClientModule,
     ConsulModule.forRootAsync({ inject: [BOOT] }),
     ServiceModule.forRootAsync({ inject: [BOOT, CONSUL] }),
     KongGatewayModule.forRootAsync(),
     CoreModule,
     AuthModule,
+    SyncModule,
+    ExportModule,
   ],
   controllers: [AppController],
   providers: [

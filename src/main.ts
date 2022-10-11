@@ -1,6 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ConfigService } from './config/config.service';
 import {
   FastifyAdapter,
   NestFastifyApplication,
@@ -12,7 +11,8 @@ import fastifyMultipart from 'fastify-multipart';
 import { TcpOptions, Transport } from '@nestjs/microservices';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ClusterService } from '@core/cluster/cluster.service';
-import { APIPrefix } from './common/common';
+import { APIPrefix } from '@core/common';
+import { ConfigService } from '@core/config/config.service';
 async function bootstrap() {
   const fastifyAdapter = new FastifyAdapter();
 
@@ -26,6 +26,12 @@ async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     fastifyAdapter,
+    {
+      logger:
+        process.env.NODE_ENV === 'development'
+          ? ['debug', 'error', 'log', 'verbose', 'warn']
+          : ['error'],
+    },
   );
 
   app.connectMicroservice(
@@ -38,6 +44,10 @@ async function bootstrap() {
     } as TcpOptions,
     { inheritAppConfig: true },
   );
+
+  await app.startAllMicroservices();
+  app.setGlobalPrefix(APIPrefix.Version);
+
   const options = new DocumentBuilder()
     .setTitle('API docs')
     .addTag('users')
@@ -45,8 +55,6 @@ async function bootstrap() {
     .addBearerAuth()
     .setVersion('1.0')
     .build();
-  await app.startAllMicroservices();
-  app.setGlobalPrefix(APIPrefix.Version);
 
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
