@@ -5,6 +5,9 @@ import { SuccessResponse } from '@core/utils/success.response.dto';
 import { ResponsePayload } from '@core/utils/response-payload';
 import { SyncService } from './sync.service';
 import { BaseDto } from '@core/dto/base.dto';
+import { MessagePattern, Payload } from '@nestjs/microservices';
+import { SyncReportDailyRequestDto } from './dto/request/sync-report-daily.request.dto';
+import { SYNC_REPORT_DAILY_TOPIC } from './sync.constants';
 
 @Controller('sync')
 export class SyncController {
@@ -31,5 +34,13 @@ export class SyncController {
       return responseError;
     }
     return await this.syncService.sync();
+  }
+
+  @MessagePattern(SYNC_REPORT_DAILY_TOPIC)
+  async readMessage(
+    @Payload() body: SyncReportDailyRequestDto
+  ): Promise<ResponsePayload<any>> {
+    const { request } = body;
+    return await this.syncService.saveItemStockWarehouseLocatorByDate(request.value);
   }
 }

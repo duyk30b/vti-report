@@ -8,7 +8,7 @@ import { FilterQueryPipe } from '@core/pipe/filter-query.pipe';
 import { SortQueryPipe } from '@core/pipe/sort-query.pipe';
 import { ExceptionInterceptor } from '@core/interceptors/exception.interceptor';
 import fastifyMultipart from 'fastify-multipart';
-import { TcpOptions, Transport } from '@nestjs/microservices';
+import { KafkaOptions, MicroserviceOptions, TcpOptions, Transport } from '@nestjs/microservices';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ClusterService } from '@core/cluster/cluster.service';
 import { APIPrefix } from '@core/common';
@@ -33,6 +33,29 @@ async function bootstrap() {
           : ['error'],
     },
   );
+
+  app.connectMicroservice(
+    {
+      transport: Transport.KAFKA,
+      options: {
+        client: {
+          brokers: process.env.KAFKA_BROKERS.split(','),
+          ssl: true,
+          sasl: {
+            mechanism: 'plain',
+            username: process.env.KAFKA_SASL_USERNAME,
+            password: process.env.KAFKA_SASL_PASSWD,
+          },
+        },
+        consumer: {
+          groupId: "report_service",
+          maxInFlightRequests: 1,
+          maxPollRecords: 1
+        },
+      },
+    } as KafkaOptions,
+    { inheritAppConfig: true },
+  )
 
   app.connectMicroservice(
     {
