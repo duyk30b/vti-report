@@ -19,10 +19,9 @@ stages:
   - clean
 
 before_script:
-  - docker version
   - docker login $PRIVATE_REGISTRY_HOST -u $PRIVATE_REGISTRY_USERNAME -p $PRIVATE_REGISTRY_PASSWD
-  - chmod +x ./setup_env.sh
-  - ./setup_env.sh
+  # - chmod +x ./setup_env.sh
+  # - ./setup_env.sh
 
 build:
   stage: build
