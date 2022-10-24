@@ -54,6 +54,7 @@
     "fastify-multipart": "^5.4.0",
     "fastify-swagger": "4.8.0",
     "husky": "^8.0.1",
+    "kafkajs": "^2.2.2",
     "lodash": "4.17.21",
     "moment": "2.29.3",
     "moment-range": "4.0.2",
