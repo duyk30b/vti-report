@@ -30,28 +30,28 @@ build:
     - docker build --tag $CONTAINER_DEV_IMAGE .
     - docker push $CONTAINER_DEV_IMAGE
   only:
-    - develop
+    - projects/avenue_wmsx_dev
 
 deploy:
   stage: deploy
   variables:
     GIT_STRATEGY: none
   only:
-    - develop
+    - projects/avenue_wmsx_dev
   script:
     - eval `ssh-agent -s`
 
     - bash -c 'echo "$SSH_PRIVATE_KEY" | ssh-add -'
     - mkdir -p ~/.ssh
 
-    - ssh-keyscan -H $SSH_SERVER_IP >> ~/.ssh/known_hosts
+    - ssh-keyscan -H 10.1.47.52 >> ~/.ssh/known_hosts
 
     - chmod 644 ~/.ssh/known_hosts
 
     - >
-      ssh $SSH_USER@$SSH_SERVER_IP
+      ssh $SSH_USER@10.1.47.52
       "docker login ${PRIVATE_REGISTRY_HOST} -u ${PRIVATE_REGISTRY_USERNAME} -p ${PRIVATE_REGISTRY_PASSWD};
-      cd ${PATH_TO_PROJECT}
+      cd /home/dev_core/app/projects/avenue_wmsx/services/report-service;
       docker pull ${CONTAINER_DEV_IMAGE};
       docker-compose down;
       docker-compose -f docker-compose.yml -f docker-compose.production.yml up -d;
@@ -62,30 +62,30 @@ build_staging:
     - docker build --tag $CONTAINER_STAGING_IMAGE .
     - docker push $CONTAINER_STAGING_IMAGE
   only:
-    - staging
+    - projects/avenue_wmsx_staging
 
 deploy_staging:
   stage: deploy_staging
   variables:
     GIT_STRATEGY: none
   only:
-    - staging
+    - projects/avenue_wmsx_staging
   script:
     - eval `ssh-agent -s`
 
     - bash -c 'echo "$SSH_PRIVATE_KEY" | ssh-add -'
     - mkdir -p ~/.ssh
 
-    - ssh-keyscan -H $SSH_SERVER_IP >> ~/.ssh/known_hosts
+    - ssh-keyscan -H 10.1.47.52 >> ~/.ssh/known_hosts
 
     - mkdir -p ~/.ssh
 
     - chmod 644 ~/.ssh/known_hosts
 
     - >
-      ssh $SSH_STAGING_USER@$SSH_STAGING_SERVER_IP
+      ssh $SSH_STAGING_USER@10.1.47.52
       "docker login ${PRIVATE_REGISTRY_HOST} -u ${PRIVATE_REGISTRY_USERNAME} -p ${PRIVATE_REGISTRY_PASSWD};
-       cd ${PATH_TO_STAGING_PROJECT};
+       cd /home/stg_core/app/projects/avenue_wmsx/be/services/report-service;
       docker pull ${CONTAINER_STAGING_IMAGE};
       docker-compose down;
       docker-compose -f docker-compose.yml -f docker-compose.production.yml up -d;
