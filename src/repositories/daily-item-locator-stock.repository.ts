@@ -5,6 +5,7 @@ import {
   DailyItemLocatorStockRequest,
   DailyWarehouseItemRequest,
 } from '@requests/sync-daily.request';
+import { SyncItemStockLocatorByDate } from '@requests/sync-item-stock-locator-by-date';
 import { DailyItemLocatorStock } from '@schemas/daily-item-locator-stock.schema';
 import { plus } from '@utils/common';
 import { Model } from 'mongoose';
@@ -16,6 +17,27 @@ export class DailyItemLocatorStockRepository extends BaseAbstractRepository<Dail
     private readonly dailyItemLocatorStock: Model<DailyItemLocatorStock>,
   ) {
     super(dailyItemLocatorStock);
+  }
+
+  createEntity(
+    dailyItemStockLocator: SyncItemStockLocatorByDate
+  ): DailyItemLocatorStock {
+    const document = new this.dailyItemLocatorStock();
+    document.itemId = dailyItemStockLocator?.itemId;
+    document.itemName = dailyItemStockLocator?.itemName;
+    document.itemCode = dailyItemStockLocator?.itemCode;
+    document.warehouseId = dailyItemStockLocator?.warehouseId;
+    document.warehouseName = dailyItemStockLocator?.warehouseName;
+    document.warehouseCode = dailyItemStockLocator?.warehouseCode;
+    document.locatorId = dailyItemStockLocator?.locatorId;
+    document.locatorName = dailyItemStockLocator?.locatorName;
+    document.locatorCode = dailyItemStockLocator?.locatorCode;
+    document.companyId = dailyItemStockLocator?.companyId;
+    document.companyName = dailyItemStockLocator?.companyName;
+    document.companyAddress = dailyItemStockLocator?.companyAddress;
+    document.reportDate = dailyItemStockLocator?.reportDate;
+    document.stockQuantity = dailyItemStockLocator?.stockQuantity;
+    return document;
   }
 
   async createMany(
