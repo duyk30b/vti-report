@@ -1,5 +1,5 @@
-import { OrderStatus } from '@enums/order-status.enum';
 import { ReportType } from '@enums/report-type.enum';
+import { TableColumn } from '@models/report.model';
 
 export const LANG = {
   EN: 'en',
@@ -291,13 +291,993 @@ export const WORD_FILE_CONFIG = {
   PAGE_SIZE_A3_HEIGHT: 11.69,
   MARGIN_LEFT: 0.04,
   MARGIN_RIGHT: 0.04,
+  SPACING_BEFORE: 0.2,
+  TABLE_WIDTH_PAGE_A4: 9.687,
+  TABLE_WIDTH_PAGE_A3: 14.5,
 };
 
-export const REPORT_ITEM_INVENTORY_BELOW_MINIMUM_CONFIG = {
-  TABLE_WIDTH: 9.687,
-  TABLE_COLUMN_WIDTH: [0.7, 2.4, 3, 1, 1.2, 1],
-  SPACING: 0.2,
-};
+export const REPORT_ITEM_INVENTORY_BELOW_MINIMUM_CONFIG_COLUMNS: TableColumn[] =
+  [
+    {
+      name: 'INDEX',
+      width: 0.7,
+    },
+    {
+      name: 'ITEM_CODE',
+      width: 2.4,
+    },
+    {
+      name: 'ITEM_NAME',
+      width: 3,
+    },
+    {
+      name: 'UNIT',
+      width: 1,
+    },
+    {
+      name: 'QUANTITY_MINIMUM',
+      width: 1.2,
+    },
+    {
+      name: 'QUANTITY_STOCK',
+      width: 1,
+    },
+  ];
+
+export const REPORT_ITEM_INVENTORY_BELOW_SAFE_CONFIG_COLUMNS: TableColumn[] = [
+  {
+    name: 'INDEX',
+    width: 0.7,
+  },
+  {
+    name: 'ITEM_CODE',
+    width: 2.4,
+  },
+  {
+    name: 'ITEM_NAME',
+    width: 3,
+  },
+  {
+    name: 'UNIT',
+    width: 1,
+  },
+  {
+    name: 'QUANTITY_SAFE',
+    width: 1.2,
+  },
+  {
+    name: 'QUANTITY_STOCK',
+    width: 1,
+  },
+];
+
+export const ORDER_TRANSFER_INCOMPLETED_COLUMNS: TableColumn[] = [
+  {
+    name: 'INDEX',
+    width: 0.7,
+  },
+  {
+    name: 'ORDER_ID_WMSX',
+    width: 1.4,
+  },
+  {
+    name: 'ITEM_CODE',
+    width: 1.6,
+  },
+  {
+    name: 'ITEM_NAME',
+    width: 3.6,
+  },
+  {
+    name: 'UNIT',
+    width: 0.8,
+  },
+  {
+    name: 'QUANTITY',
+    width: 0.8,
+  },
+  {
+    name: 'CONTRUCTION',
+    width: 1,
+  },
+  {
+    name: 'WAREHOUSE_IMPORT',
+    width: 3,
+  },
+];
+
+export const ORDER_EXPORT_INCOMPLETED_COLUMNS: TableColumn[] = [
+  {
+    name: 'INDEX',
+    width: 0.7,
+  },
+  {
+    name: 'ORDER_ID_WMSX',
+    width: 1.4,
+  },
+  {
+    name: 'ITEM_CODE',
+    width: 1.6,
+  },
+  {
+    name: 'ITEM_NAME',
+    width: 3.6,
+  },
+  {
+    name: 'UNIT',
+    width: 0.8,
+  },
+  {
+    name: 'QUANTITY',
+    width: 0.8,
+  },
+  {
+    name: 'CONTRUCTION',
+    width: 1.8,
+  },
+  {
+    name: 'RECEIVER',
+    width: 2.2,
+  },
+];
+
+export const ORDER_IMPORT_INCOMPLETED_COLUMNS: TableColumn[] = [
+  {
+    name: 'INDEX',
+    width: 0.6,
+  },
+  {
+    name: 'ORDER_ID_WMSX',
+    width: 1.4,
+  },
+  {
+    name: 'ORDER_CREATED_DATE',
+    width: 1.2,
+  },
+  {
+    name: 'UNIT_IMPORT_PRICE',
+    width: 1.4,
+  },
+  {
+    name: 'ITEM_CODE',
+    width: 1.6,
+  },
+  {
+    name: 'ITEM_NAME',
+    width: 2.8,
+  },
+  {
+    name: 'UNIT',
+    width: 0.8,
+  },
+  {
+    name: 'QUANTITY',
+    width: 0.8,
+  },
+  {
+    name: 'UNIT_PRICE',
+    width: 0.8,
+  },
+  {
+    name: 'TOTAL_PRICE',
+    width: 0.8,
+  },
+  {
+    name: 'CONTRUCTION',
+    width: 1.4,
+  },
+  {
+    name: 'DELIVER',
+    width: 1.4,
+  },
+];
+
+export const ITEM_IMPORTED_BUT_NOT_PUT_TO_POSITION_COLUMNS: TableColumn[] = [
+  {
+    name: 'INDEX',
+    width: 0.6,
+  },
+  {
+    name: 'ORDER_ID_IMPORT_WMSX',
+    width: 1.4,
+  },
+  {
+    name: 'ORDER_NUMBER_EBS',
+    width: 1.4,
+  },
+  {
+    name: 'REASON_IMPORT',
+    width: 1,
+  },
+  {
+    name: 'EXPLAIN',
+    width: 2,
+  },
+  {
+    name: 'ITEM_CODE',
+    width: 1.6,
+  },
+  {
+    name: 'ITEM_NAME',
+    width: 2,
+  },
+  {
+    name: 'UNIT',
+    width: 0.6,
+  },
+  {
+    name: 'LOT',
+    width: 0.6,
+  },
+  {
+    name: 'QUANTITY_IMPORT',
+    width: 1,
+  },
+  {
+    name: 'QUANTITY_RECEIVED',
+    width: 1,
+  },
+  {
+    name: 'QUANTITY_RECEIVE',
+    width: 1,
+  },
+  {
+    name: 'NOTE',
+    width: 2,
+  },
+  {
+    name: 'RECEIVER',
+    width: 1.8,
+  },
+];
+
+export const ORDER_IMPORT_BY_REQUEST_FOR_ITEM_COLUMNS: TableColumn[] = [
+  {
+    name: 'INDEX',
+    width: 0.8,
+  },
+  {
+    name: 'ORDER_CODE',
+    width: 1.7,
+  },
+  {
+    name: 'ORDER_IMPORT_CODE',
+    width: 1.7,
+  },
+  {
+    name: 'ITEM_CODE',
+    width: 1.8,
+  },
+  {
+    name: 'ITEM_NAME',
+    width: 3,
+  },
+  {
+    name: 'DATE_IMPORT',
+    width: 1.4,
+  },
+  {
+    name: 'QUANTITY_PYC',
+    width: 1.4,
+  },
+  {
+    name: 'QUANTITY_IMPORT',
+    width: 1.4,
+  },
+  {
+    name: 'STATUS',
+    width: 1.4,
+  },
+];
+
+export const INVENTORY_COLUMNS: TableColumn[] = [
+  {
+    name: 'INDEX',
+    width: 0.8,
+  },
+  {
+    name: 'ITEM_CODE',
+    width: 2.4,
+  },
+  {
+    name: 'ITEM_NAME',
+    width: 3.2,
+  },
+  {
+    name: 'UNIT',
+    width: 0.8,
+  },
+  {
+    name: 'LOT',
+    width: 0.8,
+  },
+  {
+    name: 'QUANTITY_STOCK',
+    width: 0.8,
+  },
+  {
+    name: 'LOCATION',
+    width: 1.8,
+  },
+  {
+    name: 'UNIT_PRICE',
+    width: 1,
+  },
+  {
+    name: 'TOTAL_PRICE',
+    width: 1.4,
+  },
+];
+
+export const ITEM_INVENTORY_IMPORTED_NO_QR_CODE_COLUMNS: TableColumn[] = [
+  {
+    name: 'INDEX',
+    width: 0.8,
+  },
+  {
+    name: 'ORDER_IMPORT_CODE',
+    width: 1.4,
+  },
+  {
+    name: 'ITEM_CODE',
+    width: 1.8,
+  },
+  {
+    name: 'ITEM_NAME',
+    width: 3,
+  },
+  {
+    name: 'UNIT',
+    width: 0.8,
+  },
+  {
+    name: 'LOT',
+    width: 0.8,
+  },
+  {
+    name: 'LOCATION_IMPORT',
+    width: 1.4,
+  },
+  {
+    name: 'QUANTITY',
+    width: 1.2,
+  },
+  {
+    name: 'UNIT_PRICE',
+    width: 1.2,
+  },
+  {
+    name: 'TOTAL_PRICE',
+    width: 1.4,
+  },
+];
+
+export const ORDER_EXPORT_BY_REQUEST_FOR_ITEM_COLUMNS: TableColumn[] = [
+  {
+    name: 'INDEX',
+    width: 0.7,
+  },
+  {
+    name: 'ITEM_CODE',
+    width: 1.6,
+  },
+  {
+    name: 'ITEM_NAME',
+    width: 2.4,
+  },
+  {
+    name: 'ORDER_REQUEST_EXPORT_ITEM',
+    width: 1.4,
+  },
+  {
+    name: 'ORDER_EXPORT_CODE',
+    width: 1.4,
+  },
+  {
+    name: 'DATE_EXPORT',
+    width: 1,
+  },
+  {
+    name: 'QUANTITY_REQUIRE',
+    width: 0.8,
+  },
+  {
+    name: 'QUANTITY_EXPORTED',
+    width: 0.8,
+  },
+];
+
+export const ITEM_INVENTORY_COLUMNS: TableColumn[] = [
+  {
+    name: 'INDEX',
+    width: 0.6,
+    rowSpan: 2,
+  },
+  {
+    name: 'ITEM_CODE',
+    width: 1.8,
+    rowSpan: 2,
+  },
+  {
+    name: 'ITEM_NAME',
+    width: 2.2,
+    rowSpan: 2,
+  },
+  {
+    name: 'UNIT',
+    width: 0.8,
+    rowSpan: 2,
+  },
+  {
+    name: 'LOT',
+    width: 0.7,
+    rowSpan: 2,
+  },
+  {
+    name: 'UNIT_PRICE',
+    width: 1,
+    rowSpan: 2,
+  },
+  {
+    name: 'STOCK_QUANTITY_START',
+    width: 1.8,
+    columnSpan: 2,
+    child: [
+      {
+        name: 'QUANTITY_SHORT',
+        width: 0.9,
+      },
+      {
+        name: 'TOTAL_SHORT',
+        width: 0.9,
+      },
+    ],
+  },
+  {
+    name: 'IMPORT_IN',
+    width: 1.8,
+    columnSpan: 2,
+    child: [
+      {
+        name: 'QUANTITY_SHORT',
+        width: 0.9,
+      },
+      {
+        name: 'TOTAL_SHORT',
+        width: 0.9,
+      },
+    ],
+  },
+  {
+    name: 'EXPORT_IN',
+    width: 1.8,
+    columnSpan: 2,
+    child: [
+      {
+        name: 'QUANTITY_SHORT',
+        width: 0.9,
+      },
+      {
+        name: 'TOTAL_SHORT',
+        width: 0.9,
+      },
+    ],
+  },
+  {
+    name: 'STOCK_QUANTITY_END',
+    width: 1.8,
+    columnSpan: 2,
+    child: [
+      {
+        name: 'QUANTITY_SHORT',
+        width: 0.9,
+      },
+      {
+        name: 'TOTAL_SHORT',
+        width: 0.9,
+      },
+    ],
+  },
+  {
+    name: 'NOTE',
+    width: 1.8,
+    rowSpan: 2,
+  },
+];
+
+export const SITUATION_TRANSFER_COLUMNS: TableColumn[] = [
+  {
+    name: 'INDEX',
+    width: 0.6,
+    rowSpan: 2,
+  },
+  {
+    name: 'POST',
+    width: 1,
+    rowSpan: 2,
+  },
+  {
+    name: 'DATE',
+    width: 0.8,
+    rowSpan: 2,
+  },
+  {
+    name: 'WAREHOUSE_IMPORT',
+    width: 1.6,
+    rowSpan: 2,
+  },
+  {
+    name: 'EXPLAIN',
+    width: 1,
+    rowSpan: 2,
+  },
+  {
+    name: 'ITEM_CODE',
+    width: 1,
+    rowSpan: 2,
+  },
+  {
+    name: 'ITEM_NAME',
+    width: 2,
+    rowSpan: 2,
+  },
+  {
+    name: 'LOT',
+    width: 0.7,
+    rowSpan: 2,
+  },
+  {
+    name: 'ACCOUNT',
+    width: 1.8,
+    columnSpan: 2,
+    child: [
+      {
+        name: 'DEB',
+        width: 0.9,
+      },
+      {
+        name: 'HAVE',
+        width: 0.9,
+      },
+    ],
+  },
+  {
+    name: 'UNIT',
+    width: 0.7,
+    rowSpan: 2,
+  },
+  {
+    name: 'QUANTITY',
+    width: 1,
+    rowSpan: 2,
+  },
+  {
+    name: 'LOCATION',
+    width: 1.6,
+    rowSpan: 2,
+  },
+  {
+    name: 'UNIT_PRICE',
+    width: 1,
+    rowSpan: 2,
+  },
+  {
+    name: 'TOTAL_PRICE',
+    width: 1.2,
+    rowSpan: 2,
+  },
+];
+
+export const SITUATION_IMPORT_PERIOD_COLUMNS: TableColumn[] = [
+  {
+    name: 'INDEX',
+    width: 0.6,
+    rowSpan: 2,
+  },
+  {
+    name: 'POST',
+    width: 1.4,
+    rowSpan: 2,
+  },
+  {
+    name: 'DATE',
+    width: 1,
+    rowSpan: 2,
+  },
+  {
+    name: 'CONTRACT',
+    width: 1.4,
+    rowSpan: 2,
+  },
+  {
+    name: 'CONTRUCTION',
+    width: 1.4,
+    rowSpan: 2,
+  },
+  {
+    name: 'PROVIDER_SHORT',
+    width: 1.6,
+    rowSpan: 2,
+  },
+  {
+    name: 'RECEIVER_DEPARMENT',
+    width: 1.6,
+    rowSpan: 2,
+  },
+  {
+    name: 'EXPLAIN',
+    width: 0.9,
+    rowSpan: 2,
+  },
+  {
+    name: 'ITEM_CODE',
+    width: 1,
+    rowSpan: 2,
+  },
+  {
+    name: 'ITEM_NAME',
+    width: 1.8,
+    rowSpan: 2,
+  },
+  {
+    name: 'LOT',
+    width: 0.7,
+    rowSpan: 2,
+  },
+  {
+    name: 'ACCOUNT',
+    width: 2.2,
+    columnSpan: 2,
+    child: [
+      {
+        name: 'DEB',
+        width: 0.8,
+      },
+      {
+        name: 'HAVE',
+        width: 1.4,
+      },
+    ],
+  },
+  {
+    name: 'UNIT',
+    width: 0.9,
+    rowSpan: 2,
+  },
+  {
+    name: 'QUANTITY',
+    width: 0.9,
+    rowSpan: 2,
+  },
+  {
+    name: 'LOCATION',
+    width: 0.7,
+    rowSpan: 2,
+  },
+  {
+    name: 'UNIT_PRICE',
+    width: 0.9,
+    rowSpan: 2,
+  },
+  {
+    name: 'COST',
+    width: 0.9,
+    rowSpan: 2,
+  },
+  {
+    name: 'TOTAL_PRICE',
+    width: 1.2,
+    rowSpan: 2,
+  },
+];
+export const SITUATION_EXPORT_PERIOD_COLUMNS: TableColumn[] = [
+  {
+    name: 'INDEX',
+    width: 0.6,
+    rowSpan: 2,
+  },
+  {
+    name: 'POST',
+    width: 1,
+    rowSpan: 2,
+  },
+  {
+    name: 'DATE',
+    width: 0.8,
+    rowSpan: 2,
+  },
+  {
+    name: 'CONTRUCTION',
+    width: 1.4,
+    rowSpan: 2,
+  },
+  {
+    name: 'RECEIVER_DEPARMENT',
+    width: 1.2,
+    rowSpan: 2,
+  },
+  {
+    name: 'EXPLAIN',
+    width: 1,
+    rowSpan: 2,
+  },
+  {
+    name: 'ITEM_CODE',
+    width: 1,
+    rowSpan: 2,
+  },
+  {
+    name: 'ITEM_NAME',
+    width: 2,
+    rowSpan: 2,
+  },
+  {
+    name: 'LOT',
+    width: 0.7,
+    rowSpan: 2,
+  },
+  {
+    name: 'ACCOUNT',
+    width: 1.8,
+    columnSpan: 2,
+    child: [
+      {
+        name: 'DEB',
+        width: 0.9,
+      },
+      {
+        name: 'HAVE',
+        width: 0.9,
+      },
+    ],
+  },
+  {
+    name: 'UNIT',
+    width: 0.7,
+    rowSpan: 2,
+  },
+  {
+    name: 'QUANTITY',
+    width: 1.8,
+    columnSpan: 2,
+    child: [
+      {
+        name: 'QUANTITY_REQUIRE',
+        width: 0.9,
+      },
+      {
+        name: 'EXPORT_ACTUAL',
+        width: 0.9,
+      },
+    ],
+  },
+  {
+    name: 'LOCATION_EXPORT',
+    width: 1,
+    rowSpan: 2,
+  },
+  {
+    name: 'UNIT_PRICE',
+    width: 1,
+    rowSpan: 2,
+  },
+  {
+    name: 'TOTAL_PRICE',
+    width: 1.2,
+    rowSpan: 2,
+  },
+];
+
+export const AGE_OF_ITEM_STOCK_COLUMNS: TableColumn[] = [
+  {
+    name: 'ITEM_CODE',
+    width: 0.9,
+    rowSpan: 2,
+  },
+  {
+    name: 'ITEM_NAME',
+    width: 0.9,
+    rowSpan: 2,
+  },
+  {
+    name: 'DATE_IMPORT',
+    width: 1,
+    rowSpan: 2,
+  },
+  {
+    name: 'ORIGIN',
+    width: 1,
+    rowSpan: 2,
+  },
+  {
+    name: 'ACCOUNT',
+    width: 1,
+    rowSpan: 2,
+  },
+  {
+    name: 'LOT',
+    width: 0.7,
+    rowSpan: 2,
+  },
+  {
+    name: 'LOCATION',
+    width: 0.7,
+    rowSpan: 2,
+  },
+  {
+    name: 'INVENTORY_COLUMN',
+    width: 3.2,
+    columnSpan: 4,
+    child: [
+      {
+        name: 'UNIT',
+        width: 0.8,
+      },
+      {
+        name: 'QUANTITY_SHORT',
+        width: 0.8,
+      },
+      {
+        name: 'UNIT_PRICE',
+        width: 0.8,
+      },
+      {
+        name: 'TOTAL_SHORT',
+        width: 0.8,
+      },
+    ],
+  },
+  {
+    name: 'SIX_MONTH',
+    width: 0.8,
+    rowSpan: 2,
+  },
+  {
+    name: 'SIX_MONTH_TO_ONE_YEAR',
+    width: 1,
+    rowSpan: 2,
+  },
+  {
+    name: 'ONE_YEAR_TO_TWO_YEAR',
+    width: 1,
+    rowSpan: 2,
+  },
+  {
+    name: 'TWO_YEAR_TO_THREE_YEAR',
+    width: 1,
+    rowSpan: 2,
+  },
+  {
+    name: 'THREE_YEAR_TO_FOUR_YEAR',
+    width: 1,
+    rowSpan: 2,
+  },
+  {
+    name: 'FOUR_YEAR_TO_FIVE_YEAR',
+    width: 1,
+    rowSpan: 2,
+  },
+  {
+    name: 'GREATER_FIVE_YEAR',
+    width: 0.8,
+    rowSpan: 2,
+  },
+];
+
+export const SITUATION_INVENTORY_PERIOD_COLUMNS: TableColumn[] = [
+  {
+    name: 'INDEX',
+    width: 0.6,
+    rowSpan: 3,
+  },
+  {
+    name: 'ITEM_CODE',
+    width: 1.6,
+    rowSpan: 3,
+  },
+  {
+    name: 'ITEM_NAME',
+    width: 2,
+    rowSpan: 3,
+  },
+  {
+    name: 'UNIT',
+    width: 0.8,
+    rowSpan: 3,
+  },
+  {
+    name: null,
+    width: 0.8,
+    rowSpan: 2,
+    child: [
+      {
+        name: 'LOT',
+      },
+    ],
+  },
+  {
+    name: 'ACCORDING_BOOK_QUANTITY',
+    width: 2.4,
+    rowSpan: 2,
+    columnSpan: 3,
+    child: [
+      {
+        name: 'QUANTITY_SHORT',
+        width: 0.8,
+      },
+      {
+        name: 'UNIT_PRICE_SHORT',
+        width: 0.8,
+      },
+      {
+        name: 'TOTAL_SHORT',
+        width: 0.8,
+      },
+    ],
+  },
+  {
+    name: 'ACCORDING_INVENTORY',
+    width: 2.4,
+    rowSpan: 2,
+    columnSpan: 3,
+    child: [
+      {
+        name: 'QUANTITY_SHORT',
+        width: 0.8,
+      },
+      {
+        name: 'UNIT_PRICE_SHORT',
+        width: 0.8,
+      },
+      {
+        name: 'TOTAL_SHORT',
+        width: 0.8,
+      },
+    ],
+  },
+  {
+    name: 'DEVIANT',
+    width: 3.2,
+    columnSpan: 4,
+    child: [
+      {
+        name: 'EXCESS',
+        width: 1.6,
+        columnSpan: 2,
+        child: [
+          {
+            name: 'QUANTITY_SHORT',
+            width: 0.8,
+          },
+          {
+            name: 'TOTAL_SHORT',
+            width: 0.8,
+          },
+        ],
+      },
+      {
+        name: 'LACK',
+        width: 1.6,
+        columnSpan: 2,
+        child: [
+          {
+            name: 'QUANTITY_SHORT',
+            width: 0.8,
+          },
+          {
+            name: 'TOTAL_SHORT',
+            width: 0.8,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    name: 'NOTE',
+    width: 1.4,
+    rowSpan: 3,
+  },
+];
 
 export const INDEX_REPORT_TITLE = 5;
 export const HEIGHT_REPORT_TITLE = 36.75;
