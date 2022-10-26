@@ -1,38 +1,38 @@
 import {
   FONT_NAME,
-  REPORT_ITEM_INVENTORY_BELOW_MINIMUM_CONFIG,
+  ITEM_IMPORTED_BUT_NOT_PUT_TO_POSITION_COLUMNS,
   WORD_FILE_CONFIG,
 } from '@utils/constant';
 import {
-  Document,
-  Packer,
+  AlignmentType,
+  convertInchesToTwip,
   Paragraph,
-  TextRun,
+  Table,
   TableCell,
   TableRow,
-  Table,
-  WidthType,
-  AlignmentType,
-  PageOrientation,
-  HeightRule,
+  TextRun,
   VerticalAlign,
-  convertInchesToTwip,
+  Document,
+  Packer,
 } from 'docx';
 import { I18nRequestScopeService } from 'nestjs-i18n';
-import { setHeight, setWidth, wordFileStyle } from './word-common.styles';
+import {
+  setHeight,
+  setWidth,
+  wordFileStyle,
+} from './word-common.styles';
 
-export async function generateReportItemInventoryBelowMinimum(
+let itemData = [];
+
+export async function generateReportItemImportedButNotPutToPosition(
   dataWord,
   companyName,
   companyAddress,
   title,
   reportTime,
+  i18n: I18nRequestScopeService,
 ): Promise<string> {
-  let i18n: I18nRequestScopeService;
-  let itemData = [];
-
-  // company info table
-  const company_info = new Table({
+  const companyInfo = new Table({
     columnWidths: [convertInchesToTwip(WORD_FILE_CONFIG.COLUMN_COMPANY_WIDTH)],
     width: setWidth(WORD_FILE_CONFIG.COLUMN_COMPANY_WIDTH),
     borders: wordFileStyle.border_none,
@@ -44,7 +44,7 @@ export async function generateReportItemInventoryBelowMinimum(
               new Paragraph({
                 children: [
                   new TextRun({
-                    text: i18n.translate('report.PARENT_COMPANY'),
+                    text: i18n.translate(`report.PARENT_COMPANY`),
                     ...wordFileStyle.company_info_style,
                   }),
                 ],
@@ -76,7 +76,6 @@ export async function generateReportItemInventoryBelowMinimum(
       }),
     ],
   });
-
   // create docx file
   const doc = new Document({
     evenAndOddHeaderAndFooters: true,
@@ -98,16 +97,11 @@ export async function generateReportItemInventoryBelowMinimum(
       {
         properties: {
           page: {
-            size: {
-              orientation: PageOrientation.LANDSCAPE,
-              width: convertInchesToTwip(
-                REPORT_ITEM_INVENTORY_BELOW_MINIMUM_CONFIG.TABLE_WIDTH,
-              ),
-            },
+            size: wordFileStyle.pagesize_a3,
           },
         },
         children: [
-          company_info,
+          companyInfo,
           new Paragraph({
             children: [
               new TextRun({
@@ -121,9 +115,7 @@ export async function generateReportItemInventoryBelowMinimum(
             alignment: AlignmentType.CENTER,
             style: 'formatSpacing',
             spacing: {
-              before: convertInchesToTwip(
-                REPORT_ITEM_INVENTORY_BELOW_MINIMUM_CONFIG.SPACING,
-              ),
+              before: convertInchesToTwip(WORD_FILE_CONFIG.SPACING_BEFORE),
             },
           }),
           new Paragraph({
@@ -133,6 +125,7 @@ export async function generateReportItemInventoryBelowMinimum(
                 size: WORD_FILE_CONFIG.WORD_FONT_SIZE_12,
                 font: FONT_NAME,
                 bold: WORD_FILE_CONFIG.WORD_BOLD,
+                allCaps: true,
               }),
             ],
             alignment: AlignmentType.CENTER,
@@ -151,155 +144,31 @@ export async function generateReportItemInventoryBelowMinimum(
             style: 'formatSpacing',
           }),
           new Table({
-            width: setWidth(
-              REPORT_ITEM_INVENTORY_BELOW_MINIMUM_CONFIG.TABLE_WIDTH,
-            ),
-            columnWidths: [
-              convertInchesToTwip(
-                REPORT_ITEM_INVENTORY_BELOW_MINIMUM_CONFIG
-                  .TABLE_COLUMN_WIDTH[0],
-              ),
-              convertInchesToTwip(
-                REPORT_ITEM_INVENTORY_BELOW_MINIMUM_CONFIG
-                  .TABLE_COLUMN_WIDTH[1],
-              ),
-              convertInchesToTwip(
-                REPORT_ITEM_INVENTORY_BELOW_MINIMUM_CONFIG
-                  .TABLE_COLUMN_WIDTH[2],
-              ),
-              convertInchesToTwip(
-                REPORT_ITEM_INVENTORY_BELOW_MINIMUM_CONFIG
-                  .TABLE_COLUMN_WIDTH[3],
-              ),
-              convertInchesToTwip(
-                REPORT_ITEM_INVENTORY_BELOW_MINIMUM_CONFIG
-                  .TABLE_COLUMN_WIDTH[4],
-              ),
-              convertInchesToTwip(
-                REPORT_ITEM_INVENTORY_BELOW_MINIMUM_CONFIG
-                  .TABLE_COLUMN_WIDTH[5],
-              ),
-            ],
+            width: setWidth(WORD_FILE_CONFIG.TABLE_WIDTH_PAGE_A3),
             rows: [
               new TableRow({
-                height: setHeight(WORD_FILE_CONFIG.TABLE_HEADER_HEIGHT),
-                children: [
-                  new TableCell({
-                    width: setWidth(
-                      REPORT_ITEM_INVENTORY_BELOW_MINIMUM_CONFIG
-                        .TABLE_COLUMN_WIDTH[0],
-                    ),
-                    verticalAlign: VerticalAlign.CENTER,
-                    shading: wordFileStyle.table_header_bg_color,
-                    children: [
-                      new Paragraph({
-                        alignment: AlignmentType.CENTER,
-                        children: [
-                          new TextRun({
-                            text: i18n.translate('report.INDEX'),
-                            ...wordFileStyle.table_header_style,
-                          }),
-                        ],
-                      }),
-                    ],
-                  }),
-                  new TableCell({
-                    width: setWidth(
-                      REPORT_ITEM_INVENTORY_BELOW_MINIMUM_CONFIG
-                        .TABLE_COLUMN_WIDTH[1],
-                    ),
-                    verticalAlign: VerticalAlign.CENTER,
-                    shading: wordFileStyle.table_header_bg_color,
-                    children: [
-                      new Paragraph({
-                        alignment: AlignmentType.CENTER,
-                        children: [
-                          new TextRun({
-                            text: i18n.translate('report.ITEM_CODE'),
-                            ...wordFileStyle.table_header_style,
-                          }),
-                        ],
-                      }),
-                    ],
-                  }),
-                  new TableCell({
-                    width: setWidth(
-                      REPORT_ITEM_INVENTORY_BELOW_MINIMUM_CONFIG
-                        .TABLE_COLUMN_WIDTH[2],
-                    ),
-                    verticalAlign: VerticalAlign.CENTER,
-                    shading: wordFileStyle.table_header_bg_color,
-                    children: [
-                      new Paragraph({
-                        alignment: AlignmentType.CENTER,
-                        children: [
-                          new TextRun({
-                            text: i18n.translate('report.ITEM_NAME'),
-                            ...wordFileStyle.table_header_style,
-                          }),
-                        ],
-                      }),
-                    ],
-                  }),
-                  new TableCell({
-                    width: setWidth(
-                      REPORT_ITEM_INVENTORY_BELOW_MINIMUM_CONFIG
-                        .TABLE_COLUMN_WIDTH[3],
-                    ),
-                    verticalAlign: VerticalAlign.CENTER,
-                    shading: wordFileStyle.table_header_bg_color,
-                    children: [
-                      new Paragraph({
-                        alignment: AlignmentType.CENTER,
-                        children: [
-                          new TextRun({
-                            text: i18n.translate('report.UNIT'),
-                            ...wordFileStyle.table_header_style,
-                          }),
-                        ],
-                      }),
-                    ],
-                  }),
-                  new TableCell({
-                    width: setWidth(
-                      REPORT_ITEM_INVENTORY_BELOW_MINIMUM_CONFIG
-                        .TABLE_COLUMN_WIDTH[4],
-                    ),
-                    verticalAlign: VerticalAlign.CENTER,
-                    shading: wordFileStyle.table_header_bg_color,
-                    children: [
-                      new Paragraph({
-                        alignment: AlignmentType.CENTER,
-                        children: [
-                          new TextRun({
-                            text: i18n.translate('report.QUANTITY_MINIMUM'),
-                            ...wordFileStyle.table_header_style,
-                          }),
-                        ],
-                      }),
-                    ],
-                  }),
-                  new TableCell({
-                    width: setWidth(
-                      REPORT_ITEM_INVENTORY_BELOW_MINIMUM_CONFIG
-                        .TABLE_COLUMN_WIDTH[5],
-                    ),
-                    verticalAlign: VerticalAlign.CENTER,
-                    shading: wordFileStyle.table_header_bg_color,
-                    children: [
-                      new Paragraph({
-                        alignment: AlignmentType.CENTER,
-                        children: [
-                          new TextRun({
-                            text: i18n.translate('report.QUANTITY_STOCK'),
-                            ...wordFileStyle.table_header_style,
-                          }),
-                        ],
-                      }),
-                    ],
-                  }),
-                ],
                 tableHeader: true,
+                height: setHeight(WORD_FILE_CONFIG.TABLE_HEADER_HEIGHT),
+                children: ITEM_IMPORTED_BUT_NOT_PUT_TO_POSITION_COLUMNS.map(
+                  (item) => {
+                    return new TableCell({
+                      width: setWidth(item.width),
+                      verticalAlign: VerticalAlign.BOTTOM,
+                      shading: wordFileStyle.table_header_bg_color,
+                      children: [
+                        new Paragraph({
+                          alignment: AlignmentType.CENTER,
+                          children: [
+                            new TextRun({
+                              text: i18n.translate(`report.${item.name}`),
+                              ...wordFileStyle.table_header_style,
+                            }),
+                          ],
+                        }),
+                      ],
+                    });
+                  },
+                ),
               }),
               ...dataWord
                 .map((warehouse) => {
@@ -315,6 +184,66 @@ export async function generateReportItemInventoryBelowMinimum(
                               children: [
                                 new TextRun({
                                   text: item.index,
+                                  ...wordFileStyle.text_style,
+                                }),
+                              ],
+                            }),
+                          ],
+                        }),
+                        new TableCell({
+                          verticalAlign: VerticalAlign.CENTER,
+                          margins: wordFileStyle.margin_left,
+                          children: [
+                            new Paragraph({
+                              alignment: AlignmentType.LEFT,
+                              children: [
+                                new TextRun({
+                                  text: item.orderId,
+                                  ...wordFileStyle.text_style,
+                                }),
+                              ],
+                            }),
+                          ],
+                        }),
+                        new TableCell({
+                          verticalAlign: VerticalAlign.CENTER,
+                          margins: wordFileStyle.margin_left,
+                          children: [
+                            new Paragraph({
+                              alignment: AlignmentType.LEFT,
+                              children: [
+                                new TextRun({
+                                  text: item.orderCode,
+                                  ...wordFileStyle.text_style,
+                                }),
+                              ],
+                            }),
+                          ],
+                        }),
+                        new TableCell({
+                          verticalAlign: VerticalAlign.CENTER,
+                          margins: wordFileStyle.margin_left,
+                          children: [
+                            new Paragraph({
+                              alignment: AlignmentType.LEFT,
+                              children: [
+                                new TextRun({
+                                  text: item.reason,
+                                  ...wordFileStyle.text_style,
+                                }),
+                              ],
+                            }),
+                          ],
+                        }),
+                        new TableCell({
+                          verticalAlign: VerticalAlign.CENTER,
+                          margins: wordFileStyle.margin_left,
+                          children: [
+                            new Paragraph({
+                              alignment: AlignmentType.LEFT,
+                              children: [
+                                new TextRun({
+                                  text: item.explain,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -367,13 +296,12 @@ export async function generateReportItemInventoryBelowMinimum(
                         }),
                         new TableCell({
                           verticalAlign: VerticalAlign.CENTER,
-                          margins: wordFileStyle.margin_right,
                           children: [
                             new Paragraph({
-                              alignment: AlignmentType.RIGHT,
+                              alignment: AlignmentType.CENTER,
                               children: [
                                 new TextRun({
-                                  text: item.minInventoryLimit,
+                                  text: item.lotNumber,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -388,7 +316,70 @@ export async function generateReportItemInventoryBelowMinimum(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.stockQuantity,
+                                  text: item.actualQuantity,
+                                  ...wordFileStyle.text_style,
+                                }),
+                              ],
+                            }),
+                          ],
+                        }),
+                        new TableCell({
+                          verticalAlign: VerticalAlign.CENTER,
+                          margins: wordFileStyle.margin_right,
+                          children: [
+                            new Paragraph({
+                              alignment: AlignmentType.RIGHT,
+                              children: [
+                                new TextRun({
+                                  text: item.storedQuantity,
+                                  ...wordFileStyle.text_style,
+                                }),
+                              ],
+                            }),
+                          ],
+                        }),
+                        new TableCell({
+                          verticalAlign: VerticalAlign.CENTER,
+                          margins: wordFileStyle.margin_right,
+                          children: [
+                            new Paragraph({
+                              alignment: AlignmentType.RIGHT,
+                              children: [
+                                new TextRun({
+                                  text: (
+                                    Number(item.actualQuantity) -
+                                    Number(item.storedQuantity)
+                                  ).toString(),
+                                  ...wordFileStyle.text_style,
+                                }),
+                              ],
+                            }),
+                          ],
+                        }),
+                        new TableCell({
+                          verticalAlign: VerticalAlign.CENTER,
+                          margins: wordFileStyle.margin_left,
+                          children: [
+                            new Paragraph({
+                              alignment: AlignmentType.LEFT,
+                              children: [
+                                new TextRun({
+                                  text: item.note,
+                                  ...wordFileStyle.text_style,
+                                }),
+                              ],
+                            }),
+                          ],
+                        }),
+                        new TableCell({
+                          verticalAlign: VerticalAlign.CENTER,
+                          margins: wordFileStyle.margin_left,
+                          children: [
+                            new Paragraph({
+                              alignment: AlignmentType.LEFT,
+                              children: [
+                                new TextRun({
+                                  text: item.receiver,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -403,18 +394,20 @@ export async function generateReportItemInventoryBelowMinimum(
                       height: setHeight(WORD_FILE_CONFIG.TABLE_ROW_HEIGHT),
                       children: [
                         new TableCell({
-                          columnSpan: 6,
+                          columnSpan: 14,
+                          verticalAlign: VerticalAlign.CENTER,
+                          margins: wordFileStyle.margin_left,
                           children: [
                             new Paragraph({
+                              alignment: AlignmentType.LEFT,
                               children: [
                                 new TextRun({
-                                  text: `${warehouse?.warehouseCode}-${warehouse?.warehouseName}`,
-                                  ...wordFileStyle.table_header_style,
+                                  text: `Mã kho: ${warehouse.warehouseName}-${warehouse.warehouseCode}`,
+                                  ...wordFileStyle.text_style_bold,
                                 }),
                               ],
                             }),
                           ],
-                          verticalAlign: VerticalAlign.CENTER,
                         }),
                       ],
                     }),
