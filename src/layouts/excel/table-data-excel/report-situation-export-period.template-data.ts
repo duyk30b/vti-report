@@ -235,7 +235,7 @@ export function reportSituationExportPeriodTemplateData(
               },
               {
                 nameCell: `Q${curRowIdx}`,
-                value: item.cost,
+                value: item.totalPrice,
                 font: FONT_NORMAL_8,
                 aligment: ALIGNMENT_BOTTOM_RIGHT,
                 border: BORDER,

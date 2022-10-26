@@ -44,7 +44,7 @@ export async function reportOrderImportByRequestForItemExcelMapping(
       const data: ReportOrderImportByRequestForItemModel = {
         index: 0,
         orderImportRequireCode: cur.orderCode,
-        orderCode: cur.orderCode,
+        orderCode: cur.orderImportRequireCode,
         itemCode: cur.itemCode,
         itemName: cur.itemName,
         dateImport: cur.planDate,

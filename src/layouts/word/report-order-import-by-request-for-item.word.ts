@@ -121,7 +121,7 @@ export async function generateReportOrderImportByRequestForItem(
                               alignment: AlignmentType.LEFT,
                               children: [
                                 new TextRun({
-                                  text: item.orderName,
+                                  text: item.orderImportRequireCode,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],

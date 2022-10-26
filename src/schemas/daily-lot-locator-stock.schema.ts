@@ -1,20 +1,15 @@
+import { DailyItemLotLocatorStockInterface } from '@schemas/interface/daily-lot-locator-stock.interface';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 export type DailyLotLocatorStockDocument = DailyLotLocatorStock & Document;
 
 @Schema({ collection: 'daily-lot-locator-stock', timestamps: true })
-export class DailyLotLocatorStock {
+export class DailyLotLocatorStock implements DailyItemLotLocatorStockInterface {
   @Prop({ required: false })
   warehouseId: number;
 
   @Prop({ required: false })
   locatorId: number;
-
-  @Prop({ required: false })
-  dailyWarehouseItemStockId: Types.ObjectId;
-
-  @Prop({ required: false })
-  dailyItemLocatorStockId: Types.ObjectId;
 
   @Prop({ required: false })
   warehouseCode: string;
@@ -41,10 +36,7 @@ export class DailyLotLocatorStock {
   storageDate: Date;
 
   @Prop({ required: false })
-  account: Date;
-
-  @Prop({ required: false, default: 0 })
-  storageCost: number;
+  account: string;
 
   @Prop({ required: false })
   companyId: number;
@@ -77,11 +69,8 @@ export class DailyLotLocatorStock {
   @Prop({ required: false })
   origin: string;
 
-  @Prop({ required: false })
-  status: number;
-
   @Prop({ required: false, default: 0 })
-  cost: number;
+  storageCost: number;
 
   @Prop({ required: false })
   note: string;

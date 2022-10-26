@@ -16,6 +16,50 @@ export class SyncController {
     private readonly syncService: SyncService,
   ) {}
 
+  @Post('/daily')
+  @ApiOperation({
+    tags: ['Sync'],
+    summary: 'Đồng bộ dữ liệu hàng ngày',
+    description: 'Đồng bộ dữ liệu order',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: SuccessResponse,
+  })
+  async syncDailyReport(
+    @Body() payload: SyncDailyReportRequest,
+  ): Promise<ResponsePayload<any>> {
+    const { request, responseError } = payload;
+
+    if (responseError && !isEmpty(responseError)) {
+      return responseError;
+    }
+    return await this.syncService.syncDailyReport(request);
+  }
+
+  @Post('/transaction')
+  @ApiOperation({
+    tags: ['Sync'],
+    summary: 'Đồng bộ dữ liệu giao dịch',
+    description: 'Đồng bộ dữ liệu giao dịch',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: SuccessResponse,
+  })
+  async syncTransaction(
+    @Body() payload: SyncTransactionRequest,
+  ): Promise<ResponsePayload<any>> {
+    const { request, responseError } = payload;
+
+    if (responseError && !isEmpty(responseError)) {
+      return responseError;
+    }
+    return await this.syncService.syncTransaction(request);
+  }
+
   @Post('/')
   @ApiOperation({
     tags: ['Sync'],
@@ -38,9 +82,11 @@ export class SyncController {
 
   @MessagePattern(SYNC_REPORT_DAILY_TOPIC)
   async readMessage(
-    @Payload() body: SyncReportDailyRequestDto
+    @Payload() body: SyncReportDailyRequestDto,
   ): Promise<ResponsePayload<any>> {
     const { request } = body;
-    return await this.syncService.saveItemStockWarehouseLocatorByDate(request.value);
+    return await this.syncService.saveItemStockWarehouseLocatorByDate(
+      request.value,
+    );
   }
 }

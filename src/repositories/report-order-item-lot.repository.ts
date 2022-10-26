@@ -23,67 +23,12 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
       for (const reportOrderItem of reportOrderRequest.reportOrderItems) {
         for (const reportOrderItemLot of reportOrderItem.reportOrderItemLots) {
           const document = new this.reportOrderItemLot();
-          document.orderId = reportOrderRequest?.orderId;
-          document.orderName = reportOrderRequest.orderName;
-          document.orderCreatedAt = reportOrderRequest.orderCreatedAt;
-          document.itemId = reportOrderItem?.itemId;
-          document.itemName = reportOrderItem.itemName;
-          document.itemCode = reportOrderItem.itemCode;
-          document.lotNumber = reportOrderItemLot?.lotNumber;
-          document.warehouseId = reportOrderRequest?.warehouseId;
-          document.warehouseName = reportOrderRequest.warehouseName;
-          document.warehouseCode = reportOrderRequest.warehouseCode;
-          document.orderType = reportOrderRequest.orderType;
-          document.actionType = reportOrderRequest.actionType;
-          document.planDate = reportOrderRequest.planDate;
-          document.status = reportOrderRequest.status;
-          document.completedAt = reportOrderRequest.completedAt;
-          document.companyId = reportOrderRequest.companyId;
-          document.ebsId = reportOrderRequest.ebsId;
-          document.constructionId = reportOrderRequest.constructionId;
-          document.constructionCode = reportOrderRequest.constructionCode;
-          document.constructionName = reportOrderRequest.constructionName;
-          document.unit = reportOrderRequest.unit;
-          document.performerId = reportOrderRequest.performerId;
-          document.performerName = reportOrderRequest.performerName;
-          document.planQuantity = reportOrderItemLot?.planQuantity;
-          document.actualQuantity = reportOrderItemLot?.actualQuantity;
-          document.receivedQuantity = reportOrderItemLot?.receivedQuantity;
-          document.storedQuantity = reportOrderItemLot?.storedQuantity;
-          document.collectedQuantity = reportOrderItemLot?.collectedQuantity;
-          document.exportedQuantity = reportOrderItemLot?.exportedQuantity;
-          document.reason = reportOrderItemLot?.reason;
-          document.explain = reportOrderItemLot?.explain;
-          document.note = reportOrderItemLot?.note;
-          document.cost = reportOrderItemLot?.cost;
-          document.locationId = reportOrderItemLot?.locationId;
-          document.locationCode = reportOrderItemLot?.locationCode;
-          document.locationName = reportOrderItemLot?.locationName;
-          document.qrCode = reportOrderRequest.qrCode;
-          document.companyName = reportOrderRequest.companyName;
-          document.companyAddress = reportOrderRequest.companyAddress;
-          document.warehouseTargetId = reportOrderRequest.warehouseTargetId;
-          document.warehouseTargetCode = reportOrderRequest.warehouseTargetCode;
-          document.warehouseTargetName = reportOrderRequest.warehouseTargetName;
-          document.purpose = reportOrderRequest.purpose;
-          document.postCode = reportOrderRequest.postCode;
-          document.contract = reportOrderRequest.contract;
-          document.providerId = reportOrderRequest.providerId;
-          document.receiveDepartmentId = reportOrderRequest.receiveDepartmentId;
-          document.providerCode = reportOrderRequest.providerCode;
-          document.receiveDepartmentCode =
-            reportOrderRequest.receiveDepartmentCode;
-          document.providerName = reportOrderRequest.providerName;
-          document.receiveDepartmentName =
-            reportOrderRequest.receiveDepartmentName;
-          document.description = reportOrderRequest.description;
-          document.accountId = reportOrderRequest.accountId;
-          document.accountCode = reportOrderRequest.accountCode;
-          document.accountName = reportOrderRequest.accountName;
-          document.account = reportOrderRequest.account;
-          document.accountDebt = reportOrderRequest.accountDebt;
-          document.accountHave = reportOrderRequest.accountHave;
-          document.proposalExport = reportOrderRequest.proposalExport;
+          Object.assign(
+            document,
+            reportOrderRequest,
+            reportOrderItem,
+            reportOrderItemLot,
+          );
 
           await document.save();
         }

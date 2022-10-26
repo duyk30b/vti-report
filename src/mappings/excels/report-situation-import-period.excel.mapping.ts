@@ -14,8 +14,12 @@ export async function reportSituationImportPeriodExcelMapping(
   data: any[],
   i18n: I18nRequestScopeService,
 ) {
+  let warehouseName;
+  let companyName = data[0]?._id?.companyName;
+  let companyAddress = data[0]?._id?.companyAddress;
   const dataExcell: TableDataSituationImportPeriod = data[0]['warehouses'].map(
     (item) => {
+      warehouseName = item.warehouseName;
       return {
         warehouseCode:
           i18n.translate('report.WAREHOUSE_GROUP_CODE') +
@@ -26,13 +30,13 @@ export async function reportSituationImportPeriodExcelMapping(
     },
   );
   const model: ReportModel<any> = {
-    childCompany: data[0].companyName,
-    addressChildCompany: data[0].companyAddress,
+    childCompany: companyName,
+    addressChildCompany: companyAddress,
     tableColumn: SITUATION_IMPORT_PERIOD_COLUMN,
     tableData: dataExcell,
     header: true,
     key: REPORT_INFO[ReportType[ReportType.SITUATION_IMPORT_PERIOD]].key,
-    warehouse: request.warehouseId ? data[0].warehouseName : null,
+    warehouse: request.warehouseId ? warehouseName : null,
     dateFrom: request.dateFrom,
     dateTo: request.dateTo,
   };
