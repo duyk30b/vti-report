@@ -31,7 +31,21 @@ import { reportSituationImportPeriodExcelMapping } from '@mapping/excels/report-
 import { reportSituationExportPeriodExcelMapping } from '@mapping/excels/report-situation-export-period.excel.mapping';
 import { reportAgeOfItemsExcelMapping } from '@mapping/excels/report-age-of-items.excel.mapping';
 import { reportItemInventoryExcelMapping } from '@mapping/excels/report-item-Inventory.excel.mapping';
-
+import { reportItemInventoryBelowSafeWordMapping } from '@mapping/words/report-item-inventory-below-safe.word.mapping';
+import { reportOrderTransferIncompletedWordMapping } from '@mapping/words/report-order-transfer-incompleted.word.mapping';
+import { reportOrderExportIncompletedWordMapping } from '@mapping/words/report-order-export-incompleted.word.mapping';
+import { reportOrderImportIncompletedMapping } from '@mapping/words/report-order-import-incompleted.word.mapping';
+import { reportItemImportedButNotPutToPositionMapping } from '@mapping/words/report-item-imported-but-not-put-to-position.word.mapping';
+import { reportOrderImportByRequestForItemWordMapping } from '@mapping/words/report-order-import-by-request-for-item.word.mapping';
+import { reportInventoryMapping } from '@mapping/words/report-inventory.word.mapping';
+import { reportItemInventoryImportedNoQRCodeWordMapping } from '@mapping/words/report-item-inventory-imported-noQR-code.word.mapping';
+import { reportOrderExportByRequestForItemWordMapping } from '@mapping/words/report-order-export-by-request-for-item.word.mapping';
+import { reportItemInventoryMapping } from '@mapping/words/report-item-inventory.word.mapping';
+import { reportSituationImportPeriodMapping } from '@mapping/words/report-situation-import-period.mapping';
+import { reportSituationTransferMapping } from '@mapping/words/report-situation-transfer.word.mapping';
+import { reportSituationExportPeriodMapping } from '@mapping/words/report-situation-export-period.mapping';
+import { reportAgeOfItemsMapping } from '@mapping/words/report-age-of-item-stock.mapping';
+import { reportSituationInventoryPeriodMapping } from '@mapping/words/report-situation-inventory-period.mapping';
 @Injectable()
 export class ExportService {
   constructor(
@@ -159,7 +173,7 @@ export class ExportService {
         );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
-        return;
+        return reportAgeOfItemsMapping(request, data, this.i18n);
       default:
         return;
     }
@@ -184,7 +198,7 @@ export class ExportService {
           );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
-        return;
+        return reportSituationExportPeriodMapping(request, data, this.i18n);
       default:
         return;
     }
@@ -209,7 +223,7 @@ export class ExportService {
           );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
-        return;
+        return reportSituationImportPeriodMapping(request, data, this.i18n);
       default:
         return;
     }
@@ -234,7 +248,7 @@ export class ExportService {
           );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
-        return;
+        return reportSituationInventoryPeriodMapping(request, data, this.i18n);
       default:
         return;
     }
@@ -255,7 +269,7 @@ export class ExportService {
           await reportSituationTransferExcelMapping(request, data, this.i18n);
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
-        return;
+        return reportSituationTransferMapping(request, data, this.i18n);
       default:
         return;
     }
@@ -275,7 +289,11 @@ export class ExportService {
           await reportOrderExportByRequestForItem(request, data, this.i18n);
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
-        return;
+        return reportOrderExportByRequestForItemWordMapping(
+          request,
+          data,
+          this.i18n,
+        );
       default:
         return;
     }
@@ -299,7 +317,11 @@ export class ExportService {
           );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
-        return;
+        return reportItemInventoryImportedNoQRCodeWordMapping(
+          request,
+          data,
+          this.i18n,
+        );
       default:
         return;
     }
@@ -318,7 +340,7 @@ export class ExportService {
         );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
-        return;
+        return reportItemInventoryMapping(request, data, this.i18n);
       default:
         return;
     }
@@ -343,7 +365,11 @@ export class ExportService {
           );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
-        return;
+        return reportOrderImportByRequestForItemWordMapping(
+          request,
+          data,
+          this.i18n,
+        );
       default:
         return;
     }
@@ -361,7 +387,7 @@ export class ExportService {
         );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
-        return;
+        return reportInventoryMapping(request, data, this.i18n);
       default:
         return;
     }
@@ -385,7 +411,11 @@ export class ExportService {
           );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
-        return;
+        return reportItemImportedButNotPutToPositionMapping(
+          request,
+          data,
+          this.i18n,
+        );
       default:
         return;
     }
@@ -410,7 +440,7 @@ export class ExportService {
           );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
-        return;
+        return reportOrderImportIncompletedMapping(request, data, this.i18n);
       default:
         return;
     }
@@ -435,7 +465,11 @@ export class ExportService {
           );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
-        return;
+        return reportOrderExportIncompletedWordMapping(
+          request,
+          data,
+          this.i18n,
+        );
       default:
         return;
     }
@@ -459,7 +493,11 @@ export class ExportService {
           );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
-        return;
+        return reportOrderTransferIncompletedWordMapping(
+          request,
+          data,
+          this.i18n,
+        );
       default:
         return;
     }
@@ -483,7 +521,11 @@ export class ExportService {
         return { result: dataBase64, nameFile };
 
       case ExportType.WORD:
-        return reportItemInventoryBelowMinimumWordMapping(request, data);
+        return reportItemInventoryBelowMinimumWordMapping(
+          request,
+          data,
+          this.i18n,
+        );
       default:
         return;
     }
@@ -506,7 +548,11 @@ export class ExportService {
           );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
-        return;
+        return reportItemInventoryBelowSafeWordMapping(
+          request,
+          data,
+          this.i18n,
+        );
       default:
         return;
     }

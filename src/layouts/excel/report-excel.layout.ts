@@ -139,8 +139,6 @@ export const generateTable = async (
       i18n,
     );
   }
-  const path = process.cwd() + '/upload/';
-  await workbook.xlsx.writeFile(path + `${nameFile || 'default_name'}.xlsx`);
   const buffer = await workbook.xlsx.writeBuffer();
   const str = (buffer as Buffer).toString('base64');
   return {
