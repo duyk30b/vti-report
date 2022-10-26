@@ -6,8 +6,8 @@ export enum OrderStatus {
   RECEIVED = 5, //Đã nhận hàng
   CONFIRMED = 6, // Đã xác nhận
 
-  IMPORTING = 7,
-  EXPORTING = 8,
+  IMPORTING = 7, //Dang nhap kho
+  EXPORTING = 8, //Dang xuat kho
   STORING = 9,
   TRANSFERING = 10,
   RECEIVING = 11,

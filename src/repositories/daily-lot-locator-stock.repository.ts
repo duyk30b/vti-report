@@ -24,28 +24,12 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       for (const dailyItemLocatorStock of dailyWarehouseItemRequest.dailyItemLocatorStocks) {
         for (const dailyLotLocatorStock of dailyItemLocatorStock.dailyLotLocatorStocks) {
           const document = new this.dailyLotLocatorStock();
-          document.itemId = dailyWarehouseItemRequest?.itemId;
-          document.itemName = dailyWarehouseItemRequest?.itemName;
-          document.itemCode = dailyWarehouseItemRequest?.itemCode;
-          document.warehouseId = dailyWarehouseItemRequest?.warehouseId;
-          document.warehouseName = dailyWarehouseItemRequest?.warehouseName;
-          document.warehouseCode = dailyWarehouseItemRequest?.warehouseCode;
-          document.reportDate = dailyWarehouseItemRequest?.reportDate;
-          document.stockQuantity = dailyLotLocatorStock?.stockQuantity;
-          document.storageCost = dailyLotLocatorStock?.storageCost;
-          document.companyId = dailyWarehouseItemRequest?.companyId;
-          document.locatorId = dailyItemLocatorStock?.locatorId;
-          document.locatorName = dailyItemLocatorStock?.locatorName;
-          document.locatorCode = dailyItemLocatorStock?.locatorCode;
-          document.lotNumber = dailyLotLocatorStock?.lotNumber;
-          document.minInventoryLimit =
-            dailyWarehouseItemRequest?.minInventoryLimit;
-          document.inventoryLimit = dailyWarehouseItemRequest?.inventoryLimit;
-          document.companyName = dailyWarehouseItemRequest?.companyName;
-          document.companyAddress = dailyWarehouseItemRequest?.companyAddress;
-          document.origin = dailyWarehouseItemRequest?.origin;
-          document.note = dailyWarehouseItemRequest?.note;
-
+          Object.assign(
+            document,
+            dailyWarehouseItemRequest,
+            dailyItemLocatorStock,
+            dailyLotLocatorStock,
+          );
           await document.save();
         }
       }
@@ -57,7 +41,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       $and: [],
     };
 
-    if (request?.dateTo) {
+    if (request?.dateFrom) {
       const today = moment(request?.dateTo).startOf('day');
       const tomorrow = moment(today).endOf('day');
       condition['$and'].push({

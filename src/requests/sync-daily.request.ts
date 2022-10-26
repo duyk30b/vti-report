@@ -1,35 +1,159 @@
 import { BaseDto } from '@core/dto/base.dto';
+import { OrderStatus } from '@enums/order-status.enum';
+import { OrderType } from '@enums/order-type.enum';
+import { ApiProperty } from '@nestjs/swagger';
+import { DailyLocatorStockInterface } from '@schemas/interface/daily-locator-stock.interface';
+import { DailyItemLotLocatorStockInterface } from '@schemas/interface/daily-lot-locator-stock.interface';
+import { DailyWarehouseItemStockInterface } from '@schemas/interface/daily-warehouse-item-stock.interface';
+import { ReportOrderInteface } from '@schemas/interface/report-order.interface';
 import { Type } from 'class-transformer';
 import {
   ArrayMinSize,
   IsArray,
+  IsDateString,
+  IsEnum,
   IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
   ValidateNested,
 } from 'class-validator';
-import { Types } from 'mongoose';
+import { ReportOrderItemRequest } from './report-order-items.request';
 
-export class DailyLotLocatorStockRequest {
-  dailyWarehouseItemStockId: Types.ObjectId;
-
-  dailyItemLocatorStockId: Types.ObjectId;
-
+export class DailyLotLocatorStockRequest
+  implements DailyItemLotLocatorStockInterface
+{
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
   lotNumber: string;
 
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
   stockQuantity: number;
 
-  storageDate: string;
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsDateString()
+  reportDate: Date;
 
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsDateString()
+  storageDate: Date;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  account: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
   storageCost: number;
 
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  minInventoryLimit: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  inventoryLimit: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  unit: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  origin: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  note: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
   orderId: number;
+
+  warehouseId: number;
+  locatorId: number;
+  warehouseCode: string;
+  itemId: number;
+  locatorCode: string;
+  locatorName: string;
+  companyId: number;
+  itemCode: string;
+  itemName: string;
+  warehouseName: string;
+  companyName: string;
+  companyAddress: string;
 }
 
-export class DailyItemLocatorStockRequest {
+export class DailyItemLocatorStockRequest
+  implements DailyLocatorStockInterface
+{
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
   locatorId: number;
 
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
   locatorName: string;
 
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
   locatorCode: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsDateString()
+  reportDate: Date;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  unit: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  origin: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  note: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  minInventoryLimit: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  inventoryLimit: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  stockQuantity: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  storageCost: number;
 
   @IsNotEmpty()
   @IsArray()
@@ -37,39 +161,104 @@ export class DailyItemLocatorStockRequest {
   @ArrayMinSize(1)
   @Type(() => DailyLotLocatorStockRequest)
   dailyLotLocatorStocks: DailyLotLocatorStockRequest[];
-}
-export class DailyWarehouseItemRequest {
-  itemId: number;
-
-  itemName: string;
-
-  itemCode: string;
 
   warehouseId: number;
+  itemId: number;
+  itemCode: string;
+  companyId: number;
+  itemName: string;
+  warehouseName: string;
+  warehouseCode: string;
+  companyName: string;
+  companyAddress: string;
+}
+export class DailyWarehouseItemRequest
+  implements DailyWarehouseItemStockInterface
+{
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  itemId: number;
 
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  itemName: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  itemCode: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  warehouseId: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
   warehouseName: string;
 
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
   warehouseCode: string;
 
-  reportDate: Date;
-
-  minInventoryLimit: number;
-
-  inventoryLimit: number;
-
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
   companyId: number;
 
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
   companyName: string;
 
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
   companyAddress: string;
 
-  contructionId: number;
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsDateString()
+  reportDate: Date;
 
-  contructionName: string;
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  unit: string;
 
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
   origin: string;
 
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
   note: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  minInventoryLimit: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  inventoryLimit: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  stockQuantity: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  storageCost: number;
 
   @IsNotEmpty()
   @IsArray()
@@ -79,135 +268,96 @@ export class DailyWarehouseItemRequest {
   dailyItemLocatorStocks: DailyItemLocatorStockRequest[];
 }
 
-export class ReportOrderItemLotRequest {
-  lotNumber: string;
-
-  planQuantity: number;
-
-  actualQuantity: number;
-
-  receivedQuantity: number;
-
-  storedQuantity: number;
-
-  collectedQuantity: number;
-
-  exportedQuantity: number;
-
-  cost: number;
-
-  reason: string;
-
-  explain: string;
-
-  note: string;
-
-  locationId: number;
-
-  locationCode: string;
-
-  locationName: string;
-}
-
-export class ReportOrderItemRequest {
-  itemId: number;
-
-  itemName: string;
-
-  itemCode: string;
-
+export class ReportOrderRequest implements ReportOrderInteface {
+  @ApiProperty()
   @IsNotEmpty()
-  @IsArray()
-  @ValidateNested({ each: true })
-  @ArrayMinSize(1)
-  @Type(() => ReportOrderItemLotRequest)
-  reportOrderItemLots: ReportOrderItemLotRequest[];
-}
-
-export class ReportOrderRequest {
+  @IsNumber()
   orderId: number;
 
-  orderName: string;
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  orderCode: string;
 
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsDateString()
   orderCreatedAt: Date;
 
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
   warehouseId: number;
 
-  warehouseName: string;
-
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
   warehouseCode: string;
 
-  orderType: number;
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  warehouseName: string;
 
-  actionType: number;
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsEnum(OrderType)
+  orderType: OrderType;
 
+  @ApiProperty()
+  @IsOptional()
+  @IsDateString()
   planDate: Date;
 
-  status: number;
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsEnum(OrderStatus)
+  status: OrderStatus;
 
+  @ApiProperty()
+  @IsOptional()
+  @IsDateString()
   completedAt: Date;
 
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
   companyId: number;
 
-  ebsId: Date;
-
-  constructionId: number;
-
-  constructionCode: string;
-
-  constructionName: string;
-
-  unit: string;
-
-  performerId: number;
-
-  performerName: string;
-
-  qrCode: string;
-
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
   companyName: string;
 
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
   companyAddress: string;
 
-  warehouseTargetId: number;
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  constructionId: number;
 
-  warehouseTargetCode: string;
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  constructionCode: string;
 
-  warehouseTargetName: string;
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  constructionName: string;
 
-  purpose: string;
-
-  postCode: string;
-
-  contract: string;
-
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
   description: string;
 
-  accountId: string;
-
-  accountCode: string;
-
-  accountName: string;
-
-  account: string;
-
-  accountDebt: number;
-
-  accountHave: number;
-
-  providerId: string;
-
-  providerCode: string;
-
-  providerName: string;
-
-  receiveDepartmentId: string;
-
-  receiveDepartmentCode: string;
-
-  receiveDepartmentName: string;
-
-  proposalExport: string;
+  @ApiProperty()
+  @IsOptional()
+  @IsDateString()
+  ebsId: Date;
 
   @IsNotEmpty()
   @IsArray()
@@ -216,14 +366,16 @@ export class ReportOrderRequest {
   @Type(() => ReportOrderItemRequest)
   reportOrderItems: ReportOrderItemRequest[];
 }
-export class SyncDailyRequest extends BaseDto {
+export class SyncDailyStockRequest extends BaseDto {
   @IsNotEmpty()
   @IsArray()
   @ValidateNested({ each: true })
   @ArrayMinSize(1)
   @Type(() => DailyWarehouseItemRequest)
   dailyWarehouseItems: DailyWarehouseItemRequest[];
+}
 
+export class SyncDailyReportRequest extends BaseDto {
   @IsNotEmpty()
   @IsArray()
   @ValidateNested({ each: true })
