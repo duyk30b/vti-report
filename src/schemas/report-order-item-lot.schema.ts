@@ -1,7 +1,7 @@
-import { ReportOrderItemLotInteface } from '@schemas/interface/report-order-item-lot.interface';
 import { OrderStatus } from '@enums/order-status.enum';
 import { OrderType } from '@enums/order-type.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ReportOrderItemLotInteface } from './interface/report-order-item-lot.interface';
 
 export type OrderItemLotDocument = ReportOrderItemLot & Document;
 

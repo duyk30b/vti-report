@@ -4,6 +4,8 @@ import { isEmpty } from 'lodash';
 import { SuccessResponse } from '@core/utils/success.response.dto';
 import { ResponsePayload } from '@core/utils/response-payload';
 import { SyncService } from './sync.service';
+import { SyncTransactionRequest } from '@requests/sync-transaction.request';
+import { SyncDailyReportRequest } from '@requests/sync-daily.request';
 import { BaseDto } from '@core/dto/base.dto';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { SyncReportDailyRequestDto } from './dto/request/sync-report-daily.request.dto';
@@ -58,26 +60,6 @@ export class SyncController {
       return responseError;
     }
     return await this.syncService.syncTransaction(request);
-  }
-
-  @Post('/')
-  @ApiOperation({
-    tags: ['Sync'],
-    summary: 'Đồng bộ dữ liệu',
-    description: 'Đồng bộ dữ liệu',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Success',
-    type: SuccessResponse,
-  })
-  async sync(@Body() payload: BaseDto): Promise<ResponsePayload<any>> {
-    const { request, responseError } = payload;
-
-    if (responseError && !isEmpty(responseError)) {
-      return responseError;
-    }
-    return await this.syncService.sync();
   }
 
   @MessagePattern(SYNC_REPORT_DAILY_TOPIC)

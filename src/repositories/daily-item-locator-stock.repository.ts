@@ -20,7 +20,7 @@ export class DailyItemLocatorStockRepository extends BaseAbstractRepository<Dail
   }
 
   createEntity(
-    dailyItemStockLocator: SyncItemStockLocatorByDate
+    dailyItemStockLocator: SyncItemStockLocatorByDate,
   ): DailyItemLocatorStock {
     const document = new this.dailyItemLocatorStock();
     document.itemId = dailyItemStockLocator?.itemId;

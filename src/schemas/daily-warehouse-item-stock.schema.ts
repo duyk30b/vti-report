@@ -1,5 +1,5 @@
-import { DailyWarehouseItemStockInterface } from '@schemas/interface/daily-warehouse-item-stock.interface';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { DailyWarehouseItemStockInterface } from './interface/daily-warehouse-item-stock.interface';
 
 export type DailyWarehouseItemStockDocument = DailyWarehouseItemStock &
   Document;

@@ -2,10 +2,11 @@ import { BaseEntity } from '@core/entity/base.entity';
 import { OrderStatus } from '@enums/order-status.enum';
 import { OrderType } from '@enums/order-type.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ReportOrderInteface } from './interface/report-order.interface';
 export type ReportOrderDocument = ReportOrder & Document;
 
 @Schema({ collection: 'report-order', timestamps: true })
-export class ReportOrder extends BaseEntity {
+export class ReportOrder extends BaseEntity implements ReportOrderInteface {
   @Prop({ required: false })
   orderId: number;
 

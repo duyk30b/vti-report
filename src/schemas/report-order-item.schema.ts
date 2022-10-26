@@ -1,9 +1,8 @@
-import { ReportOrderItemInteface } from '@schemas/interface/report-order-item.interface';
 import { BaseEntity } from '@core/entity/base.entity';
 import { OrderStatus } from '@enums/order-status.enum';
 import { OrderType } from '@enums/order-type.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import { ReportOrderItemInteface } from './interface/report-order-item.interface';
 export type ReportOrderItemDocument = ReportOrderItem & Document;
 
 @Schema({ collection: 'report-order-item', timestamps: true })
@@ -11,9 +10,6 @@ export class ReportOrderItem
   extends BaseEntity
   implements ReportOrderItemInteface
 {
-  @Prop({ required: false })
-  reportOrderId: Types.ObjectId;
-
   @Prop({ required: false })
   orderId: number;
 
@@ -87,10 +83,10 @@ export class ReportOrderItem
   constructionCode: string;
 
   @Prop({ required: false })
-  unit: string;
+  constructionName: string;
 
   @Prop({ required: false })
-  constructionName: string;
+  unit: string;
 
   @Prop({ required: false })
   performerId: number;

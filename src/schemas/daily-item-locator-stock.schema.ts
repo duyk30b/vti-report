@@ -1,5 +1,5 @@
-import { DailyLocatorStockInterface } from '@schemas/interface/daily-locator-stock.interface';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { DailyLocatorStockInterface } from './interface/daily-locator-stock.interface';
 
 export type DailyItemLocatorStockDocument = DailyItemLocatorStock & Document;
 

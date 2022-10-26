@@ -74,26 +74,10 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
 
     if (request?.dateTo) {
       condition['$and'].push({
-        reportDate: { $lte: new Date(request?.dateTo) },
+        reportDate: { $gte: new Date(request?.dateTo) },
       });
       reportOrderItemLot.push({
-        $lte: ['$orderCreatedAt', new Date(request?.dateTo)],
-      });
-    } else {
-      condition['$and'].push({
-        reportDate: { $lte: new Date() },
-      });
-      reportOrderItemLot.push({
-        $lte: ['$orderCreatedAt', new Date(request?.dateTo)],
-      });
-    }
-
-    if (request?.dateFrom) {
-      condition['$and'].push({
-        reportDate: { $gte: new Date(request?.dateFrom) },
-      });
-      reportOrderItemLot.push({
-        $gte: ['$orderCreatedAt', new Date(request?.dateFrom)],
+        $gte: ['$orderCreatedAt', new Date(request?.dateTo)],
       });
     } else {
       condition['$and'].push({
@@ -101,6 +85,22 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       });
       reportOrderItemLot.push({
         $gte: ['$orderCreatedAt', new Date()],
+      });
+    }
+
+    if (request?.dateFrom) {
+      condition['$and'].push({
+        reportDate: { $lte: new Date(request?.dateFrom) },
+      });
+      reportOrderItemLot.push({
+        $lte: ['$orderCreatedAt', new Date(request?.dateFrom)],
+      });
+    } else {
+      reportOrderItemLot.push({
+        $lte: ['$orderCreatedAt', new Date()],
+      });
+      condition['$and'].push({
+        reportDate: { $lte: new Date() },
       });
     }
 
@@ -132,7 +132,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
           itemName: 1,
           unit: 1,
           lotNumber: 1,
-          cost: 1,
+          storageCost: 1,
           note: 1,
           stockStart: {
             $cond: [
@@ -141,7 +141,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
                   {
                     $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
                   },
-                  moment(request?.dateFrom || new Date()).format(DATE_FOMAT),
+                  moment(request?.dateTo || new Date()).format(DATE_FOMAT),
                 ],
               },
               '$stockQuantity',
@@ -155,7 +155,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
                   {
                     $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
                   },
-                  moment(request?.dateTo || new Date()).format(DATE_FOMAT),
+                  moment(request?.dateFrom || new Date()).format(DATE_FOMAT),
                 ],
               },
               '$stockQuantity',
@@ -178,7 +178,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
             itemName: '$itemName',
             unit: '$unit',
             lotNumber: '$lotNumber',
-            cost: '$cost',
+            storageCost: '$storageCost',
             reportDate: {
               $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
             },
@@ -281,17 +281,17 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
               itemName: '$_id.itemName',
               unit: '$_id.unit',
               lotNumber: '$_id.lotNumber',
-              cost: '$_id.cost',
+              storageCost: '$_id.storageCost',
 
               stockStart: '$stockStart',
               totalStockStart: {
-                $multiply: ['$_id.cost', '$stockStart'],
+                $multiply: ['$_id.storageCost', '$stockStart'],
               },
 
               importIn: { $sum: '$report-order-item-lot.importIn' },
               totalImportIn: {
                 $multiply: [
-                  '$_id.cost',
+                  '$_id.storageCost',
                   { $sum: '$report-order-item-lot.importIn' },
                 ],
               },
@@ -299,14 +299,14 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
               exportIn: { $sum: '$report-order-item-lot.exportIn' },
               totalExportIn: {
                 $multiply: [
-                  '$_id.cost',
+                  '$_id.storageCost',
                   { $sum: '$report-order-item-lot.exportIn' },
                 ],
               },
 
               stockEnd: '$stockEnd',
               totalStockEnd: {
-                $multiply: ['$_id.cost', '$stockEnd'],
+                $multiply: ['$_id.storageCost', '$stockEnd'],
               },
 
               note: '$_id.note',
@@ -337,9 +337,9 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
         warehouseId: { $eq: request?.warehouseId },
       });
     return this.dailyLotLocatorStock.aggregate([
-      // {
-      //   $match: condition,
-      // },
+      {
+        $match: condition,
+      },
       {
         $sort: { storageDate: -1 },
       },
