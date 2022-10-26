@@ -26,6 +26,26 @@ export async function reportItemInventoryExcelMapping(
     companyName = item._id.companyName;
     companyAddress = item._id.companyAddress;
     warehouseName = item._id.warehouseName;
+    item.items = item.items.map((i) => {
+      const returnData: ItemInventoryModel = {
+        index: 0,
+        itemCode: i.itemCode,
+        itemName: i.itemName,
+        unit: i.unit,
+        lotNumber: i.lotNumber,
+        storageCost: i.storageCost || 0,
+        stockStart: i.stockStart || 0,
+        totalStockStart: i.totalStockStart || 0,
+        importIn: i.importIn || 0,
+        totalImportIn: i.totalImportIn || 0,
+        exportIn: i.exportIn || 0,
+        totalExportIn: i.totalExportIn || 0,
+        stockEnd: i.stockEnd || 0,
+        totalStockEnd: i.totalStockEnd || 0,
+        note: i.note,
+      };
+      return returnData;
+    });
     return {
       warehouseCode:
         i18n.translate('report.WAREHOUSE_GROUP_CODE') +
@@ -39,7 +59,7 @@ export async function reportItemInventoryExcelMapping(
     itemName: Alignment.LEFT,
     unit: Alignment.CENTER,
     lotNumber: Alignment.CENTER,
-    cost: Alignment.CENTER,
+    storageCost: Alignment.CENTER,
     stockStart: Alignment.RIGHT,
     totalStockStart: Alignment.RIGHT,
     importIn: Alignment.RIGHT,

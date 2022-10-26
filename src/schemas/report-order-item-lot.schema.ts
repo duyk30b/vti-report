@@ -1,16 +1,14 @@
 import { OrderStatus } from '@enums/order-status.enum';
 import { OrderType } from '@enums/order-type.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ReportOrderItemLotInteface } from './interface/report-order-item-lot.interface';
 
 export type OrderItemLotDocument = ReportOrderItemLot & Document;
 
 @Schema({ collection: 'report-order-item-lot', timestamps: true })
-export class ReportOrderItemLot {
+export class ReportOrderItemLot implements ReportOrderItemLotInteface {
   @Prop({ required: false })
   orderId: number;
-
-  @Prop({ required: false })
-  orderName: string;
 
   @Prop({ required: false })
   orderCreatedAt: Date;
@@ -62,9 +60,6 @@ export class ReportOrderItemLot {
 
   @Prop({ required: false })
   orderType: OrderType;
-
-  @Prop({ required: false })
-  actionType: number;
 
   @Prop({ required: false })
   planDate: Date;
@@ -145,7 +140,7 @@ export class ReportOrderItemLot {
   contract: string;
 
   @Prop({ required: false })
-  providerId: string;
+  providerId: number;
 
   @Prop({ required: false })
   providerCode: string;
@@ -154,7 +149,7 @@ export class ReportOrderItemLot {
   providerName: string;
 
   @Prop({ required: false })
-  receiveDepartmentId: string;
+  receiveDepartmentId: number;
 
   @Prop({ required: false })
   receiveDepartmentCode: string;
@@ -164,15 +159,6 @@ export class ReportOrderItemLot {
 
   @Prop({ required: false })
   description: string;
-
-  @Prop({ required: false })
-  accountId: string;
-
-  @Prop({ required: false })
-  accountCode: string;
-
-  @Prop({ required: false })
-  accountName: string;
 
   @Prop({ required: false })
   account: string;
@@ -188,6 +174,9 @@ export class ReportOrderItemLot {
 
   @Prop({ required: false })
   orderCode: string;
+
+  @Prop({ required: false })
+  orderImportRequireCode: string; //Giấy đề nghị nhap VT
 }
 
 export const ReportOrderItemLotSchema =
