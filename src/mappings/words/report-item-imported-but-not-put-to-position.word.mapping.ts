@@ -1,14 +1,14 @@
-import { generateReportItemInventoryBelowMinimum } from '@layout/word/report-inventory-below-minimum.word';
+import { generateReportItemImportedButNotPutToPosition } from '@layout/word/report-Item-imported-but-not-put-to-position.word';
 import { ReportRequest } from '@requests/report.request';
 import { ExportResponse } from '@responses/export.response';
-import { DailyWarehouseItemStock } from '@schemas/daily-warehouse-item-stock.schema';
+import { ReportOrderItemLot } from '@schemas/report-order-item-lot.schema';
 import { DATE_FOMAT_EXCELL, DATE_FOMAT_EXCELL_FILE } from '@utils/constant';
 import * as moment from 'moment';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 
-export async function reportItemInventoryBelowMinimumWordMapping(
+export async function reportItemImportedButNotPutToPositionMapping(
   request: ReportRequest,
-  data: DailyWarehouseItemStock[],
+  data: ReportOrderItemLot[],
   i18n: I18nRequestScopeService,
 ): Promise<ExportResponse> {
   const companyName = data[0].companyName;
@@ -20,11 +20,11 @@ export async function reportItemInventoryBelowMinimumWordMapping(
   let title = '';
   let property = '';
   if (warehouse) {
-    property = warehouse.toUpperCase();
+    property = warehouse.toLocaleUpperCase();
   } else {
     property = i18n.translate(`report.REPORT_ALL`);
   }
-  title = i18n.translate(`report.ITEM_INVENTORY_BELOW_MINIMUM.TITLE`, {
+  title = i18n.translate(`report.ITEM_IMPORTED_BUT_NOT_PUT_TO_POSITION.TITLE`, {
     args: { property: property },
   });
 
@@ -38,7 +38,7 @@ export async function reportItemInventoryBelowMinimumWordMapping(
     const dateFromFormated = moment(dateFrom).format(DATE_FOMAT_EXCELL);
     const dateToFormated = moment(dateTo).format(DATE_FOMAT_EXCELL);
     nameFile = i18n.translate(
-      `report.ITEM_INVENTORY_BELOW_MINIMUM.SHEET_NAME`,
+      `report.ITEM_IMPORTED_BUT_NOT_PUT_TO_POSITION.SHEET_NAME`,
       {
         args: {
           property: dateFromFormatedForFile + '_' + dateToFormatedForFile,
@@ -56,7 +56,7 @@ export async function reportItemInventoryBelowMinimumWordMapping(
     const dateForFile = moment(dateTo).format(DATE_FOMAT_EXCELL_FILE);
     const date = moment(dateTo).format(DATE_FOMAT_EXCELL);
     nameFile = i18n.translate(
-      `report.ITEM_INVENTORY_BELOW_MINIMUM.SHEET_NAME`,
+      `report.ITEM_IMPORTED_BUT_NOT_PUT_TO_POSITION.SHEET_NAME`,
       {
         args: { property: dateForFile },
       },
@@ -73,6 +73,7 @@ export async function reportItemInventoryBelowMinimumWordMapping(
     if (!pre[curr?.warehouseCode]) index = 1;
     else index++;
     pre[curr?.warehouseCode] = pre[curr?.warehouseCode] || [];
+
     pre[curr?.warehouseCode].push({ ...curr, index });
     return pre;
   }, {});
@@ -89,7 +90,7 @@ export async function reportItemInventoryBelowMinimumWordMapping(
 
   return {
     nameFile: nameFile,
-    result: await generateReportItemInventoryBelowMinimum(
+    result: await generateReportItemImportedButNotPutToPosition(
       dataWord,
       companyName,
       companyAddress,
