@@ -1,14 +1,9 @@
 export interface TableColumn {
   name: string;
   width?: number;
-  child?: {
-    name: string;
-    width?: number;
-    child?: {
-      name: string;
-      width: number;
-    }[];
-  }[];
+  child?: TableColumn[];
+  rowSpan?: number;
+  columnSpan?: number;
 }
 
 export interface TableData<T> {

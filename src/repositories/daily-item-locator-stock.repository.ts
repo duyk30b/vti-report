@@ -20,7 +20,7 @@ export class DailyItemLocatorStockRepository extends BaseAbstractRepository<Dail
   }
 
   createEntity(
-    dailyItemStockLocator: SyncItemStockLocatorByDate
+    dailyItemStockLocator: SyncItemStockLocatorByDate,
   ): DailyItemLocatorStock {
     const document = new this.dailyItemLocatorStock();
     document.itemId = dailyItemStockLocator?.itemId;
@@ -46,20 +46,11 @@ export class DailyItemLocatorStockRepository extends BaseAbstractRepository<Dail
     for (const dailyWarehouseItemRequest of dailyWarehouseItemRequests) {
       for (const dailyItemLocatorStock of dailyWarehouseItemRequest.dailyItemLocatorStocks) {
         const document = new this.dailyItemLocatorStock();
-
-        document.itemId = dailyWarehouseItemRequest?.itemId;
-        document.itemName = dailyWarehouseItemRequest?.itemName;
-        document.itemCode = dailyWarehouseItemRequest?.itemCode;
-
-        document.warehouseId = dailyWarehouseItemRequest?.warehouseId;
-        document.warehouseName = dailyWarehouseItemRequest?.warehouseName;
-        document.warehouseCode = dailyWarehouseItemRequest?.warehouseCode;
-
-        document.reportDate = dailyWarehouseItemRequest?.reportDate;
-        document.minInventoryLimit =
-          dailyWarehouseItemRequest?.minInventoryLimit;
-        document.inventoryLimit = dailyWarehouseItemRequest?.inventoryLimit;
-        document.origin = dailyWarehouseItemRequest?.origin;
+        Object.assign(
+          document,
+          dailyWarehouseItemRequest,
+          dailyItemLocatorStock,
+        );
         document.stockQuantity = this.sumItem(
           dailyItemLocatorStock,
           'stockQuantity',
@@ -68,13 +59,6 @@ export class DailyItemLocatorStockRepository extends BaseAbstractRepository<Dail
           dailyItemLocatorStock,
           'storageCost',
         );
-        document.companyId = dailyWarehouseItemRequest?.companyId;
-        document.companyName = dailyWarehouseItemRequest?.companyName;
-        document.locatorId = dailyItemLocatorStock?.locatorId;
-        document.locatorName = dailyItemLocatorStock?.locatorName;
-        document.locatorCode = dailyItemLocatorStock?.locatorCode;
-        document.companyAddress = dailyWarehouseItemRequest?.companyAddress;
-        document.note = dailyWarehouseItemRequest?.note;
         await document.save();
       }
     }

@@ -1,16 +1,16 @@
-import { generateReportItemInventoryBelowMinimum } from '@layout/word/generateReportItemInventoryBelowMinimum.word';
+import { generateReportItemInventoryBelowMinimum } from '@layout/word/report-inventory-below-minimum.word';
 import { ReportRequest } from '@requests/report.request';
 import { ExportResponse } from '@responses/export.response';
 import { DailyWarehouseItemStock } from '@schemas/daily-warehouse-item-stock.schema';
 import { DATE_FOMAT_EXCELL, DATE_FOMAT_EXCELL_FILE } from '@utils/constant';
-import moment from 'moment';
+import * as moment from 'moment';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 
 export async function reportItemInventoryBelowMinimumWordMapping(
   request: ReportRequest,
   data: DailyWarehouseItemStock[],
+  i18n: I18nRequestScopeService,
 ): Promise<ExportResponse> {
-  let i18n: I18nRequestScopeService;
   const companyName = data[0].companyName;
   const companyAddress = data[0].companyAddress;
   const warehouse = request.warehouseId ? data[0].warehouseName : null;
@@ -95,6 +95,7 @@ export async function reportItemInventoryBelowMinimumWordMapping(
       companyAddress,
       title,
       reportTime,
+      i18n,
     ),
   };
 }

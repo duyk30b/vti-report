@@ -4,6 +4,8 @@ import { isEmpty } from 'lodash';
 import { SuccessResponse } from '@core/utils/success.response.dto';
 import { ResponsePayload } from '@core/utils/response-payload';
 import { SyncService } from './sync.service';
+import { SyncTransactionRequest } from '@requests/sync-transaction.request';
+import { SyncDailyReportRequest } from '@requests/sync-daily.request';
 import { BaseDto } from '@core/dto/base.dto';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { SyncReportDailyRequestDto } from './dto/request/sync-report-daily.request.dto';
@@ -16,31 +18,57 @@ export class SyncController {
     private readonly syncService: SyncService,
   ) {}
 
-  @Post('/')
+  @Post('/daily')
   @ApiOperation({
     tags: ['Sync'],
-    summary: 'Đồng bộ dữ liệu',
-    description: 'Đồng bộ dữ liệu',
+    summary: 'Đồng bộ dữ liệu hàng ngày',
+    description: 'Đồng bộ dữ liệu order',
   })
   @ApiResponse({
     status: 200,
     description: 'Success',
     type: SuccessResponse,
   })
-  async sync(@Body() payload: BaseDto): Promise<ResponsePayload<any>> {
+  async syncDailyReport(
+    @Body() payload: SyncDailyReportRequest,
+  ): Promise<ResponsePayload<any>> {
     const { request, responseError } = payload;
 
     if (responseError && !isEmpty(responseError)) {
       return responseError;
     }
-    return await this.syncService.sync();
+    return await this.syncService.syncDailyReport(request);
+  }
+
+  @Post('/transaction')
+  @ApiOperation({
+    tags: ['Sync'],
+    summary: 'Đồng bộ dữ liệu giao dịch',
+    description: 'Đồng bộ dữ liệu giao dịch',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: SuccessResponse,
+  })
+  async syncTransaction(
+    @Body() payload: SyncTransactionRequest,
+  ): Promise<ResponsePayload<any>> {
+    const { request, responseError } = payload;
+
+    if (responseError && !isEmpty(responseError)) {
+      return responseError;
+    }
+    return await this.syncService.syncTransaction(request);
   }
 
   @MessagePattern(SYNC_REPORT_DAILY_TOPIC)
   async readMessage(
-    @Payload() body: SyncReportDailyRequestDto
+    @Payload() body: SyncReportDailyRequestDto,
   ): Promise<ResponsePayload<any>> {
     const { request } = body;
-    return await this.syncService.saveItemStockWarehouseLocatorByDate(request.value);
+    return await this.syncService.saveItemStockWarehouseLocatorByDate(
+      request.value,
+    );
   }
 }
