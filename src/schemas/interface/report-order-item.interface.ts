@@ -1,5 +1,3 @@
-import { OrderStatus } from '@enums/order-status.enum';
-import { OrderType } from '@enums/order-type.enum';
 import { ReportOrderInteface } from './report-order.interface';
 
 export interface ReportOrderItemInteface extends ReportOrderInteface {

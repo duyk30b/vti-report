@@ -6,7 +6,6 @@ import { ReportModel } from '@models/report.model';
 import { TableDataSituationImportPeriod } from '@models/situation_import.model';
 
 import { ReportRequest } from '@requests/report.request';
-import { ReportOrderItemLot } from '@schemas/report-order-item-lot.schema';
 import { REPORT_INFO } from '@utils/constant';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 export async function reportSituationImportPeriodExcelMapping(
