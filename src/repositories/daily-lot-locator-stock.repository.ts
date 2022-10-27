@@ -24,28 +24,12 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       for (const dailyItemLocatorStock of dailyWarehouseItemRequest.dailyItemLocatorStocks) {
         for (const dailyLotLocatorStock of dailyItemLocatorStock.dailyLotLocatorStocks) {
           const document = new this.dailyLotLocatorStock();
-          document.itemId = dailyWarehouseItemRequest?.itemId;
-          document.itemName = dailyWarehouseItemRequest?.itemName;
-          document.itemCode = dailyWarehouseItemRequest?.itemCode;
-          document.warehouseId = dailyWarehouseItemRequest?.warehouseId;
-          document.warehouseName = dailyWarehouseItemRequest?.warehouseName;
-          document.warehouseCode = dailyWarehouseItemRequest?.warehouseCode;
-          document.reportDate = dailyWarehouseItemRequest?.reportDate;
-          document.stockQuantity = dailyLotLocatorStock?.stockQuantity;
-          document.storageCost = dailyLotLocatorStock?.storageCost;
-          document.companyId = dailyWarehouseItemRequest?.companyId;
-          document.locatorId = dailyItemLocatorStock?.locatorId;
-          document.locatorName = dailyItemLocatorStock?.locatorName;
-          document.locatorCode = dailyItemLocatorStock?.locatorCode;
-          document.lotNumber = dailyLotLocatorStock?.lotNumber;
-          document.minInventoryLimit =
-            dailyWarehouseItemRequest?.minInventoryLimit;
-          document.inventoryLimit = dailyWarehouseItemRequest?.inventoryLimit;
-          document.companyName = dailyWarehouseItemRequest?.companyName;
-          document.companyAddress = dailyWarehouseItemRequest?.companyAddress;
-          document.origin = dailyWarehouseItemRequest?.origin;
-          document.note = dailyWarehouseItemRequest?.note;
-
+          Object.assign(
+            document,
+            dailyWarehouseItemRequest,
+            dailyItemLocatorStock,
+            dailyLotLocatorStock,
+          );
           await document.save();
         }
       }
@@ -57,7 +41,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       $and: [],
     };
 
-    if (request?.dateTo) {
+    if (request?.dateFrom) {
       const today = moment(request?.dateTo).startOf('day');
       const tomorrow = moment(today).endOf('day');
       condition['$and'].push({
@@ -88,22 +72,6 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
 
     const reportOrderItemLot = [];
 
-    if (request?.dateTo) {
-      condition['$and'].push({
-        reportDate: { $lte: new Date(request?.dateTo) },
-      });
-      reportOrderItemLot.push({
-        $lte: ['$orderCreatedAt', new Date(request?.dateTo)],
-      });
-    } else {
-      condition['$and'].push({
-        reportDate: { $lte: new Date() },
-      });
-      reportOrderItemLot.push({
-        $lte: ['$orderCreatedAt', new Date(request?.dateTo)],
-      });
-    }
-
     if (request?.dateFrom) {
       condition['$and'].push({
         reportDate: { $gte: new Date(request?.dateFrom) },
@@ -117,6 +85,22 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       });
       reportOrderItemLot.push({
         $gte: ['$orderCreatedAt', new Date()],
+      });
+    }
+
+    if (request?.dateTo) {
+      condition['$and'].push({
+        reportDate: { $lte: new Date(request?.dateTo) },
+      });
+      reportOrderItemLot.push({
+        $lte: ['$orderCreatedAt', new Date(request?.dateTo)],
+      });
+    } else {
+      reportOrderItemLot.push({
+        $lte: ['$orderCreatedAt', new Date()],
+      });
+      condition['$and'].push({
+        reportDate: { $lte: new Date() },
       });
     }
 
@@ -148,7 +132,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
           itemName: 1,
           unit: 1,
           lotNumber: 1,
-          cost: 1,
+          storageCost: 1,
           note: 1,
           stockStart: {
             $cond: [
@@ -194,7 +178,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
             itemName: '$itemName',
             unit: '$unit',
             lotNumber: '$lotNumber',
-            cost: '$cost',
+            storageCost: '$storageCost',
             reportDate: {
               $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
             },
@@ -297,17 +281,17 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
               itemName: '$_id.itemName',
               unit: '$_id.unit',
               lotNumber: '$_id.lotNumber',
-              cost: '$_id.cost',
+              storageCost: '$_id.storageCost',
 
               stockStart: '$stockStart',
               totalStockStart: {
-                $multiply: ['$_id.cost', '$stockStart'],
+                $multiply: ['$_id.storageCost', '$stockStart'],
               },
 
               importIn: { $sum: '$report-order-item-lot.importIn' },
               totalImportIn: {
                 $multiply: [
-                  '$_id.cost',
+                  '$_id.storageCost',
                   { $sum: '$report-order-item-lot.importIn' },
                 ],
               },
@@ -315,14 +299,14 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
               exportIn: { $sum: '$report-order-item-lot.exportIn' },
               totalExportIn: {
                 $multiply: [
-                  '$_id.cost',
+                  '$_id.storageCost',
                   { $sum: '$report-order-item-lot.exportIn' },
                 ],
               },
 
               stockEnd: '$stockEnd',
               totalStockEnd: {
-                $multiply: ['$_id.cost', '$stockEnd'],
+                $multiply: ['$_id.storageCost', '$stockEnd'],
               },
 
               note: '$_id.note',
@@ -353,9 +337,9 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
         warehouseId: { $eq: request?.warehouseId },
       });
     return this.dailyLotLocatorStock.aggregate([
-      // {
-      //   $match: condition,
-      // },
+      {
+        $match: condition,
+      },
       {
         $sort: { storageDate: -1 },
       },

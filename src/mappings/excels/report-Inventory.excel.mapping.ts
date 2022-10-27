@@ -35,8 +35,8 @@ export async function reportInventoryExcelMapping(
         lotNumber: cur.lotNumber,
         stockQuantity: cur.stockQuantity,
         positision: cur.locatorCode,
-        unitPrice: cur.cost,
-        totalPrice: cur.cost * cur.stockQuantity,
+        unitPrice: cur.storageCost,
+        totalPrice: cur.storageCost * cur.stockQuantity,
       };
       prev[warehouseCode].push(data);
       return prev;
