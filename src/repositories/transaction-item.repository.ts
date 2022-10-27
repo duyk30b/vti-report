@@ -18,15 +18,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
     syncTransactionRequest: SyncTransactionRequest,
   ): Promise<void> {
     const document = new this.transactionItem();
-    document.itemId = syncTransactionRequest?.itemId;
-    document.lotNumber = syncTransactionRequest?.lotNumber;
-    document.stockQuantity = syncTransactionRequest?.stockQuantity;
-    document.warehouseId = syncTransactionRequest?.warehouseId;
-    document.locatorId = syncTransactionRequest?.locatorId;
-    document.planQuantity = syncTransactionRequest?.planQuantity;
-    document.storageDate = syncTransactionRequest?.storageDate;
-    document.orderId = syncTransactionRequest?.orderId;
-    document.orderType = syncTransactionRequest?.orderType;
+    Object.assign(document, syncTransactionRequest);
     await document.save();
   }
 }

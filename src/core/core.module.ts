@@ -8,7 +8,7 @@ import { TransformInterceptor } from './interceptors/transftorm.interceptor';
   providers: [
     // { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
     { provide: APP_INTERCEPTOR, useClass: ExceptionInterceptor },
-    { provide: APP_INTERCEPTOR, useClass: TransformInterceptor },
+    // { provide: APP_INTERCEPTOR, useClass: TransformInterceptor },
   ],
 })
 export class CoreModule {}

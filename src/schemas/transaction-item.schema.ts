@@ -1,8 +1,13 @@
 import { BaseEntity } from '@core/entity/base.entity';
+import { OrderType } from '@enums/order-type.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { TransactionItemInterface } from './interface/TransactionItem.Interface';
 export type TransactionItemDocument = TransactionItem & Document;
 @Schema({ collection: 'transaction-item', timestamps: true })
-export class TransactionItem extends BaseEntity {
+export class TransactionItem
+  extends BaseEntity
+  implements TransactionItemInterface
+{
   @Prop({ required: false })
   itemId: number;
 
@@ -28,7 +33,7 @@ export class TransactionItem extends BaseEntity {
   orderId: number;
 
   @Prop({ required: false })
-  orderType: number;
+  orderType: OrderType;
 }
 
 export const TransactionItemSchema =
