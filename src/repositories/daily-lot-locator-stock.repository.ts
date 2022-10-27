@@ -72,12 +72,12 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
 
     const reportOrderItemLot = [];
 
-    if (request?.dateTo) {
+    if (request?.dateFrom) {
       condition['$and'].push({
-        reportDate: { $gte: new Date(request?.dateTo) },
+        reportDate: { $gte: new Date(request?.dateFrom) },
       });
       reportOrderItemLot.push({
-        $gte: ['$orderCreatedAt', new Date(request?.dateTo)],
+        $gte: ['$orderCreatedAt', new Date(request?.dateFrom)],
       });
     } else {
       condition['$and'].push({
@@ -88,12 +88,12 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       });
     }
 
-    if (request?.dateFrom) {
+    if (request?.dateTo) {
       condition['$and'].push({
-        reportDate: { $lte: new Date(request?.dateFrom) },
+        reportDate: { $lte: new Date(request?.dateTo) },
       });
       reportOrderItemLot.push({
-        $lte: ['$orderCreatedAt', new Date(request?.dateFrom)],
+        $lte: ['$orderCreatedAt', new Date(request?.dateTo)],
       });
     } else {
       reportOrderItemLot.push({
@@ -141,7 +141,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
                   {
                     $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
                   },
-                  moment(request?.dateTo || new Date()).format(DATE_FOMAT),
+                  moment(request?.dateFrom || new Date()).format(DATE_FOMAT),
                 ],
               },
               '$stockQuantity',
@@ -155,7 +155,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
                   {
                     $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
                   },
-                  moment(request?.dateFrom || new Date()).format(DATE_FOMAT),
+                  moment(request?.dateTo || new Date()).format(DATE_FOMAT),
                 ],
               },
               '$stockQuantity',

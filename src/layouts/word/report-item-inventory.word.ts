@@ -26,7 +26,7 @@ export async function generateReportItemInventory(
   title,
   reportTime,
   i18n: I18nRequestScopeService,
-): Promise<string> {
+): Promise<any> {
   let itemData = [];
 
   const companyInfo = new Table({
@@ -457,5 +457,5 @@ export async function generateReportItemInventory(
     ],
   });
 
-  return Packer.toBase64String(doc);
+  return Packer.toBuffer(doc);
 }

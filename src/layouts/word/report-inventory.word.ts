@@ -12,16 +12,12 @@ import {
   VerticalAlign,
 } from 'docx';
 import { I18nRequestScopeService } from 'nestjs-i18n';
-import {
-  setHeight,
-  setWidth,
-  wordFileStyle,
-} from './word-common.styles';
+import { setHeight, setWidth, wordFileStyle } from './word-common.styles';
 
 export async function generateReportInventory(
   dataWord,
   i18n: I18nRequestScopeService,
-): Promise<string> {
+): Promise<any> {
   let itemData = [];
 
   const doc = new Document({
@@ -188,7 +184,7 @@ export async function generateReportInventory(
                               alignment: AlignmentType.CENTER,
                               children: [
                                 new TextRun({
-                                  text: item.cost,
+                                  text: item.storageCost,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -204,8 +200,8 @@ export async function generateReportInventory(
                               children: [
                                 new TextRun({
                                   text: mul(
-                                    item.cost,
-                                    item.stockQuantity,
+                                    item.storageCost || 0,
+                                    item.stockQuantity || 0,
                                   ).toString(),
                                   ...wordFileStyle.text_style,
                                 }),
@@ -249,5 +245,5 @@ export async function generateReportInventory(
     ],
   });
 
-  return Packer.toBase64String(doc);
+  return Packer.toBuffer(doc);
 }

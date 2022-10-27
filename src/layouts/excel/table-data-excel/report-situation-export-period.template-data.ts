@@ -23,7 +23,6 @@ export function reportSituationExportPeriodTemplateData(
   i18n: I18nRequestScopeService,
 ) {
   let totalPriceAll = 0;
-
   const cells: ConfigCells[] = [];
   dataExcell.forEach((item) => {
     totalPriceAll += item.totalPrice;
@@ -247,6 +246,7 @@ export function reportSituationExportPeriodTemplateData(
       });
     });
   });
+
   cells.push(
     ...[
       {
@@ -265,7 +265,6 @@ export function reportSituationExportPeriodTemplateData(
         aligment: ALIGNMENT_RIGHT,
         border: BORDER,
         merge: true,
-        translate: true,
       },
     ],
   );
