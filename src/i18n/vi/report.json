@@ -40,7 +40,7 @@
     "WAREHOUSE_GROUP_CODE": "Mã kho: ",
     "WAREHOUSE_IMPORT": "Kho nhập",
     "DATE_TEMPLATE_TO": "Ngày: {to}",
-    "DATE_TEMPLATE_TO_FROM": "Từ ngày: {to}  đến ngày: {from}",
+    "DATE_TEMPLATE_TO_FROM": "Từ ngày: {from}  đến ngày: {to}",
     "DATE_IMPORT": "Ngày nhập kho",
     "DATE_EXPORT": "Ngày xuất kho",
     "DATE": "Ngày",

@@ -140,9 +140,10 @@ export const generateTable = async (
     );
   }
   const buffer = await workbook.xlsx.writeBuffer();
-  const str = (buffer as Buffer).toString('base64');
+  // workbook.xlsx.writeFile(`demo${Math.floor(Math.random() * 1000)}.xlsx`);
+
   return {
-    dataBase64: str,
+    dataBase64: buffer,
     nameFile,
   };
 };

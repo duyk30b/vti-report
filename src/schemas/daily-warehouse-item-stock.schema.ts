@@ -1,10 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { DailyWarehouseItemStockInterface } from './interface/daily-warehouse-item-stock.interface';
 
 export type DailyWarehouseItemStockDocument = DailyWarehouseItemStock &
   Document;
 
 @Schema({ collection: 'daily-warehouse-item-stock', timestamps: true })
-export class DailyWarehouseItemStock {
+export class DailyWarehouseItemStock
+  implements DailyWarehouseItemStockInterface
+{
   @Prop({ required: false })
   itemId: number;
 

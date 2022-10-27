@@ -9,8 +9,6 @@ import { I18nRequestScopeService } from 'nestjs-i18n';
 import { DailyLotLocatorStockRepository } from '@repositories/daily-lot-locator-stock.repository';
 import { ReportOrderItemLotRepository } from '@repositories/report-order-item-lot.repository';
 import { OrderType } from '@enums/order-type.enum';
-import { DATE_FOMAT, MONTHS, YEARS } from '@utils/constant';
-import * as moment from 'moment';
 import { DailyWarehouseItemStockRepository } from '@repositories/daily-warehouse-item-stock.repository';
 import { ExportType } from '@enums/export-type.enum';
 import { ReportOrderItemRepository } from '@repositories/report-order-item.repository';
@@ -64,9 +62,7 @@ export class ExportService {
     private readonly i18n: I18nRequestScopeService,
   ) {}
 
-  async getReport(
-    request: ReportRequest,
-  ): Promise<ResponsePayload<ReportResponse>> {
+  async getReport(request: ReportRequest): Promise<ReportResponse> {
     try {
       let dataReturn;
       switch (request.reportType) {
@@ -140,21 +136,10 @@ export class ExportService {
           dataReturn = null;
           break;
       }
-
-      if (!dataReturn)
-        return new ResponseBuilder<any>()
-          .withCode(ResponseCodeEnum.BAD_REQUEST)
-          .withMessage(await this.i18n.translate('error.NOT_FOUND'))
-          .build();
-      return new ResponseBuilder<any>(dataReturn)
-        .withCode(ResponseCodeEnum.SUCCESS)
-        .withMessage('success')
-        .build();
+      return dataReturn;
     } catch (e) {
-      return new ResponseBuilder<any>(e)
-        .withCode(ResponseCodeEnum.BAD_REQUEST)
-        .withMessage(await this.i18n.translate('error.BAD_REQUEST'))
-        .build();
+      console.log(e);
+      return null;
     }
   }
 

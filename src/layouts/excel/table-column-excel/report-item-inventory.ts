@@ -56,11 +56,11 @@ export const ITEM_INVENTORY_COLUMN: TableColumn[] = [
     child: [
       {
         name: 'QUANTITY_SHORT',
-        width: 5,
+        width: 10,
       },
       {
         name: 'TOTAL_SHORT',
-        width: 5,
+        width: 10,
       },
     ],
   },
@@ -69,11 +69,11 @@ export const ITEM_INVENTORY_COLUMN: TableColumn[] = [
     child: [
       {
         name: 'QUANTITY_SHORT',
-        width: 5,
+        width: 10,
       },
       {
         name: 'TOTAL_SHORT',
-        width: 5,
+        width: 10,
       },
     ],
   },

@@ -2,19 +2,16 @@ import { BaseEntity } from '@core/entity/base.entity';
 import { OrderStatus } from '@enums/order-status.enum';
 import { OrderType } from '@enums/order-type.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import { ReportOrderItemInteface } from './interface/report-order-item.interface';
 export type ReportOrderItemDocument = ReportOrderItem & Document;
 
 @Schema({ collection: 'report-order-item', timestamps: true })
-export class ReportOrderItem extends BaseEntity {
-  @Prop({ required: false })
-  reportOrderId: Types.ObjectId;
-
+export class ReportOrderItem
+  extends BaseEntity
+  implements ReportOrderItemInteface
+{
   @Prop({ required: false })
   orderId: number;
-
-  @Prop({ required: false })
-  orderName: string;
 
   @Prop({ required: false })
   orderCode: string;
@@ -65,9 +62,6 @@ export class ReportOrderItem extends BaseEntity {
   orderType: OrderType;
 
   @Prop({ required: false })
-  actionType: number;
-
-  @Prop({ required: false })
   planDate: Date;
 
   @Prop({ required: false })
@@ -89,10 +83,10 @@ export class ReportOrderItem extends BaseEntity {
   constructionCode: string;
 
   @Prop({ required: false })
-  unit: string;
+  constructionName: string;
 
   @Prop({ required: false })
-  constructionName: string;
+  unit: string;
 
   @Prop({ required: false })
   performerId: number;
@@ -128,7 +122,7 @@ export class ReportOrderItem extends BaseEntity {
   contract: string;
 
   @Prop({ required: false })
-  providerId: string;
+  providerId: number;
 
   @Prop({ required: false })
   providerCode: string;
@@ -137,7 +131,7 @@ export class ReportOrderItem extends BaseEntity {
   providerName: string;
 
   @Prop({ required: false })
-  receiveDepartmentId: string;
+  receiveDepartmentId: number;
 
   @Prop({ required: false })
   receiveDepartmentCode: string;
@@ -149,15 +143,6 @@ export class ReportOrderItem extends BaseEntity {
   description: string;
 
   @Prop({ required: false })
-  accountId: string;
-
-  @Prop({ required: false })
-  accountCode: string;
-
-  @Prop({ required: false })
-  accountName: string;
-
-  @Prop({ required: false })
   account: string;
 
   @Prop({ required: false })
@@ -167,7 +152,10 @@ export class ReportOrderItem extends BaseEntity {
   accountHave: number;
 
   @Prop({ required: false })
-  proposalExport: string;
+  proposalExport: string; // Giay de nghi xuat vat tu
+
+  @Prop({ required: false })
+  orderImportRequireCode: string; //Giay de nghi nhap vat tu
 }
 
 export const ReportOrderItemSchema =

@@ -27,6 +27,9 @@ export class ReportRequest extends BaseDto {
 
   @IsNotEmpty()
   @IsNumber()
+  @Transform(({ value }) => {
+    return Number(value);
+  })
   companyId: number;
 
   @IsOptional()
@@ -35,10 +38,16 @@ export class ReportRequest extends BaseDto {
 
   @IsOptional()
   @IsNumber()
+  @Transform(({ value }) => {
+    return Number(value);
+  })
   warehouseId: number;
 
   @IsOptional()
   @IsNumber()
+  @Transform(({ value }) => {
+    return Number(value);
+  })
   receiveDepartmentId: number;
 
   @IsOptional()
