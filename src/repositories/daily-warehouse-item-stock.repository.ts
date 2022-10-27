@@ -23,16 +23,7 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
   ): Promise<void> {
     for (const dailyWarehouseItemRequest of dailyWarehouseItemRequests) {
       const document = new this.dailyWarehouseItemStock();
-      document.itemId = dailyWarehouseItemRequest?.itemId;
-      document.itemName = dailyWarehouseItemRequest?.itemName;
-      document.itemCode = dailyWarehouseItemRequest?.itemCode;
-      document.warehouseId = dailyWarehouseItemRequest?.warehouseId;
-      document.warehouseCode = dailyWarehouseItemRequest?.warehouseCode;
-      document.warehouseName = dailyWarehouseItemRequest?.warehouseName;
-      document.reportDate = dailyWarehouseItemRequest?.reportDate;
-      document.minInventoryLimit = dailyWarehouseItemRequest?.minInventoryLimit;
-      document.inventoryLimit = dailyWarehouseItemRequest?.inventoryLimit;
-      document.note = dailyWarehouseItemRequest?.note;
+      Object.assign(document, dailyWarehouseItemRequest);
 
       document.stockQuantity = this.sumWarehouse(
         dailyWarehouseItemRequest,
@@ -42,10 +33,6 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
         dailyWarehouseItemRequest,
         'storageCost',
       );
-      document.companyId = dailyWarehouseItemRequest?.companyId;
-      document.companyName = dailyWarehouseItemRequest?.companyName;
-      document.companyAddress = dailyWarehouseItemRequest?.companyAddress;
-      document.origin = dailyWarehouseItemRequest?.origin;
 
       await document.save();
     }

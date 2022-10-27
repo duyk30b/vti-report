@@ -17,11 +17,7 @@ import {
   VerticalAlign,
 } from 'docx';
 import { I18nRequestScopeService } from 'nestjs-i18n';
-import {
-  setHeight,
-  setWidth,
-  wordFileStyle,
-} from './word-common.styles';
+import { setHeight, setWidth, wordFileStyle } from './word-common.styles';
 export async function generateReportSituationImportPeriod(
   dataWord,
   companyName,
@@ -29,7 +25,7 @@ export async function generateReportSituationImportPeriod(
   title,
   reportTime,
   i18n: I18nRequestScopeService,
-): Promise<string> {
+): Promise<any> {
   let purposeData = [];
   let orderData = [];
   let itemData = [];
@@ -727,6 +723,5 @@ export async function generateReportSituationImportPeriod(
     ],
   });
 
-  //   return 'ok';
-  return Packer.toBase64String(doc);
+  return Packer.toBuffer(doc);
 }

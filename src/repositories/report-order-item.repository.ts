@@ -4,11 +4,9 @@ import { OrderType } from '@enums/order-type.enum';
 import { ReportType } from '@enums/report-type.enum';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { ReportOrderItemRequest } from '@requests/report-order-items.request';
 import { ReportRequest } from '@requests/report.request';
-import {
-  ReportOrderItemRequest,
-  ReportOrderRequest,
-} from '@requests/sync-daily.request';
+import { ReportOrderRequest } from '@requests/sync-daily.request';
 import { ReportOrderItem } from '@schemas/report-order-item.schema';
 import { plus } from '@utils/common';
 import { Model } from 'mongoose';
@@ -26,55 +24,7 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
     for (const reportOrderRequest of reportOrderRequests) {
       for (const reportOrderItem of reportOrderRequest.reportOrderItems) {
         const document = new this.reportOrderItem();
-        document.orderId = reportOrderRequest?.orderId;
-        document.orderName = reportOrderRequest.orderName;
-        document.orderCreatedAt = reportOrderRequest.orderCreatedAt;
-        document.itemId = reportOrderItem.itemId;
-        document.itemName = reportOrderItem.itemName;
-        document.itemCode = reportOrderItem.itemCode;
-        document.warehouseId = reportOrderRequest.warehouseId;
-        document.warehouseName = reportOrderRequest.warehouseName;
-        document.warehouseCode = reportOrderRequest.warehouseCode;
-        document.orderType = reportOrderRequest.orderType;
-        document.actionType = reportOrderRequest.actionType;
-        document.planDate = reportOrderRequest.planDate;
-        document.status = reportOrderRequest.status;
-        document.completedAt = reportOrderRequest.completedAt;
-        document.companyId = reportOrderRequest.companyId;
-        document.ebsId = reportOrderRequest.ebsId;
-        document.constructionId = reportOrderRequest.constructionId;
-        document.constructionCode = reportOrderRequest.constructionCode;
-        document.constructionName = reportOrderRequest.constructionName;
-        document.unit = reportOrderRequest.unit;
-        document.performerId = reportOrderRequest.performerId;
-        document.performerName = reportOrderRequest.performerName;
-        document.qrCode = reportOrderRequest.qrCode;
-        document.companyName = reportOrderRequest.companyName;
-        document.companyAddress = reportOrderRequest.companyAddress;
-        document.warehouseTargetId = reportOrderRequest.warehouseTargetId;
-        document.warehouseTargetCode = reportOrderRequest.warehouseTargetCode;
-        document.warehouseTargetName = reportOrderRequest.warehouseTargetName;
-        document.purpose = reportOrderRequest.purpose;
-        document.postCode = reportOrderRequest.postCode;
-        document.contract = reportOrderRequest.contract;
-        document.providerId = reportOrderRequest.providerId;
-        document.receiveDepartmentId = reportOrderRequest.receiveDepartmentId;
-        document.providerCode = reportOrderRequest.providerCode;
-        document.receiveDepartmentCode =
-          reportOrderRequest.receiveDepartmentCode;
-        document.providerName = reportOrderRequest.providerName;
-        document.receiveDepartmentName =
-          reportOrderRequest.receiveDepartmentName;
-        document.description = reportOrderRequest.description;
-        document.accountId = reportOrderRequest.accountId;
-        document.accountCode = reportOrderRequest.accountCode;
-        document.accountName = reportOrderRequest.accountName;
-        document.account = reportOrderRequest.account;
-        document.accountDebt = reportOrderRequest.accountDebt;
-        document.accountHave = reportOrderRequest.accountHave;
-        document.proposalExport = reportOrderRequest.proposalExport;
-
-        document.cost = this.sumItem(reportOrderItem, 'cost');
+        Object.assign(document, reportOrderRequest, reportOrderItem);
         document.planQuantity = this.sumItem(reportOrderItem, 'planQuantity');
         document.actualQuantity = this.sumItem(
           reportOrderItem,
@@ -108,7 +58,7 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
     let quantity = 0;
     reportOrderItemRequest?.reportOrderItemLots.forEach(
       (reportOrderItemLot) => {
-        quantity = plus(quantity || 0, reportOrderItemLot[field] || 0);
+        quantity = plus(quantity, reportOrderItemLot[field] || 0);
       },
     );
     return quantity;
