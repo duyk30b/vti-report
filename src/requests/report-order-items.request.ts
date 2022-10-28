@@ -115,8 +115,8 @@ export class ReportOrderItemRequest implements ReportOrderItemInteface {
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
-  account: string;
+  @IsNumber()
+  account: number;
 
   @ApiProperty()
   @IsOptional()

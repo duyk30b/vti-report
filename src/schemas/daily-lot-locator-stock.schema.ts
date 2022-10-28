@@ -35,7 +35,7 @@ export class DailyLotLocatorStock implements DailyItemLotLocatorStockInterface {
   storageDate: Date;
 
   @Prop({ required: false })
-  account: string;
+  account: number;
 
   @Prop({ required: false })
   companyId: number;

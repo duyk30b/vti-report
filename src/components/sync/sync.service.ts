@@ -64,6 +64,7 @@ export class SyncService {
         .withMessage(await this.i18n.translate('success.SUCCESS'))
         .build();
     } catch (e) {
+      console.log(e);
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.BAD_REQUEST)
         .withMessage(await this.i18n.translate('error.BAD_REQUEST'))

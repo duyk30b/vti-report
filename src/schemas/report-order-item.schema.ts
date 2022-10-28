@@ -143,7 +143,7 @@ export class ReportOrderItem
   description: string;
 
   @Prop({ required: false })
-  account: string;
+  account: number;
 
   @Prop({ required: false })
   accountDebt: number;

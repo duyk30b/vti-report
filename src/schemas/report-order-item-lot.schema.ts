@@ -161,7 +161,7 @@ export class ReportOrderItemLot implements ReportOrderItemLotInteface {
   description: string;
 
   @Prop({ required: false })
-  account: string;
+  account: number;
 
   @Prop({ required: false })
   accountDebt: number;
