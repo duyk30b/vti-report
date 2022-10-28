@@ -17,7 +17,11 @@ import {
   VerticalAlign,
 } from 'docx';
 import { I18nRequestScopeService } from 'nestjs-i18n';
-import { setHeight, setWidth, wordFileStyle } from './word-common.styles';
+import {
+  setHeight,
+  setWidth,
+  wordFileStyle,
+} from './word-common.styles';
 
 export async function generateReportItemInventory(
   dataWord,
@@ -279,7 +283,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.storageCost,
+                                  text: item.cost,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],

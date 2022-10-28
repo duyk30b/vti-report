@@ -15,7 +15,11 @@ import {
   VerticalAlign,
 } from 'docx';
 import { I18nRequestScopeService } from 'nestjs-i18n';
-import { setHeight, setWidth, wordFileStyle } from './word-common.styles';
+import {
+  setHeight,
+  setWidth,
+  wordFileStyle,
+} from './word-common.styles';
 
 export async function generateReportOrderImportByRequestForItem(
   dataWord,
@@ -117,7 +121,7 @@ export async function generateReportOrderImportByRequestForItem(
                               alignment: AlignmentType.LEFT,
                               children: [
                                 new TextRun({
-                                  text: item.orderImportRequireCode,
+                                  text: item.orderName,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
