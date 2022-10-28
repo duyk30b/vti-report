@@ -9,7 +9,7 @@ export interface DailyItemLotLocatorStockInterface {
   locatorCode: string;
   locatorName: string;
   storageDate: Date;
-  account: string;
+  account: number;
   companyId: number;
   itemCode: string;
   itemName: string;

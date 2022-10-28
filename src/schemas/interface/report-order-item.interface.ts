@@ -17,7 +17,7 @@ export interface ReportOrderItemInteface extends ReportOrderInteface {
   receiveDepartmentId: number;
   receiveDepartmentCode: string;
   receiveDepartmentName: string;
-  account: string;
+  account: number;
   accountDebt: number;
   accountHave: number;
   proposalExport: string; // Giay de nghi xuat vat tu
