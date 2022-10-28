@@ -151,8 +151,8 @@ export class ReportOrderItemLotRequest implements ReportOrderItemLotInteface {
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
-  account: string;
+  @IsNumber()
+  account: number;
 
   @ApiProperty()
   @IsOptional()
