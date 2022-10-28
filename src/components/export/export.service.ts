@@ -148,7 +148,6 @@ export class ExportService {
       await this.dailyLotLocatorStockRepository.getReportAgeOfItemStock(
         request,
       );
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } = await reportAgeOfItemsExcelMapping(
@@ -172,7 +171,6 @@ export class ExportService {
         request,
         OrderType.EXPORT,
       );
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -197,7 +195,6 @@ export class ExportService {
         request,
         OrderType.IMPORT,
       );
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -222,7 +219,7 @@ export class ExportService {
         request,
         OrderType.INVENTORY,
       );
-    if (!data.length) return;
+
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -247,7 +244,6 @@ export class ExportService {
         request,
         OrderType.TRANSFER,
       );
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -267,7 +263,7 @@ export class ExportService {
       request,
       OrderType.EXPORT,
     );
-    if (!data.length) return;
+
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -291,7 +287,6 @@ export class ExportService {
       request,
       OrderType.IMPORT,
     );
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -315,7 +310,6 @@ export class ExportService {
   async reportItemInventory(request: ReportRequest): Promise<ReportResponse> {
     const data =
       await this.dailyLotLocatorStockRepository.getReportItemInventory(request);
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } = await reportItemInventoryExcelMapping(
@@ -339,7 +333,6 @@ export class ExportService {
       OrderType.IMPORT,
     );
 
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -362,7 +355,6 @@ export class ExportService {
 
   async reportInventory(request: ReportRequest): Promise<ReportResponse> {
     const data = await this.dailyLotLocatorStockRepository.getReports(request);
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } = await reportInventoryExcelMapping(
@@ -385,7 +377,6 @@ export class ExportService {
       request,
       OrderType.IMPORT,
     );
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -414,7 +405,6 @@ export class ExportService {
       OrderType.IMPORT,
     );
 
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -439,7 +429,6 @@ export class ExportService {
       OrderType.EXPORT,
     );
 
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -467,7 +456,6 @@ export class ExportService {
       request,
       OrderType.TRANSFER,
     );
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -494,7 +482,6 @@ export class ExportService {
     const data = await this.dailyWarehouseItemStockRepository.getReports(
       request,
     );
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -522,7 +509,6 @@ export class ExportService {
     const data = await this.dailyWarehouseItemStockRepository.getReports(
       request,
     );
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
