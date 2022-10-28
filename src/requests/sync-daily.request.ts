@@ -24,42 +24,42 @@ export class DailyLotLocatorStockRequest
   implements DailyItemLotLocatorStockInterface
 {
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   lotNumber: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   stockQuantity: number;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsDateString()
   reportDate: Date;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsDateString()
   storageDate: Date;
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
-  account: string;
+  @IsNumber()
+  account: number;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   storageCost: number;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   minInventoryLimit: number;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   inventoryLimit: number;
 
@@ -101,27 +101,27 @@ export class DailyItemLocatorStockRequest
   implements DailyLocatorStockInterface
 {
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   locatorId: number;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   locatorName: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   locatorCode: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsDateString()
   reportDate: Date;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   unit: string;
 
@@ -216,7 +216,7 @@ export class DailyWarehouseItemRequest
   companyName: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   companyAddress: string;
 
@@ -330,7 +330,7 @@ export class ReportOrderRequest implements ReportOrderInteface {
   companyName: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   companyAddress: string;
 

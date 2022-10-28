@@ -59,6 +59,7 @@ export class ExportController {
             : nameFile + '.docx',
         ),
       );
+      res.header('Access-Control-Expose-Headers', '*');
       return new StreamableFile(result.result);
     }
 
