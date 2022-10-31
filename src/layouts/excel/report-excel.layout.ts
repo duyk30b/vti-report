@@ -25,7 +25,7 @@ import {
   FONT_BOLD_10,
   FONT_BOLD_14,
   FONT_BOLD_9,
-  FONT_NORMAL_8,
+  FONT_NORMAL_9,
   HEIGHT_REPORT_TITLE,
   INDEX_REPORT_TIME,
   INDEX_REPORT_TITLE,
@@ -72,6 +72,7 @@ export const generateTable = async (
   });
 
   const index = getChildNestedOfArray(model.tableColumn, 'child', worksheet);
+  worksheet['columnNumber_'] = index;
   //header
   if (model.header) {
     worksheet.mergeCells(
@@ -104,11 +105,15 @@ export const generateTable = async (
         font: FONT_BOLD_10,
         aligment: ALIGNMENT_LEFT,
         translate: false,
+        heightRow: {
+          index: 3,
+          value: 50,
+        },
       },
       {
         nameCell: CELL_REPORT_NUMBER,
         value: 'REPORT_NUMBER',
-        font: FONT_NORMAL_8,
+        font: FONT_NORMAL_9,
         aligment: ALIGNMENT_LEFT,
         translate: true,
       },

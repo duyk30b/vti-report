@@ -402,7 +402,7 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.CENTER,
                                   children: [
                                     new TextRun({
-                                      text: order.orderCreateAt,
+                                      text: order.orderCreatedAt,
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],

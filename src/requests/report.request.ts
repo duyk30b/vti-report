@@ -51,8 +51,20 @@ export class ReportRequest extends BaseDto {
   receiveDepartmentId: number;
 
   @IsOptional()
+  @Transform(({ value }) => {
+    const curDate = new Date(value);
+    const curHours = curDate.getHours();
+    curDate.setHours(curHours + 7);
+    return curDate;
+  })
   dateTo: Date;
 
   @IsOptional()
+  @Transform(({ value }) => {
+    const curDate = new Date(value);
+    const curHours = curDate.getHours();
+    curDate.setHours(curHours + 7);
+    return curDate;
+  })
   dateFrom: Date;
 }
