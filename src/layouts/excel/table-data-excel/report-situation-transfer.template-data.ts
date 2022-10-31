@@ -5,7 +5,7 @@ import {
   ALIGNMENT_RIGHT,
   BORDER,
   FONT_BOLD_8,
-  FONT_NORMAL_8,
+  FONT_NORMAL_9,
 } from '@utils/constant';
 import * as ExcelJS from 'exceljs';
 import { I18nRequestScopeService } from 'nestjs-i18n';
@@ -47,7 +47,7 @@ export function reportSituationTransferTemplateData(
           {
             nameCell: `A${curRowIdx}`,
             value: index + 1,
-            font: FONT_NORMAL_8,
+            font: FONT_NORMAL_9,
             aligment: ALIGNMENT_CENTER,
             translate: false,
             border: BORDER,
@@ -64,21 +64,21 @@ export function reportSituationTransferTemplateData(
           {
             nameCell: `C${curRowIdx}`,
             value: order.orderCreatedAt,
-            font: FONT_NORMAL_8,
+            font: FONT_NORMAL_9,
             aligment: ALIGNMENT_CENTER,
             border: BORDER,
           },
           {
             nameCell: `D${curRowIdx}:`,
             value: order.warehouseImport,
-            font: FONT_NORMAL_8,
+            font: FONT_NORMAL_9,
             aligment: ALIGNMENT_LEFT,
             border: BORDER,
           },
           {
             nameCell: `E${curRowIdx}:N${curRowIdx}`,
             value: order.explain,
-            font: FONT_NORMAL_8,
+            font: FONT_NORMAL_9,
             aligment: ALIGNMENT_LEFT,
             translate: false,
             border: BORDER,
@@ -87,7 +87,7 @@ export function reportSituationTransferTemplateData(
           {
             nameCell: `O${curRowIdx}`,
             value: order.totalPrice,
-            font: FONT_NORMAL_8,
+            font: FONT_NORMAL_9,
             aligment: ALIGNMENT_RIGHT,
             translate: false,
             border: BORDER,
@@ -105,7 +105,7 @@ export function reportSituationTransferTemplateData(
             {
               nameCell: `A${curRowIdx}:D${curRowIdx}`,
               value: '',
-              font: FONT_NORMAL_8,
+              font: FONT_NORMAL_9,
               aligment: ALIGNMENT_LEFT,
               border: BORDER,
             },
@@ -119,21 +119,21 @@ export function reportSituationTransferTemplateData(
             {
               nameCell: `G${curRowIdx}`,
               value: row3.itemName,
-              font: FONT_NORMAL_8,
+              font: FONT_NORMAL_9,
               aligment: ALIGNMENT_LEFT,
               border: BORDER,
             },
             {
               nameCell: `H${curRowIdx}`,
               value: row3.lotNumber,
-              font: FONT_NORMAL_8,
+              font: FONT_NORMAL_9,
               aligment: ALIGNMENT_CENTER,
               border: BORDER,
             },
             {
               nameCell: `I${curRowIdx}`,
               value: row3.accountDebt,
-              font: FONT_NORMAL_8,
+              font: FONT_NORMAL_9,
               aligment: ALIGNMENT_RIGHT,
               border: BORDER,
               numFmt: '### ### ### ###',
@@ -141,7 +141,7 @@ export function reportSituationTransferTemplateData(
             {
               nameCell: `J${curRowIdx}`,
               value: row3.accountHave,
-              font: FONT_NORMAL_8,
+              font: FONT_NORMAL_9,
               aligment: ALIGNMENT_RIGHT,
               border: BORDER,
               numFmt: '### ### ### ###',
@@ -149,14 +149,14 @@ export function reportSituationTransferTemplateData(
             {
               nameCell: `K${curRowIdx}`,
               value: row3.unit,
-              font: FONT_NORMAL_8,
+              font: FONT_NORMAL_9,
               aligment: ALIGNMENT_CENTER,
               border: BORDER,
             },
             {
               nameCell: `L${curRowIdx}`,
               value: row3.planQuantity,
-              font: FONT_NORMAL_8,
+              font: FONT_NORMAL_9,
               aligment: ALIGNMENT_RIGHT,
               border: BORDER,
               numFmt: '### ### ###,##',
@@ -164,14 +164,14 @@ export function reportSituationTransferTemplateData(
             {
               nameCell: `M${curRowIdx}`,
               value: row3.locationCode,
-              font: FONT_NORMAL_8,
+              font: FONT_NORMAL_9,
               aligment: ALIGNMENT_LEFT,
               border: BORDER,
             },
             {
               nameCell: `N${curRowIdx}`,
               value: row3.cost,
-              font: FONT_NORMAL_8,
+              font: FONT_NORMAL_9,
               aligment: ALIGNMENT_RIGHT,
               border: BORDER,
               numFmt: '### ### ###,##',
@@ -179,7 +179,7 @@ export function reportSituationTransferTemplateData(
             {
               nameCell: `O${curRowIdx}`,
               value: row3.totalPrice,
-              font: FONT_NORMAL_8,
+              font: FONT_NORMAL_9,
               aligment: ALIGNMENT_RIGHT,
               border: BORDER,
               numFmt: '### ### ### ###',

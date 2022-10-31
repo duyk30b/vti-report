@@ -6,7 +6,7 @@ import {
   BORDER,
   FONT_BOLD_8,
   FONT_ITALIC_10,
-  FONT_NORMAL_8,
+  FONT_NORMAL_9,
 } from '@utils/constant';
 import * as ExcelJS from 'exceljs';
 import { I18nRequestScopeService } from 'nestjs-i18n';
@@ -50,7 +50,7 @@ export function reportSituationInventoryPeriodTemplateData(
           {
             nameCell: `A${curRowIndex}`,
             value: index + 1,
-            font: FONT_NORMAL_8,
+            font: FONT_NORMAL_9,
             aligment: ALIGNMENT_RIGHT,
             translate: false,
             border: BORDER,
@@ -58,7 +58,7 @@ export function reportSituationInventoryPeriodTemplateData(
           {
             nameCell: `B${curRowIndex}`,
             value: row2.itemCode,
-            font: FONT_NORMAL_8,
+            font: FONT_NORMAL_9,
             aligment: ALIGNMENT_LEFT,
             translate: false,
             border: BORDER,
@@ -66,7 +66,7 @@ export function reportSituationInventoryPeriodTemplateData(
           {
             nameCell: `C${curRowIndex}`,
             value: row2.itemName,
-            font: FONT_NORMAL_8,
+            font: FONT_NORMAL_9,
             aligment: ALIGNMENT_LEFT,
             translate: false,
             border: BORDER,
@@ -74,7 +74,7 @@ export function reportSituationInventoryPeriodTemplateData(
           {
             nameCell: `D${curRowIndex}`,
             value: row2.unit,
-            font: FONT_NORMAL_8,
+            font: FONT_NORMAL_9,
             aligment: ALIGNMENT_LEFT,
             translate: false,
             border: BORDER,
@@ -82,7 +82,7 @@ export function reportSituationInventoryPeriodTemplateData(
           {
             nameCell: `E${curRowIndex}`,
             value: row2.lot,
-            font: FONT_NORMAL_8,
+            font: FONT_NORMAL_9,
             aligment: ALIGNMENT_CENTER,
             translate: false,
             border: BORDER,
@@ -90,7 +90,7 @@ export function reportSituationInventoryPeriodTemplateData(
           {
             nameCell: `F${curRowIndex}`,
             value: row2.totalPlanQuantity,
-            font: FONT_NORMAL_8,
+            font: FONT_NORMAL_9,
             aligment: ALIGNMENT_RIGHT,
             translate: false,
             border: BORDER,
@@ -99,7 +99,7 @@ export function reportSituationInventoryPeriodTemplateData(
           {
             nameCell: `G${curRowIndex}`,
             value: row2.cost,
-            font: FONT_NORMAL_8,
+            font: FONT_NORMAL_9,
             aligment: ALIGNMENT_RIGHT,
             translate: false,
             border: BORDER,
@@ -108,7 +108,7 @@ export function reportSituationInventoryPeriodTemplateData(
           {
             nameCell: `H${curRowIndex}`,
             value: row2.totalPricePlan,
-            font: FONT_NORMAL_8,
+            font: FONT_NORMAL_9,
             aligment: ALIGNMENT_RIGHT,
             translate: false,
             border: BORDER,
@@ -117,7 +117,7 @@ export function reportSituationInventoryPeriodTemplateData(
           {
             nameCell: `I${curRowIndex}`,
             value: row2.totalActualQuantity,
-            font: FONT_NORMAL_8,
+            font: FONT_NORMAL_9,
             aligment: ALIGNMENT_RIGHT,
             translate: false,
             border: BORDER,
@@ -126,7 +126,7 @@ export function reportSituationInventoryPeriodTemplateData(
           {
             nameCell: `J${curRowIndex}`,
             value: row2.cost,
-            font: FONT_NORMAL_8,
+            font: FONT_NORMAL_9,
             aligment: ALIGNMENT_RIGHT,
             translate: false,
             border: BORDER,
@@ -135,7 +135,7 @@ export function reportSituationInventoryPeriodTemplateData(
           {
             nameCell: `K${curRowIndex}`,
             value: row2.totalPriceActual,
-            font: FONT_NORMAL_8,
+            font: FONT_NORMAL_9,
             aligment: ALIGNMENT_RIGHT,
             translate: false,
             border: BORDER,
@@ -144,7 +144,7 @@ export function reportSituationInventoryPeriodTemplateData(
           {
             nameCell: `L${curRowIndex}`,
             value: row2.totalPlanQuantity - row2.totalActualQuantity,
-            font: FONT_NORMAL_8,
+            font: FONT_NORMAL_9,
             aligment: ALIGNMENT_RIGHT,
             translate: false,
             border: BORDER,
@@ -153,7 +153,7 @@ export function reportSituationInventoryPeriodTemplateData(
           {
             nameCell: `M${curRowIndex}`,
             value: row2.totalPricePlan - row2.totalPriceActual,
-            font: FONT_NORMAL_8,
+            font: FONT_NORMAL_9,
             aligment: ALIGNMENT_RIGHT,
             translate: false,
             border: BORDER,
@@ -162,7 +162,7 @@ export function reportSituationInventoryPeriodTemplateData(
           {
             nameCell: `N${curRowIndex}`,
             value: row2.totalActualQuantity - row2.totalPlanQuantity,
-            font: FONT_NORMAL_8,
+            font: FONT_NORMAL_9,
             aligment: ALIGNMENT_RIGHT,
             translate: false,
             border: BORDER,
@@ -171,7 +171,7 @@ export function reportSituationInventoryPeriodTemplateData(
           {
             nameCell: `O${curRowIndex}`,
             value: row2.totalPriceActual - row2.totalPricePlan,
-            font: FONT_NORMAL_8,
+            font: FONT_NORMAL_9,
             aligment: ALIGNMENT_RIGHT,
             translate: false,
             border: BORDER,
@@ -180,7 +180,7 @@ export function reportSituationInventoryPeriodTemplateData(
           {
             nameCell: `P${curRowIndex}`,
             value: row2.note,
-            font: FONT_NORMAL_8,
+            font: FONT_NORMAL_9,
             aligment: ALIGNMENT_LEFT,
             translate: false,
             border: BORDER,
