@@ -44,6 +44,9 @@ export class ReportOrder extends BaseEntity implements ReportOrderInteface {
   ebsId: Date;
 
   @Prop({ required: false })
+  ebsNumber: string;
+
+  @Prop({ required: false })
   companyName: string;
 
   @Prop({ required: false })

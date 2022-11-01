@@ -16,8 +16,9 @@ export async function reportSituationImportPeriodExcelMapping(
   let warehouseName;
   let companyName = data[0]?._id?.companyName;
   let companyAddress = data[0]?._id?.companyAddress;
-  const dataExcell: TableDataSituationImportPeriod = data[0]['warehouses'].map(
-    (item) => {
+  let dataExcell = [];
+  if (data[0]?.warehouses) {
+    dataExcell = data[0]['warehouses'].map((item) => {
       warehouseName = item.warehouseName;
       return {
         warehouseCode:
@@ -26,8 +27,9 @@ export async function reportSituationImportPeriodExcelMapping(
         totalPrice: item.totalPrice,
         purposes: item.purposes,
       };
-    },
-  );
+    });
+  }
+
   const model: ReportModel<any> = {
     childCompany: companyName,
     addressChildCompany: companyAddress,

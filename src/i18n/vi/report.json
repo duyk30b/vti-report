@@ -82,6 +82,12 @@
     "THREE_YEAR_TO_FOUR_YEAR": "Từ 3 năm đến < 4 năm",
     "FOUR_YEAR_TO_FIVE_YEAR": "Từ 4 năm đến < 5 năm",
     "GREATER_FIVE_YEAR": ">= 5 năm",
+    "REPORT_FOOTER_DATE": "Bình Thuận,  ngày ... tháng ... năm ....",
+    "REPORT_FOOTER_SCHEDULER": "Người lập biểu",
+    "REPORT_FOOTER_OFFICE_SUPPLIES": "Phòng Vật tư",
+    "REPORT_FOOTER_CHIEF_ACCOUNTANT": "Kế toán trưởng",
+    "REPORT_FOOTER_VICE_PRESIDENT": "Phó Giám đốc",
+    "REPORT_FOOTER_STOCKER": "Thủ kho",
     "ITEM_INVENTORY_BELOW_MINIMUM": {
         "TITLE": "BÁO CÁO HÀNG TỒN KHO DƯỚI MỨC TỒN KHO TỐI THIỂU\n{property}",
         "FILE_NAME": "W006-Báo cáo hàng tồn kho dưới mức tồn kho tối thiểu-{property}",
@@ -149,8 +155,8 @@
     },
     "SITUATION_IMPORT_PERIOD": {
         "TITLE": "BẢNG LIỆT KÊ CHỨNG TỪ NHẬP (SXKD)\n{property}",
-        "FILE_NAME": "W010-Thống kê tình hình nhập kho theo kỳ-{property}",
-        "SHEET_NAME": "W010-Thống_kê_NK-{property}"
+        "FILE_NAME": "W011-Thống kê tình hình nhập kho theo kỳ-{property}",
+        "SHEET_NAME": "W011-Thống_kê_NK-{property}"
     },
     "SITUATION_EXPORT_PERIOD": {
         "TITLE": "BẢNG LIỆT KÊ PHIẾU XUẤT VẬT TƯ (SXKD)\n{property}",

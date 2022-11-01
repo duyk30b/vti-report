@@ -1,3 +1,5 @@
+import * as ExcelJS from 'exceljs';
+import { I18nRequestScopeService } from 'nestjs-i18n/dist/services/i18n-request-scope.service';
 export interface TableColumn {
   name: string;
   width?: number;
@@ -35,4 +37,9 @@ export interface ReportModel<T> {
   warehouse?: string;
   dateFrom: Date;
   dateTo?: Date;
+  footer?: (
+    curRowIdx: number,
+    worksheet: ExcelJS.Worksheet,
+    i18n: I18nRequestScopeService,
+  ) => void;
 }
