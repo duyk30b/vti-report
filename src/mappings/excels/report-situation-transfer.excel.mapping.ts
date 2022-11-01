@@ -13,10 +13,11 @@ export async function reportSituationTransferExcelMapping(
   data: any[],
   i18n: I18nRequestScopeService,
 ) {
-  let companyName = data[0]._id.companyName;
-  let companyAddress = data[0]._id.companyAddress;
-  let dataExcell: TableDataSituationTransfer[] = data[0].warehouses.map(
-    (item) => {
+  let companyName = data[0]?._id?.companyName || '';
+  let companyAddress = data[0]?._id?.companyAddress || '';
+  let dataExcell: TableDataSituationTransfer[] = [];
+  if (data[0]?.warehouses) {
+    dataExcell = data[0].warehouses.map((item) => {
       return {
         warehouseCode:
           i18n.translate('report.WAREHOUSE_GROUP_CODE') +
@@ -24,8 +25,8 @@ export async function reportSituationTransferExcelMapping(
         totalPrice: item.totalPrice,
         orders: item.orders,
       };
-    },
-  );
+    });
+  }
 
   const model: ReportModel<any> = {
     childCompany: companyName,

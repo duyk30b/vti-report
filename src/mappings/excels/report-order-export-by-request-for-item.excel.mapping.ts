@@ -30,7 +30,7 @@ export async function reportOrderExportByRequestForItem(
         index: 0,
         itemCode: cur.itemCode,
         itemName: cur.itemName,
-        orderExportRequireCode: cur.proposalExport,
+        orderExportRequireCode: cur.warehouseExportProposals,
         orderCode: cur.orderCode,
         dateExported: cur.planDate,
         planQuantity: cur.planQuantity,

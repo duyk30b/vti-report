@@ -13,10 +13,9 @@ import {
   SyncDailyReportRequest,
   SyncDailyStockRequest,
 } from '@requests/sync-daily.request';
-import { SyncTransactionRequest } from '@requests/transaction.request';
 import { SyncItemStockLocatorByDate } from '@requests/sync-item-stock-locator-by-date';
 import { I18nRequestScopeService } from 'nestjs-i18n';
-
+import { SyncTransactionRequest } from '@requests/sync-transaction.request';
 @Injectable()
 export class SyncService {
   constructor(

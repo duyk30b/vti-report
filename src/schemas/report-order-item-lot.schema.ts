@@ -8,13 +8,22 @@ export type OrderItemLotDocument = ReportOrderItemLot & Document;
 @Schema({ collection: 'report-order-item-lot', timestamps: true })
 export class ReportOrderItemLot implements ReportOrderItemLotInteface {
   @Prop({ required: false })
+  departmentReceiptId: number;
+
+  @Prop({ required: false })
+  departmentReceiptCode: string;
+
+  @Prop({ required: false })
+  departmentReceiptName: string;
+
+  @Prop({ required: false })
+  ebsNumber: string;
+
+  @Prop({ required: false })
   orderId: number;
 
   @Prop({ required: false })
   orderCreatedAt: Date;
-
-  @Prop({ required: false })
-  orderNumberEbs: string;
 
   @Prop({ required: false })
   itemId: number;
@@ -56,7 +65,7 @@ export class ReportOrderItemLot implements ReportOrderItemLotInteface {
   exportedQuantity: number;
 
   @Prop({ required: false, default: 0 })
-  cost: number;
+  storageCost: number;
 
   @Prop({ required: false })
   orderType: OrderType;
@@ -134,9 +143,6 @@ export class ReportOrderItemLot implements ReportOrderItemLotInteface {
   purpose: string;
 
   @Prop({ required: false })
-  postCode: string; // chứng từ code
-
-  @Prop({ required: false })
   contract: string;
 
   @Prop({ required: false })
@@ -147,15 +153,6 @@ export class ReportOrderItemLot implements ReportOrderItemLotInteface {
 
   @Prop({ required: false })
   providerName: string;
-
-  @Prop({ required: false })
-  receiveDepartmentId: number;
-
-  @Prop({ required: false })
-  receiveDepartmentCode: string;
-
-  @Prop({ required: false })
-  receiveDepartmentName: string;
 
   @Prop({ required: false })
   description: string;
@@ -170,13 +167,10 @@ export class ReportOrderItemLot implements ReportOrderItemLotInteface {
   accountHave: number;
 
   @Prop({ required: false })
-  proposalExport: string; //Giấy đề nghị xuất VT
+  warehouseExportProposals: string; //Giấy đề nghị xuất VT
 
   @Prop({ required: false })
   orderCode: string;
-
-  @Prop({ required: false })
-  orderImportRequireCode: string; //Giấy đề nghị nhap VT
 }
 
 export const ReportOrderItemLotSchema =

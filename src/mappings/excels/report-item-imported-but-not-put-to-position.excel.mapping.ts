@@ -1,4 +1,5 @@
 import { ReportType } from '@enums/report-type.enum';
+import { footerOrderImportIncompleted } from '@layout/excel/footer/footer-order-import-incompleted';
 import { generateTable } from '@layout/excel/report-excel.layout';
 import { REPORT_ITEM_IMPORT_BUT_NOT_PUT_TO_POSITION_COLUMN } from '@layout/excel/table-column-excel/report-Item-imported-but-not-put-to-position-column';
 import { reportGroupByWarehouseTemplateData } from '@layout/excel/table-data-excel/report-group-by-warehouse.template-data';
@@ -26,7 +27,7 @@ export async function reportItemImportedButNotPutToPositionExcelMapping(
   const formatByKey: FormatByKey<ItemImportedButNotStoreToPositionModel> = {
     index: Alignment.CENTER,
     orderCode: Alignment.LEFT,
-    orderNumberEbs: Alignment.LEFT,
+    ebsId: Alignment.LEFT,
     reason: Alignment.LEFT,
     explain: Alignment.LEFT,
     itemCode: Alignment.LEFT,
@@ -41,8 +42,8 @@ export async function reportItemImportedButNotPutToPositionExcelMapping(
   };
 
   const model: ReportModel<ItemImportedButNotStoreToPositionModel> = {
-    childCompany: data[0]?.companyName,
-    addressChildCompany: data[0]?.companyAddress,
+    childCompany: data[0]?.company?.companyName || '',
+    addressChildCompany: data[0]?.company?.companyAddress || '',
     tableColumn: REPORT_ITEM_IMPORT_BUT_NOT_PUT_TO_POSITION_COLUMN,
     tableData: dataExcell,
     header: true,
@@ -53,6 +54,7 @@ export async function reportItemImportedButNotPutToPositionExcelMapping(
     dateFrom: request.dateFrom,
     dateTo: request.dateTo,
     warehouse: request.warehouseId ? data[0].warehouseName : null,
+    footer: footerOrderImportIncompleted,
   };
 
   const { dataBase64, nameFile } = await generateTable(

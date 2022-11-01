@@ -335,7 +335,7 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: item.cost,
+                                      text: item.storageCost,
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -402,7 +402,7 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.CENTER,
                                   children: [
                                     new TextRun({
-                                      text: order.orderCreateAt,
+                                      text: order.orderCreatedAt,
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],

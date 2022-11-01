@@ -1,21 +1,4 @@
 import { OrderType } from '@enums/order-type.enum';
+import { ReportOrderItemLotInteface } from './report-order-item-lot.interface';
 
-export interface TransactionItemInterface {
-  itemId: number;
-
-  lotNumber: string;
-
-  stockQuantity: number;
-
-  warehouseId: number;
-
-  locatorId: number;
-
-  planQuantity: number;
-
-  storageDate: Date;
-
-  orderId: number;
-
-  orderType: OrderType;
-}
+export interface TransactionItemInterface extends ReportOrderItemLotInteface {}

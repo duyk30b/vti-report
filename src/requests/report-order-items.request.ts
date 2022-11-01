@@ -19,6 +19,21 @@ import { ReportOrderItemLotRequest } from './report-order-item-lot.request';
 
 export class ReportOrderItemRequest implements ReportOrderItemInteface {
   @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  departmentReceiptId: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  departmentReceiptCode: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  ebsNumber: string;
+
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   unit: string;
@@ -61,11 +76,6 @@ export class ReportOrderItemRequest implements ReportOrderItemInteface {
   @ApiProperty()
   @IsOptional()
   @IsString()
-  postCode: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
   contract: string;
 
   @ApiProperty()
@@ -85,18 +95,8 @@ export class ReportOrderItemRequest implements ReportOrderItemInteface {
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
-  receiveDepartmentId: number;
-
-  @ApiProperty()
-  @IsOptional()
   @IsString()
-  receiveDepartmentCode: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  receiveDepartmentName: string;
+  departmentReceiptName: string;
 
   @ApiProperty()
   @IsOptional()
@@ -131,12 +131,7 @@ export class ReportOrderItemRequest implements ReportOrderItemInteface {
   @ApiProperty()
   @IsOptional()
   @IsString()
-  proposalExport: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  orderImportRequireCode: string;
+  warehouseExportProposals: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -186,7 +181,7 @@ export class ReportOrderItemRequest implements ReportOrderItemInteface {
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  cost: number;
+  storageCost: number;
 
   @ApiProperty()
   @IsOptional()

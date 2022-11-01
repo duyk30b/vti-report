@@ -23,6 +23,10 @@ export class ReportOrderRepository extends BaseAbstractRepository<ReportOrder> {
     }
   }
 
+  async findOneByCompanyId(id: number): Promise<ReportOrder> {
+    return this.findOneByCondition({ companyId: id });
+  }
+
   private sumWarehouse(
     reportOrderRequest: ReportOrderRequest,
     field: string,

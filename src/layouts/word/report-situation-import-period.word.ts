@@ -352,7 +352,7 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: item.unit,
+                                          text: item.storageCost,
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -367,7 +367,7 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: item.cost,
+                                          text: '',
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -494,7 +494,7 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.LEFT,
                                       children: [
                                         new TextRun({
-                                          text: order.receiveDepartmentName,
+                                          text: order.departmentReceiptName,
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],

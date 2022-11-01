@@ -75,11 +75,11 @@ export const FONT_NORMAL_10 = {
   size: 10,
 };
 
-export const FONT_NORMAL_8 = {
+export const FONT_NORMAL_9 = {
   name: FONT_NAME,
   color: { argb: COLOR },
   bold: false,
-  size: 8,
+  size: 9,
 };
 
 export const FONT_ITALIC_10 = {
@@ -93,6 +93,12 @@ export const FONT_ITALIC_8 = {
   color: { argb: COLOR },
   italic: true,
   size: 8,
+};
+export const FONT_ITALIC_9 = {
+  name: FONT_NAME,
+  color: { argb: COLOR },
+  italic: true,
+  size: 9,
 };
 export const FONT_TITLE = {
   name: FONT_NAME,

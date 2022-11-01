@@ -13,26 +13,29 @@ export async function reportAgeOfItemsExcelMapping(
   data: any[],
   i18n: I18nRequestScopeService,
 ) {
-  const companyName = data[0]?._id?.companyName;
-  const companyAddress = data[0]?._id?.companyAddress;
+  const companyName = data[0]?._id?.companyName || '';
+  const companyAddress = data[0]?._id?.companyAddress || '';
   let warehouseName = null;
-  let dataExcell: TableAgeOfItems[] = data[0].warehouses.map((item: any) => {
-    warehouseName = item.warehouseName;
-    return {
-      warehouseCode:
-        i18n.translate('report.WAREHOUSE_GROUP_CODE') +
-        [item.warehouseCode, item.warehouseName].join('_'),
-      sixMonth: item.sixMonth,
-      oneYearAgo: item.oneYearAgo,
-      twoYearAgo: item.twoYearAgo,
-      threeYearAgo: item.threeYearAgo,
-      fourYearAgo: item.fourYearAgo,
-      fiveYearAgo: item.fiveYearAgo,
-      greaterfiveYear: item.greaterfiveYear,
-      totalPrice: item.totalPrice,
-      items: item.items,
-    };
-  });
+  let dataExcell: TableAgeOfItems[] = [];
+  if (data.length > 0) {
+    dataExcell = data[0].warehouses.map((item: any) => {
+      warehouseName = item.warehouseName;
+      return {
+        warehouseCode:
+          i18n.translate('report.WAREHOUSE_GROUP_CODE') +
+          [item.warehouseCode, item.warehouseName].join('_'),
+        sixMonth: item.sixMonth,
+        oneYearAgo: item.oneYearAgo,
+        twoYearAgo: item.twoYearAgo,
+        threeYearAgo: item.threeYearAgo,
+        fourYearAgo: item.fourYearAgo,
+        fiveYearAgo: item.fiveYearAgo,
+        greaterfiveYear: item.greaterfiveYear,
+        totalPrice: item.totalPrice,
+        items: item.items,
+      };
+    });
+  }
 
   const model: ReportModel<any> = {
     childCompany: companyName,
