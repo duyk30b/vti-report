@@ -1,4 +1,5 @@
 import { ReportType } from '@enums/report-type.enum';
+import { footerOrderImportIncompleted } from '@layout/excel/footer/footer-order-import-incompleted';
 import { generateTable } from '@layout/excel/report-excel.layout';
 import { REPORT_IMPORT_INCOMPLETE_COLUMN } from '@layout/excel/table-column-excel/report-import-incomplete-column ';
 import { reportGroupByWarehouseTemplateData } from '@layout/excel/table-data-excel/report-group-by-warehouse.template-data';
@@ -30,13 +31,13 @@ export async function reportOrderImportIncompletedExcelMapping(
       index: 0,
       orderCode: cur.orderCode,
       orderCreatedAt: cur.orderCreatedAt,
-      receiveDepartmentName: cur.receiveDepartmentName,
+      departmentReceiptName: cur.departmentReceiptName,
       itemCode: cur.itemCode,
       itemName: cur.itemName,
       unit: cur.unit,
       quantity: cur.planQuantity,
-      unitPrice: cur.cost,
-      totalPrice: cur.cost * cur.planQuantity,
+      unitPrice: cur.storageCost,
+      totalPrice: cur.storageCost * cur.planQuantity,
       construction: cur.constructionName,
       deliver: cur.performerName,
     };
@@ -56,7 +57,7 @@ export async function reportOrderImportIncompletedExcelMapping(
     index: Alignment.CENTER,
     orderCode: Alignment.LEFT,
     orderCreatedAt: Alignment.LEFT,
-    receiveDepartmentName: Alignment.LEFT,
+    departmentReceiptName: Alignment.LEFT,
     itemCode: Alignment.LEFT,
     itemName: Alignment.LEFT,
     unit: Alignment.CENTER,
@@ -78,6 +79,7 @@ export async function reportOrderImportIncompletedExcelMapping(
     dateFrom: request.dateFrom,
     dateTo: request.dateTo,
     warehouse: request.warehouseId ? data[0].warehouseName : null,
+    footer: footerOrderImportIncompleted,
   };
   const { dataBase64, nameFile } = await generateTable(
     model,

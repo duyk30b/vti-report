@@ -2,7 +2,7 @@ export interface OrderImportIncompleteModel {
   index: number;
   orderCode: string;
   orderCreatedAt: Date;
-  receiveDepartmentName: string;
+  departmentReceiptName: string;
   itemCode: string;
   itemName: string;
   unit: string;

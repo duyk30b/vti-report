@@ -12,7 +12,7 @@ export async function reportItemInventoryMapping(
 ): Promise<ExportResponse> {
   let companyName = '';
   let companyAddress = '';
-  let warehouseName;
+  let warehouseName = '';
   const dateTo = request?.dateTo;
   const dateFrom = request?.dateFrom;
 

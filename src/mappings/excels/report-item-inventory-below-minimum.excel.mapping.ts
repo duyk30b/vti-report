@@ -1,4 +1,5 @@
 import { ReportType } from '@enums/report-type.enum';
+import { footerItemBelowMinumum } from '@layout/excel/footer/footer-item-below-minimum.excel';
 import { generateTable } from '@layout/excel/report-excel.layout';
 import { ITEM_INVENTORY_BELOW_MINIMUM } from '@layout/excel/table-column-excel/report-inventory-below-minimum';
 import { reportGroupByWarehouseTemplateData } from '@layout/excel/table-data-excel/report-group-by-warehouse.template-data';
@@ -66,6 +67,7 @@ export async function reportItemInventoryBelowMinimumExcelMapping(
     dateFrom: request.dateFrom,
     dateTo: request.dateTo,
     warehouse: request.warehouseId ? data[0].warehouseName : null,
+    footer: footerItemBelowMinumum,
   };
 
   const { dataBase64, nameFile } = await generateTable(

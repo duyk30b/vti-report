@@ -7,7 +7,7 @@ export interface SituationTransferItem {
   unit: string;
   planQuantity: number;
   locationCode: string;
-  cost: number;
+  storageCost: number;
   totalPrice: number;
 }
 export interface SituationTransferGroupByPostCode {

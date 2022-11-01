@@ -9,19 +9,17 @@ export interface ReportOrderItemInteface extends ReportOrderInteface {
   warehouseTargetCode: string;
   warehouseTargetName: string;
   purpose: string;
-  postCode: string;
   contract: string;
   providerId: number;
   providerCode: string;
   providerName: string;
-  receiveDepartmentId: number;
-  receiveDepartmentCode: string;
-  receiveDepartmentName: string;
+  departmentReceiptId: number;
+  departmentReceiptCode: string;
+  departmentReceiptName: string;
   account: number;
   accountDebt: number;
   accountHave: number;
-  proposalExport: string; // Giay de nghi xuat vat tu
-  orderImportRequireCode: string; //Giay de nghi nhap vat tu
+  warehouseExportProposals: string; // Giay de nghi xuat vat tu
   itemId: number;
   itemName: string;
   itemCode: string;
@@ -31,5 +29,5 @@ export interface ReportOrderItemInteface extends ReportOrderInteface {
   storedQuantity: number;
   collectedQuantity: number;
   exportedQuantity: number;
-  cost: number;
+  storageCost: number;
 }

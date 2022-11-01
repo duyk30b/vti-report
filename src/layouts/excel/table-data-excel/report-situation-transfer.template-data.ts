@@ -170,7 +170,7 @@ export function reportSituationTransferTemplateData(
             },
             {
               nameCell: `N${curRowIdx}`,
-              value: row3.cost,
+              value: row3.storageCost,
               font: FONT_NORMAL_9,
               aligment: ALIGNMENT_RIGHT,
               border: BORDER,

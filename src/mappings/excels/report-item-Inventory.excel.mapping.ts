@@ -1,4 +1,5 @@
 import { ReportType } from '@enums/report-type.enum';
+import { footerItemInventory } from '@layout/excel/footer/footer-item-inventory.excel';
 import { generateTable } from '@layout/excel/report-excel.layout';
 import { ITEM_INVENTORY_COLUMN } from '@layout/excel/table-column-excel/report-item-inventory';
 import { reportGroupByWarehouseTemplateData } from '@layout/excel/table-data-excel/report-group-by-warehouse.template-data';
@@ -21,7 +22,7 @@ export async function reportItemInventoryExcelMapping(
 ) {
   let companyName = '';
   let companyAddress = '';
-  let warehouseName;
+  let warehouseName = '';
   const dataExcell: any = data.map((item) => {
     companyName = item._id.companyName;
     companyAddress = item._id.companyAddress;
@@ -71,8 +72,8 @@ export async function reportItemInventoryExcelMapping(
     note: Alignment.LEFT,
   };
   const model: ReportModel<ItemInventoryModel> = {
-    childCompany: companyName,
-    addressChildCompany: companyAddress,
+    childCompany: companyName?.toUpperCase(),
+    addressChildCompany: companyAddress?.toUpperCase(),
     tableColumn: ITEM_INVENTORY_COLUMN,
     tableData: dataExcell,
     header: true,
@@ -81,6 +82,7 @@ export async function reportItemInventoryExcelMapping(
     dateFrom: request.dateFrom,
     dateTo: request.dateTo,
     warehouse: request.warehouseId ? warehouseName : null,
+    footer: footerItemInventory,
   };
 
   const { dataBase64, nameFile } = await generateTable(
