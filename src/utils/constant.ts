@@ -94,6 +94,12 @@ export const FONT_ITALIC_8 = {
   italic: true,
   size: 8,
 };
+export const FONT_ITALIC_9 = {
+  name: FONT_NAME,
+  color: { argb: COLOR },
+  italic: true,
+  size: 9,
+};
 export const FONT_TITLE = {
   name: FONT_NAME,
   color: { argb: COLOR },

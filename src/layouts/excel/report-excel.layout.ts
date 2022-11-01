@@ -136,13 +136,16 @@ export const generateTable = async (
   let rowIndex = model.header ? ROW_WHEN_HAVE_HEADER : ROW_WHEN_NOT_HAVE_HEADER;
   rowIndex += generateColumnTable(worksheet, model.tableColumn, rowIndex, i18n);
   if (typeof generateDataTable == 'function') {
-    generateDataTable(
+    rowIndex = generateDataTable(
       rowIndex,
       worksheet,
       model.tableData,
       model?.aligmentCell,
       i18n,
     );
+  }
+  if (typeof model.footer == 'function') {
+    model.footer(rowIndex, worksheet, i18n);
   }
   const buffer = await workbook.xlsx.writeBuffer();
   // workbook.xlsx.writeFile(`demo${Math.floor(Math.random() * 1000)}.xlsx`);

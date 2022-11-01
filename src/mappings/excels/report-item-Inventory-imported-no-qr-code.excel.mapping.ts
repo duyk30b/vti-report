@@ -35,8 +35,8 @@ export async function reportItemInventoryImportedNoQRCodeExcelMapping(
         lotNumber: cur.lotNumber,
         locationCode: cur.locationCode,
         actualQuantity: cur.actualQuantity,
-        unitPrice: cur.cost,
-        totalPrice: cur.actualQuantity * cur.cost,
+        unitPrice: cur.storageCost,
+        totalPrice: cur.actualQuantity * cur.storageCost,
       };
       prev[warehouseCode].push(data);
       return prev;

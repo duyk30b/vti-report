@@ -1,4 +1,5 @@
 import { BaseDto } from '@core/dto/base.dto';
+import { ActionType } from '@enums/export-type.enum';
 import { OrderStatus } from '@enums/order-status.enum';
 import { OrderType } from '@enums/order-type.enum';
 import { ApiProperty } from '@nestjs/swagger';
@@ -358,6 +359,10 @@ export class ReportOrderRequest implements ReportOrderInteface {
   @IsOptional()
   @IsDateString()
   ebsId: Date;
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  ebsNumber: string;
 
   @IsNotEmpty()
   @IsArray()

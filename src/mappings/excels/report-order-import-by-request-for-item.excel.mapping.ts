@@ -43,7 +43,7 @@ export async function reportOrderImportByRequestForItemExcelMapping(
       }
       const data: ReportOrderImportByRequestForItemModel = {
         index: 0,
-        orderImportRequireCode: cur.orderImportRequireCode,
+        warehouseExportProposals: cur.warehouseExportProposals,
         orderCode: cur.orderCode,
         itemCode: cur.itemCode,
         itemName: cur.itemName,
@@ -68,7 +68,7 @@ export async function reportOrderImportByRequestForItemExcelMapping(
 
   const formatByKey: FormatByKey<ReportOrderImportByRequestForItemModel> = {
     index: Alignment.CENTER,
-    orderImportRequireCode: Alignment.LEFT,
+    warehouseExportProposals: Alignment.LEFT,
     orderCode: Alignment.LEFT,
     itemCode: Alignment.LEFT,
     itemName: Alignment.LEFT,

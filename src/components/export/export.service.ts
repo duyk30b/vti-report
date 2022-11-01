@@ -44,6 +44,7 @@ import { reportSituationTransferMapping } from '@mapping/words/report-situation-
 import { reportSituationExportPeriodMapping } from '@mapping/words/report-situation-export-period.mapping';
 import { reportAgeOfItemsMapping } from '@mapping/words/report-age-of-item-stock.mapping';
 import { reportSituationInventoryPeriodMapping } from '@mapping/words/report-situation-inventory-period.mapping';
+import { ReportOrderRepository } from '@repositories/report-order.repository';
 @Injectable()
 export class ExportService {
   constructor(
@@ -59,12 +60,15 @@ export class ExportService {
     @Inject(ReportOrderItemRepository.name)
     private reportOrderItemRepository: ReportOrderItemRepository,
 
+    @Inject(ReportOrderRepository.name)
+    private reportOrderRepository: ReportOrderRepository,
+
     private readonly i18n: I18nRequestScopeService,
   ) {}
 
   async getReport(request: ReportRequest): Promise<ReportResponse> {
+    let dataReturn;
     try {
-      let dataReturn;
       switch (request.reportType) {
         case ReportType.ITEM_INVENTORY_BELOW_MINIMUM:
           dataReturn = await this.reportItemInventoryBelowMinimum(request);
@@ -139,7 +143,7 @@ export class ExportService {
       return dataReturn;
     } catch (e) {
       console.log(e);
-      return null;
+      return { error: e } as any;
     }
   }
 
@@ -377,6 +381,10 @@ export class ExportService {
       request,
       OrderType.IMPORT,
     );
+    const company = await this.reportOrderRepository.findOneByCompanyId(
+      request.companyId,
+    );
+    if (data[0]) data[0]['company'] = company;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =

@@ -102,7 +102,7 @@ export async function generateReportOrderImportByRequestForItem(
                               alignment: AlignmentType.LEFT,
                               children: [
                                 new TextRun({
-                                  text: item.proposalExport,
+                                  text: item.warehouseExportProposals,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -117,7 +117,7 @@ export async function generateReportOrderImportByRequestForItem(
                               alignment: AlignmentType.LEFT,
                               children: [
                                 new TextRun({
-                                  text: item.orderImportRequireCode,
+                                  text: item.orderCode,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],

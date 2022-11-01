@@ -1,6 +1,6 @@
 export interface ReportOrderImportByRequestForItemModel {
   index: number;
-  orderImportRequireCode: string;
+  warehouseExportProposals: string;
   orderCode: string;
   itemCode: string;
   itemName: string;

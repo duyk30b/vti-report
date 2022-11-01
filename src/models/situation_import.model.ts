@@ -8,7 +8,7 @@ export interface DataSituationImportItem {
   actualQuantity: number;
   locationCode: string;
   unitPrice: number;
-  cost: number;
+  storageCost: number;
   totalPrice: number;
 }
 
@@ -18,7 +18,7 @@ export interface DataSituationImportOrder {
   contract: string;
   contructionName: string;
   providerName: string;
-  receiveDepartmentName: string;
+  departmentReceiptName: string;
   explain: string;
   totalPrice: number;
   items: Array<DataSituationImportItem>;

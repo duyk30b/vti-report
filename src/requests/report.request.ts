@@ -48,7 +48,7 @@ export class ReportRequest extends BaseDto {
   @Transform(({ value }) => {
     return Number(value);
   })
-  receiveDepartmentId: number;
+  departmentReceiptId: number;
 
   @IsOptional()
   @Transform(({ value }) => {
