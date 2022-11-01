@@ -48,11 +48,23 @@ export class ReportRequest extends BaseDto {
   @Transform(({ value }) => {
     return Number(value);
   })
-  receiveDepartmentId: number;
+  departmentReceiptId: number;
 
   @IsOptional()
+  @Transform(({ value }) => {
+    const curDate = new Date(value);
+    const curHours = curDate.getHours();
+    curDate.setHours(curHours + 7);
+    return curDate;
+  })
   dateTo: Date;
 
   @IsOptional()
+  @Transform(({ value }) => {
+    const curDate = new Date(value);
+    const curHours = curDate.getHours();
+    curDate.setHours(curHours + 7);
+    return curDate;
+  })
   dateFrom: Date;
 }

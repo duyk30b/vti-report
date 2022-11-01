@@ -10,13 +10,12 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { ReportOrderItemRequest } from './report-order-items.request';
 
 export class ReportOrderItemLotRequest implements ReportOrderItemLotInteface {
   @ApiProperty()
   @IsOptional()
   @IsString()
-  orderNumberEbs: string;
+  ebsNumber: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -92,12 +91,21 @@ export class ReportOrderItemLotRequest implements ReportOrderItemLotInteface {
   @ApiProperty()
   @IsOptional()
   @IsString()
-  purpose: string;
+  departmentReceiptCode: string;
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  departmentReceiptName: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  departmentReceiptId: number;
 
   @ApiProperty()
   @IsOptional()
   @IsString()
-  postCode: string;
+  purpose: string;
 
   @ApiProperty()
   @IsOptional()
@@ -118,21 +126,6 @@ export class ReportOrderItemLotRequest implements ReportOrderItemLotInteface {
   @IsOptional()
   @IsString()
   providerName: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  receiveDepartmentId: number;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  receiveDepartmentCode: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  receiveDepartmentName: string;
 
   @ApiProperty()
   @IsOptional()
@@ -167,12 +160,7 @@ export class ReportOrderItemLotRequest implements ReportOrderItemLotInteface {
   @ApiProperty()
   @IsOptional()
   @IsString()
-  proposalExport: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  orderImportRequireCode: string;
+  warehouseExportProposals: string;
 
   @ApiProperty()
   @IsOptional()
@@ -222,7 +210,7 @@ export class ReportOrderItemLotRequest implements ReportOrderItemLotInteface {
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  cost: number;
+  storageCost: number;
 
   @ApiProperty()
   @IsOptional()

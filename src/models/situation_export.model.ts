@@ -8,7 +8,7 @@ export interface DataSituationExportItem {
   planQuantity: number;
   exportedQuantity: number;
   locationCode: string;
-  cost: number;
+  storageCost: number;
   totalPrice: number;
 }
 
@@ -16,7 +16,7 @@ export interface DataSituationExportOrder {
   orderCode: string;
   orderCreatedAt: Date;
   constructionName: string;
-  receiveDepartmentName: string;
+  departmentReceiptName: string;
   explain: string;
   totalPrice: number;
   items: Array<DataSituationExportItem>;

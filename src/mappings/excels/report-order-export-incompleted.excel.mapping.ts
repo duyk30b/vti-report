@@ -1,4 +1,5 @@
 import { ReportType } from '@enums/report-type.enum';
+import { footerOrderTransferIncompleted } from '@layout/excel/footer/footer-order-transfer-incompleted';
 import { generateTable } from '@layout/excel/report-excel.layout';
 import { REPORT_ORDER_EXPORT_INCOMPLETE_COLUMN } from '@layout/excel/table-column-excel/report-order-exported-incomplete-column';
 import { reportGroupByWarehouseTemplateData } from '@layout/excel/table-data-excel/report-group-by-warehouse.template-data';
@@ -71,6 +72,7 @@ export async function reportOrderExportIncompletedExcelMapping(
     dateFrom: request.dateFrom,
     dateTo: request.dateTo,
     warehouse: request.warehouseId ? data[0].warehouseName : null,
+    footer: footerOrderTransferIncompleted,
   };
 
   const { dataBase64, nameFile } = await generateTable(

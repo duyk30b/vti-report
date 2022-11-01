@@ -48,7 +48,7 @@ export class ExportController {
       return responseError;
     }
     const result = await this.exportService.getReport(request);
-    if (result) {
+    if (!result['error']) {
       const nameFile = result?.nameFile;
 
       res.header(
@@ -62,10 +62,10 @@ export class ExportController {
       res.header('Access-Control-Expose-Headers', '*');
       return new StreamableFile(result.result);
     }
-
     return new ResponseBuilder<any>()
       .withCode(ResponseCodeEnum.NOT_FOUND)
-      .withMessage(await this.i18n.translate('error.NOT_FOUND'))
+      .withData(result)
+      .withMessage(await this.i18n.translate('error.BAD_REQUEST'))
       .build();
   }
 }

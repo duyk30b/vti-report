@@ -7,10 +7,14 @@ import {
   ALIGNMENT_LEFT,
   ALIGNMENT_RIGHT,
   BORDER,
+  BORDER_R,
+  BORDER_T_L_B,
   CELL_A,
+  COLUMN_COLOR,
   EXCEL_COLUMN,
   FONT_BOLD_8,
-  FONT_NORMAL_8,
+  FONT_BOLD_9,
+  FONT_NORMAL_9,
 } from '@utils/constant';
 import * as ExcelJS from 'exceljs';
 
@@ -21,9 +25,15 @@ export function reportGroupByWarehouseTemplateData(
   format?: FormatByKey<any>,
 ) {
   data.forEach((warehouseData: any) => {
-    const cellGroupByWarehouse = worksheet.getCell(`${CELL_A}${rowIdx}`);
+    const endColumn = `${
+      EXCEL_COLUMN[worksheet['columnNumber_'] - 2]
+    }${rowIdx}`;
+    const cellGroupByWarehouse = worksheet.getCell(
+      `${CELL_A}${rowIdx}:${endColumn}`,
+    );
+    worksheet.mergeCells(`${CELL_A}${rowIdx}:${endColumn}`);
     cellGroupByWarehouse.value = warehouseData.warehouseCode;
-    cellGroupByWarehouse.font = FONT_BOLD_8;
+    cellGroupByWarehouse.font = FONT_BOLD_9;
     cellGroupByWarehouse.alignment = ALIGNMENT_LEFT as any;
     cellGroupByWarehouse.border = BORDER as any;
     rowIdx++;
@@ -36,7 +46,7 @@ export function reportGroupByWarehouseTemplateData(
         if (key === 'index') {
           currenCell.value = indexData + 1;
         }
-        currenCell.font = FONT_NORMAL_8;
+        currenCell.font = FONT_NORMAL_9;
         currenCell.border = BORDER as any;
 
         if (format)
