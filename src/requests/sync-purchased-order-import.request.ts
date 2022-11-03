@@ -262,7 +262,7 @@ export class PurchasedOrderImportRequestDto {
 
   warehouse: PoImportRelationData;
 
-  construction: PoImportRelationData[];
+  construction: PoImportRelationData;
 
   constructionCategory: PoImportRelationData;
 
@@ -278,13 +278,15 @@ export class PurchasedOrderImportRequestDto {
 
   company: Company;
 
-  warehouseExportProposals: WarehouseExportProposal[];
+  warehouseExportProposals: WarehouseExportProposal;
 
   constructions: Construction[];
 
   syncCode: string;
 
   ebsNumber: string;
+
+  qrCode: string;
 }
 
 export class SyncOrderRequest extends BaseDto {
