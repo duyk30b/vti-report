@@ -83,9 +83,6 @@ export class ReportOrderItemLot implements ReportOrderItemLotInteface {
   companyId: number;
 
   @Prop({ required: false })
-  ebsId: Date;
-
-  @Prop({ required: false })
   constructionId: number;
 
   @Prop({ required: false })
@@ -113,13 +110,13 @@ export class ReportOrderItemLot implements ReportOrderItemLotInteface {
   note: string;
 
   @Prop({ required: false })
-  locationName: string;
+  locatorName: string;
 
   @Prop({ required: false })
-  locationId: number;
+  locatorId: number;
 
   @Prop({ required: false })
-  locationCode: string;
+  locatorCode: string;
 
   @Prop({ required: false })
   qrCode: string;
@@ -140,9 +137,6 @@ export class ReportOrderItemLot implements ReportOrderItemLotInteface {
   warehouseTargetName: string;
 
   @Prop({ required: false })
-  purpose: string;
-
-  @Prop({ required: false })
   contract: string;
 
   @Prop({ required: false })
@@ -158,13 +152,13 @@ export class ReportOrderItemLot implements ReportOrderItemLotInteface {
   description: string;
 
   @Prop({ required: false })
-  account: number;
+  account: string;
 
   @Prop({ required: false })
-  accountDebt: number;
+  accountDebt: string;
 
   @Prop({ required: false })
-  accountHave: number;
+  accountHave: string;
 
   @Prop({ required: false })
   warehouseExportProposals: string; //Giấy đề nghị xuất VT
