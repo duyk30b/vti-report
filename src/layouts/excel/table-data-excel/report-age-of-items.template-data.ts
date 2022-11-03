@@ -258,7 +258,7 @@ export function reportAgeOfItemsTemplateData(
             },
             {
               nameCell: `G${curRowIdx}`,
-              value: order.locationCode,
+              value: order.locatorCode,
               font: FONT_NORMAL_9,
               border: BORDER,
               aligment: ALIGNMENT_LEFT,

@@ -44,6 +44,10 @@ export abstract class BaseAbstractRepository<T>
     return await this.find();
   }
 
+  public getModel(): Model<T> {
+    return this.model;
+  }
+
   public async remove(id: string): Promise<any> {
     return await this.model.remove(id);
   }
@@ -66,6 +70,10 @@ export abstract class BaseAbstractRepository<T>
 
   public async createMany(data: T | any): Promise<any> {
     return await this.model.insertMany(data);
+  }
+
+  public async deleteAllByConditin(data: T | any): Promise<any> {
+    return await this.model.deleteMany(data);
   }
 
   public async softDelete(id: string, userId?: number): Promise<any> {

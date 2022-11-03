@@ -52,12 +52,12 @@ export function reportSituationExportPeriodTemplateData(
       ],
     );
     curRowIdx++;
-    item.purposes.forEach((purpose) => {
+    item.reasons.forEach((reason) => {
       cells.push(
         ...[
           {
             nameCell: `A${curRowIdx}:K${curRowIdx}`,
-            value: purpose.value,
+            value: i18n.translate('report.REASON') + reason.value,
             font: FONT_BOLD_9,
             aligment: ALIGNMENT_LEFT,
             border: BORDER,
@@ -69,7 +69,7 @@ export function reportSituationExportPeriodTemplateData(
           },
           {
             nameCell: `L${curRowIdx}:Q${curRowIdx}`,
-            value: purpose.totalPrice,
+            value: reason.totalPrice,
             font: FONT_BOLD_9,
             aligment: ALIGNMENT_RIGHT,
             border: BORDER,
@@ -79,7 +79,7 @@ export function reportSituationExportPeriodTemplateData(
         ],
       );
       curRowIdx++;
-      purpose.orders.forEach((order, index) => {
+      reason.orders.forEach((order, index) => {
         cells.push(
           ...[
             {
@@ -174,9 +174,9 @@ export function reportSituationExportPeriodTemplateData(
               },
               {
                 nameCell: `I${curRowIdx}`,
-                value: item.lot,
+                value: item.lotNumber,
                 font: FONT_NORMAL_9,
-                aligment: ALIGNMENT_BOTTOM_LEFT,
+                aligment: ALIGNMENT_CENTER,
                 border: BORDER,
               },
               {
@@ -220,7 +220,7 @@ export function reportSituationExportPeriodTemplateData(
               },
               {
                 nameCell: `O${curRowIdx}`,
-                value: item.locationCode,
+                value: item.locatorCode,
                 font: FONT_NORMAL_9,
                 aligment: ALIGNMENT_BOTTOM_RIGHT,
                 border: BORDER,
@@ -269,6 +269,7 @@ export function reportSituationExportPeriodTemplateData(
     ],
   );
   configCells(worksheet, i18n, cells);
+
   curRowIdx++;
   return curRowIdx;
 }

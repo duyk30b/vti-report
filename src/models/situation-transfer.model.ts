@@ -6,7 +6,7 @@ export interface SituationTransferItem {
   accountHave: number;
   unit: string;
   planQuantity: number;
-  locationCode: string;
+  locatorCode: string;
   storageCost: number;
   totalPrice: number;
 }
