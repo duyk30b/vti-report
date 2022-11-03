@@ -5,7 +5,7 @@ export interface SituationTransferItem {
   lotNumber: number;
   unit: string;
   stockQuantity: number;
-  locationCode: string;
+  locatorCode: string;
   cost: number;
   totalPrice: number;
   sixMonthAgo: number;

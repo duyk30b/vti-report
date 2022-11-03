@@ -13,7 +13,6 @@ export interface ReportOrderInteface {
   status: OrderStatus;
   completedAt: Date;
   companyId: number;
-  ebsId: Date;
   ebsNumber: string;
   companyName: string;
   companyAddress: string;

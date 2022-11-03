@@ -320,7 +320,7 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.LEFT,
                                   children: [
                                     new TextRun({
-                                      text: item.locationCode,
+                                      text: item.locatorCode,
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],

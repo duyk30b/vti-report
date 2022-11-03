@@ -6,7 +6,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ReportRequest } from '@requests/report.request';
 import { ReportOrderRequest } from '@requests/sync-daily.request';
+import { ReportOrderItemLotInteface } from '@schemas/interface/report-order-item-lot.interface';
 import { ReportOrderItemLot } from '@schemas/report-order-item-lot.schema';
+import { ClientSession } from 'mongoose';
 import { Model } from 'mongoose';
 
 @Injectable()
@@ -18,22 +20,11 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
     super(reportOrderItemLot);
   }
 
-  async createMany(reportOrderRequests: ReportOrderRequest[]): Promise<void> {
-    for (const reportOrderRequest of reportOrderRequests) {
-      for (const reportOrderItem of reportOrderRequest.reportOrderItems) {
-        for (const reportOrderItemLot of reportOrderItem.reportOrderItemLots) {
-          const document = new this.reportOrderItemLot();
-          Object.assign(
-            document,
-            reportOrderRequest,
-            reportOrderItem,
-            reportOrderItemLot,
-          );
+  async save(data: ReportOrderItemLotInteface) {
+    const document = new this.reportOrderItemLot();
+    Object.assign(document, data);
 
-          await document.save();
-        }
-      }
-    }
+    await document.save();
   }
 
   async getReports(
@@ -82,52 +73,52 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
 
     switch (request?.reportType) {
       case ReportType.ITEM_IMPORTED_BUT_NOT_PUT_TO_POSITION:
-        condition['$and'].push({
-          status: { $in: [OrderStatus.IMPORTED, OrderStatus.STORED] },
-        });
+        // condition['$and'].push({
+        //   status: { $in: [OrderStatus.IMPORTED, OrderStatus.STORED] },
+        // });
 
         break;
       case ReportType.ITEM_INVENTORY_IMPORTED_NO_QR_CODE:
         condition['$and'].push({
           qrCode: { $eq: null },
         });
-        condition['$and'].push({
-          status: { $eq: OrderStatus.IMPORTED },
-        });
+        // condition['$and'].push({
+        //   status: { $eq: OrderStatus.IMPORTED },
+        // });
         break;
       case ReportType.SITUATION_IMPORT_PERIOD:
-        condition['$and'].push({
-          status: {
-            $in: [
-              OrderStatus.RECEIVED,
-              OrderStatus.RECEIVING,
-              OrderStatus.STORING,
-              OrderStatus.IMPORT_COMPLETED,
-            ],
-          },
-        });
-        break;
+      // condition['$and'].push({
+      //   status: {
+      //     $in: [
+      //       OrderStatus.RECEIVED,
+      //       OrderStatus.RECEIVING,
+      //       OrderStatus.STORING,
+      //       OrderStatus.IMPORT_COMPLETED,
+      //     ],
+      //   },
+      // });
+      // break;
       case ReportType.SITUATION_EXPORT_PERIOD:
-        condition['$and'].push({
-          status: {
-            $in: [
-              OrderStatus.EXPORTED,
-              OrderStatus.EXPORTING,
-              OrderStatus.EXPORT_COMPLETED,
-            ],
-          },
-        });
+        // condition['$and'].push({
+        //   status: {
+        //     $in: [
+        //       OrderStatus.EXPORTED,
+        //       OrderStatus.EXPORTING,
+        //       OrderStatus.EXPORT_COMPLETED,
+        //     ],
+        //   },
+        // });
         break;
       case ReportType.SITUATION_TRANSFER:
-        condition['$and'].push({
-          status: {
-            $in: [
-              OrderStatus.IMPORTED,
-              OrderStatus.EXPORTED,
-              OrderStatus.TRANSFER_COMPLETED,
-            ],
-          },
-        });
+        // condition['$and'].push({
+        //   status: {
+        //     $in: [
+        //       OrderStatus.IMPORTED,
+        //       OrderStatus.EXPORTED,
+        //       OrderStatus.TRANSFER_COMPLETED,
+        //     ],
+        //   },
+        // });
         break;
       default:
         break;
@@ -192,20 +183,23 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
     switch (request?.reportType) {
       case ReportType.ITEM_IMPORTED_BUT_NOT_PUT_TO_POSITION:
         condition['$and'].push({
-          locationId: { $eq: null },
+          locatorId: { $eq: null },
         });
+
         condition['$and'].push({
-          status: { $eq: OrderStatus.IMPORTED },
+          status: {
+            $in: [OrderStatus.Stored, OrderStatus.Completed],
+          },
         });
         break;
       case ReportType.SITUATION_IMPORT_PERIOD:
         condition['$and'].push({
           status: {
             $in: [
-              OrderStatus.RECEIVED,
-              OrderStatus.RECEIVING,
-              OrderStatus.STORING,
-              OrderStatus.IMPORT_COMPLETED,
+              OrderStatus.Received,
+              OrderStatus.Confirmed,
+              OrderStatus.InProgress,
+              OrderStatus.Completed,
             ],
           },
         });
@@ -213,7 +207,11 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
       case ReportType.SITUATION_EXPORT_PERIOD:
         condition['$and'].push({
           status: {
-            $in: [OrderStatus.EXPORTING, OrderStatus.EXPORT_COMPLETED],
+            $in: [
+              OrderStatus.Pending,
+              OrderStatus.InProgress,
+              OrderStatus.Completed,
+            ],
           },
         });
 
@@ -222,9 +220,9 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
         condition['$and'].push({
           status: {
             $in: [
-              OrderStatus.IMPORTED,
-              OrderStatus.EXPORTED,
-              OrderStatus.TRANSFER_COMPLETED,
+              OrderStatus.Completed,
+              OrderStatus.Stored,
+              OrderStatus.Received,
             ],
           },
         });
@@ -330,7 +328,7 @@ function reportSituationExport(
           warehouseName: '$warehouseName',
           companyName: '$companyName',
           companyAddress: '$companyAddress',
-          purpose: '$purpose',
+          reason: '$reason',
           orderId: '$orderId',
           orderCode: '$orderCode',
           orderCreatedAt: {
@@ -350,7 +348,7 @@ function reportSituationExport(
             unit: '$unit',
             planQuantity: '$planQuantity',
             exportedQuantity: '$exportedQuantity',
-            locationCode: '$locationCode',
+            locatorCode: '$locatorCode',
             storageCost: '$storageCost',
             totalPrice: { $multiply: ['$storageCost', '$exportedQuantity'] },
           },
@@ -368,7 +366,7 @@ function reportSituationExport(
           warehouseName: '$_id.warehouseName',
           companyName: '$_id.companyName',
           companyAddress: '$_id.companyAddress',
-          purpose: '$_id.purpose',
+          reason: '$_id.reason',
         },
         orders: {
           $push: {
@@ -386,7 +384,7 @@ function reportSituationExport(
       },
     },
     {
-      $sort: { '_id.purpose': -1 },
+      $sort: { '_id.reason': -1 },
     },
     {
       $group: {
@@ -397,9 +395,9 @@ function reportSituationExport(
           companyName: '$_id.companyName',
           companyAddress: '$_id.companyAddress',
         },
-        purposes: {
+        reasons: {
           $push: {
-            value: '$_id.purpose',
+            value: '$_id.reason',
             totalPrice: { $sum: '$orders.totalPrice' },
             orders: '$orders',
           },
@@ -419,8 +417,8 @@ function reportSituationExport(
           $push: {
             warehouseCode: '$_id.warehouseCode',
             warehouseName: '$_id.warehouseName',
-            purposes: '$purposes',
-            totalPrice: { $sum: '$purposes.totalPrice' },
+            reasons: '$reasons',
+            totalPrice: { $sum: '$reasons.totalPrice' },
           },
         },
       },
@@ -445,7 +443,7 @@ function reportSituationImport(
           warehouseName: '$warehouseName',
           companyName: '$companyName',
           companyAddress: '$companyAddress',
-          purpose: '$purpose',
+          reason: '$reason',
           orderId: '$orderId',
           orderCode: '$orderCode',
           orderCreatedAt: {
@@ -466,7 +464,7 @@ function reportSituationImport(
             accountHave: '$accountHave',
             unit: '$unit',
             actualQuantity: '$actualQuantity',
-            locationCode: '$locationCode',
+            locatorCode: '$locatorCode',
             storageCost: '$storageCost',
             totalPrice: { $multiply: ['$storageCost', '$actualQuantity'] },
           },
@@ -484,7 +482,7 @@ function reportSituationImport(
           warehouseName: '$_id.warehouseName',
           companyName: '$_id.companyName',
           companyAddress: '$_id.companyAddress',
-          purpose: '$_id.purpose',
+          reason: '$_id.reason',
         },
         orders: {
           $push: {
@@ -502,7 +500,7 @@ function reportSituationImport(
       },
     },
     {
-      $sort: { '_id.purpose': -1 },
+      $sort: { '_id.reason': -1 },
     },
     {
       $group: {
@@ -513,9 +511,9 @@ function reportSituationImport(
           companyName: '$_id.companyName',
           companyAddress: '$_id.companyAddress',
         },
-        purposes: {
+        reasons: {
           $push: {
-            value: '$_id.purpose',
+            value: '$_id.reason',
             totalPrice: { $sum: '$orders.totalPrice' },
             orders: '$orders',
           },
@@ -535,8 +533,8 @@ function reportSituationImport(
           $push: {
             warehouseCode: '$_id.warehouseCode',
             warehouseName: '$_id.warehouseName',
-            totalPrice: { $sum: '$purposes.totalPrice' },
-            purposes: '$purposes',
+            totalPrice: { $sum: '$reasons.totalPrice' },
+            reasons: '$reasons',
           },
         },
       },
@@ -579,7 +577,7 @@ function reportSituationTransfer(
             accountHave: '$accountHave',
             unit: '$unit',
             planQuantity: '$planQuantity',
-            locationCode: '$locationCode',
+            locatorCode: '$locatorCode',
             storageCost: '$storageCost',
             totalPrice: { $multiply: ['$storageCost', '$planQuantity'] },
           },

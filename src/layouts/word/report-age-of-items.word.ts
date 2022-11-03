@@ -17,11 +17,7 @@ import {
   VerticalAlign,
 } from 'docx';
 import { I18nRequestScopeService } from 'nestjs-i18n';
-import {
-  setHeight,
-  setWidth,
-  wordFileStyle,
-} from './word-common.styles';
+import { setHeight, setWidth, wordFileStyle } from './word-common.styles';
 export async function generateReportAgeOfItemStock(
   dataWord,
   companyName,
@@ -299,7 +295,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.LEFT,
                                   children: [
                                     new TextRun({
-                                      text: record.locationCode,
+                                      text: record.locatorCode,
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],

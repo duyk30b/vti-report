@@ -5,11 +5,20 @@ import { SuccessResponse } from '@core/utils/success.response.dto';
 import { ResponsePayload } from '@core/utils/response-payload';
 import { SyncService } from './sync.service';
 import { SyncTransactionRequest } from '@requests/sync-transaction.request';
-import { SyncDailyReportRequest } from '@requests/sync-daily.request';
+import {
+  SyncDailyReportRequest,
+  SyncDailyStockRequest,
+} from '@requests/sync-daily.request';
 import { BaseDto } from '@core/dto/base.dto';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { SyncReportDailyRequestDto } from './dto/request/sync-report-daily.request.dto';
 import { SYNC_REPORT_DAILY_TOPIC } from './sync.constants';
+import {
+  PurchasedOrderImportRequestDto,
+  SyncOrderRequest,
+} from '@requests/sync-purchased-order-import.request';
+import { SyncSaleOrderExportRequest } from '@requests/sync-sale-order-export.request';
+import { SyncWarehouseTransferRequest } from '@requests/sync-warehouse-transfer-request';
 
 @Controller('sync')
 export class SyncController {
@@ -18,7 +27,7 @@ export class SyncController {
     private readonly syncService: SyncService,
   ) {}
 
-  @Post('/daily')
+  @Post('/orders/purchased-order-import')
   @ApiOperation({
     tags: ['Sync'],
     summary: 'Đồng bộ dữ liệu hàng ngày',
@@ -29,15 +38,60 @@ export class SyncController {
     description: 'Success',
     type: SuccessResponse,
   })
-  async syncDailyReport(
-    @Body() payload: SyncDailyReportRequest,
+  async syncOrderImport(
+    @Body() payload: SyncOrderRequest,
+  ): Promise<ResponsePayload<any>> {
+    const { request, responseError } = payload;
+    if (responseError && !isEmpty(responseError)) {
+      return responseError;
+    }
+    return await this.syncService.syncPurchasedOrderImport(request);
+  }
+
+  @Post('/orders/sale-order-export')
+  @ApiOperation({
+    tags: ['Sync'],
+    summary: 'Đồng bộ dữ liệu hàng ngày',
+    description: 'Đồng bộ dữ liệu order',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: SuccessResponse,
+  })
+  async syncOrderExport(
+    @Body() payload: SyncSaleOrderExportRequest,
   ): Promise<ResponsePayload<any>> {
     const { request, responseError } = payload;
 
     if (responseError && !isEmpty(responseError)) {
       return responseError;
     }
-    return await this.syncService.syncDailyReport(request);
+    const res = await this.syncService.syncSaleOrderExport(request);
+
+    return res;
+  }
+
+  @Post('/orders/warehouse-transfer')
+  @ApiOperation({
+    tags: ['Sync'],
+    summary: 'Đồng bộ dữ liệu hàng ngày',
+    description: 'Đồng bộ dữ liệu order',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: SuccessResponse,
+  })
+  async syncOrderTransfer(
+    @Body() payload: SyncWarehouseTransferRequest,
+  ): Promise<ResponsePayload<any>> {
+    const { request, responseError } = payload;
+
+    if (responseError && !isEmpty(responseError)) {
+      return responseError;
+    }
+    return await this.syncService.syncWarehouseTransfer(request);
   }
 
   @Post('/transaction')

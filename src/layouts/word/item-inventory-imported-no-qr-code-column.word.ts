@@ -15,11 +15,7 @@ import {
   VerticalAlign,
 } from 'docx';
 import { I18nRequestScopeService } from 'nestjs-i18n';
-import {
-  setHeight,
-  setWidth,
-  wordFileStyle,
-} from './word-common.styles';
+import { setHeight, setWidth, wordFileStyle } from './word-common.styles';
 
 export async function generateReportItemInventoryImportedNoQRCode(
   dataWord,
@@ -178,7 +174,7 @@ export async function generateReportItemInventoryImportedNoQRCode(
                               alignment: AlignmentType.LEFT,
                               children: [
                                 new TextRun({
-                                  text: item.locationCode,
+                                  text: item.locatorCode,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],

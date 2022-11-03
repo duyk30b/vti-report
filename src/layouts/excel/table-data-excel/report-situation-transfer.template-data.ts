@@ -163,7 +163,7 @@ export function reportSituationTransferTemplateData(
             },
             {
               nameCell: `M${curRowIdx}`,
-              value: row3.locationCode,
+              value: row3.locatorCode,
               font: FONT_NORMAL_9,
               aligment: ALIGNMENT_LEFT,
               border: BORDER,
