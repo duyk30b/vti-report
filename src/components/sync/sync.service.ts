@@ -221,9 +221,9 @@ export class SyncService {
         companyId: request?.company?.id,
         companyName: request?.company?.name,
         companyAddress: request?.company?.address,
-        constructionId: request?.constructions?.pop()?.id,
-        constructionCode: request?.constructions?.pop()?.code,
-        constructionName: request?.constructions?.pop()?.name,
+        constructionId: request?.constructions?.id || null,
+        constructionCode: request?.constructions?.code || null,
+        constructionName: request?.constructions?.name || null,
         description: request.explanation,
       };
 
@@ -231,10 +231,10 @@ export class SyncService {
 
       for (const item of request.itemsExport) {
         const reportOrderItem: ReportOrderItemInteface = {
-          unit: item?.item.itemUnit,
+          unit: item?.itemUnit.name,
           performerId: null,
           performerName: request.receiver,
-          qrCode: null,
+          qrCode: request.qrCode,
           warehouseTargetId: request?.destinationWarehouse?.id,
           warehouseTargetCode: request?.destinationWarehouse?.code,
           warehouseTargetName: request?.destinationWarehouse?.name,
@@ -249,8 +249,7 @@ export class SyncService {
           account: request?.source?.accountant,
           accountDebt: null,
           accountHave: null,
-          warehouseExportProposals:
-            request?.warehouseExportProposals?.pop()?.code,
+          warehouseExportProposals: request?.warehouseExportProposals?.code,
           itemId: item?.id,
           itemName: item?.name,
           itemCode: item?.code,
@@ -260,7 +259,7 @@ export class SyncService {
           storedQuantity: 0,
           collectedQuantity: 0,
           exportedQuantity: item?.exportedQuantity,
-          storageCost: 0,
+          storageCost: Number(item.price),
           ...reportOrder,
         };
         promiseAll.push(this.reportOrderItemRepository.save(reportOrderItem));
@@ -328,9 +327,9 @@ export class SyncService {
         companyId: request.company.id,
         companyName: request.company.name,
         companyAddress: request.company.address,
-        constructionId: request?.construction?.pop()?.id,
-        constructionCode: request?.construction?.pop()?.code,
-        constructionName: request?.construction?.pop()?.name,
+        constructionId: request?.construction?.id,
+        constructionCode: request?.construction?.code,
+        constructionName: request?.construction?.name,
         description: request.explanation,
       };
 
@@ -341,7 +340,7 @@ export class SyncService {
           unit: item?.item?.itemUnit,
           performerId: null,
           performerName: request?.deliver,
-          qrCode: null,
+          qrCode: request.qrCode,
           warehouseTargetId: null,
           warehouseTargetCode: null,
           warehouseTargetName: null,
@@ -356,8 +355,7 @@ export class SyncService {
           account: request?.source?.accountant,
           accountDebt: item?.debitAccount,
           accountHave: item?.creditAccount,
-          warehouseExportProposals:
-            request?.warehouseExportProposals?.pop()?.code,
+          warehouseExportProposals: request?.warehouseExportProposals?.code,
           itemId: item?.itemId,
           itemName: item?.item?.name,
           itemCode: item?.item?.code,
@@ -436,15 +434,9 @@ export class SyncService {
         companyId: request?.company?.id,
         companyName: request?.company?.name,
         companyAddress: request?.company?.address,
-        constructionId: request?.constructions?.pop()?.id
-          ? request?.constructions?.pop().id
-          : null,
-        constructionCode: request?.constructions?.pop()
-          ? request?.constructions?.pop().code
-          : null,
-        constructionName: request?.constructions?.pop()
-          ? request?.constructions?.pop().name
-          : null,
+        constructionId: request?.constructions?.id || null,
+        constructionCode: request?.constructions?.code || null,
+        constructionName: request?.constructions?.name || null,
         description: null,
       };
 
@@ -455,7 +447,7 @@ export class SyncService {
           unit: item.itemUnit,
           performerId: null,
           performerName: request.receiver,
-          qrCode: null,
+          qrCode: request.qrCode,
           warehouseTargetId: null,
           warehouseTargetCode: null,
           warehouseTargetName: null,
@@ -464,14 +456,13 @@ export class SyncService {
           providerId: null,
           providerCode: null,
           providerName: null,
-          departmentReceiptId: null,
-          departmentReceiptCode: null,
-          departmentReceiptName: null,
+          departmentReceiptId: request.departmentReceipt.id,
+          departmentReceiptCode: request.departmentReceipt.code,
+          departmentReceiptName: request.departmentReceipt.name,
           account: request?.source?.accountant,
           accountDebt: item?.debitAccount,
           accountHave: item?.creditAccount,
-          warehouseExportProposals:
-            request?.warehouseExportProposals?.pop()?.code,
+          warehouseExportProposals: request?.warehouseExportProposals?.code,
           itemId: item.id,
           itemName: item.name,
           itemCode: item.code,

@@ -248,6 +248,7 @@ class ItemExport {
   name: string;
 
   code: string;
+  price: string;
 
   planQuantity: number;
 
@@ -257,7 +258,7 @@ class ItemExport {
 
   quantity: number;
 
-  item: ItemDetail;
+  itemUnit: ItemDetail;
 
   lots: LotExport[];
 }
@@ -280,15 +281,17 @@ export class WarehouseTransferResponseDto extends WarehouseTransferResponse {
 
   company: Company;
 
-  warehouseExportProposals: WarehouseExportProposal[];
+  warehouseExportProposals: WarehouseExportProposal;
 
-  constructions: Construction[];
+  constructions: Construction;
 
   departmentReceipt: PoImportRelationData;
 
   syncCode: string;
 
   ebsNumber: string;
+
+  qrCode: string;
 }
 
 export class SyncWarehouseTransferRequest extends BaseDto {

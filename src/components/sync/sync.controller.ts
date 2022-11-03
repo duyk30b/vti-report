@@ -5,18 +5,10 @@ import { SuccessResponse } from '@core/utils/success.response.dto';
 import { ResponsePayload } from '@core/utils/response-payload';
 import { SyncService } from './sync.service';
 import { SyncTransactionRequest } from '@requests/sync-transaction.request';
-import {
-  SyncDailyReportRequest,
-  SyncDailyStockRequest,
-} from '@requests/sync-daily.request';
-import { BaseDto } from '@core/dto/base.dto';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { SyncReportDailyRequestDto } from './dto/request/sync-report-daily.request.dto';
 import { SYNC_REPORT_DAILY_TOPIC } from './sync.constants';
-import {
-  PurchasedOrderImportRequestDto,
-  SyncOrderRequest,
-} from '@requests/sync-purchased-order-import.request';
+import { SyncOrderRequest } from '@requests/sync-purchased-order-import.request';
 import { SyncSaleOrderExportRequest } from '@requests/sync-sale-order-export.request';
 import { SyncWarehouseTransferRequest } from '@requests/sync-warehouse-transfer-request';
 
