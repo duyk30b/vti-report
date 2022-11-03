@@ -71,7 +71,7 @@ export class ReportOrderItemRequest implements ReportOrderItemInteface {
   @ApiProperty()
   @IsOptional()
   @IsString()
-  purpose: string;
+  reason: string;
 
   @ApiProperty()
   @IsOptional()
@@ -116,17 +116,17 @@ export class ReportOrderItemRequest implements ReportOrderItemInteface {
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  account: number;
+  account: string;
 
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  accountDebt: number;
+  accountDebt: string;
 
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  accountHave: number;
+  accountHave: string;
 
   @ApiProperty()
   @IsOptional()
@@ -267,11 +267,6 @@ export class ReportOrderItemRequest implements ReportOrderItemInteface {
   @IsOptional()
   @IsString()
   description: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsDateString()
-  ebsId: Date;
 
   @IsNotEmpty()
   @IsArray()
