@@ -257,11 +257,13 @@ export class SaleOrderExportResponseDto extends BaseDto {
 
   itemsSync: ItemImoRespone[];
 
-  warehouseExportProposals: WarehouseExportProposal[];
+  warehouseExportProposals: WarehouseExportProposal;
 
-  constructions: Construction[];
+  constructions: Construction;
 
   ebsNumber: string;
+
+  qrCode: string;
 }
 
 export class SyncSaleOrderExportRequest extends BaseDto {
