@@ -41,9 +41,6 @@ export class ReportOrder extends BaseEntity implements ReportOrderInteface {
   companyId: number;
 
   @Prop({ required: false })
-  ebsId: Date;
-
-  @Prop({ required: false })
   ebsNumber: string;
 
   @Prop({ required: false })
@@ -64,5 +61,4 @@ export class ReportOrder extends BaseEntity implements ReportOrderInteface {
   @Prop({ required: false })
   description: string;
 }
-
 export const ReportOrderSchema = SchemaFactory.createForClass(ReportOrder);

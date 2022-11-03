@@ -22,7 +22,7 @@ export async function reportSituationImportPeriodMapping(
           i18n.translate('report.WAREHOUSE_GROUP_CODE') +
           [item.warehouseCode, item.warehouseName].join('_'),
         totalPrice: item.totalPrice,
-        purposes: item.purposes,
+        reasons: item.reasons,
       };
     },
   );

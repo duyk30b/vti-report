@@ -76,9 +76,6 @@ export class TransactionItem
   companyId: number;
 
   @Prop({ required: false })
-  ebsId: Date;
-
-  @Prop({ required: false })
   constructionId: number;
 
   @Prop({ required: false })
@@ -106,13 +103,13 @@ export class TransactionItem
   note: string;
 
   @Prop({ required: false })
-  locationName: string;
+  locatorName: string;
 
   @Prop({ required: false })
-  locationId: number;
+  locatorId: number;
 
   @Prop({ required: false })
-  locationCode: string;
+  locatorCode: string;
 
   @Prop({ required: false })
   qrCode: string;
@@ -131,9 +128,6 @@ export class TransactionItem
 
   @Prop({ required: false })
   warehouseTargetName: string;
-
-  @Prop({ required: false })
-  purpose: string;
 
   @Prop({ required: false })
   contract: string;
@@ -160,13 +154,13 @@ export class TransactionItem
   description: string;
 
   @Prop({ required: false })
-  account: number;
+  account: string;
 
   @Prop({ required: false })
-  accountDebt: number;
+  accountDebt: string;
 
   @Prop({ required: false })
-  accountHave: number;
+  accountHave: string;
 
   @Prop({ required: false })
   warehouseExportProposals: string; //Giấy đề nghị xuất VT

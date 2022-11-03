@@ -51,12 +51,12 @@ export function reportSituationImportPeriodTemplateData(
         ],
       );
       curRowIdx++;
-      item.purposes.forEach((purpose) => {
+      item.reasons.forEach((reason) => {
         cells.push(
           ...[
             {
               nameCell: `A${curRowIdx}:Q${curRowIdx}`,
-              value: i18n.translate('report.PURPOSE') + purpose.value,
+              value: i18n.translate('report.REASON') + reason.value,
               font: FONT_BOLD_8,
               aligment: ALIGNMENT_LEFT,
               border: BORDER,
@@ -78,7 +78,7 @@ export function reportSituationImportPeriodTemplateData(
         );
 
         curRowIdx++;
-        purpose.orders.forEach((order, index) => {
+        reason.orders.forEach((order, index) => {
           cells.push(
             ...[
               {
@@ -111,7 +111,7 @@ export function reportSituationImportPeriodTemplateData(
               },
               {
                 nameCell: `E${curRowIdx}`,
-                value: order.contructionName,
+                value: order.constructionName,
                 border: BORDER,
                 font: FONT_NORMAL_9,
                 aligment: ALIGNMENT_LEFT,
@@ -216,7 +216,7 @@ export function reportSituationImportPeriodTemplateData(
                 },
                 {
                   nameCell: `P${curRowIdx}`,
-                  value: item.locationCode,
+                  value: item.locatorCode,
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_LEFT,
                   border: BORDER,

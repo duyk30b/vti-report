@@ -8,7 +8,7 @@ export interface ReportOrderItemInteface extends ReportOrderInteface {
   warehouseTargetId: number;
   warehouseTargetCode: string;
   warehouseTargetName: string;
-  purpose: string;
+  reason: string;
   contract: string;
   providerId: number;
   providerCode: string;
@@ -16,9 +16,9 @@ export interface ReportOrderItemInteface extends ReportOrderInteface {
   departmentReceiptId: number;
   departmentReceiptCode: string;
   departmentReceiptName: string;
-  account: number;
-  accountDebt: number;
-  accountHave: number;
+  account: string;
+  accountDebt: string;
+  accountHave: string;
   warehouseExportProposals: string; // Giay de nghi xuat vat tu
   itemId: number;
   itemName: string;

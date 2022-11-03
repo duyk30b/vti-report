@@ -26,7 +26,7 @@ export async function generateReportSituationExportPeriod(
   reportTime,
   i18n: I18nRequestScopeService,
 ): Promise<any> {
-  let purposeData = [];
+  let reasonData = [];
   let orderData = [];
   let itemData = [];
   let totalWarehouse = 0;
@@ -199,9 +199,9 @@ export async function generateReportSituationExportPeriod(
               ...dataWord
                 .map((warehouse) => {
                   totalWarehouse = plus(totalWarehouse, warehouse.totalPrice);
-                  purposeData = warehouse.purposes
-                    .map((purpose) => {
-                      orderData = purpose.orders
+                  reasonData = warehouse.reasons
+                    .map((reason) => {
+                      orderData = reason.orders
                         .map((order, index) => {
                           itemData = order.items.map((item) => {
                             return new TableRow({
@@ -340,7 +340,7 @@ export async function generateReportSituationExportPeriod(
                                       alignment: AlignmentType.LEFT,
                                       children: [
                                         new TextRun({
-                                          text: item.locationCode,
+                                          text: item.locatorCode,
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -422,7 +422,7 @@ export async function generateReportSituationExportPeriod(
                                       alignment: AlignmentType.CENTER,
                                       children: [
                                         new TextRun({
-                                          text: order.orderCreateAt,
+                                          text: order.orderCreatedAt,
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -520,7 +520,7 @@ export async function generateReportSituationExportPeriod(
                                   alignment: AlignmentType.LEFT,
                                   children: [
                                     new TextRun({
-                                      text: purpose.value,
+                                      text: reason.value,
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -540,7 +540,7 @@ export async function generateReportSituationExportPeriod(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: purpose.totalPrice,
+                                      text: reason.totalPrice,
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -596,7 +596,7 @@ export async function generateReportSituationExportPeriod(
                         }),
                       ],
                     }),
-                    ...purposeData,
+                    ...reasonData,
                   ];
                 })
                 .flat(),

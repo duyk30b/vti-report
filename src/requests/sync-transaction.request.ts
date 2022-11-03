@@ -54,17 +54,17 @@ export class SyncTransactionRequest
   @ApiProperty()
   @IsOptional()
   @IsString()
-  locationName: string;
+  locatorName: string;
 
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  locationId: number;
+  locatorId: number;
 
   @ApiProperty()
   @IsOptional()
   @IsString()
-  locationCode: string;
+  locatorCode: string;
 
   //------
   @ApiProperty()
@@ -101,11 +101,6 @@ export class SyncTransactionRequest
   @IsOptional()
   @IsString()
   warehouseTargetName: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  purpose: string;
 
   @ApiProperty()
   @IsOptional()
@@ -150,17 +145,17 @@ export class SyncTransactionRequest
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  account: number;
+  account: string;
 
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  accountDebt: number;
+  accountDebt: string;
 
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  accountHave: number;
+  accountHave: string;
 
   @ApiProperty()
   @IsOptional()
@@ -301,9 +296,4 @@ export class SyncTransactionRequest
   @IsOptional()
   @IsString()
   description: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsDateString()
-  ebsId: Date;
 }

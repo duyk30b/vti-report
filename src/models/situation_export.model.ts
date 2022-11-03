@@ -1,13 +1,13 @@
 export interface DataSituationExportItem {
   itemCode: string;
   itemName: string;
-  lot: string;
+  lotNumber: string;
   accountDebt: number;
   accountHave: number;
   unit: string;
   planQuantity: number;
   exportedQuantity: number;
-  locationCode: string;
+  locatorCode: string;
   storageCost: number;
   totalPrice: number;
 }
@@ -21,7 +21,7 @@ export interface DataSituationExportOrder {
   totalPrice: number;
   items: Array<DataSituationExportItem>;
 }
-export interface DataSituationExportPurpose {
+export interface DataSituationExportReason {
   value: string;
   totalPrice: number;
   orders: Array<DataSituationExportOrder>;
@@ -29,5 +29,5 @@ export interface DataSituationExportPurpose {
 export interface TableDataSituationExportPeriod {
   warehouseCode: string;
   totalPrice: number;
-  purposes: Array<DataSituationExportPurpose>;
+  reasons: Array<DataSituationExportReason>;
 }

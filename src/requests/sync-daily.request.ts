@@ -357,10 +357,6 @@ export class ReportOrderRequest implements ReportOrderInteface {
 
   @ApiProperty()
   @IsOptional()
-  @IsDateString()
-  ebsId: Date;
-  @ApiProperty()
-  @IsOptional()
   @IsString()
   ebsNumber: string;
 
@@ -387,4 +383,8 @@ export class SyncDailyReportRequest extends BaseDto {
   @ArrayMinSize(1)
   @Type(() => ReportOrderRequest)
   reportOrders: ReportOrderRequest[];
+
+  @IsNotEmpty()
+  @IsEnum(ActionType)
+  actionype: ActionType;
 }

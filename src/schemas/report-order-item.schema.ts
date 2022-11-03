@@ -83,9 +83,6 @@ export class ReportOrderItem
   companyId: number;
 
   @Prop({ required: false })
-  ebsId: Date;
-
-  @Prop({ required: false })
   ebsNumber: string;
 
   @Prop({ required: false })
@@ -125,7 +122,7 @@ export class ReportOrderItem
   warehouseTargetName: string;
 
   @Prop({ required: false })
-  purpose: string;
+  reason: string;
 
   @Prop({ required: false })
   contract: string;
@@ -143,13 +140,13 @@ export class ReportOrderItem
   description: string;
 
   @Prop({ required: false })
-  account: number;
+  account: string;
 
   @Prop({ required: false })
-  accountDebt: number;
+  accountDebt: string;
 
   @Prop({ required: false })
-  accountHave: number;
+  accountHave: string;
 
   @Prop({ required: false })
   warehouseExportProposals: string; // Giay de nghi xuat vat tu
