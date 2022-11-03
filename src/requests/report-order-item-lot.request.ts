@@ -40,17 +40,17 @@ export class ReportOrderItemLotRequest implements ReportOrderItemLotInteface {
   @ApiProperty()
   @IsOptional()
   @IsString()
-  locationName: string;
+  locatorName: string;
 
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  locationId: number;
+  locatorId: number;
 
   @ApiProperty()
   @IsOptional()
   @IsString()
-  locationCode: string;
+  locatorCode: string;
 
   //------
   @ApiProperty()
@@ -105,11 +105,6 @@ export class ReportOrderItemLotRequest implements ReportOrderItemLotInteface {
   @ApiProperty()
   @IsOptional()
   @IsString()
-  purpose: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
   contract: string;
 
   @ApiProperty()
@@ -145,17 +140,17 @@ export class ReportOrderItemLotRequest implements ReportOrderItemLotInteface {
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  account: number;
+  account: string;
 
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  accountDebt: number;
+  accountDebt: string;
 
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  accountHave: number;
+  accountHave: string;
 
   @ApiProperty()
   @IsOptional()
@@ -296,9 +291,4 @@ export class ReportOrderItemLotRequest implements ReportOrderItemLotInteface {
   @IsOptional()
   @IsString()
   description: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsDateString()
-  ebsId: Date;
 }
