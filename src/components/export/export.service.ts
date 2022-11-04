@@ -42,6 +42,7 @@ import { reportSituationExportPeriodMapping } from '@mapping/words/report-situat
 import { reportAgeOfItemsMapping } from '@mapping/words/report-age-of-item-stock.mapping';
 import { reportSituationInventoryPeriodMapping } from '@mapping/words/report-situation-inventory-period.mapping';
 import { ReportOrderRepository } from '@repositories/report-order.repository';
+import { getItemInventoryDataMapping } from '@mapping/common/getItemInventoryData';
 @Injectable()
 export class ExportService {
   constructor(
@@ -309,18 +310,20 @@ export class ExportService {
   }
 
   async reportItemInventory(request: ReportRequest): Promise<ReportResponse> {
-    const data =
-      await this.dailyLotLocatorStockRepository.getReportItemInventory(request);
+    const data = await this.reportOrderItemLotRepository.getReportItemInventory(
+      request,
+    );
+    const getDataMapping = getItemInventoryDataMapping(data, this.i18n);
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } = await reportItemInventoryExcelMapping(
           request,
           this.i18n,
-          data,
+          getDataMapping,
         );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
-        return reportItemInventoryMapping(request, data, this.i18n);
+        return reportItemInventoryMapping(request, getDataMapping, this.i18n);
       default:
         return;
     }
@@ -378,8 +381,8 @@ export class ExportService {
       request,
       OrderType.IMPORT,
     );
-    const company = await this.reportOrderRepository.findOneByCompanyId(
-      request.companyId,
+    const company = await this.reportOrderRepository.findOneBycompanyCode(
+      request.companyCode,
     );
     if (data[0]) data[0]['company'] = company;
     switch (request.exportType) {

@@ -5,16 +5,7 @@ export type DailyLotLocatorStockDocument = DailyLotLocatorStock & Document;
 @Schema({ collection: 'daily-lot-locator-stock', timestamps: true })
 export class DailyLotLocatorStock implements DailyItemLotLocatorStockInterface {
   @Prop({ required: false })
-  warehouseId: number;
-
-  @Prop({ required: false })
-  locatorId: number;
-
-  @Prop({ required: false })
   warehouseCode: string;
-
-  @Prop({ required: false })
-  itemId: number;
 
   @Prop({ required: false })
   lotNumber: string;
@@ -38,7 +29,7 @@ export class DailyLotLocatorStock implements DailyItemLotLocatorStockInterface {
   account: number;
 
   @Prop({ required: false })
-  companyId: number;
+  companyCode: string;
 
   //add
   @Prop({ required: false })

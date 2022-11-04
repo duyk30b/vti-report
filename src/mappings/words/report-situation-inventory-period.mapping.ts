@@ -33,7 +33,7 @@ export async function reportSituationInventoryPeriodMapping(
 
   let title = '';
   let property = '';
-  if (request.warehouseId) {
+  if (request.warehouseCode) {
     property = warehouseName.toUpperCase();
   } else {
     property = i18n.translate(`report.REPORT_ALL`);

@@ -16,11 +16,7 @@ import {
   Packer,
 } from 'docx';
 import { I18nRequestScopeService } from 'nestjs-i18n';
-import {
-  setHeight,
-  setWidth,
-  wordFileStyle,
-} from './word-common.styles';
+import { setHeight, setWidth, wordFileStyle } from './word-common.styles';
 
 let itemData = [];
 
@@ -198,7 +194,7 @@ export async function generateReportItemImportedButNotPutToPosition(
                               alignment: AlignmentType.LEFT,
                               children: [
                                 new TextRun({
-                                  text: item.orderId,
+                                  text: item.orderCode,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],

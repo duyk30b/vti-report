@@ -13,7 +13,7 @@ export async function reportItemImportedButNotPutToPositionMapping(
 ): Promise<ExportResponse> {
   const companyName = data[0].companyName;
   const companyAddress = data[0].companyAddress;
-  const warehouse = request.warehouseId ? data[0].warehouseName : null;
+  const warehouse = request.warehouseCode ? data?.pop()?.warehouseName : null;
   const dateFrom = request.dateFrom;
   const dateTo = request.dateTo;
 
@@ -83,7 +83,6 @@ export async function reportItemImportedButNotPutToPositionMapping(
     dataWord.push({
       warehouseCode: warehouseCode,
       warehouseName: groupWarehouse[warehouseCode][0]?.warehouseName,
-      warehouseId: groupWarehouse[warehouseCode][0]?.warehouseId,
       items: groupWarehouse[warehouseCode],
     });
   }
