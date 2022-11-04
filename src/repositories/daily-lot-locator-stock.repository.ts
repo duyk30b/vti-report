@@ -48,13 +48,13 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
         reportDate: { $gte: today, $lte: tomorrow },
       });
     }
-    if (request?.companyId)
+    if (request?.companyCode)
       condition['$and'].push({
-        companyId: { $eq: request?.companyId },
+        companyCode: { $eq: request?.companyCode },
       });
-    if (request?.warehouseId)
+    if (request?.warehouseCode)
       condition['$and'].push({
-        warehouseId: { $eq: request?.warehouseId },
+        warehouseCode: { $eq: request?.warehouseCode },
       });
 
     return this.dailyLotLocatorStock
@@ -79,13 +79,6 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       reportOrderItemLot.push({
         $gte: ['$orderCreatedAt', new Date(request?.dateFrom)],
       });
-    } else {
-      condition['$and'].push({
-        reportDate: { $gte: new Date() },
-      });
-      reportOrderItemLot.push({
-        $gte: ['$orderCreatedAt', new Date()],
-      });
     }
 
     if (request?.dateTo) {
@@ -95,23 +88,16 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       reportOrderItemLot.push({
         $lte: ['$orderCreatedAt', new Date(request?.dateTo)],
       });
-    } else {
-      reportOrderItemLot.push({
-        $lte: ['$orderCreatedAt', new Date()],
-      });
-      condition['$and'].push({
-        reportDate: { $lte: new Date() },
-      });
     }
 
-    if (request?.companyId) {
+    if (request?.companyCode) {
       condition['$and'].push({
-        companyId: { $eq: request?.companyId },
+        companyCode: { $eq: request?.companyCode },
       });
     }
-    if (request?.warehouseId) {
+    if (request?.warehouseCode) {
       condition['$and'].push({
-        warehouseId: { $eq: request?.warehouseId },
+        warehouseCode: { $eq: request?.warehouseCode },
       });
     }
 
@@ -121,13 +107,11 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       },
       {
         $project: {
-          companyId: 1,
+          companyCode: 1,
           companyName: 1,
           companyAddress: 1,
-          warehouseId: 1,
           warehouseCode: 1,
           warehouseName: 1,
-          itemId: 1,
           itemCode: 1,
           itemName: 1,
           unit: 1,
@@ -167,13 +151,11 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       {
         $group: {
           _id: {
-            companyId: '$companyId',
+            companyCode: '$companyCode',
             companyName: '$companyName',
             companyAddress: '$companyAddress',
-            warehouseId: '$warehouseId',
             warehouseCode: '$warehouseCode',
             warehouseName: '$warehouseName',
-            itemId: '$itemId',
             itemCode: '$itemCode',
             itemName: '$itemName',
             unit: '$unit',
@@ -192,9 +174,9 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
         $lookup: {
           from: 'report-order-item-lot',
           let: {
-            companyId: '$_id.companyId',
-            itemId: '$_id.itemId',
-            warehouseId: '$_id.warehouseId',
+            companyCode: '$_id.companyCode',
+            itemCode: '$_id.itemCode',
+            warehouseCode: '$_id.warehouseCode',
             lotNumber: '$_id.lotNumber',
           },
           as: 'report-order-item-lot',
@@ -203,9 +185,9 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
               $match: {
                 $expr: {
                   $and: [
-                    { $eq: ['$companyId', '$$companyId'] },
-                    { $eq: ['$warehouseId', '$$warehouseId'] },
-                    { $eq: ['$itemId', '$$itemId'] },
+                    { $eq: ['$companyCode', '$$companyCode'] },
+                    { $eq: ['$warehouseCode', '$$warehouseCode'] },
+                    { $eq: ['$itemCode', '$$itemCode'] },
                     { $eq: ['$lotNumber', '$$lotNumber'] },
                     {
                       $or: [
@@ -224,7 +206,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
             },
             {
               $project: {
-                itemId: 1,
+                itemCode: 1,
                 orderType: 1,
                 importIn: {
                   $cond: [
@@ -249,7 +231,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
             {
               $group: {
                 _id: {
-                  itemId: '$itemId',
+                  itemCode: '$itemCode',
                   orderType: '$orderType',
                 },
                 importIn: { $sum: '$importIn' },
@@ -267,16 +249,14 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       {
         $group: {
           _id: {
-            companyId: '$_id.companyId',
+            companyCode: '$_id.companyCode',
             companyName: '$_id.companyName',
             companyAddress: '$_id.companyAddress',
-            warehouseId: '$_id.warehouseId',
             warehouseCode: '$_id.warehouseCode',
             warehouseName: '$_id.warehouseName',
           },
           items: {
             $push: {
-              itemId: '$_id.itemId',
               itemCode: '$_id.itemCode',
               itemName: '$_id.itemName',
               unit: '$_id.unit',
@@ -315,7 +295,19 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
         },
       },
       {
-        $sort: { warehouseId: -1, itemId: -1 },
+        $sort: { warehouseCode: -1, itemCode: -1 },
+      },
+      {
+        $group: {
+          _id: {
+            companyCode: '$_id.companyCode',
+            companyName: '$_id.companyName',
+            companyAddress: '$_id.companyAddress',
+          },
+          warehouses: {
+            $push: '$items',
+          },
+        },
       },
     ]);
   }
@@ -327,14 +319,14 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       $and: [],
     };
 
-    if (request?.companyId)
+    if (request?.companyCode)
       condition['$and'].push({
-        companyId: { $eq: request?.companyId },
+        companyCode: { $eq: request?.companyCode },
       });
 
-    if (request?.warehouseId)
+    if (request?.warehouseCode)
       condition['$and'].push({
-        warehouseId: { $eq: request?.warehouseId },
+        warehouseCode: { $eq: request?.warehouseCode },
       });
     return this.dailyLotLocatorStock.aggregate([
       {
@@ -346,10 +338,9 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       {
         $group: {
           _id: {
-            companyId: '$companyId',
+            companyCode: '$companyCode',
             companyName: '$companyName',
             companyAddress: '$companyAddress',
-            warehouseId: '$warehouseId',
             warehouseCode: '$warehouseCode',
             warehouseName: '$warehouseName',
             itemCode: '$itemCode',
@@ -374,10 +365,9 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       {
         $group: {
           _id: {
-            warehouseId: '$_id.warehouseId',
             warehouseCode: '$_id.warehouseCode',
             warehouseName: '$_id.warehouseName',
-            companyId: '$_id.companyId',
+            companyCode: '$_id.companyCode',
             companyName: '$_id.companyName',
             companyAddress: '$_id.companyAddress',
           },
@@ -402,13 +392,12 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       {
         $group: {
           _id: {
-            companyId: '$_id.companyId',
+            companyCode: '$_id.companyCode',
             companyName: '$_id.companyName',
             companyAddress: '$_id.companyAddress',
           },
           warehouses: {
             $push: {
-              warehouseId: '$_id.warehouseId',
               warehouseCode: '$_id.warehouseCode',
               warehouseName: '$_id.warehouseName',
               totalPrice: { $sum: '$items.totalPrice' },

@@ -55,7 +55,6 @@ export async function reportOrderImportByRequestForItemWordMapping(
     dataWord.push({
       warehouseCode: warehouseCode,
       warehouseName: groupWarehouse[0]?.warehouseName,
-      warehouseId: groupWarehouse[0]?.warehouseId,
       items: groupWarehouse[warehouseCode],
     });
   }

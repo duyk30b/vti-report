@@ -13,22 +13,13 @@ export class TransactionItem
   ebsNumber: string;
 
   @Prop({ required: false })
-  orderId: number;
-
-  @Prop({ required: false })
   orderCreatedAt: Date;
-
-  @Prop({ required: false })
-  itemId: number;
 
   @Prop({ required: false })
   itemName: string;
 
   @Prop({ required: false })
   itemCode: string;
-
-  @Prop({ required: false })
-  warehouseId: number;
 
   @Prop({ required: false })
   warehouseCode: string;
@@ -73,10 +64,7 @@ export class TransactionItem
   completedAt: Date;
 
   @Prop({ required: false })
-  companyId: number;
-
-  @Prop({ required: false })
-  constructionId: number;
+  companyCode: string;
 
   @Prop({ required: false })
   constructionCode: string;
@@ -86,9 +74,6 @@ export class TransactionItem
 
   @Prop({ required: false })
   constructionName: string;
-
-  @Prop({ required: false })
-  performerId: number;
 
   @Prop({ required: false })
   performerName: string;
@@ -106,9 +91,6 @@ export class TransactionItem
   locatorName: string;
 
   @Prop({ required: false })
-  locatorId: number;
-
-  @Prop({ required: false })
   locatorCode: string;
 
   @Prop({ required: false })
@@ -121,9 +103,6 @@ export class TransactionItem
   companyAddress: string;
 
   @Prop({ required: false })
-  warehouseTargetId: number;
-
-  @Prop({ required: false })
   warehouseTargetCode: string;
 
   @Prop({ required: false })
@@ -133,9 +112,6 @@ export class TransactionItem
   contract: string;
 
   @Prop({ required: false })
-  providerId: number;
-
-  @Prop({ required: false })
   providerCode: string;
 
   @Prop({ required: false })
@@ -143,9 +119,6 @@ export class TransactionItem
 
   @Prop({ required: false })
   departmentReceiptName: string;
-
-  @Prop({ required: false })
-  departmentReceiptId: number;
 
   @Prop({ required: false })
   departmentReceiptCode: string;

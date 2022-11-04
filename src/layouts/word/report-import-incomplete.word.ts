@@ -193,7 +193,7 @@ export async function generateReportOrderImportIncompleted(
                               alignment: AlignmentType.LEFT,
                               children: [
                                 new TextRun({
-                                  text: item.orderId,
+                                  text: item.orderCode,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],

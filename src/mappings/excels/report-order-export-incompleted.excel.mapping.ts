@@ -29,7 +29,7 @@ export async function reportOrderExportIncompletedExcelMapping(
       }
       const data: OrderExportIncompleteModel = {
         index: 0,
-        orderId: cur.orderId,
+        orderCode: cur.orderCode,
         itemCode: cur.itemCode,
         itemName: cur.itemName,
         unit: cur.unit,
@@ -52,7 +52,7 @@ export async function reportOrderExportIncompletedExcelMapping(
 
   const formatByKey: FormatByKey<OrderExportIncompleteModel> = {
     index: Alignment.CENTER,
-    orderId: Alignment.LEFT,
+    orderCode: Alignment.LEFT,
     itemCode: Alignment.LEFT,
     itemName: Alignment.LEFT,
     unit: Alignment.CENTER,
@@ -71,7 +71,7 @@ export async function reportOrderExportIncompletedExcelMapping(
     key: REPORT_INFO[ReportType[ReportType.ORDER_EXPORT_INCOMPLETED]].key,
     dateFrom: request.dateFrom,
     dateTo: request.dateTo,
-    warehouse: request.warehouseId ? data[0].warehouseName : null,
+    warehouse: request.warehouseCode ? data[0].warehouseName : null,
     footer: footerOrderTransferIncompleted,
   };
 

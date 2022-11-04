@@ -1,11 +1,7 @@
 export class SyncItemStockLocatorByDate {
-  itemId: number;
-
   itemName: string;
 
   itemCode: string;
-
-  warehouseId: number;
 
   warehouseName: string;
 
@@ -13,7 +9,7 @@ export class SyncItemStockLocatorByDate {
 
   reportDate: Date;
 
-  companyId: number;
+  companyCode: string;
 
   companyName: string;
 
@@ -26,8 +22,6 @@ export class SyncItemStockLocatorByDate {
   origin: string;
 
   note: string;
-
-  locatorId: number;
 
   locatorName: string;
 
