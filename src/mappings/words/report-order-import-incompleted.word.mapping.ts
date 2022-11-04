@@ -11,9 +11,9 @@ export async function reportOrderImportIncompletedMapping(
   data: ReportOrderItem[],
   i18n: I18nRequestScopeService,
 ): Promise<ExportResponse> {
-  const companyName = data[0].companyName;
-  const companyAddress = data[0].companyAddress;
-  const warehouse = request.warehouseId ? data[0].warehouseName : null;
+  const companyName = data?.pop()?.companyName;
+  const companyAddress = data?.pop()?.companyAddress;
+  const warehouse = request.warehouseCode ? data?.pop()?.warehouseName : null;
   const dateFrom = request.dateFrom;
   const dateTo = request.dateTo;
 
@@ -77,7 +77,6 @@ export async function reportOrderImportIncompletedMapping(
     dataWord.push({
       warehouseCode: warehouseCode,
       warehouseName: groupWarehouse[warehouseCode][0]?.warehouseName,
-      warehouseId: groupWarehouse[warehouseCode][0]?.warehouseId,
       items: groupWarehouse[warehouseCode],
     });
   }

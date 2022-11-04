@@ -1,13 +1,10 @@
 export interface DailyLocatorStockInterface {
-  warehouseId: number;
-  locatorId: number;
   locatorName: string;
   locatorCode: string;
-  itemId: number;
   itemCode: string;
   stockQuantity: number;
   reportDate: Date;
-  companyId: number;
+  companyCode: string;
   storageCost: number;
   itemName: string;
   warehouseName: string;

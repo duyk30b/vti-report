@@ -1,4 +1,5 @@
 import { generateReportItemInventory } from '@layout/word/report-item-inventory.word';
+import { ItemInventoryMapped } from '@mapping/common/getItemInventoryData';
 import { ReportRequest } from '@requests/report.request';
 import { ExportResponse } from '@responses/export.response';
 import { DATE_FOMAT_EXCELL, DATE_FOMAT_EXCELL_FILE } from '@utils/constant';
@@ -7,31 +8,16 @@ import { I18nRequestScopeService } from 'nestjs-i18n';
 
 export async function reportItemInventoryMapping(
   request: ReportRequest,
-  data: any,
+  data: ItemInventoryMapped,
   i18n: I18nRequestScopeService,
 ): Promise<ExportResponse> {
-  let companyName = '';
-  let companyAddress = '';
-  let warehouseName = '';
   const dateTo = request?.dateTo;
   const dateFrom = request?.dateFrom;
 
-  const dataWord = data.map((item) => {
-    companyName = item._id.companyName;
-    companyAddress = item._id.companyAddress;
-    warehouseName = item._id.warehouseName;
-    return {
-      warehouseCode:
-        i18n.translate('report.WAREHOUSE_GROUP_CODE') +
-        [item._id.warehouseCode, item._id.warehouseName].join('_'),
-      data: item.items,
-    };
-  });
-
   let title = '';
   let property = '';
-  if (request.warehouseId) {
-    property = warehouseName.toUpperCase();
+  if (request.warehouseCode) {
+    property = data.warehouseName.toUpperCase();
   } else {
     property = i18n.translate(`report.REPORT_ALL`);
   }
@@ -76,9 +62,9 @@ export async function reportItemInventoryMapping(
   return {
     nameFile: nameFile,
     result: await generateReportItemInventory(
-      dataWord,
-      companyName,
-      companyAddress,
+      data.dataMapped,
+      data.companyName,
+      data.companyAddress,
       title,
       reportTime,
       i18n,

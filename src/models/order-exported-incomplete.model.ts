@@ -1,6 +1,6 @@
 export interface OrderExportIncompleteModel {
   index: number;
-  orderId: number;
+  orderCode: string;
   itemCode: string;
   itemName: string;
   unit: string;

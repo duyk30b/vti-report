@@ -88,13 +88,13 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
       });
     }
 
-    if (request?.companyId)
+    if (request?.companyCode)
       condition['$and'].push({
-        companyId: { $eq: request?.companyId },
+        companyCode: { $eq: request?.companyCode },
       });
-    if (request?.warehouseId)
+    if (request?.warehouseCode)
       condition['$and'].push({
-        warehouseId: { $eq: request?.warehouseId },
+        warehouseCode: { $eq: request?.warehouseCode },
       });
 
     return this.dailyWarehouseItemStock

@@ -87,7 +87,7 @@ export async function reportOrderImportByRequestForItemExcelMapping(
     aligmentCell: formatByKey,
     dateFrom: request.dateFrom,
     dateTo: request.dateTo,
-    warehouse: request?.warehouseId ? data[0]?.warehouseName : null,
+    warehouse: request?.warehouseCode ? data[0]?.warehouseName : null,
     key: REPORT_INFO[ReportType[ReportType.ORDER_IMPORT_BY_REQUEST_FOR_ITEM]]
       ?.key,
   };
