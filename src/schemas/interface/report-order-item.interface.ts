@@ -2,25 +2,20 @@ import { ReportOrderInteface } from './report-order.interface';
 
 export interface ReportOrderItemInteface extends ReportOrderInteface {
   unit: string;
-  performerId: number;
   performerName: string;
   qrCode: string;
-  warehouseTargetId: number;
   warehouseTargetCode: string;
   warehouseTargetName: string;
   reason: string;
   contract: string;
-  providerId: number;
   providerCode: string;
   providerName: string;
-  departmentReceiptId: number;
   departmentReceiptCode: string;
   departmentReceiptName: string;
   account: string;
   accountDebt: string;
   accountHave: string;
   warehouseExportProposals: string; // Giay de nghi xuat vat tu
-  itemId: number;
   itemName: string;
   itemCode: string;
   planQuantity: number;

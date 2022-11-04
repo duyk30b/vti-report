@@ -18,11 +18,6 @@ export class SyncTransactionRequest
 {
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
-  departmentReceiptId: number;
-
-  @ApiProperty()
-  @IsOptional()
   @IsString()
   departmentReceiptCode: string;
 
@@ -58,11 +53,6 @@ export class SyncTransactionRequest
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
-  locatorId: number;
-
-  @ApiProperty()
-  @IsOptional()
   @IsString()
   locatorCode: string;
 
@@ -74,11 +64,6 @@ export class SyncTransactionRequest
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
-  performerId: number;
-
-  @ApiProperty()
-  @IsOptional()
   @IsString()
   performerName: string;
 
@@ -86,11 +71,6 @@ export class SyncTransactionRequest
   @IsOptional()
   @IsString()
   qrCode: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  warehouseTargetId: number;
 
   @ApiProperty()
   @IsOptional()
@@ -106,11 +86,6 @@ export class SyncTransactionRequest
   @IsOptional()
   @IsString()
   contract: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  providerId: number;
 
   @ApiProperty()
   @IsOptional()
@@ -164,11 +139,6 @@ export class SyncTransactionRequest
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
-  itemId: number;
-
-  @ApiProperty()
-  @IsOptional()
   @IsString()
   itemName: string;
 
@@ -214,11 +184,6 @@ export class SyncTransactionRequest
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
-  orderId: number;
-
-  @ApiProperty()
-  @IsOptional()
   @IsString()
   orderCode: string;
 
@@ -226,11 +191,6 @@ export class SyncTransactionRequest
   @IsOptional()
   @IsDateString()
   orderCreatedAt: Date;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  warehouseId: number;
 
   @ApiProperty()
   @IsOptional()
@@ -264,8 +224,8 @@ export class SyncTransactionRequest
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
-  companyId: number;
+  @IsString()
+  companyCode: string;
 
   @ApiProperty()
   @IsOptional()
@@ -276,11 +236,6 @@ export class SyncTransactionRequest
   @IsOptional()
   @IsString()
   companyAddress: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  constructionId: number;
 
   @ApiProperty()
   @IsOptional()

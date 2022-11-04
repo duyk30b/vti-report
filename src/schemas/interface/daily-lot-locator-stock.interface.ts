@@ -1,8 +1,5 @@
 export interface DailyItemLotLocatorStockInterface {
-  warehouseId: number;
-  locatorId: number;
   warehouseCode: string;
-  itemId: number;
   lotNumber: string;
   stockQuantity: number;
   reportDate: Date;
@@ -10,7 +7,7 @@ export interface DailyItemLotLocatorStockInterface {
   locatorName: string;
   storageDate: Date;
   account: number;
-  companyId: number;
+  companyCode: string;
   itemCode: string;
   itemName: string;
   warehouseName: string;

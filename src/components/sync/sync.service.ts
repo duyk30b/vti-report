@@ -9,24 +9,17 @@ import { ReportOrderItemLotRepository } from '@repositories/report-order-item-lo
 import { ReportOrderItemRepository } from '@repositories/report-order-item.repository';
 import { ReportOrderRepository } from '@repositories/report-order.repository';
 import { TransactionItemRepository } from '@repositories/transaction-item.repository';
-import {
-  SyncDailyReportRequest,
-  SyncDailyStockRequest,
-} from '@requests/sync-daily.request';
+import { SyncDailyStockRequest } from '@requests/sync-daily.request';
 import { SyncItemStockLocatorByDate } from '@requests/sync-item-stock-locator-by-date';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { SyncTransactionRequest } from '@requests/sync-transaction.request';
-import mongoose from 'mongoose';
-import { ClientSession, startSession, Connection } from 'mongoose';
 import { ActionType } from '@enums/export-type.enum';
-import { InjectConnection } from '@nestjs/mongoose';
 import {
   PurchasedOrderImportRequestDto,
   SyncOrderRequest,
 } from '@requests/sync-purchased-order-import.request';
 import { ReportOrderInteface } from '@schemas/interface/report-order.interface';
 import { OrderType } from '@enums/order-type.enum';
-import { OrderStatus } from '@enums/order-status.enum';
 import { ReportOrderItemInteface } from '@schemas/interface/report-order-item.interface';
 import { ReportOrderItemLotInteface } from '@schemas/interface/report-order-item-lot.interface';
 import {
@@ -195,22 +188,22 @@ export class SyncService {
   ) {
     if (isUpdate) {
       await Promise.all([
-        this.reportOrderRepository.deleteAllByConditin({ orderId: request.id }),
+        this.reportOrderRepository.deleteAllByConditin({
+          orderCode: request.code,
+        }),
         this.reportOrderItemRepository.deleteAllByConditin({
-          orderId: request.id,
+          orderCode: request.code,
         }),
         this.reportOrderItemLotRepository.deleteAllByConditin({
-          orderId: request.id,
+          orderCode: request.code,
         }),
       ]);
     }
     try {
       const promiseAll: any = [];
       const reportOrder: ReportOrderInteface = {
-        orderId: request.id,
         orderCode: request.code,
         orderCreatedAt: request.createdAt,
-        warehouseId: request?.sourceWarehouse?.id,
         warehouseCode: request?.sourceWarehouse?.code,
         warehouseName: request?.sourceWarehouse?.name,
         orderType: OrderType.TRANSFER,
@@ -218,10 +211,9 @@ export class SyncService {
         status: request.status,
         completedAt: request.createdAt,
         ebsNumber: request?.ebsNumber,
-        companyId: request?.company?.id,
+        companyCode: request?.company?.code,
         companyName: request?.company?.name,
         companyAddress: request?.company?.address,
-        constructionId: request?.constructions?.id || null,
         constructionCode: request?.constructions?.code || null,
         constructionName: request?.constructions?.name || null,
         description: request.explanation,
@@ -232,25 +224,20 @@ export class SyncService {
       for (const item of request.itemsExport) {
         const reportOrderItem: ReportOrderItemInteface = {
           unit: item?.itemUnit.name,
-          performerId: null,
           performerName: request.receiver,
           qrCode: request.qrCode,
-          warehouseTargetId: request?.destinationWarehouse?.id,
           warehouseTargetCode: request?.destinationWarehouse?.code,
           warehouseTargetName: request?.destinationWarehouse?.name,
           reason: request.reason.name,
           contract: null,
-          providerId: null,
           providerCode: null,
           providerName: null,
-          departmentReceiptId: request?.departmentReceipt?.id,
           departmentReceiptCode: request?.departmentReceipt?.code,
           departmentReceiptName: request?.departmentReceipt?.name,
           account: request?.source?.accountant,
           accountDebt: null,
           accountHave: null,
           warehouseExportProposals: request?.warehouseExportProposals?.code,
-          itemId: item?.id,
           itemName: item?.name,
           itemCode: item?.code,
           planQuantity: item?.planQuantity,
@@ -271,7 +258,6 @@ export class SyncService {
             explain: request?.explanation,
             note: request?.explanation,
             locatorName: null,
-            locatorId: null,
             locatorCode: null,
           };
           promiseAll.push(
@@ -301,22 +287,22 @@ export class SyncService {
   ) {
     if (isUpdate) {
       await Promise.all([
-        this.reportOrderRepository.deleteAllByConditin({ orderId: request.id }),
+        this.reportOrderRepository.deleteAllByConditin({
+          orderCode: request.code,
+        }),
         this.reportOrderItemRepository.deleteAllByConditin({
-          orderId: request.id,
+          orderCode: request.code,
         }),
         this.reportOrderItemLotRepository.deleteAllByConditin({
-          orderId: request.id,
+          orderCode: request.code,
         }),
       ]);
     }
     try {
       const promiseAll: any = [];
       const reportOrder: ReportOrderInteface = {
-        orderId: request.id,
         orderCode: request.code,
         orderCreatedAt: request.receiptDate,
-        warehouseId: request.warehouse.id,
         warehouseCode: request.warehouse.code,
         warehouseName: request.warehouse.name,
         orderType: OrderType.IMPORT,
@@ -324,10 +310,9 @@ export class SyncService {
         status: request.status,
         completedAt: request.receiptDate,
         ebsNumber: request?.ebsNumber,
-        companyId: request.company.id,
+        companyCode: request.company.code,
         companyName: request.company.name,
         companyAddress: request.company.address,
-        constructionId: request?.construction?.id,
         constructionCode: request?.construction?.code,
         constructionName: request?.construction?.name,
         description: request.explanation,
@@ -338,25 +323,20 @@ export class SyncService {
       for (const item of request.purchasedOrderImportDetails) {
         const reportOrderItem: ReportOrderItemInteface = {
           unit: item?.item?.itemUnit,
-          performerId: null,
           performerName: request?.deliver,
           qrCode: request.qrCode,
-          warehouseTargetId: null,
           warehouseTargetCode: null,
           warehouseTargetName: null,
           reason: request.reason.name,
           contract: null,
-          providerId: request?.vendor?.id,
           providerCode: request?.vendor?.code,
           providerName: request?.vendor?.name,
-          departmentReceiptId: request?.departmentReceipt?.id,
           departmentReceiptCode: request?.departmentReceipt?.code,
           departmentReceiptName: request?.departmentReceipt?.name,
           account: request?.source?.accountant,
           accountDebt: item?.debitAccount,
           accountHave: item?.creditAccount,
           warehouseExportProposals: request?.warehouseExportProposals?.code,
-          itemId: item?.itemId,
           itemName: item?.item?.name,
           itemCode: item?.item?.code,
           planQuantity: item?.quantity,
@@ -365,9 +345,7 @@ export class SyncService {
           storedQuantity: 0,
           collectedQuantity: 0,
           exportedQuantity: item?.exportableQuantity,
-          storageCost: Number(item?.item?.price)
-            ? Number(item?.item?.price)
-            : 0,
+          storageCost: Number(item?.price) ? Number(item?.price) : 0,
           ...reportOrder,
         };
         promiseAll.push(this.reportOrderItemRepository.save(reportOrderItem));
@@ -379,7 +357,6 @@ export class SyncService {
             explain: request?.explanation,
             note: request?.explanation,
             locatorName: null,
-            locatorId: null,
             locatorCode: null,
           };
           promiseAll.push(
@@ -407,12 +384,14 @@ export class SyncService {
   ) {
     if (isUpdate) {
       await Promise.all([
-        this.reportOrderRepository.deleteAllByConditin({ orderId: request.id }),
+        this.reportOrderRepository.deleteAllByConditin({
+          orderCode: request.code,
+        }),
         this.reportOrderItemRepository.deleteAllByConditin({
-          orderId: request.id,
+          orderCode: request.code,
         }),
         this.reportOrderItemLotRepository.deleteAllByConditin({
-          orderId: request.id,
+          orderCode: request.code,
         }),
       ]);
     }
@@ -420,10 +399,8 @@ export class SyncService {
     try {
       const promiseAll: any = [];
       const reportOrder: ReportOrderInteface = {
-        orderId: request?.id,
         orderCode: request?.code,
         orderCreatedAt: request?.receiptDate,
-        warehouseId: request?.warehouse?.id,
         warehouseCode: request?.warehouse?.code,
         warehouseName: request?.warehouse?.name,
         orderType: OrderType.EXPORT,
@@ -431,10 +408,9 @@ export class SyncService {
         status: request.status,
         completedAt: request.receiptDate,
         ebsNumber: request?.ebsNumber,
-        companyId: request?.company?.id,
+        companyCode: request?.company?.code,
         companyName: request?.company?.name,
         companyAddress: request?.company?.address,
-        constructionId: request?.constructions?.id || null,
         constructionCode: request?.constructions?.code || null,
         constructionName: request?.constructions?.name || null,
         description: null,
@@ -445,25 +421,20 @@ export class SyncService {
       for (const item of request.itemsSync) {
         const reportOrderItem: ReportOrderItemInteface = {
           unit: item.itemUnit,
-          performerId: null,
           performerName: request.receiver,
           qrCode: request.qrCode,
-          warehouseTargetId: null,
           warehouseTargetCode: null,
           warehouseTargetName: null,
           reason: request?.reason?.name,
           contract: null,
-          providerId: null,
           providerCode: null,
           providerName: null,
-          departmentReceiptId: request.departmentReceipt.id,
           departmentReceiptCode: request.departmentReceipt.code,
           departmentReceiptName: request.departmentReceipt.name,
           account: request?.source?.accountant,
           accountDebt: item?.debitAccount,
           accountHave: item?.creditAccount,
           warehouseExportProposals: request?.warehouseExportProposals?.code,
-          itemId: item.id,
           itemName: item.name,
           itemCode: item.code,
           planQuantity: item.quantity,
@@ -484,7 +455,6 @@ export class SyncService {
             explain: request.explanation,
             note: request.explanation,
             locatorName: null,
-            locatorId: null,
             locatorCode: null,
           };
           promiseAll.push(

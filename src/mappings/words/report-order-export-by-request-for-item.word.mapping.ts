@@ -52,7 +52,6 @@ export async function reportOrderExportByRequestForItemWordMapping(
     dataWord.push({
       warehouseCode: warehouseCode,
       warehouseName: groupWarehouse[warehouseCode][0]?.warehouseName,
-      warehouseId: groupWarehouse[warehouseCode][0]?.warehouseId,
       items: groupWarehouse[warehouseCode],
     });
   }

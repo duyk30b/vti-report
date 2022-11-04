@@ -44,11 +44,6 @@ export class ReportOrderItemLotRequest implements ReportOrderItemLotInteface {
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
-  locatorId: number;
-
-  @ApiProperty()
-  @IsOptional()
   @IsString()
   locatorCode: string;
 
@@ -60,11 +55,6 @@ export class ReportOrderItemLotRequest implements ReportOrderItemLotInteface {
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
-  performerId: number;
-
-  @ApiProperty()
-  @IsOptional()
   @IsString()
   performerName: string;
 
@@ -72,11 +62,6 @@ export class ReportOrderItemLotRequest implements ReportOrderItemLotInteface {
   @IsOptional()
   @IsString()
   qrCode: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  warehouseTargetId: number;
 
   @ApiProperty()
   @IsOptional()
@@ -99,18 +84,8 @@ export class ReportOrderItemLotRequest implements ReportOrderItemLotInteface {
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
-  departmentReceiptId: number;
-
-  @ApiProperty()
-  @IsOptional()
   @IsString()
   contract: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  providerId: number;
 
   @ApiProperty()
   @IsOptional()
@@ -159,11 +134,6 @@ export class ReportOrderItemLotRequest implements ReportOrderItemLotInteface {
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
-  itemId: number;
-
-  @ApiProperty()
-  @IsOptional()
   @IsString()
   itemName: string;
 
@@ -209,11 +179,6 @@ export class ReportOrderItemLotRequest implements ReportOrderItemLotInteface {
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
-  orderId: number;
-
-  @ApiProperty()
-  @IsOptional()
   @IsString()
   orderCode: string;
 
@@ -221,11 +186,6 @@ export class ReportOrderItemLotRequest implements ReportOrderItemLotInteface {
   @IsOptional()
   @IsDateString()
   orderCreatedAt: Date;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  warehouseId: number;
 
   @ApiProperty()
   @IsOptional()
@@ -259,8 +219,8 @@ export class ReportOrderItemLotRequest implements ReportOrderItemLotInteface {
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
-  companyId: number;
+  @IsString()
+  companyCode: string;
 
   @ApiProperty()
   @IsOptional()
@@ -271,11 +231,6 @@ export class ReportOrderItemLotRequest implements ReportOrderItemLotInteface {
   @IsOptional()
   @IsString()
   companyAddress: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  constructionId: number;
 
   @ApiProperty()
   @IsOptional()

@@ -1,12 +1,10 @@
 export interface DailyWarehouseItemStockInterface {
-  itemId: number;
-  warehouseId: number;
   reportDate: Date;
   stockQuantity: number;
   minInventoryLimit: number;
   inventoryLimit: number;
   storageCost: number;
-  companyId: number;
+  companyCode: string;
   companyName: string;
   companyAddress: string;
   itemName: string;

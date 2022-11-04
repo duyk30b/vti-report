@@ -74,7 +74,7 @@ export async function reportOrderTransferIncompletedExcelMapping(
     key: REPORT_INFO[ReportType[ReportType.ORDER_TRANSFER_INCOMPLETED]].key,
     dateFrom: request.dateFrom,
     dateTo: request.dateTo,
-    warehouse: request.warehouseId ? data[0].warehouseName : null,
+    warehouse: request.warehouseCode ? data[0].warehouseName : null,
     footer: footerOrderTransferIncompleted,
   };
 
