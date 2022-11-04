@@ -13,23 +13,21 @@ export async function reportSituationExportPeriodExcelMapping(
   data: any[],
   i18n: I18nRequestScopeService,
 ) {
-  let companyName = '';
-  let companyAddress = '';
-  let warehouseName = '';
-  const dataExcell: TableDataSituationExportPeriod = data[0]['warehouses'].map(
-    (item) => {
+  let dataExcell: TableDataSituationExportPeriod[] = [];
+  if (data.length > 0) {
+    dataExcell = data[0]['warehouses'].map((item) => {
       return {
         warehouseCode:
           i18n.translate('report.WAREHOUSE_GROUP_CODE') +
           [item.warehouseCode, item.warehouseName].join('_'),
         totalPrice: item.totalPrice,
-        purposes: item.purposes,
+        reasons: item.reasons,
       };
-    },
-  );
+    });
+  }
   const model: ReportModel<any> = {
-    childCompany: data[0].companyName,
-    addressChildCompany: data[0].companyAddress,
+    childCompany: data[0]?._id?.companyName || '',
+    addressChildCompany: data[0]?._id?.companyAddress || '',
     tableColumn: SITUATION_EXPORT_PERIOD_COLUMN,
     tableData: dataExcell,
     header: true,

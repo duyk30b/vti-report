@@ -1,4 +1,5 @@
 import { BaseDto } from '@core/dto/base.dto';
+import { ActionType } from '@enums/export-type.enum';
 import { OrderStatus } from '@enums/order-status.enum';
 import { OrderType } from '@enums/order-type.enum';
 import { ApiProperty } from '@nestjs/swagger';
@@ -24,42 +25,42 @@ export class DailyLotLocatorStockRequest
   implements DailyItemLotLocatorStockInterface
 {
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   lotNumber: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   stockQuantity: number;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsDateString()
   reportDate: Date;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsDateString()
   storageDate: Date;
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
-  account: string;
+  @IsNumber()
+  account: number;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   storageCost: number;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   minInventoryLimit: number;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   inventoryLimit: number;
 
@@ -101,27 +102,27 @@ export class DailyItemLocatorStockRequest
   implements DailyLocatorStockInterface
 {
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   locatorId: number;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   locatorName: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   locatorCode: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsDateString()
   reportDate: Date;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   unit: string;
 
@@ -216,7 +217,7 @@ export class DailyWarehouseItemRequest
   companyName: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   companyAddress: string;
 
@@ -330,7 +331,7 @@ export class ReportOrderRequest implements ReportOrderInteface {
   companyName: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   companyAddress: string;
 
@@ -356,8 +357,8 @@ export class ReportOrderRequest implements ReportOrderInteface {
 
   @ApiProperty()
   @IsOptional()
-  @IsDateString()
-  ebsId: Date;
+  @IsString()
+  ebsNumber: string;
 
   @IsNotEmpty()
   @IsArray()
@@ -382,4 +383,8 @@ export class SyncDailyReportRequest extends BaseDto {
   @ArrayMinSize(1)
   @Type(() => ReportOrderRequest)
   reportOrders: ReportOrderRequest[];
+
+  @IsNotEmpty()
+  @IsEnum(ActionType)
+  actionype: ActionType;
 }

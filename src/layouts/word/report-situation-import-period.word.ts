@@ -17,11 +17,7 @@ import {
   VerticalAlign,
 } from 'docx';
 import { I18nRequestScopeService } from 'nestjs-i18n';
-import {
-  setHeight,
-  setWidth,
-  wordFileStyle,
-} from './word-common.styles';
+import { setHeight, setWidth, wordFileStyle } from './word-common.styles';
 export async function generateReportSituationImportPeriod(
   dataWord,
   companyName,
@@ -29,8 +25,8 @@ export async function generateReportSituationImportPeriod(
   title,
   reportTime,
   i18n: I18nRequestScopeService,
-): Promise<string> {
-  let purposeData = [];
+): Promise<any> {
+  let reasonData = [];
   let orderData = [];
   let itemData = [];
   let totalWarehouse = 0;
@@ -203,9 +199,9 @@ export async function generateReportSituationImportPeriod(
               ...dataWord
                 .map((warehouse) => {
                   totalWarehouse = plus(totalWarehouse, warehouse.totalPrice);
-                  purposeData = warehouse.purposes
-                    .map((purpose) => {
-                      orderData = purpose.orders
+                  reasonData = warehouse.reasons
+                    .map((reason) => {
+                      orderData = reason.orders
                         .map((order, index) => {
                           itemData = order.items.map((item) => {
                             return new TableRow({
@@ -341,7 +337,7 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.LEFT,
                                       children: [
                                         new TextRun({
-                                          text: item.locationCode,
+                                          text: item.locatorCode,
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -356,7 +352,7 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: item.unit,
+                                          text: item.storageCost,
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -371,7 +367,7 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: item.cost,
+                                          text: '',
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -438,7 +434,7 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.CENTER,
                                       children: [
                                         new TextRun({
-                                          text: order.orderCreateAt,
+                                          text: order.orderCreatedAt,
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -498,7 +494,7 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.LEFT,
                                       children: [
                                         new TextRun({
-                                          text: order.receiveDepartmentName,
+                                          text: order.departmentReceiptName,
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -570,7 +566,7 @@ export async function generateReportSituationImportPeriod(
                                   alignment: AlignmentType.LEFT,
                                   children: [
                                     new TextRun({
-                                      text: purpose.value,
+                                      text: reason.value,
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -665,7 +661,7 @@ export async function generateReportSituationImportPeriod(
                         }),
                       ],
                     }),
-                    ...purposeData,
+                    ...reasonData,
                   ];
                 })
                 .flat(),
@@ -727,6 +723,5 @@ export async function generateReportSituationImportPeriod(
     ],
   });
 
-  //   return 'ok';
-  return Packer.toBase64String(doc);
+  return Packer.toBuffer(doc);
 }

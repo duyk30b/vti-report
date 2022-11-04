@@ -2,8 +2,10 @@ import { BaseAbstractRepository } from '@core/repository/base.abstract.repositor
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ReportOrderRequest } from '@requests/sync-daily.request';
+import { ReportOrderInteface } from '@schemas/interface/report-order.interface';
 import { ReportOrder } from '@schemas/report-order.schema';
 import { plus } from '@utils/common';
+import { ClientSession } from 'mongoose';
 import { Model } from 'mongoose';
 
 @Injectable()
@@ -15,12 +17,14 @@ export class ReportOrderRepository extends BaseAbstractRepository<ReportOrder> {
     super(reportOrder);
   }
 
-  async createMany(reportOrderRequests: ReportOrderRequest[]): Promise<void> {
-    for (const reportOrderRequest of reportOrderRequests) {
-      const document = new this.reportOrder();
-      Object.assign(document, reportOrderRequest);
-      await document.save();
-    }
+  async save(data: ReportOrderInteface): Promise<void> {
+    const document = new this.reportOrder();
+    Object.assign(document, data);
+    await document.save();
+  }
+
+  async findOneByCompanyId(id: number): Promise<ReportOrder> {
+    return this.findOneByCondition({ companyId: id });
   }
 
   private sumWarehouse(

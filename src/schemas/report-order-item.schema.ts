@@ -11,6 +11,15 @@ export class ReportOrderItem
   implements ReportOrderItemInteface
 {
   @Prop({ required: false })
+  departmentReceiptId: number;
+
+  @Prop({ required: false })
+  departmentReceiptCode: string;
+
+  @Prop({ required: false })
+  departmentReceiptName: string;
+
+  @Prop({ required: false })
   orderId: number;
 
   @Prop({ required: false })
@@ -47,7 +56,7 @@ export class ReportOrderItem
   exportedQuantity: number;
 
   @Prop({ required: false })
-  cost: number;
+  storageCost: number;
 
   @Prop({ required: false })
   warehouseId: number;
@@ -74,7 +83,7 @@ export class ReportOrderItem
   companyId: number;
 
   @Prop({ required: false })
-  ebsId: Date;
+  ebsNumber: string;
 
   @Prop({ required: false })
   constructionId: number;
@@ -113,10 +122,7 @@ export class ReportOrderItem
   warehouseTargetName: string;
 
   @Prop({ required: false })
-  purpose: string;
-
-  @Prop({ required: false })
-  postCode: string;
+  reason: string;
 
   @Prop({ required: false })
   contract: string;
@@ -131,31 +137,19 @@ export class ReportOrderItem
   providerName: string;
 
   @Prop({ required: false })
-  receiveDepartmentId: number;
-
-  @Prop({ required: false })
-  receiveDepartmentCode: string;
-
-  @Prop({ required: false })
-  receiveDepartmentName: string;
-
-  @Prop({ required: false })
   description: string;
 
   @Prop({ required: false })
   account: string;
 
   @Prop({ required: false })
-  accountDebt: number;
+  accountDebt: string;
 
   @Prop({ required: false })
-  accountHave: number;
+  accountHave: string;
 
   @Prop({ required: false })
-  proposalExport: string; // Giay de nghi xuat vat tu
-
-  @Prop({ required: false })
-  orderImportRequireCode: string; //Giay de nghi nhap vat tu
+  warehouseExportProposals: string; // Giay de nghi xuat vat tu
 }
 
 export const ReportOrderItemSchema =

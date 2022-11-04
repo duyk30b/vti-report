@@ -33,10 +33,10 @@ export async function reportItemInventoryImportedNoQRCodeExcelMapping(
         itemName: cur.itemName,
         unit: cur.unit,
         lotNumber: cur.lotNumber,
-        locationCode: cur.locationCode,
+        locatorCode: cur.locatorCode,
         actualQuantity: cur.actualQuantity,
-        unitPrice: cur.cost,
-        totalPrice: cur.actualQuantity * cur.cost,
+        unitPrice: cur.storageCost,
+        totalPrice: cur.actualQuantity * cur.storageCost,
       };
       prev[warehouseCode].push(data);
       return prev;
@@ -58,7 +58,7 @@ export async function reportItemInventoryImportedNoQRCodeExcelMapping(
     itemName: Alignment.LEFT,
     unit: Alignment.CENTER,
     lotNumber: Alignment.CENTER,
-    locationCode: Alignment.LEFT,
+    locatorCode: Alignment.LEFT,
     actualQuantity: Alignment.RIGHT,
     unitPrice: Alignment.RIGHT,
     totalPrice: Alignment.RIGHT,

@@ -2,15 +2,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ReportRequest } from '../../requests/report.request';
 import { ReportResponse } from '../../responses/report.response';
 import { ReportType } from '@enums/report-type.enum';
-import { ResponsePayload } from '@core/utils/response-payload';
-import { ResponseBuilder } from '@core/utils/response-builder';
-import { ResponseCodeEnum } from '@core/response-code.enum';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { DailyLotLocatorStockRepository } from '@repositories/daily-lot-locator-stock.repository';
 import { ReportOrderItemLotRepository } from '@repositories/report-order-item-lot.repository';
 import { OrderType } from '@enums/order-type.enum';
-import { DATE_FOMAT, MONTHS, YEARS } from '@utils/constant';
-import * as moment from 'moment';
 import { DailyWarehouseItemStockRepository } from '@repositories/daily-warehouse-item-stock.repository';
 import { ExportType } from '@enums/export-type.enum';
 import { ReportOrderItemRepository } from '@repositories/report-order-item.repository';
@@ -46,6 +41,7 @@ import { reportSituationTransferMapping } from '@mapping/words/report-situation-
 import { reportSituationExportPeriodMapping } from '@mapping/words/report-situation-export-period.mapping';
 import { reportAgeOfItemsMapping } from '@mapping/words/report-age-of-item-stock.mapping';
 import { reportSituationInventoryPeriodMapping } from '@mapping/words/report-situation-inventory-period.mapping';
+import { ReportOrderRepository } from '@repositories/report-order.repository';
 @Injectable()
 export class ExportService {
   constructor(
@@ -61,14 +57,15 @@ export class ExportService {
     @Inject(ReportOrderItemRepository.name)
     private reportOrderItemRepository: ReportOrderItemRepository,
 
+    @Inject(ReportOrderRepository.name)
+    private reportOrderRepository: ReportOrderRepository,
+
     private readonly i18n: I18nRequestScopeService,
   ) {}
 
-  async getReport(
-    request: ReportRequest,
-  ): Promise<ResponsePayload<ReportResponse>> {
+  async getReport(request: ReportRequest): Promise<ReportResponse> {
+    let dataReturn;
     try {
-      let dataReturn;
       switch (request.reportType) {
         case ReportType.ITEM_INVENTORY_BELOW_MINIMUM:
           dataReturn = await this.reportItemInventoryBelowMinimum(request);
@@ -140,21 +137,10 @@ export class ExportService {
           dataReturn = null;
           break;
       }
-
-      if (!dataReturn)
-        return new ResponseBuilder<any>()
-          .withCode(ResponseCodeEnum.BAD_REQUEST)
-          .withMessage(await this.i18n.translate('error.NOT_FOUND'))
-          .build();
-      return new ResponseBuilder<any>(dataReturn)
-        .withCode(ResponseCodeEnum.SUCCESS)
-        .withMessage('success')
-        .build();
+      return dataReturn;
     } catch (e) {
-      return new ResponseBuilder<any>(e)
-        .withCode(ResponseCodeEnum.BAD_REQUEST)
-        .withMessage(await this.i18n.translate('error.BAD_REQUEST'))
-        .build();
+      console.log(e);
+      return { error: e } as any;
     }
   }
 
@@ -163,7 +149,6 @@ export class ExportService {
       await this.dailyLotLocatorStockRepository.getReportAgeOfItemStock(
         request,
       );
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } = await reportAgeOfItemsExcelMapping(
@@ -187,7 +172,6 @@ export class ExportService {
         request,
         OrderType.EXPORT,
       );
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -212,7 +196,6 @@ export class ExportService {
         request,
         OrderType.IMPORT,
       );
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -237,7 +220,7 @@ export class ExportService {
         request,
         OrderType.INVENTORY,
       );
-    if (!data.length) return;
+
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -262,7 +245,6 @@ export class ExportService {
         request,
         OrderType.TRANSFER,
       );
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -282,7 +264,7 @@ export class ExportService {
       request,
       OrderType.EXPORT,
     );
-    if (!data.length) return;
+
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -306,7 +288,6 @@ export class ExportService {
       request,
       OrderType.IMPORT,
     );
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -330,7 +311,6 @@ export class ExportService {
   async reportItemInventory(request: ReportRequest): Promise<ReportResponse> {
     const data =
       await this.dailyLotLocatorStockRepository.getReportItemInventory(request);
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } = await reportItemInventoryExcelMapping(
@@ -354,7 +334,6 @@ export class ExportService {
       OrderType.IMPORT,
     );
 
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -377,7 +356,6 @@ export class ExportService {
 
   async reportInventory(request: ReportRequest): Promise<ReportResponse> {
     const data = await this.dailyLotLocatorStockRepository.getReports(request);
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } = await reportInventoryExcelMapping(
@@ -400,7 +378,10 @@ export class ExportService {
       request,
       OrderType.IMPORT,
     );
-    if (!data.length) return;
+    const company = await this.reportOrderRepository.findOneByCompanyId(
+      request.companyId,
+    );
+    if (data[0]) data[0]['company'] = company;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -429,7 +410,6 @@ export class ExportService {
       OrderType.IMPORT,
     );
 
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -454,7 +434,6 @@ export class ExportService {
       OrderType.EXPORT,
     );
 
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -482,7 +461,6 @@ export class ExportService {
       request,
       OrderType.TRANSFER,
     );
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -509,7 +487,6 @@ export class ExportService {
     const data = await this.dailyWarehouseItemStockRepository.getReports(
       request,
     );
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -537,7 +514,6 @@ export class ExportService {
     const data = await this.dailyWarehouseItemStockRepository.getReports(
       request,
     );
-    if (!data.length) return;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =

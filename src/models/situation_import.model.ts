@@ -6,9 +6,9 @@ export interface DataSituationImportItem {
   accountHave: number;
   unit: string;
   actualQuantity: number;
-  locationCode: string;
+  locatorCode: string;
   unitPrice: number;
-  cost: number;
+  storageCost: number;
   totalPrice: number;
 }
 
@@ -16,14 +16,14 @@ export interface DataSituationImportOrder {
   orderCode: string;
   orderCreatedAt: Date;
   contract: string;
-  contructionName: string;
+  constructionName: string;
   providerName: string;
-  receiveDepartmentName: string;
+  departmentReceiptName: string;
   explain: string;
   totalPrice: number;
   items: Array<DataSituationImportItem>;
 }
-export interface DataSituationImportPurpose {
+export interface DataSituationImportReason {
   value: string;
   totalPrice: number;
   orders: Array<DataSituationImportOrder>;
@@ -31,5 +31,5 @@ export interface DataSituationImportPurpose {
 export interface TableDataSituationImportPeriod {
   warehouseCode: string;
   totalPrice: number;
-  purposes: Array<DataSituationImportPurpose>;
+  reasons: Array<DataSituationImportReason>;
 }

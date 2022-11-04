@@ -19,6 +19,21 @@ import { ReportOrderItemLotRequest } from './report-order-item-lot.request';
 
 export class ReportOrderItemRequest implements ReportOrderItemInteface {
   @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  departmentReceiptId: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  departmentReceiptCode: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  ebsNumber: string;
+
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   unit: string;
@@ -56,12 +71,7 @@ export class ReportOrderItemRequest implements ReportOrderItemInteface {
   @ApiProperty()
   @IsOptional()
   @IsString()
-  purpose: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  postCode: string;
+  reason: string;
 
   @ApiProperty()
   @IsOptional()
@@ -85,18 +95,8 @@ export class ReportOrderItemRequest implements ReportOrderItemInteface {
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
-  receiveDepartmentId: number;
-
-  @ApiProperty()
-  @IsOptional()
   @IsString()
-  receiveDepartmentCode: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  receiveDepartmentName: string;
+  departmentReceiptName: string;
 
   @ApiProperty()
   @IsOptional()
@@ -115,28 +115,23 @@ export class ReportOrderItemRequest implements ReportOrderItemInteface {
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
+  @IsNumber()
   account: string;
 
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  accountDebt: number;
+  accountDebt: string;
 
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  accountHave: number;
+  accountHave: string;
 
   @ApiProperty()
   @IsOptional()
   @IsString()
-  proposalExport: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  orderImportRequireCode: string;
+  warehouseExportProposals: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -186,7 +181,7 @@ export class ReportOrderItemRequest implements ReportOrderItemInteface {
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  cost: number;
+  storageCost: number;
 
   @ApiProperty()
   @IsOptional()
@@ -272,11 +267,6 @@ export class ReportOrderItemRequest implements ReportOrderItemInteface {
   @IsOptional()
   @IsString()
   description: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsDateString()
-  ebsId: Date;
 
   @IsNotEmpty()
   @IsArray()

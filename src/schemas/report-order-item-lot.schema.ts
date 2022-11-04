@@ -8,13 +8,22 @@ export type OrderItemLotDocument = ReportOrderItemLot & Document;
 @Schema({ collection: 'report-order-item-lot', timestamps: true })
 export class ReportOrderItemLot implements ReportOrderItemLotInteface {
   @Prop({ required: false })
+  departmentReceiptId: number;
+
+  @Prop({ required: false })
+  departmentReceiptCode: string;
+
+  @Prop({ required: false })
+  departmentReceiptName: string;
+
+  @Prop({ required: false })
+  ebsNumber: string;
+
+  @Prop({ required: false })
   orderId: number;
 
   @Prop({ required: false })
   orderCreatedAt: Date;
-
-  @Prop({ required: false })
-  orderNumberEbs: string;
 
   @Prop({ required: false })
   itemId: number;
@@ -56,7 +65,7 @@ export class ReportOrderItemLot implements ReportOrderItemLotInteface {
   exportedQuantity: number;
 
   @Prop({ required: false, default: 0 })
-  cost: number;
+  storageCost: number;
 
   @Prop({ required: false })
   orderType: OrderType;
@@ -72,9 +81,6 @@ export class ReportOrderItemLot implements ReportOrderItemLotInteface {
 
   @Prop({ required: false })
   companyId: number;
-
-  @Prop({ required: false })
-  ebsId: Date;
 
   @Prop({ required: false })
   constructionId: number;
@@ -104,13 +110,13 @@ export class ReportOrderItemLot implements ReportOrderItemLotInteface {
   note: string;
 
   @Prop({ required: false })
-  locationName: string;
+  locatorName: string;
 
   @Prop({ required: false })
-  locationId: number;
+  locatorId: number;
 
   @Prop({ required: false })
-  locationCode: string;
+  locatorCode: string;
 
   @Prop({ required: false })
   qrCode: string;
@@ -131,12 +137,6 @@ export class ReportOrderItemLot implements ReportOrderItemLotInteface {
   warehouseTargetName: string;
 
   @Prop({ required: false })
-  purpose: string;
-
-  @Prop({ required: false })
-  postCode: string; // chứng từ code
-
-  @Prop({ required: false })
   contract: string;
 
   @Prop({ required: false })
@@ -149,28 +149,19 @@ export class ReportOrderItemLot implements ReportOrderItemLotInteface {
   providerName: string;
 
   @Prop({ required: false })
-  receiveDepartmentId: number;
-
-  @Prop({ required: false })
-  receiveDepartmentCode: string;
-
-  @Prop({ required: false })
-  receiveDepartmentName: string;
-
-  @Prop({ required: false })
   description: string;
 
   @Prop({ required: false })
   account: string;
 
   @Prop({ required: false })
-  accountDebt: number;
+  accountDebt: string;
 
   @Prop({ required: false })
-  accountHave: number;
+  accountHave: string;
 
   @Prop({ required: false })
-  proposalExport: string; //Giấy đề nghị xuất VT
+  warehouseExportProposals: string; //Giấy đề nghị xuất VT
 
   @Prop({ required: false })
   orderCode: string;

@@ -16,18 +16,20 @@ export async function reportSituationImportPeriodExcelMapping(
   let warehouseName;
   let companyName = data[0]?._id?.companyName;
   let companyAddress = data[0]?._id?.companyAddress;
-  const dataExcell: TableDataSituationImportPeriod = data[0]['warehouses'].map(
-    (item) => {
+  let dataExcell = [];
+  if (data[0]?.warehouses) {
+    dataExcell = data[0]['warehouses'].map((item) => {
       warehouseName = item.warehouseName;
       return {
         warehouseCode:
           i18n.translate('report.WAREHOUSE_GROUP_CODE') +
           [item.warehouseCode, item.warehouseName].join('_'),
         totalPrice: item.totalPrice,
-        purposes: item.purposes,
+        reasons: item.reasons,
       };
-    },
-  );
+    });
+  }
+
   const model: ReportModel<any> = {
     childCompany: companyName,
     addressChildCompany: companyAddress,

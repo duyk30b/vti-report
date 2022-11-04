@@ -25,7 +25,7 @@ import {
   FONT_BOLD_10,
   FONT_BOLD_14,
   FONT_BOLD_9,
-  FONT_NORMAL_8,
+  FONT_NORMAL_9,
   HEIGHT_REPORT_TITLE,
   INDEX_REPORT_TIME,
   INDEX_REPORT_TITLE,
@@ -72,6 +72,7 @@ export const generateTable = async (
   });
 
   const index = getChildNestedOfArray(model.tableColumn, 'child', worksheet);
+  worksheet['columnNumber_'] = index;
   //header
   if (model.header) {
     worksheet.mergeCells(
@@ -104,11 +105,15 @@ export const generateTable = async (
         font: FONT_BOLD_10,
         aligment: ALIGNMENT_LEFT,
         translate: false,
+        heightRow: {
+          index: 3,
+          value: 50,
+        },
       },
       {
         nameCell: CELL_REPORT_NUMBER,
         value: 'REPORT_NUMBER',
-        font: FONT_NORMAL_8,
+        font: FONT_NORMAL_9,
         aligment: ALIGNMENT_LEFT,
         translate: true,
       },
@@ -131,7 +136,7 @@ export const generateTable = async (
   let rowIndex = model.header ? ROW_WHEN_HAVE_HEADER : ROW_WHEN_NOT_HAVE_HEADER;
   rowIndex += generateColumnTable(worksheet, model.tableColumn, rowIndex, i18n);
   if (typeof generateDataTable == 'function') {
-    generateDataTable(
+    rowIndex = generateDataTable(
       rowIndex,
       worksheet,
       model.tableData,
@@ -139,10 +144,14 @@ export const generateTable = async (
       i18n,
     );
   }
+  if (typeof model.footer == 'function') {
+    model.footer(rowIndex, worksheet, i18n);
+  }
   const buffer = await workbook.xlsx.writeBuffer();
-  const str = (buffer as Buffer).toString('base64');
+  // workbook.xlsx.writeFile(`demo${Math.floor(Math.random() * 1000)}.xlsx`);
+
   return {
-    dataBase64: str,
+    dataBase64: buffer,
     nameFile,
   };
 };

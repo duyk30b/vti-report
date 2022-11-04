@@ -7,8 +7,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { ReportOrderItemRequest } from '@requests/report-order-items.request';
 import { ReportRequest } from '@requests/report.request';
 import { ReportOrderRequest } from '@requests/sync-daily.request';
+import { ReportOrderItemInteface } from '@schemas/interface/report-order-item.interface';
 import { ReportOrderItem } from '@schemas/report-order-item.schema';
 import { plus } from '@utils/common';
+import { ClientSession } from 'mongoose';
 import { Model } from 'mongoose';
 
 @Injectable()
@@ -20,37 +22,11 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
     super(reportOrderItem);
   }
 
-  async createMany(reportOrderRequests: ReportOrderRequest[]): Promise<void> {
-    for (const reportOrderRequest of reportOrderRequests) {
-      for (const reportOrderItem of reportOrderRequest.reportOrderItems) {
-        const document = new this.reportOrderItem();
-        Object.assign(document, reportOrderRequest, reportOrderItem);
-        document.planQuantity = this.sumItem(reportOrderItem, 'planQuantity');
-        document.actualQuantity = this.sumItem(
-          reportOrderItem,
-          'actualQuantity',
-        );
-        document.receivedQuantity = this.sumItem(
-          reportOrderItem,
-          'receivedQuantity',
-        );
-        document.storedQuantity = this.sumItem(
-          reportOrderItem,
-          'storedQuantity',
-        );
-        document.collectedQuantity = this.sumItem(
-          reportOrderItem,
-          'collectedQuantity',
-        );
-        document.exportedQuantity = this.sumItem(
-          reportOrderItem,
-          'exportedQuantity',
-        );
-        await document.save();
-      }
-    }
+  async save(data: ReportOrderItemInteface) {
+    const document = new this.reportOrderItem();
+    Object.assign(document, data);
+    await document.save();
   }
-
   private sumItem(
     reportOrderItemRequest: ReportOrderItemRequest,
     field: string,
@@ -111,22 +87,22 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
     switch (request?.reportType) {
       case ReportType.ORDER_EXPORT_INCOMPLETED:
         condition['$and'].push({
-          ebsId: { $eq: null },
+          ebsNumber: { $eq: null },
         });
 
         break;
       case ReportType.ORDER_IMPORT_INCOMPLETED:
         condition['$and'].push({
-          ebsId: { $eq: null },
+          ebsNumber: { $eq: null },
         });
         condition['$and'].push({
-          status: { $eq: OrderStatus.IMPORTED },
+          status: { $eq: OrderStatus.Completed },
         });
         break;
 
       case ReportType.ORDER_TRANSFER_INCOMPLETED:
         condition['$and'].push({
-          ebsId: { $eq: null },
+          ebsNumber: { $eq: null },
         });
         break;
 

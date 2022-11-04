@@ -34,6 +34,7 @@ import {
   TransactionItem,
   TransactionItemSchema,
 } from '@schemas/transaction-item.schema';
+import { UserModule } from '@components/user/user.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import {
       { name: ReportOrderItemLot.name, schema: ReportOrderItemLotSchema },
       { name: TransactionItem.name, schema: TransactionItemSchema },
     ]),
+    UserModule,
   ],
   providers: [
     {

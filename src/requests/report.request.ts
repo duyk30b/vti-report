@@ -27,6 +27,9 @@ export class ReportRequest extends BaseDto {
 
   @IsNotEmpty()
   @IsNumber()
+  @Transform(({ value }) => {
+    return Number(value);
+  })
   companyId: number;
 
   @IsOptional()
@@ -35,15 +38,33 @@ export class ReportRequest extends BaseDto {
 
   @IsOptional()
   @IsNumber()
+  @Transform(({ value }) => {
+    return Number(value);
+  })
   warehouseId: number;
 
   @IsOptional()
   @IsNumber()
-  receiveDepartmentId: number;
+  @Transform(({ value }) => {
+    return Number(value);
+  })
+  departmentReceiptId: number;
 
   @IsOptional()
+  @Transform(({ value }) => {
+    const curDate = new Date(value);
+    const curHours = curDate.getHours();
+    curDate.setHours(curHours + 7);
+    return curDate;
+  })
   dateTo: Date;
 
   @IsOptional()
+  @Transform(({ value }) => {
+    const curDate = new Date(value);
+    const curHours = curDate.getHours();
+    curDate.setHours(curHours + 7);
+    return curDate;
+  })
   dateFrom: Date;
 }

@@ -17,11 +17,7 @@ import {
   VerticalAlign,
 } from 'docx';
 import { I18nRequestScopeService } from 'nestjs-i18n';
-import {
-  setHeight,
-  setWidth,
-  wordFileStyle,
-} from './word-common.styles';
+import { setHeight, setWidth, wordFileStyle } from './word-common.styles';
 export async function generateReportSituationTransfer(
   dataWord,
   companyName,
@@ -29,7 +25,7 @@ export async function generateReportSituationTransfer(
   title,
   reportTime,
   i18n: I18nRequestScopeService,
-): Promise<string> {
+): Promise<any> {
   let orderData = [];
   let itemData = [];
   let totalPrice = 0;
@@ -324,7 +320,7 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.LEFT,
                                   children: [
                                     new TextRun({
-                                      text: item.locationCode,
+                                      text: item.locatorCode,
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -339,7 +335,7 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: item.cost,
+                                      text: item.storageCost,
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -406,7 +402,7 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.CENTER,
                                   children: [
                                     new TextRun({
-                                      text: order.orderCreateAt,
+                                      text: order.orderCreatedAt,
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -548,5 +544,5 @@ export async function generateReportSituationTransfer(
       },
     ],
   });
-  return Packer.toBase64String(doc);
+  return Packer.toBuffer(doc);
 }
