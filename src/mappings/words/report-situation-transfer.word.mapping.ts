@@ -29,7 +29,7 @@ export async function reportSituationTransferMapping(
 
   let title = '';
   let property = '';
-  if (request.warehouseId) {
+  if (request.warehouseCode) {
     property = data[0]?.warehouses[0].warehouseName.toUpperCase();
   } else {
     property = i18n.translate(`report.REPORT_ALL`);

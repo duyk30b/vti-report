@@ -6,19 +6,10 @@ export type DailyItemLocatorStockDocument = DailyItemLocatorStock & Document;
 @Schema({ collection: 'daily-item-locator-stock', timestamps: true })
 export class DailyItemLocatorStock implements DailyLocatorStockInterface {
   @Prop({ required: false })
-  warehouseId: number;
-
-  @Prop({ required: false })
-  locatorId: number;
-
-  @Prop({ required: false })
   locatorName: string;
 
   @Prop({ required: false })
   locatorCode: string;
-
-  @Prop({ required: false })
-  itemId: number;
 
   @Prop({ required: false })
   itemCode: string;
@@ -30,7 +21,7 @@ export class DailyItemLocatorStock implements DailyLocatorStockInterface {
   reportDate: Date;
 
   @Prop({ required: false })
-  companyId: number;
+  companyCode: string;
 
   @Prop({ required: false })
   storageCost: number;

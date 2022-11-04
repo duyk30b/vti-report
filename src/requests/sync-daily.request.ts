@@ -79,18 +79,10 @@ export class DailyLotLocatorStockRequest
   @IsString()
   note: string;
 
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  orderId: number;
-
-  warehouseId: number;
-  locatorId: number;
   warehouseCode: string;
-  itemId: number;
   locatorCode: string;
   locatorName: string;
-  companyId: number;
+  companyCode: string;
   itemCode: string;
   itemName: string;
   warehouseName: string;
@@ -101,11 +93,6 @@ export class DailyLotLocatorStockRequest
 export class DailyItemLocatorStockRequest
   implements DailyLocatorStockInterface
 {
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  locatorId: number;
-
   @ApiProperty()
   @IsOptional()
   @IsString()
@@ -163,10 +150,8 @@ export class DailyItemLocatorStockRequest
   @Type(() => DailyLotLocatorStockRequest)
   dailyLotLocatorStocks: DailyLotLocatorStockRequest[];
 
-  warehouseId: number;
-  itemId: number;
   itemCode: string;
-  companyId: number;
+  companyCode: string;
   itemName: string;
   warehouseName: string;
   warehouseCode: string;
@@ -178,11 +163,6 @@ export class DailyWarehouseItemRequest
 {
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
-  itemId: number;
-
-  @ApiProperty()
-  @IsNotEmpty()
   @IsString()
   itemName: string;
 
@@ -190,11 +170,6 @@ export class DailyWarehouseItemRequest
   @IsNotEmpty()
   @IsString()
   itemCode: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsNumber()
-  warehouseId: number;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -208,8 +183,8 @@ export class DailyWarehouseItemRequest
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
-  companyId: number;
+  @IsString()
+  companyCode: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -272,11 +247,6 @@ export class DailyWarehouseItemRequest
 export class ReportOrderRequest implements ReportOrderInteface {
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
-  orderId: number;
-
-  @ApiProperty()
-  @IsNotEmpty()
   @IsString()
   orderCode: string;
 
@@ -284,11 +254,6 @@ export class ReportOrderRequest implements ReportOrderInteface {
   @IsNotEmpty()
   @IsDateString()
   orderCreatedAt: Date;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsNumber()
-  warehouseId: number;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -322,8 +287,8 @@ export class ReportOrderRequest implements ReportOrderInteface {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
-  companyId: number;
+  @IsString()
+  companyCode: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -334,11 +299,6 @@ export class ReportOrderRequest implements ReportOrderInteface {
   @IsOptional()
   @IsString()
   companyAddress: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  constructionId: number;
 
   @ApiProperty()
   @IsOptional()

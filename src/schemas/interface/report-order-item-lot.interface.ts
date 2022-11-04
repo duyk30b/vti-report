@@ -8,6 +8,5 @@ export interface ReportOrderItemLotInteface extends ReportOrderItemInteface {
   explain: string;
   note: string;
   locatorName: string;
-  locatorId: number;
   locatorCode: string;
 }

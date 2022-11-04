@@ -37,7 +37,7 @@ export async function reportSituationImportPeriodExcelMapping(
     tableData: dataExcell,
     header: true,
     key: REPORT_INFO[ReportType[ReportType.SITUATION_IMPORT_PERIOD]].key,
-    warehouse: request.warehouseId ? warehouseName : null,
+    warehouse: request.warehouseCode ? warehouseName : null,
     dateFrom: request.dateFrom,
     dateTo: request.dateTo,
   };

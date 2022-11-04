@@ -66,7 +66,7 @@ export async function reportItemInventoryBelowSafeExcelMapping(
     key: REPORT_INFO[ReportType[ReportType.ITEM_INVENTORY_BELOW_SAFE]].key,
     dateFrom: request.dateFrom,
     dateTo: request.dateTo,
-    warehouse: request.warehouseId ? data[0].warehouseName : null,
+    warehouse: request.warehouseCode ? data[0].warehouseName : null,
     footer: footerItemBelowMinumum,
   };
 
