@@ -11,25 +11,16 @@ export class ReportOrderItem
   implements ReportOrderItemInteface
 {
   @Prop({ required: false })
-  departmentReceiptId: number;
-
-  @Prop({ required: false })
   departmentReceiptCode: string;
 
   @Prop({ required: false })
   departmentReceiptName: string;
 
   @Prop({ required: false })
-  orderId: number;
-
-  @Prop({ required: false })
   orderCode: string;
 
   @Prop({ required: false })
   orderCreatedAt: Date;
-
-  @Prop({ required: false })
-  itemId: number;
 
   @Prop({ required: false })
   itemName: string;
@@ -59,9 +50,6 @@ export class ReportOrderItem
   storageCost: number;
 
   @Prop({ required: false })
-  warehouseId: number;
-
-  @Prop({ required: false })
   warehouseCode: string;
 
   @Prop({ required: false })
@@ -80,13 +68,10 @@ export class ReportOrderItem
   completedAt: Date;
 
   @Prop({ required: false })
-  companyId: number;
+  companyCode: string;
 
   @Prop({ required: false })
   ebsNumber: string;
-
-  @Prop({ required: false })
-  constructionId: number;
 
   @Prop({ required: false })
   constructionCode: string;
@@ -96,9 +81,6 @@ export class ReportOrderItem
 
   @Prop({ required: false })
   unit: string;
-
-  @Prop({ required: false })
-  performerId: number;
 
   @Prop({ required: false })
   performerName: string;
@@ -113,9 +95,6 @@ export class ReportOrderItem
   companyAddress: string;
 
   @Prop({ required: false })
-  warehouseTargetId: number;
-
-  @Prop({ required: false })
   warehouseTargetCode: string;
 
   @Prop({ required: false })
@@ -126,9 +105,6 @@ export class ReportOrderItem
 
   @Prop({ required: false })
   contract: string;
-
-  @Prop({ required: false })
-  providerId: number;
 
   @Prop({ required: false })
   providerCode: string;

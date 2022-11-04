@@ -8,16 +8,19 @@ export type ReportOrderDocument = ReportOrder & Document;
 @Schema({ collection: 'report-order', timestamps: true })
 export class ReportOrder extends BaseEntity implements ReportOrderInteface {
   @Prop({ required: false })
-  orderId: number;
+  companyCode: string;
+
+  @Prop({ required: false })
+  companyName: string;
+
+  @Prop({ required: false })
+  companyAddress: string;
 
   @Prop({ required: false })
   orderCode: string;
 
   @Prop({ required: false })
   orderCreatedAt: Date;
-
-  @Prop({ required: false })
-  warehouseId: number;
 
   @Prop({ required: false })
   warehouseCode: string;
@@ -38,19 +41,7 @@ export class ReportOrder extends BaseEntity implements ReportOrderInteface {
   completedAt: Date;
 
   @Prop({ required: false })
-  companyId: number;
-
-  @Prop({ required: false })
   ebsNumber: string;
-
-  @Prop({ required: false })
-  companyName: string;
-
-  @Prop({ required: false })
-  companyAddress: string;
-
-  @Prop({ required: false })
-  constructionId: number;
 
   @Prop({ required: false })
   constructionCode: string;

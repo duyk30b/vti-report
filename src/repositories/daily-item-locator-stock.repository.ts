@@ -23,16 +23,13 @@ export class DailyItemLocatorStockRepository extends BaseAbstractRepository<Dail
     dailyItemStockLocator: SyncItemStockLocatorByDate,
   ): DailyItemLocatorStock {
     const document = new this.dailyItemLocatorStock();
-    document.itemId = dailyItemStockLocator?.itemId;
     document.itemName = dailyItemStockLocator?.itemName;
     document.itemCode = dailyItemStockLocator?.itemCode;
-    document.warehouseId = dailyItemStockLocator?.warehouseId;
     document.warehouseName = dailyItemStockLocator?.warehouseName;
     document.warehouseCode = dailyItemStockLocator?.warehouseCode;
-    document.locatorId = dailyItemStockLocator?.locatorId;
     document.locatorName = dailyItemStockLocator?.locatorName;
     document.locatorCode = dailyItemStockLocator?.locatorCode;
-    document.companyId = dailyItemStockLocator?.companyId;
+    document.companyCode = dailyItemStockLocator?.companyCode;
     document.companyName = dailyItemStockLocator?.companyName;
     document.companyAddress = dailyItemStockLocator?.companyAddress;
     document.reportDate = dailyItemStockLocator?.reportDate;
