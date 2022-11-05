@@ -283,7 +283,7 @@ const generateColumnTable = (
   return checkLevel ? LV3 : LV1;
 };
 
-const getReportInfo = (
+export const getReportInfo = (
   i18n: I18nRequestScopeService,
   key: string,
   warehouse: string,

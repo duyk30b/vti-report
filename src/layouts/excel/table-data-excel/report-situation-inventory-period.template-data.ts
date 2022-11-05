@@ -4,6 +4,7 @@ import {
   ALIGNMENT_LEFT,
   ALIGNMENT_RIGHT,
   BORDER,
+  FONT_BOLD_10,
   FONT_BOLD_8,
   FONT_ITALIC_10,
   FONT_NORMAL_9,
@@ -25,7 +26,6 @@ export function reportSituationInventoryPeriodTemplateData(
     font: FONT_ITALIC_10,
     aligment: ALIGNMENT_RIGHT,
     translate: true,
-    border: BORDER,
     merge: true,
   });
   let totalAccodingBookG = 0;
@@ -81,7 +81,7 @@ export function reportSituationInventoryPeriodTemplateData(
           },
           {
             nameCell: `E${curRowIndex}`,
-            value: row2.lot,
+            value: row2.lotNumber,
             font: FONT_NORMAL_9,
             aligment: ALIGNMENT_CENTER,
             translate: false,
@@ -98,7 +98,7 @@ export function reportSituationInventoryPeriodTemplateData(
           },
           {
             nameCell: `G${curRowIndex}`,
-            value: row2.cost,
+            value: row2.storageCost,
             font: FONT_NORMAL_9,
             aligment: ALIGNMENT_RIGHT,
             translate: false,
@@ -125,7 +125,7 @@ export function reportSituationInventoryPeriodTemplateData(
           },
           {
             nameCell: `J${curRowIndex}`,
-            value: row2.cost,
+            value: row2.storageCost,
             font: FONT_NORMAL_9,
             aligment: ALIGNMENT_RIGHT,
             translate: false,
@@ -253,7 +253,7 @@ export function reportSituationInventoryPeriodTemplateData(
       {
         nameCell: `A${curRowIndex}:E${curRowIndex}`,
         value: 'TOTAL_PRICE_WAREHOUSE',
-        font: FONT_BOLD_8,
+        font: FONT_BOLD_10,
         aligment: ALIGNMENT_LEFT,
         translate: true,
         border: BORDER,
@@ -262,7 +262,7 @@ export function reportSituationInventoryPeriodTemplateData(
       {
         nameCell: `F${curRowIndex}`,
         value: totalAccodingBookG,
-        font: FONT_BOLD_8,
+        font: FONT_BOLD_10,
         aligment: ALIGNMENT_RIGHT,
         translate: false,
         border: BORDER,
@@ -271,7 +271,7 @@ export function reportSituationInventoryPeriodTemplateData(
       {
         nameCell: `I${curRowIndex}`,
         value: totalAccodingInventoryG,
-        font: FONT_BOLD_8,
+        font: FONT_BOLD_10,
         aligment: ALIGNMENT_RIGHT,
         translate: false,
         border: BORDER,

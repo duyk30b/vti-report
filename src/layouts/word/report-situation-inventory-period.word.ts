@@ -1,3 +1,4 @@
+import { TableDataSituationInventoryPeriod } from '@models/statistic-inventory.model';
 import { minus, plus } from '@utils/common';
 import {
   FONT_NAME,
@@ -24,13 +25,13 @@ import {
   wordFileStyle,
 } from './word-common.styles';
 export async function generateReportSituationInventoryPeriod(
-  dataWord,
+  dataWord: TableDataSituationInventoryPeriod[],
   companyName,
   companyAddress,
   title,
   reportTime,
   i18n: I18nRequestScopeService,
-): Promise<string> {
+): Promise<any> {
   let warehouseTotalPlanQuantity = 0;
   let warehouseTotalActualQuantity = 0;
   let itemData = [];
@@ -312,7 +313,7 @@ export async function generateReportSituationInventoryPeriod(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.totalPlanQuantity,
+                                  text: item.totalPlanQuantity + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -327,7 +328,7 @@ export async function generateReportSituationInventoryPeriod(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.cost,
+                                  text: item.storageCost + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -342,7 +343,7 @@ export async function generateReportSituationInventoryPeriod(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.totalPricePlan,
+                                  text: item.totalPricePlan + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -357,7 +358,7 @@ export async function generateReportSituationInventoryPeriod(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.totalActualQuantity,
+                                  text: item.totalActualQuantity + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -372,7 +373,7 @@ export async function generateReportSituationInventoryPeriod(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.cost,
+                                  text: item.storageCost + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -387,7 +388,7 @@ export async function generateReportSituationInventoryPeriod(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.totalPriceActual,
+                                  text: item.totalPriceActual + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -536,7 +537,7 @@ export async function generateReportSituationInventoryPeriod(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: warehouse.totalPlanQuantity,
+                                  text: warehouse.totalPlanQuantity + '',
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
@@ -557,7 +558,7 @@ export async function generateReportSituationInventoryPeriod(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: warehouse.totalActualQuantity,
+                                  text: warehouse.totalActualQuantity + '',
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
@@ -734,5 +735,5 @@ export async function generateReportSituationInventoryPeriod(
     ],
   });
 
-  return Packer.toBase64String(doc);
+  return Packer.toBuffer(doc);
 }

@@ -1,3 +1,5 @@
+import { ReportOrderImportByRequestForItemModel } from '@models/order-import-by-request-for-item.model';
+import { TableData } from '@models/report.model';
 import {
   ORDER_IMPORT_BY_REQUEST_FOR_ITEM_COLUMNS,
   WORD_FILE_CONFIG,
@@ -18,9 +20,9 @@ import { I18nRequestScopeService } from 'nestjs-i18n';
 import { setHeight, setWidth, wordFileStyle } from './word-common.styles';
 
 export async function generateReportOrderImportByRequestForItem(
-  dataWord,
+  dataWord: TableData<ReportOrderImportByRequestForItemModel>[],
   i18n: I18nRequestScopeService,
-): Promise<string> {
+): Promise<any> {
   let itemData = [];
 
   // create docx file
@@ -76,7 +78,7 @@ export async function generateReportOrderImportByRequestForItem(
               }),
               ...dataWord
                 .map((warehouse) => {
-                  itemData = warehouse.items.map((item) => {
+                  itemData = warehouse.data.map((item, index) => {
                     return new TableRow({
                       height: setHeight(WORD_FILE_CONFIG.TABLE_ROW_HEIGHT),
                       children: [
@@ -87,7 +89,7 @@ export async function generateReportOrderImportByRequestForItem(
                               alignment: AlignmentType.CENTER,
                               children: [
                                 new TextRun({
-                                  text: item.index,
+                                  text: index + 1 + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -176,7 +178,7 @@ export async function generateReportOrderImportByRequestForItem(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.planQuantity,
+                                  text: item.planQuantity + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -191,7 +193,7 @@ export async function generateReportOrderImportByRequestForItem(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.actualQuantity,
+                                  text: item.actualQuantity + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -249,5 +251,5 @@ export async function generateReportOrderImportByRequestForItem(
     ],
   });
 
-  return Packer.toBase64String(doc);
+  return Packer.toBuffer(doc);
 }

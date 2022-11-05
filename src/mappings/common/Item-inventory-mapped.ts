@@ -1,24 +1,24 @@
 import { ItemInventoryModel } from '@models/item-inventory.model';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 
-export interface ItemInventoryMapped {
+export interface ReportInfo<T> {
   companyName: string;
   companyAddress: string;
   warehouseName: string;
-  dataMapped: any;
+  dataMapped: T;
 }
 export function getItemInventoryDataMapping(
   data: any,
   i18n: I18nRequestScopeService,
-): ItemInventoryMapped {
-  const dataMaping: ItemInventoryMapped = {
-    companyName: '',
-    companyAddress: '',
-    warehouseName: '',
+): ReportInfo<ItemInventoryModel> {
+  const dataMaping: ReportInfo<any> = {
+    companyName: data[0]?.companyName || '',
+    companyAddress: data[0]?.companyAddress || '',
+    warehouseName: data[0]?.warehouseName || '',
     dataMapped: null,
   };
 
-  dataMaping.dataMapped = data?.pop();
+  dataMaping.dataMapped = data[0];
   let dataExcell = [];
   if (dataMaping) {
     dataMaping.companyName = dataMaping['dataMapped']?._id?.companyName || '';

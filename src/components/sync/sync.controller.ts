@@ -11,6 +11,7 @@ import { SYNC_REPORT_DAILY_TOPIC } from './sync.constants';
 import { SyncOrderRequest } from '@requests/sync-purchased-order-import.request';
 import { SyncSaleOrderExportRequest } from '@requests/sync-sale-order-export.request';
 import { SyncWarehouseTransferRequest } from '@requests/sync-warehouse-transfer-request';
+import { SyncDailyStockRequest } from '@requests/sync-daily.request';
 
 @Controller('sync')
 export class SyncController {
@@ -18,6 +19,27 @@ export class SyncController {
     @Inject('SyncService')
     private readonly syncService: SyncService,
   ) {}
+
+  @Post('/test')
+  @ApiOperation({
+    tags: ['Sync'],
+    summary: 'Đồng bộ dữ liệu hàng ngày',
+    description: 'Đồng bộ dữ liệu order',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: SuccessResponse,
+  })
+  async syncDailyStock(
+    @Body() payload: SyncDailyStockRequest,
+  ): Promise<ResponsePayload<any>> {
+    const { request, responseError } = payload;
+    if (responseError && !isEmpty(responseError)) {
+      return responseError;
+    }
+    return await this.syncService.syncDailyStock(request);
+  }
 
   @Post('/orders/purchased-order-import')
   @ApiOperation({
