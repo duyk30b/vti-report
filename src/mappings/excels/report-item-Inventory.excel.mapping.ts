@@ -3,7 +3,7 @@ import { footerItemInventory } from '@layout/excel/footer/footer-item-inventory.
 import { generateTable } from '@layout/excel/report-excel.layout';
 import { ITEM_INVENTORY_COLUMN } from '@layout/excel/table-column-excel/report-item-inventory';
 import { reportGroupByWarehouseTemplateData } from '@layout/excel/table-data-excel/report-group-by-warehouse.template-data';
-import { ItemInventoryMapped } from '@mapping/common/getItemInventoryData';
+import { ReportInfo } from '@mapping/common/Item-inventory-mapped';
 import { ItemInventoryModel } from '@models/item-inventory.model';
 import {
   Alignment,
@@ -19,7 +19,7 @@ import { I18nRequestScopeService } from 'nestjs-i18n';
 export async function reportItemInventoryExcelMapping(
   request: ReportRequest,
   i18n: I18nRequestScopeService,
-  data: ItemInventoryMapped,
+  data: ReportInfo<ItemInventoryModel>,
 ) {
   const formatByKey: FormatByKey<ItemInventoryModel> = {
     index: Alignment.CENTER,

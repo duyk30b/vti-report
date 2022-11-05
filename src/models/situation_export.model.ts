@@ -2,8 +2,8 @@ export interface DataSituationExportItem {
   itemCode: string;
   itemName: string;
   lotNumber: string;
-  accountDebt: number;
-  accountHave: number;
+  accountDebt: string;
+  accountHave: string;
   unit: string;
   planQuantity: number;
   exportedQuantity: number;
@@ -14,7 +14,7 @@ export interface DataSituationExportItem {
 
 export interface DataSituationExportOrder {
   orderCode: string;
-  orderCreatedAt: Date;
+  orderCreatedAt: string;
   constructionName: string;
   departmentReceiptName: string;
   explain: string;

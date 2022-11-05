@@ -7,7 +7,7 @@ export const SITUATION_INVENTORY_PERIOD_COLUMN: TableColumn[] = [
   },
   {
     name: 'ITEM_CODE',
-    width: 15,
+    width: 25,
   },
   {
     name: 'ITEM_NAME',
@@ -19,7 +19,7 @@ export const SITUATION_INVENTORY_PERIOD_COLUMN: TableColumn[] = [
   },
   {
     name: 'LOT',
-    width: 5,
+    width: 10,
   },
   {
     name: 'ACCORDING_BOOK_QUANTITY',

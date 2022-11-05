@@ -3,8 +3,14 @@ import { footerOrderImportIncompleted } from '@layout/excel/footer/footer-order-
 import { generateTable } from '@layout/excel/report-excel.layout';
 import { REPORT_ITEM_IMPORT_BUT_NOT_PUT_TO_POSITION_COLUMN } from '@layout/excel/table-column-excel/report-Item-imported-but-not-put-to-position-column';
 import { reportGroupByWarehouseTemplateData } from '@layout/excel/table-data-excel/report-group-by-warehouse.template-data';
+import { ReportInfo } from '@mapping/common/Item-inventory-mapped';
 import { ItemImportedButNotStoreToPositionModel } from '@models/Item-imported-but-not-put-to-position.model';
-import { FormatByKey, Alignment, ReportModel } from '@models/report.model';
+import {
+  FormatByKey,
+  Alignment,
+  ReportModel,
+  TableData,
+} from '@models/report.model';
 
 import { ReportRequest } from '@requests/report.request';
 import { REPORT_INFO } from '@utils/constant';
@@ -12,18 +18,9 @@ import { I18nRequestScopeService } from 'nestjs-i18n';
 
 export async function reportItemImportedButNotPutToPositionExcelMapping(
   request: ReportRequest,
-  data: any,
+  data: ReportInfo<TableData<ItemImportedButNotStoreToPositionModel>[]>,
   i18n: I18nRequestScopeService,
 ) {
-  const dataExcell = data.map((item) => {
-    return {
-      warehouseCode:
-        i18n.translate('report.WAREHOUSE_GROUP_CODE') +
-        [item._id.warehouseCode, item._id.warehouseName].join('_'),
-      data: item.items,
-    };
-  });
-
   const formatByKey: FormatByKey<ItemImportedButNotStoreToPositionModel> = {
     index: Alignment.CENTER,
     orderCode: Alignment.LEFT,
@@ -38,14 +35,14 @@ export async function reportItemImportedButNotPutToPositionExcelMapping(
     actualQuantity: Alignment.RIGHT,
     remainQuantity: Alignment.RIGHT,
     note: Alignment.LEFT,
-    receiver: Alignment.RIGHT,
+    performerName: Alignment.RIGHT,
   };
 
-  const model: ReportModel<ItemImportedButNotStoreToPositionModel> = {
-    childCompany: data[0]?.company?.companyName || '',
-    addressChildCompany: data[0]?.company?.companyAddress || '',
+  const model: ReportModel<any> = {
+    childCompany: data.companyName,
+    addressChildCompany: data.companyAddress,
     tableColumn: REPORT_ITEM_IMPORT_BUT_NOT_PUT_TO_POSITION_COLUMN,
-    tableData: dataExcell,
+    tableData: data.dataMapped,
     header: true,
     aligmentCell: formatByKey,
     key: REPORT_INFO[
@@ -53,7 +50,7 @@ export async function reportItemImportedButNotPutToPositionExcelMapping(
     ].key,
     dateFrom: request.dateFrom,
     dateTo: request.dateTo,
-    warehouse: request.warehouseCode ? data[0].warehouseName : null,
+    warehouse: request.warehouseCode ? data.warehouseName : null,
     footer: footerOrderImportIncompleted,
   };
 
