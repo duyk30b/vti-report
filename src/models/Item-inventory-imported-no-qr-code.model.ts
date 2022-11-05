@@ -7,6 +7,6 @@ export interface ItemInventoryImportedNoQRCodeModel {
   lotNumber: string;
   locatorCode: string;
   actualQuantity: number;
-  unitPrice: number;
+  storageCost: number;
   totalPrice: number;
 }

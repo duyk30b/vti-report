@@ -2,9 +2,9 @@ export interface ReportOrderExportByRequestForItemModel {
   index: number;
   itemCode: string;
   itemName: string;
-  orderExportRequireCode: string;
+  warehouseExportProposals: string;
   orderCode: string;
-  dateExported: Date;
+  orderCreatedAt: string;
   planQuantity: number;
   exportedQuantity: number;
 }

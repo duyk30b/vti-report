@@ -3,6 +3,7 @@ import { footerOrderImportIncompleted } from '@layout/excel/footer/footer-order-
 import { generateTable } from '@layout/excel/report-excel.layout';
 import { REPORT_IMPORT_INCOMPLETE_COLUMN } from '@layout/excel/table-column-excel/report-import-incomplete-column ';
 import { reportGroupByWarehouseTemplateData } from '@layout/excel/table-data-excel/report-group-by-warehouse.template-data';
+import { ReportInfo } from '@mapping/common/Item-inventory-mapped';
 import { OrderImportIncompleteModel } from '@models/order-import-incomplete.model';
 import {
   TableData,
@@ -18,41 +19,9 @@ import { I18nRequestScopeService } from 'nestjs-i18n';
 
 export async function reportOrderImportIncompletedExcelMapping(
   request: ReportRequest,
-  data: ReportOrderItem[],
+  data: ReportInfo<TableData<OrderImportIncompleteModel>[]>,
   i18n: I18nRequestScopeService,
 ) {
-  const groupByWarehouseCode = data.reduce((prev, cur) => {
-    const warehouseCode = cur.warehouseCode + ' - ' + cur.warehouseName;
-
-    if (!prev[warehouseCode]) {
-      prev[warehouseCode] = [];
-    }
-    const data: OrderImportIncompleteModel = {
-      index: 0,
-      orderCode: cur.orderCode,
-      orderCreatedAt: cur.orderCreatedAt,
-      departmentReceiptName: cur.departmentReceiptName,
-      itemCode: cur.itemCode,
-      itemName: cur.itemName,
-      unit: cur.unit,
-      quantity: cur.planQuantity,
-      unitPrice: cur.storageCost,
-      totalPrice: cur.storageCost * cur.planQuantity,
-      construction: cur.constructionName,
-      deliver: cur.performerName,
-    };
-    prev[warehouseCode].push(data);
-    return prev;
-  }, {});
-  const dataExcell: TableData<OrderImportIncompleteModel>[] = [];
-
-  for (const key in groupByWarehouseCode) {
-    dataExcell.push({
-      warehouseCode: i18n.translate('report.WAREHOUSE_GROUP_CODE') + key,
-      data: groupByWarehouseCode[key],
-    });
-  }
-
   const formatByKey: FormatByKey<OrderImportIncompleteModel> = {
     index: Alignment.CENTER,
     orderCode: Alignment.LEFT,
@@ -61,24 +30,24 @@ export async function reportOrderImportIncompletedExcelMapping(
     itemCode: Alignment.LEFT,
     itemName: Alignment.LEFT,
     unit: Alignment.CENTER,
-    quantity: Alignment.LEFT,
-    construction: Alignment.LEFT,
-    unitPrice: Alignment.LEFT,
+    actualQuantity: Alignment.LEFT,
+    constructionName: Alignment.LEFT,
+    storageCost: Alignment.LEFT,
     totalPrice: Alignment.LEFT,
-    deliver: Alignment.LEFT,
+    deliverName: Alignment.LEFT,
   };
 
   const model: ReportModel<OrderImportIncompleteModel> = {
-    childCompany: data[0]?.companyName,
-    addressChildCompany: data[0]?.companyAddress,
+    childCompany: data.companyName,
+    addressChildCompany: data.companyAddress,
     tableColumn: REPORT_IMPORT_INCOMPLETE_COLUMN,
-    tableData: dataExcell,
+    tableData: data.dataMapped,
     header: true,
     aligmentCell: formatByKey,
     key: REPORT_INFO[ReportType[ReportType.ORDER_IMPORT_INCOMPLETED]].key,
     dateFrom: request.dateFrom,
     dateTo: request.dateTo,
-    warehouse: request.warehouseCode ? data[0].warehouseName : null,
+    warehouse: request.warehouseCode ? data.warehouseName : null,
     footer: footerOrderImportIncompleted,
   };
   const { dataBase64, nameFile } = await generateTable(

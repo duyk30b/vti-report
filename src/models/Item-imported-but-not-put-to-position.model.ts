@@ -12,5 +12,5 @@ export interface ItemImportedButNotStoreToPositionModel {
   actualQuantity: number;
   remainQuantity: number;
   note: string;
-  receiver: string;
+  performerName: string;
 }

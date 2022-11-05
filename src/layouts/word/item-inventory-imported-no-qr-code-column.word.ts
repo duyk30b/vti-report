@@ -1,3 +1,5 @@
+import { ItemInventoryImportedNoQRCodeModel } from '@models/Item-inventory-imported-no-qr-code.model';
+import { TableData } from '@models/report.model';
 import { mul } from '@utils/common';
 import {
   ITEM_INVENTORY_IMPORTED_NO_QR_CODE_COLUMNS,
@@ -18,9 +20,9 @@ import { I18nRequestScopeService } from 'nestjs-i18n';
 import { setHeight, setWidth, wordFileStyle } from './word-common.styles';
 
 export async function generateReportItemInventoryImportedNoQRCode(
-  dataWord,
+  dataWord: TableData<ItemInventoryImportedNoQRCodeModel>[],
   i18n: I18nRequestScopeService,
-): Promise<string> {
+): Promise<any> {
   let itemData = [];
 
   const doc = new Document({
@@ -75,7 +77,7 @@ export async function generateReportItemInventoryImportedNoQRCode(
               }),
               ...dataWord
                 .map((warehouse) => {
-                  itemData = warehouse.items.map((item) => {
+                  itemData = warehouse.data.map((item, index) => {
                     return new TableRow({
                       height: setHeight(WORD_FILE_CONFIG.TABLE_ROW_HEIGHT),
                       children: [
@@ -86,7 +88,7 @@ export async function generateReportItemInventoryImportedNoQRCode(
                               alignment: AlignmentType.CENTER,
                               children: [
                                 new TextRun({
-                                  text: item.index,
+                                  text: index + 1 + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -189,7 +191,7 @@ export async function generateReportItemInventoryImportedNoQRCode(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.actualQuantity,
+                                  text: item.actualQuantity + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -204,7 +206,7 @@ export async function generateReportItemInventoryImportedNoQRCode(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.cost,
+                                  text: item.storageCost + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -219,10 +221,7 @@ export async function generateReportItemInventoryImportedNoQRCode(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: mul(
-                                    item.cost,
-                                    item.actualQuantity,
-                                  ).toString(),
+                                  text: item.totalPrice + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -265,7 +264,5 @@ export async function generateReportItemInventoryImportedNoQRCode(
     ],
   });
 
-  // return 'ok';
-
-  return Packer.toBase64String(doc);
+  return Packer.toBuffer(doc);
 }

@@ -342,58 +342,42 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
 
     switch (request?.reportType) {
       case ReportType.ITEM_IMPORTED_BUT_NOT_PUT_TO_POSITION:
-        // condition['$and'].push({
-        //   status: { $in: [OrderStatus.IMPORTED, OrderStatus.STORED] },
-        // });
+        condition['$and'].push({
+          status: {
+            $in: [
+              OrderStatus.Completed,
+              OrderStatus.Confirmed,
+              OrderStatus.Stored,
+            ],
+          },
+        });
 
         break;
       case ReportType.ITEM_INVENTORY_IMPORTED_NO_QR_CODE:
         condition['$and'].push({
           qrCode: { $eq: null },
         });
-        // condition['$and'].push({
-        //   status: { $eq: OrderStatus.IMPORTED },
-        // });
+        condition['$and'].push({
+          status: {
+            $in: [
+              OrderStatus.Completed,
+              OrderStatus.Confirmed,
+              OrderStatus.Stored,
+            ],
+          },
+        });
         break;
       case ReportType.SITUATION_IMPORT_PERIOD:
-      // condition['$and'].push({
-      //   status: {
-      //     $in: [
-      //       OrderStatus.RECEIVED,
-      //       OrderStatus.RECEIVING,
-      //       OrderStatus.STORING,
-      //       OrderStatus.IMPORT_COMPLETED,
-      //     ],
-      //   },
-      // });
-      // break;
+        break;
       case ReportType.SITUATION_EXPORT_PERIOD:
-        // condition['$and'].push({
-        //   status: {
-        //     $in: [
-        //       OrderStatus.EXPORTED,
-        //       OrderStatus.EXPORTING,
-        //       OrderStatus.EXPORT_COMPLETED,
-        //     ],
-        //   },
-        // });
         break;
       case ReportType.SITUATION_TRANSFER:
-        // condition['$and'].push({
-        //   status: {
-        //     $in: [
-        //       OrderStatus.IMPORTED,
-        //       OrderStatus.EXPORTED,
-        //       OrderStatus.TRANSFER_COMPLETED,
-        //     ],
-        //   },
-        // });
-        break;
-      default:
         break;
     }
 
-    if (ReportType.ITEM_IMPORTED_BUT_NOT_PUT_TO_POSITION) {
+    if (
+      request?.reportType === ReportType.ITEM_IMPORTED_BUT_NOT_PUT_TO_POSITION
+    ) {
       return reportItemImportedButNotPutToPosition(
         this.reportOrderItemLot,
         condition,
@@ -523,6 +507,8 @@ function reportItemImportedButNotPutToPosition(
     {
       $group: {
         _id: {
+          companyAddress: '$companyAddress',
+          companyName: '$companyName',
           warehouseCode: '$warehouseCode',
           warehouseName: '$warehouseName',
           orderCode: '$orderCode',
@@ -546,6 +532,8 @@ function reportItemImportedButNotPutToPosition(
     {
       $group: {
         _id: {
+          companyAddress: '$_id.companyAddress',
+          companyName: '$_id.companyName',
           warehouseCode: '$_id.warehouseCode',
           warehouseName: '$_id.warehouseName',
         },
@@ -563,7 +551,10 @@ function reportItemImportedButNotPutToPosition(
             planQuantity: { $sum: '$totalPlanQuantity' },
             actualQuantity: { $sum: '$totalActualQuantity' },
             remainQuantity: {
-              $subtract: ['$totalActualQuantity', '$totalActualQuantity'],
+              $subtract: [
+                { $sum: '$totalPlanQuantity' },
+                { $sum: '$totalActualQuantity' },
+              ],
             },
             note: '$_id.note',
             performerName: '$_id.performerName',
@@ -573,6 +564,24 @@ function reportItemImportedButNotPutToPosition(
     },
     {
       $sort: { '_id.warehouseCode': -1 },
+    },
+    {
+      $group: {
+        _id: {
+          companyAddress: '$_id.companyAddress',
+          companyName: '$_id.companyName',
+        },
+        warehouses: {
+          $push: {
+            warehouseCode: '$_id.warehouseCode',
+            warehouseName: '$_id.warehouseName',
+            items: '$items',
+          },
+        },
+      },
+    },
+    {
+      $sort: { '_id.companyName': -1 },
     },
   ]);
 }
@@ -918,13 +927,13 @@ function reportSituationInventory(
             unit: '$unit',
             totalPlanQuantity: { $sum: '$planQuantity' },
             totalPricePlan: {
-              $sum: { $multiply: ['$cost', '$planQuantity'] },
+              $sum: { $multiply: ['$storageCost', '$planQuantity'] },
             },
             totalActualQuantity: { $sum: '$actualQuantity' },
             totalPriceActual: {
-              $sum: { $multiply: ['$cost', '$actualQuantity'] },
+              $sum: { $multiply: ['$storageCost', '$actualQuantity'] },
             },
-            cost: '$cost',
+            storageCost: '$storageCost',
             note: '$note',
           },
         },

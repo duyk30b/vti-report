@@ -1,3 +1,5 @@
+import { InventoryModel } from '@models/inventory.model';
+import { TableData } from '@models/report.model';
 import { mul } from '@utils/common';
 import { INVENTORY_COLUMNS, WORD_FILE_CONFIG } from '@utils/constant';
 import {
@@ -15,9 +17,10 @@ import { I18nRequestScopeService } from 'nestjs-i18n';
 import { setHeight, setWidth, wordFileStyle } from './word-common.styles';
 
 export async function generateReportInventory(
-  dataWord,
+  dataWord: TableData<InventoryModel>[],
   i18n: I18nRequestScopeService,
 ): Promise<any> {
+  let index = 1;
   let itemData = [];
 
   const doc = new Document({
@@ -70,7 +73,7 @@ export async function generateReportInventory(
               }),
               ...dataWord
                 .map((warehouse) => {
-                  itemData = warehouse.items.map((item) => {
+                  itemData = warehouse.data.map((item) => {
                     return new TableRow({
                       height: setHeight(WORD_FILE_CONFIG.TABLE_ROW_HEIGHT),
                       children: [
@@ -81,7 +84,7 @@ export async function generateReportInventory(
                               alignment: AlignmentType.CENTER,
                               children: [
                                 new TextRun({
-                                  text: item.index,
+                                  text: index++ + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -155,7 +158,7 @@ export async function generateReportInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.stockQuantity,
+                                  text: item.stockQuantity + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -170,7 +173,7 @@ export async function generateReportInventory(
                               alignment: AlignmentType.LEFT,
                               children: [
                                 new TextRun({
-                                  text: item.locatorCode,
+                                  text: item.locatorCode + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -184,7 +187,7 @@ export async function generateReportInventory(
                               alignment: AlignmentType.CENTER,
                               children: [
                                 new TextRun({
-                                  text: item.storageCost,
+                                  text: item.storageCost + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -199,10 +202,7 @@ export async function generateReportInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: mul(
-                                    item.storageCost || 0,
-                                    item.stockQuantity || 0,
-                                  ).toString(),
+                                  text: item.totalPrice + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -225,7 +225,7 @@ export async function generateReportInventory(
                               alignment: AlignmentType.LEFT,
                               children: [
                                 new TextRun({
-                                  text: `Mã kho: ${warehouse.warehouseName}-${warehouse.warehouseCode}`,
+                                  text: warehouse.warehouseCode,
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
