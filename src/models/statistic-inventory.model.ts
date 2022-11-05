@@ -2,12 +2,12 @@ export interface DataSituationInventoryItems {
   itemCode: string;
   itemName: string;
   unit: string;
-  lot: string;
+  lotNumber: string;
   totalPlanQuantity: number;
   totalPricePlan: number;
   totalActualQuantity: number;
   totalPriceActual: number;
-  cost: number;
+  storageCost: number;
   note: string;
 }
 export interface TableDataSituationInventoryPeriod {

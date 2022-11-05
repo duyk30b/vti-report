@@ -1,57 +1,29 @@
+import { ReportType } from '@enums/report-type.enum';
+import { getReportInfo } from '@layout/excel/report-excel.layout';
 import { generateReportInventory } from '@layout/word/report-inventory.word';
+import { ReportInfo } from '@mapping/common/Item-inventory-mapped';
+import { InventoryModel } from '@models/inventory.model';
+import { TableData } from '@models/report.model';
 import { ReportRequest } from '@requests/report.request';
 import { ExportResponse } from '@responses/export.response';
-import { DailyLotLocatorStock } from '@schemas/daily-lot-locator-stock.schema';
-import { DATE_FOMAT_EXCELL, DATE_FOMAT_EXCELL_FILE } from '@utils/constant';
-import * as moment from 'moment';
+import { REPORT_INFO } from '@utils/constant';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 
 export async function reportInventoryMapping(
   request: ReportRequest,
-  data: DailyLotLocatorStock[],
+  data: ReportInfo<TableData<InventoryModel>[]>,
   i18n: I18nRequestScopeService,
 ): Promise<ExportResponse> {
-  const dateFrom = request.dateFrom;
-  const dateTo = request.dateTo;
+  const { nameFile } = getReportInfo(
+    i18n,
+    REPORT_INFO[ReportType[ReportType.INVENTORY]].key,
+    request.warehouseCode ? data?.warehouseName : null,
+    request.dateFrom,
+    request.dateTo,
+  );
 
-  let nameFile = '';
-  if (dateTo && dateFrom) {
-    const dateFromFormatedForFile = moment(dateFrom).format(
-      DATE_FOMAT_EXCELL_FILE,
-    );
-    const dateToFormatedForFile = moment(dateTo).format(DATE_FOMAT_EXCELL_FILE);
-    nameFile = i18n.translate(`report.INVENTORY.SHEET_NAME`, {
-      args: {
-        property: dateFromFormatedForFile + '_' + dateToFormatedForFile,
-      },
-    });
-  } else {
-    const dateForFile = moment(dateTo).format(DATE_FOMAT_EXCELL_FILE);
-    const date = moment(dateTo).format(DATE_FOMAT_EXCELL);
-    nameFile = i18n.translate(`report.INVENTORY.SHEET_NAME`, {
-      args: { property: dateForFile },
-    });
-  }
-
-  let index = 1;
-  const groupWarehouse = data.reduce((pre, curr) => {
-    if (!pre[curr?.warehouseCode]) index = 1;
-    else index++;
-    pre[curr?.warehouseCode] = pre[curr?.warehouseCode] || [];
-    pre[curr?.warehouseCode].push({ ...curr, index });
-    return pre;
-  }, {});
-
-  const dataWord = [];
-  for (const warehouseCode in groupWarehouse) {
-    dataWord.push({
-      warehouseCode: warehouseCode,
-      warehouseName: groupWarehouse[warehouseCode][0]?.warehouseName,
-      items: groupWarehouse[warehouseCode],
-    });
-  }
   return {
     nameFile: nameFile,
-    result: await generateReportInventory(dataWord, i18n),
+    result: await generateReportInventory(data.dataMapped, i18n),
   };
 }

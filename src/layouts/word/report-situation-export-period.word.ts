@@ -1,3 +1,4 @@
+import { TableDataSituationExportPeriod } from '@models/situation_export.model';
 import { plus } from '@utils/common';
 import {
   FONT_NAME,
@@ -19,7 +20,7 @@ import {
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { setHeight, setWidth, wordFileStyle } from './word-common.styles';
 export async function generateReportSituationExportPeriod(
-  dataWord,
+  dataWord: TableDataSituationExportPeriod[],
   companyName,
   companyAddress,
   title,
@@ -310,7 +311,7 @@ export async function generateReportSituationExportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: item.planQuantity,
+                                          text: item.planQuantity + '',
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -325,7 +326,7 @@ export async function generateReportSituationExportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: item.exportedQuantity,
+                                          text: item.exportedQuantity + '',
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -355,7 +356,7 @@ export async function generateReportSituationExportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: item.storageCost || 0,
+                                          text: item.storageCost + '',
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -370,7 +371,7 @@ export async function generateReportSituationExportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: item.totalPrice || 0,
+                                          text: item.totalPrice + '',
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -493,7 +494,7 @@ export async function generateReportSituationExportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: order.totalPrice,
+                                          text: order.totalPrice + '',
                                           ...wordFileStyle.text_style_bold,
                                         }),
                                       ],
@@ -540,7 +541,7 @@ export async function generateReportSituationExportPeriod(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: reason.totalPrice,
+                                      text: reason.totalPrice + '',
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -587,7 +588,7 @@ export async function generateReportSituationExportPeriod(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: warehouse.totalPrice,
+                                  text: warehouse.totalPrice + '',
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],

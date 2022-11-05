@@ -2,6 +2,7 @@ import { ReportType } from '@enums/report-type.enum';
 import { generateTable } from '@layout/excel/report-excel.layout';
 import { AGE_OF_ITEMS_COLUMN } from '@layout/excel/table-column-excel/report-age-of-items-column';
 import { reportAgeOfItemsTemplateData } from '@layout/excel/table-data-excel/report-age-of-items.template-data';
+import { ReportInfo } from '@mapping/common/Item-inventory-mapped';
 import { TableAgeOfItems } from '@models/age-of-items.model';
 import { ReportModel } from '@models/report.model';
 
@@ -10,43 +11,19 @@ import { REPORT_INFO } from '@utils/constant';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 export async function reportAgeOfItemsExcelMapping(
   request: ReportRequest,
-  data: any[],
+  data: ReportInfo<TableAgeOfItems[]>,
   i18n: I18nRequestScopeService,
 ) {
-  const companyName = data[0]?._id?.companyName || '';
-  const companyAddress = data[0]?._id?.companyAddress || '';
-  let warehouseName = null;
-  let dataExcell: TableAgeOfItems[] = [];
-  if (data.length > 0) {
-    dataExcell = data[0].warehouses.map((item: any) => {
-      warehouseName = item.warehouseName;
-      return {
-        warehouseCode:
-          i18n.translate('report.WAREHOUSE_GROUP_CODE') +
-          [item.warehouseCode, item.warehouseName].join('_'),
-        sixMonth: item.sixMonth,
-        oneYearAgo: item.oneYearAgo,
-        twoYearAgo: item.twoYearAgo,
-        threeYearAgo: item.threeYearAgo,
-        fourYearAgo: item.fourYearAgo,
-        fiveYearAgo: item.fiveYearAgo,
-        greaterfiveYear: item.greaterfiveYear,
-        totalPrice: item.totalPrice,
-        items: item.items,
-      };
-    });
-  }
-
   const model: ReportModel<any> = {
-    childCompany: companyName,
-    addressChildCompany: companyAddress,
+    childCompany: data.companyName,
+    addressChildCompany: data.companyAddress,
     tableColumn: AGE_OF_ITEMS_COLUMN,
-    tableData: dataExcell,
+    tableData: data.dataMapped,
     header: true,
     key: REPORT_INFO[ReportType[ReportType.AGE_OF_ITEM_STOCK]].key,
     dateFrom: request.dateFrom,
     dateTo: request.dateTo,
-    warehouse: request.warehouseCode ? warehouseName : null,
+    warehouse: request.warehouseCode ? data.warehouseName : null,
   };
 
   const { dataBase64, nameFile } = await generateTable(

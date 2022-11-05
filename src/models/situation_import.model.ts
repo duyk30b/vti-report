@@ -2,8 +2,8 @@ export interface DataSituationImportItem {
   itemCode: string;
   itemName: string;
   lotNumber: string;
-  accountDebt: number;
-  accountHave: number;
+  accountDebt: string;
+  accountHave: string;
   unit: string;
   actualQuantity: number;
   locatorCode: string;

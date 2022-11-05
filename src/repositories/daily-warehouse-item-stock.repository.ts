@@ -80,8 +80,8 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
         break;
     }
 
-    if (request?.dateTo) {
-      const today = moment(request?.dateTo).startOf('day');
+    if (request?.dateFrom) {
+      const today = moment(request?.dateFrom).startOf('day');
       const tomorrow = moment(today).endOf('day');
       condition['$and'].push({
         reportDate: { $gte: today, $lte: tomorrow },

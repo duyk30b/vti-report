@@ -4,7 +4,7 @@ export interface ReportOrderImportByRequestForItemModel {
   orderCode: string;
   itemCode: string;
   itemName: string;
-  dateImport: Date;
+  orderCreatedAt: string;
   planQuantity: number;
   actualQuantity: number;
   status: string;

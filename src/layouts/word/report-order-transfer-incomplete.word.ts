@@ -1,3 +1,5 @@
+import { OrderTransferIncompleteModel } from '@models/order-transfer incomplete.model';
+import { TableData } from '@models/report.model';
 import {
   FONT_NAME,
   ORDER_TRANSFER_INCOMPLETED_COLUMNS,
@@ -22,13 +24,13 @@ import { setHeight, setWidth, wordFileStyle } from './word-common.styles';
 let itemData = [];
 
 export async function generatereportOrderTransferIncompleted(
-  dataWord,
+  dataWord: TableData<OrderTransferIncompleteModel>[],
   companyName,
   companyAddress,
   title,
   reportTime,
   i18n: I18nRequestScopeService,
-): Promise<string> {
+): Promise<any> {
   const companyInfo = new Table({
     columnWidths: [convertInchesToTwip(WORD_FILE_CONFIG.COLUMN_COMPANY_WIDTH)],
     width: setWidth(WORD_FILE_CONFIG.COLUMN_COMPANY_WIDTH),
@@ -167,7 +169,7 @@ export async function generatereportOrderTransferIncompleted(
               }),
               ...dataWord
                 .map((warehouse) => {
-                  itemData = warehouse.items.map((item) => {
+                  itemData = warehouse.data.map((item, index) => {
                     return new TableRow({
                       height: setHeight(WORD_FILE_CONFIG.TABLE_ROW_HEIGHT),
                       children: [
@@ -178,7 +180,7 @@ export async function generatereportOrderTransferIncompleted(
                               alignment: AlignmentType.CENTER,
                               children: [
                                 new TextRun({
-                                  text: item.index,
+                                  text: index + 1 + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -252,7 +254,7 @@ export async function generatereportOrderTransferIncompleted(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.actualQuantity,
+                                  text: item.actualQuantity + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -282,7 +284,7 @@ export async function generatereportOrderTransferIncompleted(
                               alignment: AlignmentType.LEFT,
                               children: [
                                 new TextRun({
-                                  text: item.warehouseImportCode,
+                                  text: item.warehouseImport,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -305,7 +307,7 @@ export async function generatereportOrderTransferIncompleted(
                               alignment: AlignmentType.LEFT,
                               children: [
                                 new TextRun({
-                                  text: `Mã kho: ${warehouse?.warehouseCode}-${warehouse?.warehouseName}`,
+                                  text: warehouse?.warehouseCode,
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
@@ -325,5 +327,5 @@ export async function generatereportOrderTransferIncompleted(
     ],
   });
 
-  return Packer.toBase64String(doc);
+  return Packer.toBuffer(doc);
 }
