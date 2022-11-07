@@ -1,0 +1,57 @@
+import { InventoryModel } from '@models/inventory.model';
+import { ReportInventoryBelowMinimumModel } from '@models/item-inventory-below-minimum.model';
+import { OrderExportIncompleteModel } from '@models/order-exported-incomplete.model';
+import { OrderImportIncompleteModel } from '@models/order-import-incomplete.model';
+import { TableData } from '@models/report.model';
+import { DailyWarehouseItemStock } from '@schemas/daily-warehouse-item-stock.schema';
+import { ReportOrderItem } from '@schemas/report-order-item.schema';
+import { I18nRequestScopeService } from 'nestjs-i18n';
+import { ReportInfo } from './Item-inventory-mapped';
+
+export function getOrderImportIncompletedMapped(
+  data: ReportOrderItem[],
+  i18n: I18nRequestScopeService,
+): ReportInfo<TableData<OrderImportIncompleteModel>[]> {
+  const dataMaping: ReportInfo<any> = {
+    companyName: data[0]?.companyName || '',
+    companyAddress: data[0]?.companyAddress || '',
+    warehouseName: data[0]?.warehouseName || '',
+    dataMapped: null,
+  };
+
+  const groupByWarehouseCode = data.reduce((prev, cur) => {
+    const warehouseCode = cur.warehouseCode + ' - ' + cur.warehouseName;
+
+    if (!prev[warehouseCode]) {
+      prev[warehouseCode] = [];
+    }
+    const data: OrderImportIncompleteModel = {
+      index: 0,
+      orderCode: cur.orderCode,
+      orderCreatedAt: cur.orderCreatedAt,
+      departmentReceiptName: cur.departmentReceiptName,
+      itemCode: cur.itemCode,
+      itemName: cur.itemName,
+      unit: cur.unit,
+      actualQuantity: cur.actualQuantity,
+      storageCost: cur.storageCost,
+      totalPrice: cur.storageCost * cur.planQuantity,
+      constructionName: cur.constructionName,
+      deliverName: cur.performerName,
+    };
+    prev[warehouseCode].push(data);
+    return prev;
+  }, {});
+  const dataExcell: TableData<OrderImportIncompleteModel>[] = [];
+
+  for (const key in groupByWarehouseCode) {
+    dataExcell.push({
+      warehouseCode: i18n.translate('report.WAREHOUSE_GROUP_CODE') + key,
+      data: groupByWarehouseCode[key],
+    });
+  }
+
+  dataMaping.dataMapped = dataExcell || [];
+
+  return dataMaping;
+}

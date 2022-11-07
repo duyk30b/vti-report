@@ -15,11 +15,11 @@ export const REPORT_ORDER_IMPORT_BY_REQUEST_FOR_ITEM_MODEL: TableColumn[] = [
   },
   {
     name: 'ITEM_CODE',
-    width: 15,
+    width: 25,
   },
   {
     name: 'ITEM_NAME',
-    width: 15,
+    width: 25,
   },
   {
     name: 'DATE_IMPORT',

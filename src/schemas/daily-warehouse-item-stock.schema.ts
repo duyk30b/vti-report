@@ -9,12 +9,6 @@ export class DailyWarehouseItemStock
   implements DailyWarehouseItemStockInterface
 {
   @Prop({ required: false })
-  itemId: number;
-
-  @Prop({ required: false })
-  warehouseId: number;
-
-  @Prop({ required: false })
   reportDate: Date;
 
   @Prop({ required: false })
@@ -30,7 +24,7 @@ export class DailyWarehouseItemStock
   storageCost: number;
 
   @Prop({ required: false })
-  companyId: number;
+  companyCode: string;
 
   @Prop({ required: false })
   companyName: string;

@@ -80,21 +80,21 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
         break;
     }
 
-    if (request?.dateTo) {
-      const today = moment(request?.dateTo).startOf('day');
+    if (request?.dateFrom) {
+      const today = moment(request?.dateFrom).startOf('day');
       const tomorrow = moment(today).endOf('day');
       condition['$and'].push({
         reportDate: { $gte: today, $lte: tomorrow },
       });
     }
 
-    if (request?.companyId)
+    if (request?.companyCode)
       condition['$and'].push({
-        companyId: { $eq: request?.companyId },
+        companyCode: { $eq: request?.companyCode },
       });
-    if (request?.warehouseId)
+    if (request?.warehouseCode)
       condition['$and'].push({
-        warehouseId: { $eq: request?.warehouseId },
+        warehouseCode: { $eq: request?.warehouseCode },
       });
 
     return this.dailyWarehouseItemStock

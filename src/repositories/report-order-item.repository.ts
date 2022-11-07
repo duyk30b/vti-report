@@ -48,17 +48,17 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
       $and: [],
     };
 
-    if (request?.companyId)
+    if (request?.companyCode)
       condition['$and'].push({
-        companyId: { $eq: request?.companyId },
+        companyCode: { $eq: request?.companyCode },
       });
-    if (request?.warehouseId)
+    if (request?.warehouseCode)
       condition['$and'].push({
-        warehouseId: { $eq: request?.warehouseId },
+        warehouseCode: { $eq: request?.warehouseCode },
       });
-    if (request?.constructionId)
+    if (request?.constructionCode)
       condition['$and'].push({
-        constructionId: { $eq: request?.constructionId },
+        constructionCode: { $eq: request?.constructionCode },
       });
 
     if (request?.dateFrom)

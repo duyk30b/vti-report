@@ -26,29 +26,20 @@ export class ReportRequest extends BaseDto {
   exportType: ExportType;
 
   @IsNotEmpty()
-  @IsNumber()
-  @Transform(({ value }) => {
-    return Number(value);
-  })
-  companyId: number;
+  @IsString()
+  companyCode: string;
 
   @IsOptional()
   @IsString()
-  constructionId: string;
+  constructionCode: string;
 
   @IsOptional()
-  @IsNumber()
-  @Transform(({ value }) => {
-    return Number(value);
-  })
-  warehouseId: number;
+  @IsString()
+  warehouseCode: string;
 
   @IsOptional()
-  @IsNumber()
-  @Transform(({ value }) => {
-    return Number(value);
-  })
-  departmentReceiptId: number;
+  @IsString()
+  departmentReceiptCode: string;
 
   @IsOptional()
   @Transform(({ value }) => {

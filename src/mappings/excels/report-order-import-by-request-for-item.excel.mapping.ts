@@ -2,6 +2,7 @@ import { ReportType } from '@enums/report-type.enum';
 import { generateTable } from '@layout/excel/report-excel.layout';
 import { REPORT_ORDER_IMPORT_BY_REQUEST_FOR_ITEM_MODEL } from '@layout/excel/table-column-excel/report-order-import-by-request-for-item-column';
 import { reportGroupByWarehouseTemplateData } from '@layout/excel/table-data-excel/report-group-by-warehouse.template-data';
+import { ReportInfo } from '@mapping/common/Item-inventory-mapped';
 import { ReportOrderImportByRequestForItemModel } from '@models/order-import-by-request-for-item.model';
 import {
   TableData,
@@ -18,76 +19,31 @@ import { I18nRequestScopeService } from 'nestjs-i18n';
 
 export async function reportOrderImportByRequestForItemExcelMapping(
   request: ReportRequest,
-  data: ReportOrderItem[],
+  data: ReportInfo<TableData<ReportOrderImportByRequestForItemModel>[]>,
   i18n: I18nRequestScopeService,
 ) {
-  const textSatus = {
-    imported: i18n.translate('report.IMPORTED'),
-    importing: i18n.translate('report.IMPORTING'),
-    notYetImport: i18n.translate('report.NOT_YET_IMPORT'),
-  };
-  const groupByWarehouseCode = data.reduce((prev, cur) => {
-    if (cur.warehouseCode && cur.warehouseName) {
-      const warehouseCode = cur.warehouseCode + ' - ' + cur.warehouseName;
-      if (!prev[warehouseCode]) {
-        prev[warehouseCode] = [];
-      }
-      const stockQuantity = minus(cur.planQuantity, cur.actualQuantity);
-      let status = '';
-      if (stockQuantity === 0) {
-        status = textSatus.imported;
-      } else if (stockQuantity > 0 && stockQuantity < cur.planQuantity) {
-        status = textSatus.importing;
-      } else if (stockQuantity === cur.planQuantity) {
-        status = textSatus.notYetImport;
-      }
-      const data: ReportOrderImportByRequestForItemModel = {
-        index: 0,
-        warehouseExportProposals: cur.warehouseExportProposals,
-        orderCode: cur.orderCode,
-        itemCode: cur.itemCode,
-        itemName: cur.itemName,
-        dateImport: cur.planDate,
-        planQuantity: cur.planQuantity,
-        actualQuantity: cur.actualQuantity,
-        status: status,
-      };
-      prev[warehouseCode].push(data);
-      return prev;
-    }
-  }, {});
-
-  const dataExcell: TableData<ReportOrderImportByRequestForItemModel>[] = [];
-
-  for (const key in groupByWarehouseCode) {
-    dataExcell.push({
-      warehouseCode: i18n.translate('report.WAREHOUSE_GROUP_CODE') + key,
-      data: groupByWarehouseCode[key],
-    });
-  }
-
   const formatByKey: FormatByKey<ReportOrderImportByRequestForItemModel> = {
     index: Alignment.CENTER,
     warehouseExportProposals: Alignment.LEFT,
     orderCode: Alignment.LEFT,
     itemCode: Alignment.LEFT,
     itemName: Alignment.LEFT,
-    dateImport: Alignment.CENTER,
+    orderCreatedAt: Alignment.CENTER,
     planQuantity: Alignment.RIGHT,
     actualQuantity: Alignment.RIGHT,
     status: Alignment.LEFT,
   };
 
   const model: ReportModel<ReportOrderImportByRequestForItemModel> = {
-    childCompany: data[0]?.companyName,
-    addressChildCompany: data[0]?.companyAddress,
+    childCompany: data.companyName,
+    addressChildCompany: data.companyAddress,
     tableColumn: REPORT_ORDER_IMPORT_BY_REQUEST_FOR_ITEM_MODEL,
-    tableData: dataExcell,
+    tableData: data.dataMapped,
     header: false,
     aligmentCell: formatByKey,
     dateFrom: request.dateFrom,
     dateTo: request.dateTo,
-    warehouse: request?.warehouseId ? data[0]?.warehouseName : null,
+    warehouse: request?.warehouseCode ? data.warehouseName : null,
     key: REPORT_INFO[ReportType[ReportType.ORDER_IMPORT_BY_REQUEST_FOR_ITEM]]
       ?.key,
   };

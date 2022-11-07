@@ -3,6 +3,7 @@ import { footerItemBelowMinumum } from '@layout/excel/footer/footer-item-below-m
 import { generateTable } from '@layout/excel/report-excel.layout';
 import { ITEM_INVENTORY_BELOW_MINIMUM } from '@layout/excel/table-column-excel/report-inventory-below-minimum';
 import { reportGroupByWarehouseTemplateData } from '@layout/excel/table-data-excel/report-group-by-warehouse.template-data';
+import { ReportInfo } from '@mapping/common/Item-inventory-mapped';
 import { ReportInventoryBelowMinimumModel } from '@models/item-inventory-below-minimum.model';
 import {
   Alignment,
@@ -18,35 +19,9 @@ import { I18nRequestScopeService } from 'nestjs-i18n';
 
 export async function reportItemInventoryBelowMinimumExcelMapping(
   request: ReportRequest,
-  data: DailyWarehouseItemStock[],
+  data: ReportInfo<TableData<ReportInventoryBelowMinimumModel>[]>,
   i18n: I18nRequestScopeService,
 ) {
-  const groupByWarehouseCode = data.reduce((prev, cur) => {
-    if (cur.warehouseCode && cur.warehouseName) {
-      const warehouseCode = cur.warehouseCode + ' - ' + cur.warehouseName;
-      if (!prev[warehouseCode]) {
-        prev[warehouseCode] = [];
-      }
-      prev[warehouseCode].push({
-        index: 0,
-        itemCode: cur.itemCode,
-        itemName: cur.itemName,
-        unit: cur.unit,
-        stockQuantity: cur.stockQuantity,
-        minInventoryLimit: cur.minInventoryLimit,
-      });
-      return prev;
-    }
-  }, {});
-  const dataExcell: TableData<ReportInventoryBelowMinimumModel>[] = [];
-
-  for (const key in groupByWarehouseCode) {
-    dataExcell.push({
-      warehouseCode: i18n.translate('report.WAREHOUSE_GROUP_CODE') + key,
-      data: groupByWarehouseCode[key],
-    });
-  }
-
   const formatByKey: FormatByKey<ReportInventoryBelowMinimumModel> = {
     index: Alignment.CENTER,
     itemCode: Alignment.LEFT,
@@ -57,16 +32,16 @@ export async function reportItemInventoryBelowMinimumExcelMapping(
   };
 
   const model: ReportModel<ReportInventoryBelowMinimumModel> = {
-    childCompany: data[0]?.companyName,
-    addressChildCompany: data[0]?.companyAddress,
+    childCompany: data.companyName,
+    addressChildCompany: data.companyAddress,
     tableColumn: ITEM_INVENTORY_BELOW_MINIMUM,
-    tableData: dataExcell,
+    tableData: data.dataMapped,
     header: true,
     aligmentCell: formatByKey,
     key: REPORT_INFO[ReportType[ReportType.ITEM_INVENTORY_BELOW_MINIMUM]].key,
     dateFrom: request.dateFrom,
     dateTo: request.dateTo,
-    warehouse: request.warehouseId ? data[0].warehouseName : null,
+    warehouse: request.warehouseCode ? data?.warehouseName : null,
     footer: footerItemBelowMinumum,
   };
 
