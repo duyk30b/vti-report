@@ -202,33 +202,33 @@ export class SyncService {
     try {
       const promiseAll: any = [];
       const reportOrder: ReportOrderInteface = {
-        orderCode: request.code,
-        orderCreatedAt: request.createdAt,
+        orderCode: request?.code,
+        orderCreatedAt: request?.createdAt,
         warehouseCode: request?.sourceWarehouse?.code,
         warehouseName: request?.sourceWarehouse?.name,
         orderType: OrderType.TRANSFER,
         planDate: null,
-        status: request.status,
-        completedAt: request.createdAt,
+        status: request?.status,
+        completedAt: request?.createdAt,
         ebsNumber: request?.ebsNumber,
         companyCode: request?.company?.code,
         companyName: request?.company?.name,
         companyAddress: request?.company?.address,
         constructionCode: request?.constructions?.code || null,
         constructionName: request?.constructions?.name || null,
-        description: request.explanation,
+        description: request?.explanation,
       };
 
       promiseAll.push(this.reportOrderRepository.save(reportOrder));
 
       for (const item of request.itemsExport) {
         const reportOrderItem: ReportOrderItemInteface = {
-          unit: item?.itemUnit.name,
-          performerName: request.receiver,
-          qrCode: request.qrCode,
+          unit: item?.itemUnit?.name,
+          performerName: request?.receiver,
+          qrCode: request?.qrCode,
           warehouseTargetCode: request?.destinationWarehouse?.code,
           warehouseTargetName: request?.destinationWarehouse?.name,
-          reason: request.reason.name,
+          reason: request?.reason?.name,
           contract: null,
           providerCode: null,
           providerName: null,
@@ -246,7 +246,7 @@ export class SyncService {
           storedQuantity: 0,
           collectedQuantity: 0,
           exportedQuantity: item?.exportedQuantity,
-          storageCost: Number(item.price),
+          storageCost: item.price ? Number(item.price) : 0,
           ...reportOrder,
         };
         promiseAll.push(this.reportOrderItemRepository.save(reportOrderItem));
@@ -301,21 +301,21 @@ export class SyncService {
     try {
       const promiseAll: any = [];
       const reportOrder: ReportOrderInteface = {
-        orderCode: request.code,
-        orderCreatedAt: request.receiptDate,
-        warehouseCode: request.warehouse.code,
-        warehouseName: request.warehouse.name,
+        orderCode: request?.code,
+        orderCreatedAt: request?.receiptDate,
+        warehouseCode: request?.warehouse?.code,
+        warehouseName: request?.warehouse?.name,
         orderType: OrderType.IMPORT,
-        planDate: request.receiptDate,
-        status: request.status,
-        completedAt: request.receiptDate,
+        planDate: request?.receiptDate,
+        status: request?.status,
+        completedAt: request?.receiptDate,
         ebsNumber: request?.ebsNumber,
-        companyCode: request.company.code,
-        companyName: request.company.name,
-        companyAddress: request.company.address,
+        companyCode: request?.company?.code,
+        companyName: request?.company?.name,
+        companyAddress: request?.company?.address,
         constructionCode: request?.construction?.code,
         constructionName: request?.construction?.name,
-        description: request.explanation,
+        description: request?.explanation,
       };
 
       promiseAll.push(this.reportOrderRepository.save(reportOrder));
@@ -324,10 +324,10 @@ export class SyncService {
         const reportOrderItem: ReportOrderItemInteface = {
           unit: item?.item?.itemUnit,
           performerName: request?.deliver,
-          qrCode: request.qrCode,
+          qrCode: request?.qrCode,
           warehouseTargetCode: null,
           warehouseTargetName: null,
-          reason: request.reason.name,
+          reason: request?.reason?.name,
           contract: null,
           providerCode: request?.vendor?.code,
           providerName: request?.vendor?.name,
@@ -345,7 +345,7 @@ export class SyncService {
           storedQuantity: 0,
           collectedQuantity: 0,
           exportedQuantity: item?.exportableQuantity,
-          storageCost: Number(item?.price) ? Number(item?.price) : 0,
+          storageCost: item?.price ? Number(item?.price) : 0,
           ...reportOrder,
         };
         promiseAll.push(this.reportOrderItemRepository.save(reportOrderItem));
@@ -404,9 +404,9 @@ export class SyncService {
         warehouseCode: request?.warehouse?.code,
         warehouseName: request?.warehouse?.name,
         orderType: OrderType.EXPORT,
-        planDate: request.receiptDate,
-        status: request.status,
-        completedAt: request.receiptDate,
+        planDate: request?.receiptDate,
+        status: request?.status,
+        completedAt: request?.receiptDate,
         ebsNumber: request?.ebsNumber,
         companyCode: request?.company?.code,
         companyName: request?.company?.name,
@@ -420,29 +420,29 @@ export class SyncService {
 
       for (const item of request.itemsSync) {
         const reportOrderItem: ReportOrderItemInteface = {
-          unit: item.itemUnit,
-          performerName: request.receiver,
-          qrCode: request.qrCode,
+          unit: item?.itemUnit,
+          performerName: request?.receiver,
+          qrCode: request?.qrCode,
           warehouseTargetCode: null,
           warehouseTargetName: null,
           reason: request?.reason?.name,
           contract: null,
           providerCode: null,
           providerName: null,
-          departmentReceiptCode: request.departmentReceipt.code,
-          departmentReceiptName: request.departmentReceipt.name,
+          departmentReceiptCode: request?.departmentReceipt?.code,
+          departmentReceiptName: request?.departmentReceipt?.name,
           account: request?.source?.accountant,
           accountDebt: item?.debitAccount,
           accountHave: item?.creditAccount,
           warehouseExportProposals: request?.warehouseExportProposals?.code,
-          itemName: item.name,
-          itemCode: item.code,
-          planQuantity: item.quantity,
-          actualQuantity: item.actualQuantity,
+          itemName: item?.name,
+          itemCode: item?.code,
+          planQuantity: item?.quantity,
+          actualQuantity: item?.actualQuantity,
           receivedQuantity: 0,
           storedQuantity: 0,
           collectedQuantity: 0,
-          exportedQuantity: item.actualQuantity,
+          exportedQuantity: item?.actualQuantity,
           storageCost: Number(item?.item?.price || 0),
           ...reportOrder,
         };
@@ -451,9 +451,9 @@ export class SyncService {
         for (const lot of item.lots) {
           const reportOrderItemLot: ReportOrderItemLotInteface = {
             ...reportOrderItem,
-            lotNumber: lot.lotNumber,
-            explain: request.explanation,
-            note: request.explanation,
+            lotNumber: lot?.lotNumber,
+            explain: request?.explanation,
+            note: request?.explanation,
             locatorName: null,
             locatorCode: null,
           };
