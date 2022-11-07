@@ -44,8 +44,6 @@ class PurchasedOrderImportWarehouseLot {
 
   itemId: number;
 
-  warehouseId: number;
-
   purchasedOrderImportWarehouseDetailId: number;
 
   purchasedOrderImportId: number;
@@ -127,8 +125,6 @@ class PurchasedOrderImportWarehouseDetail {
   id: number;
 
   purchasedOrderImportId: number;
-
-  warehouseId: number;
 
   itemId: number;
 
@@ -232,7 +228,7 @@ export class Construction {
 export class PurchasedOrderImportRequestDto {
   id: number;
 
-  companyId: number;
+  companyCode: number;
 
   name: string;
 

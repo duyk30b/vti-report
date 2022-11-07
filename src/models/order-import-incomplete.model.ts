@@ -6,9 +6,9 @@ export interface OrderImportIncompleteModel {
   itemCode: string;
   itemName: string;
   unit: string;
-  quantity: number;
-  unitPrice: number;
+  actualQuantity: number;
+  storageCost: number;
   totalPrice: number;
-  construction: string;
-  deliver: string;
+  constructionName: string;
+  deliverName: string;
 }

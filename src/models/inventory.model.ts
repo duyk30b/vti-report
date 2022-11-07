@@ -5,7 +5,7 @@ export interface InventoryModel {
   unit: string;
   lotNumber: string;
   stockQuantity: number;
-  positision: string;
-  unitPrice: number;
+  locatorCode: string;
+  storageCost: number;
   totalPrice: number;
 }

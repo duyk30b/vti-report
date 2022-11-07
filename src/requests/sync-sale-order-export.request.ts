@@ -61,8 +61,6 @@ class SaleOrderExportWarehouseLot {
 
   itemId: number;
 
-  warehouseId: number;
-
   lotNumber: string;
 
   quantity: number;
@@ -102,8 +100,6 @@ class SaleOrderExportWarehouseDetail {
   saleOrderExportId: number;
 
   saleOrderExportDetailId: number;
-
-  warehouseId: number;
 
   itemId: number;
 
@@ -151,7 +147,6 @@ class BusinessTypeAttributes {
 }
 
 export class itemWarehouseSources {
-  warehouseId: number;
   sourceId: number;
   name: string;
   code: string;
@@ -210,8 +205,6 @@ export class SaleOrderExportResponseDto extends BaseDto {
   id: number;
 
   code: string;
-
-  warehouseId: number;
 
   receiptDate: Date;
 

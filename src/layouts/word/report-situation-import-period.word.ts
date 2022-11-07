@@ -1,3 +1,4 @@
+import { TableDataSituationImportPeriod } from '@models/situation_import.model';
 import { plus } from '@utils/common';
 import {
   FONT_NAME,
@@ -19,7 +20,7 @@ import {
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { setHeight, setWidth, wordFileStyle } from './word-common.styles';
 export async function generateReportSituationImportPeriod(
-  dataWord,
+  dataWord: TableDataSituationImportPeriod[],
   companyName,
   companyAddress,
   title,
@@ -278,7 +279,7 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: item.accountDebt,
+                                          text: item.accountDebt || '',
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -293,7 +294,7 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: item.accountHave,
+                                          text: item.accountHave || '',
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -322,7 +323,7 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: item.actualQuantity,
+                                          text: item.actualQuantity + '',
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -352,7 +353,7 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: item.storageCost,
+                                          text: item.storageCost + '',
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -382,7 +383,7 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: item.totalPrice,
+                                          text: item.totalPrice + '',
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -434,7 +435,7 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.CENTER,
                                       children: [
                                         new TextRun({
-                                          text: order.orderCreatedAt,
+                                          text: order.orderCreatedAt + '',
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -540,7 +541,7 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: order.totalPrice,
+                                          text: order.totalPrice + '',
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -652,7 +653,7 @@ export async function generateReportSituationImportPeriod(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: warehouse.totalPrice,
+                                  text: warehouse.totalPrice + '',
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],

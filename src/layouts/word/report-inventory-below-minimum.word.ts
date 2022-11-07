@@ -1,3 +1,5 @@
+import { ReportInventoryBelowMinimumModel } from '@models/item-inventory-below-minimum.model';
+import { TableData } from '@models/report.model';
 import {
   FONT_NAME,
   REPORT_ITEM_INVENTORY_BELOW_MINIMUM_CONFIG_COLUMNS,
@@ -16,20 +18,16 @@ import {
   convertInchesToTwip,
 } from 'docx';
 import { I18nRequestScopeService } from 'nestjs-i18n';
-import {
-  setHeight,
-  setWidth,
-  wordFileStyle,
-} from './word-common.styles';
+import { setHeight, setWidth, wordFileStyle } from './word-common.styles';
 
 export async function generateReportItemInventoryBelowMinimum(
-  dataWord,
+  dataWord: TableData<ReportInventoryBelowMinimumModel>[],
   companyName,
   companyAddress,
   title,
   reportTime,
   i18n: I18nRequestScopeService,
-): Promise<string> {
+): Promise<any> {
   let itemData = [];
 
   // company info table
@@ -174,7 +172,7 @@ export async function generateReportItemInventoryBelowMinimum(
               }),
               ...dataWord
                 .map((warehouse) => {
-                  itemData = warehouse.items.map((item) => {
+                  itemData = warehouse.data.map((item, index) => {
                     return new TableRow({
                       height: setHeight(WORD_FILE_CONFIG.TABLE_ROW_HEIGHT),
                       children: [
@@ -185,7 +183,7 @@ export async function generateReportItemInventoryBelowMinimum(
                               alignment: AlignmentType.CENTER,
                               children: [
                                 new TextRun({
-                                  text: item.index,
+                                  text: index + 1 + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -244,7 +242,7 @@ export async function generateReportItemInventoryBelowMinimum(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.minInventoryLimit,
+                                  text: item.minInventoryLimit + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -259,7 +257,7 @@ export async function generateReportItemInventoryBelowMinimum(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.stockQuantity,
+                                  text: item.stockQuantity + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -279,7 +277,7 @@ export async function generateReportItemInventoryBelowMinimum(
                             new Paragraph({
                               children: [
                                 new TextRun({
-                                  text: `${warehouse?.warehouseCode}-${warehouse?.warehouseName}`,
+                                  text: warehouse?.warehouseCode,
                                   ...wordFileStyle.table_header_style,
                                 }),
                               ],
@@ -300,5 +298,5 @@ export async function generateReportItemInventoryBelowMinimum(
     ],
   });
 
-  return Packer.toBase64String(doc);
+  return Packer.toBuffer(doc);
 }

@@ -42,6 +42,25 @@ import { reportSituationExportPeriodMapping } from '@mapping/words/report-situat
 import { reportAgeOfItemsMapping } from '@mapping/words/report-age-of-item-stock.mapping';
 import { reportSituationInventoryPeriodMapping } from '@mapping/words/report-situation-inventory-period.mapping';
 import { ReportOrderRepository } from '@repositories/report-order.repository';
+import { getReportInfo } from '@layout/excel/report-excel.layout';
+import { REPORT_INFO } from '@utils/constant';
+
+import { getItemInventoryDataMapping } from '@mapping/common/Item-inventory-mapped';
+import { getSituationTransfer } from '@mapping/common/situation-transfer-mapped';
+import { getInventoryDataMapping } from '@mapping/common/inventory-mapped';
+import { getItemInventoryBelowMinimum } from '@mapping/common/Item-inventory-below-minimum-mapped';
+import { getItemInventoryBelowSafe } from '@mapping/common/item-inventory-below-safe';
+import { getOrderTransferIncompletedMapped } from '@mapping/common/order-transfer-incompleted-mapped';
+import { getOrderExportIncompletedMapped } from '@mapping/common/order-export-incompleted.mapped';
+import { getOrderImportIncompletedMapped } from '@mapping/common/order-import-incompleted.mapped';
+import { getItemImportedButNotPutToPositionMapped } from '@mapping/common/item-imported-but-not-put-to-position';
+import { getItemInventoryImportedNoQRCodeMapping } from '@mapping/common/item-inventory-imported-no-qr-code-mapped';
+import { getOrderExportByRequestForItemMapped } from '@mapping/common/report-order-export-by-request-for-item.mapped';
+import { getOrderImportByRequestForItemMapped } from '@mapping/common/report-order-import-by-request-for-item.mapped';
+import { getSituationInventoryPeriod } from '@mapping/common/report-situation-inventory-period.excel.mapped';
+import { getSituationImportPeriod } from '@mapping/common/report-situation-import-period.excel.mapped';
+import { getSituationImportPeriodMapped } from '@mapping/common/report-situation-export-period.excel.mapped';
+import { getSituationTransferMapped } from '@mapping/common/age-of-item-mapped';
 @Injectable()
 export class ExportService {
   constructor(
@@ -149,16 +168,17 @@ export class ExportService {
       await this.dailyLotLocatorStockRepository.getReportAgeOfItemStock(
         request,
       );
+    const dataMapped = getSituationTransferMapped(data, this.i18n);
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } = await reportAgeOfItemsExcelMapping(
           request,
-          data,
+          dataMapped,
           this.i18n,
         );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
-        return reportAgeOfItemsMapping(request, data, this.i18n);
+        return reportAgeOfItemsMapping(request, dataMapped, this.i18n);
       default:
         return;
     }
@@ -172,17 +192,22 @@ export class ExportService {
         request,
         OrderType.EXPORT,
       );
+    const dataMapped = getSituationImportPeriodMapped(data, this.i18n);
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
           await reportSituationExportPeriodExcelMapping(
             request,
-            data,
+            dataMapped,
             this.i18n,
           );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
-        return reportSituationExportPeriodMapping(request, data, this.i18n);
+        return reportSituationExportPeriodMapping(
+          request,
+          dataMapped,
+          this.i18n,
+        );
       default:
         return;
     }
@@ -196,17 +221,23 @@ export class ExportService {
         request,
         OrderType.IMPORT,
       );
+    const dataMapped = getSituationImportPeriod(data, this.i18n);
+
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
           await reportSituationImportPeriodExcelMapping(
             request,
-            data,
+            dataMapped,
             this.i18n,
           );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
-        return reportSituationImportPeriodMapping(request, data, this.i18n);
+        return reportSituationImportPeriodMapping(
+          request,
+          dataMapped,
+          this.i18n,
+        );
       default:
         return;
     }
@@ -220,18 +251,22 @@ export class ExportService {
         request,
         OrderType.INVENTORY,
       );
-
+    const dataMaped = getSituationInventoryPeriod(data, this.i18n);
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
           await reportSituationInventoryPeriodExcelMapping(
             request,
-            data,
+            dataMaped,
             this.i18n,
           );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
-        return reportSituationInventoryPeriodMapping(request, data, this.i18n);
+        return reportSituationInventoryPeriodMapping(
+          request,
+          dataMaped,
+          this.i18n,
+        );
       default:
         return;
     }
@@ -245,13 +280,18 @@ export class ExportService {
         request,
         OrderType.TRANSFER,
       );
+    const dataMapped = getSituationTransfer(data, this.i18n);
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
-          await reportSituationTransferExcelMapping(request, data, this.i18n);
+          await reportSituationTransferExcelMapping(
+            request,
+            dataMapped,
+            this.i18n,
+          );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
-        return reportSituationTransferMapping(request, data, this.i18n);
+        return reportSituationTransferMapping(request, dataMapped, this.i18n);
       default:
         return;
     }
@@ -264,16 +304,20 @@ export class ExportService {
       request,
       OrderType.EXPORT,
     );
-
+    const dataMapped = getOrderExportByRequestForItemMapped(data, this.i18n);
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
-          await reportOrderExportByRequestForItem(request, data, this.i18n);
+          await reportOrderExportByRequestForItem(
+            request,
+            dataMapped,
+            this.i18n,
+          );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
         return reportOrderExportByRequestForItemWordMapping(
           request,
-          data,
+          dataMapped,
           this.i18n,
         );
       default:
@@ -288,19 +332,21 @@ export class ExportService {
       request,
       OrderType.IMPORT,
     );
+
+    const dataMapped = getItemInventoryImportedNoQRCodeMapping(data, this.i18n);
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
           await reportItemInventoryImportedNoQRCodeExcelMapping(
             request,
-            data,
+            dataMapped,
             this.i18n,
           );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
         return reportItemInventoryImportedNoQRCodeWordMapping(
           request,
-          data,
+          dataMapped,
           this.i18n,
         );
       default:
@@ -309,18 +355,20 @@ export class ExportService {
   }
 
   async reportItemInventory(request: ReportRequest): Promise<ReportResponse> {
-    const data =
-      await this.dailyLotLocatorStockRepository.getReportItemInventory(request);
+    const data = await this.reportOrderItemLotRepository.getReportItemInventory(
+      request,
+    );
+    const dataMapping = getItemInventoryDataMapping(data, this.i18n);
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } = await reportItemInventoryExcelMapping(
           request,
           this.i18n,
-          data,
+          dataMapping,
         );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
-        return reportItemInventoryMapping(request, data, this.i18n);
+        return reportItemInventoryMapping(request, dataMapping, this.i18n);
       default:
         return;
     }
@@ -333,20 +381,21 @@ export class ExportService {
       request,
       OrderType.IMPORT,
     );
+    const dataMapped = getOrderImportByRequestForItemMapped(data, this.i18n);
 
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
           await reportOrderImportByRequestForItemExcelMapping(
             request,
-            data,
+            dataMapped,
             this.i18n,
           );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
         return reportOrderImportByRequestForItemWordMapping(
           request,
-          data,
+          dataMapped,
           this.i18n,
         );
       default:
@@ -356,16 +405,17 @@ export class ExportService {
 
   async reportInventory(request: ReportRequest): Promise<ReportResponse> {
     const data = await this.dailyLotLocatorStockRepository.getReports(request);
+    const dataMaped = getInventoryDataMapping(data, this.i18n);
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } = await reportInventoryExcelMapping(
           request,
-          data,
+          dataMaped,
           this.i18n,
         );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
-        return reportInventoryMapping(request, data, this.i18n);
+        return reportInventoryMapping(request, dataMaped, this.i18n);
       default:
         return;
     }
@@ -378,23 +428,23 @@ export class ExportService {
       request,
       OrderType.IMPORT,
     );
-    const company = await this.reportOrderRepository.findOneByCompanyId(
-      request.companyId,
+    const dataMapped = getItemImportedButNotPutToPositionMapped(
+      data,
+      this.i18n,
     );
-    if (data[0]) data[0]['company'] = company;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
           await reportItemImportedButNotPutToPositionExcelMapping(
             request,
-            data,
+            dataMapped,
             this.i18n,
           );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
         return reportItemImportedButNotPutToPositionMapping(
           request,
-          data,
+          dataMapped,
           this.i18n,
         );
       default:
@@ -410,17 +460,23 @@ export class ExportService {
       OrderType.IMPORT,
     );
 
+    const dataMapped = getOrderImportIncompletedMapped(data, this.i18n);
+
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
           await reportOrderImportIncompletedExcelMapping(
             request,
-            data,
+            dataMapped,
             this.i18n,
           );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
-        return reportOrderImportIncompletedMapping(request, data, this.i18n);
+        return reportOrderImportIncompletedMapping(
+          request,
+          dataMapped,
+          this.i18n,
+        );
       default:
         return;
     }
@@ -434,19 +490,20 @@ export class ExportService {
       OrderType.EXPORT,
     );
 
+    const dataMapped = getOrderExportIncompletedMapped(data, this.i18n);
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
           await reportOrderExportIncompletedExcelMapping(
             request,
-            data,
+            dataMapped,
             this.i18n,
           );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
         return reportOrderExportIncompletedWordMapping(
           request,
-          data,
+          dataMapped,
           this.i18n,
         );
       default:
@@ -461,19 +518,20 @@ export class ExportService {
       request,
       OrderType.TRANSFER,
     );
+    const dataMapped = getOrderTransferIncompletedMapped(data, this.i18n);
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
           await reportOrderTransferIncompletedExcelMapping(
             request,
-            data,
+            dataMapped,
             this.i18n,
           );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
         return reportOrderTransferIncompletedWordMapping(
           request,
-          data,
+          dataMapped,
           this.i18n,
         );
       default:
@@ -487,12 +545,14 @@ export class ExportService {
     const data = await this.dailyWarehouseItemStockRepository.getReports(
       request,
     );
+
+    const dataMapped = getItemInventoryBelowMinimum(data, this.i18n);
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
           await reportItemInventoryBelowMinimumExcelMapping(
             request,
-            data,
+            dataMapped,
             this.i18n,
           );
         return { result: dataBase64, nameFile };
@@ -500,11 +560,9 @@ export class ExportService {
       case ExportType.WORD:
         return reportItemInventoryBelowMinimumWordMapping(
           request,
-          data,
+          dataMapped,
           this.i18n,
         );
-      default:
-        return;
     }
   }
 
@@ -514,19 +572,20 @@ export class ExportService {
     const data = await this.dailyWarehouseItemStockRepository.getReports(
       request,
     );
+    const dataMaped = getItemInventoryBelowSafe(data, this.i18n);
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
           await reportItemInventoryBelowSafeExcelMapping(
             request,
-            data,
+            dataMaped,
             this.i18n,
           );
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
         return reportItemInventoryBelowSafeWordMapping(
           request,
-          data,
+          dataMaped,
           this.i18n,
         );
       default:

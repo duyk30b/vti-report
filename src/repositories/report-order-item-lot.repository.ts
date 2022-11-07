@@ -5,11 +5,11 @@ import { ReportType } from '@enums/report-type.enum';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ReportRequest } from '@requests/report.request';
-import { ReportOrderRequest } from '@requests/sync-daily.request';
 import { ReportOrderItemLotInteface } from '@schemas/interface/report-order-item-lot.interface';
 import { ReportOrderItemLot } from '@schemas/report-order-item-lot.schema';
-import { ClientSession } from 'mongoose';
+import { DATE_FOMAT } from '@utils/constant';
 import { Model } from 'mongoose';
+import * as moment from 'moment';
 
 @Injectable()
 export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportOrderItemLot> {
@@ -27,6 +27,275 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
     await document.save();
   }
 
+  async getReportItemInventory(request: ReportRequest): Promise<any[]> {
+    const condition = {
+      $and: [],
+    };
+    condition['$and'].push({
+      orderType: { $in: [OrderType.IMPORT, OrderType.EXPORT] },
+    });
+    const dailyLotLocatorStock = {
+      $or: [],
+    };
+
+    if (request?.dateFrom) {
+      condition['$and'].push({
+        orderCreatedAt: { $gte: new Date(request?.dateFrom) },
+      });
+      dailyLotLocatorStock['$or'].push({
+        $eq: [
+          {
+            $dateToString: {
+              date: '$reportDate',
+              format: '%Y-%m-%d',
+            },
+          },
+          moment(request?.dateFrom || new Date()).format(DATE_FOMAT),
+        ],
+      });
+    }
+
+    if (request?.dateTo) {
+      condition['$and'].push({
+        orderCreatedAt: { $lte: new Date(request?.dateTo) },
+      });
+      dailyLotLocatorStock['$or'].push({
+        $eq: [
+          {
+            $dateToString: {
+              date: '$reportDate',
+              format: '%Y-%m-%d',
+            },
+          },
+          moment(request?.dateTo || new Date()).format(DATE_FOMAT),
+        ],
+      });
+    }
+
+    if (request?.companyCode) {
+      condition['$and'].push({
+        companyCode: { $eq: request?.companyCode },
+      });
+    }
+    if (request?.warehouseCode) {
+      condition['$and'].push({
+        warehouseCode: { $eq: request?.warehouseCode },
+      });
+    }
+
+    return this.reportOrderItemLot.aggregate([
+      {
+        $match: condition,
+      },
+      {
+        $project: {
+          companyCode: 1,
+          companyName: 1,
+          companyAddress: 1,
+          warehouseCode: 1,
+          warehouseName: 1,
+          itemCode: 1,
+          itemName: 1,
+          unit: 1,
+          lotNumber: 1,
+          storageCost: 1,
+          note: 1,
+          importIn: {
+            $cond: [
+              {
+                $eq: ['$orderType', OrderType.IMPORT],
+              },
+              '$actualQuantity',
+              0,
+            ],
+          },
+          exportIn: {
+            $cond: [
+              {
+                $eq: ['$orderType', OrderType.EXPORT],
+              },
+              '$actualQuantity',
+              0,
+            ],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            companyCode: '$companyCode',
+            companyName: '$companyName',
+            companyAddress: '$companyAddress',
+            warehouseCode: '$warehouseCode',
+            warehouseName: '$warehouseName',
+            itemCode: '$itemCode',
+            itemName: '$itemName',
+            unit: '$unit',
+            lotNumber: '$lotNumber',
+            storageCost: '$storageCost',
+            reportDate: {
+              $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
+            },
+            note: '$note',
+          },
+          importIn: { $sum: '$importIn' },
+          exportIn: { $sum: '$exportIn' },
+        },
+      },
+      {
+        $lookup: {
+          from: 'daily-lot-locator-stock',
+          let: {
+            companyCode: '$_id.companyCode',
+            itemCode: '$_id.itemCode',
+            warehouseCode: '$_id.warehouseCode',
+            lotNumber: '$_id.lotNumber',
+          },
+          as: 'daily-lot-locator-stock',
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$companyCode', '$$companyCode'] },
+                    { $eq: ['$warehouseCode', '$$warehouseCode'] },
+                    { $eq: ['$itemCode', '$$itemCode'] },
+                    { $eq: ['$lotNumber', '$$lotNumber'] },
+                    dailyLotLocatorStock,
+                  ],
+                },
+              },
+            },
+            {
+              $project: {
+                itemCode: 1,
+                stockStart: {
+                  $cond: [
+                    {
+                      $eq: [
+                        {
+                          $dateToString: {
+                            date: '$reportDate',
+                            format: '%Y-%m-%d',
+                          },
+                        },
+                        moment(request?.dateFrom || new Date()).format(
+                          DATE_FOMAT,
+                        ),
+                      ],
+                    },
+                    '$stockQuantity',
+                    0,
+                  ],
+                },
+                stockEnd: {
+                  $cond: [
+                    {
+                      $eq: [
+                        {
+                          $dateToString: {
+                            date: '$reportDate',
+                            format: '%Y-%m-%d',
+                          },
+                        },
+                        moment(request?.dateTo || new Date()).format(
+                          DATE_FOMAT,
+                        ),
+                      ],
+                    },
+                    '$stockQuantity',
+                    0,
+                  ],
+                },
+              },
+            },
+            {
+              $group: {
+                _id: {
+                  itemCode: '$itemCode',
+                },
+                stockStart: { $sum: '$stockStart' },
+                stockEnd: { $sum: '$stockEnd' },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $group: {
+          _id: {
+            companyCode: '$_id.companyCode',
+            companyName: '$_id.companyName',
+            companyAddress: '$_id.companyAddress',
+            warehouseCode: '$_id.warehouseCode',
+            warehouseName: '$_id.warehouseName',
+          },
+          items: {
+            $push: {
+              itemCode: '$_id.itemCode',
+              itemName: '$_id.itemName',
+              unit: '$_id.unit',
+              lotNumber: '$_id.lotNumber',
+              storageCost: '$_id.storageCost',
+
+              stockStart: { $sum: '$daily-lot-locator-stock.stockStart' },
+              totalStockStart: {
+                $multiply: [
+                  '$_id.storageCost',
+                  { $sum: '$daily-lot-locator-stock.stockStart' },
+                ],
+              },
+
+              importIn: '$importIn',
+              totalImportIn: {
+                $multiply: ['$_id.storageCost', '$importIn'],
+              },
+
+              exportIn: '$exportIn',
+              totalExportIn: {
+                $multiply: ['$_id.storageCost', '$exportIn'],
+              },
+
+              stockEnd: { $sum: '$daily-lot-locator-stock.stockEnd' },
+              totalStockEnd: {
+                $multiply: [
+                  '$_id.storageCost',
+                  { $sum: '$daily-lot-locator-stock.stockEnd' },
+                ],
+              },
+
+              note: '$_id.note',
+            },
+          },
+        },
+      },
+      {
+        $sort: { warehouseCode: -1, itemCode: -1 },
+      },
+      {
+        $group: {
+          _id: {
+            companyCode: '$_id.companyCode',
+            companyName: '$_id.companyName',
+            companyAddress: '$_id.companyAddress',
+          },
+          warehouses: {
+            $push: {
+              warehouseCode: '$_id.warehouseCode',
+              warehouseName: '$_id.warehouseName',
+              items: '$items',
+            },
+          },
+        },
+      },
+    ]);
+  }
+
   async getReports(
     request: ReportRequest,
     type: OrderType,
@@ -35,17 +304,17 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
       $and: [],
     };
 
-    if (request?.companyId)
+    if (request?.companyCode)
       condition['$and'].push({
-        companyId: { $eq: request?.companyId },
+        companyCode: { $eq: request?.companyCode },
       });
-    if (request?.warehouseId)
+    if (request?.warehouseCode)
       condition['$and'].push({
-        warehouseId: { $eq: request?.warehouseId },
+        warehouseCode: { $eq: request?.warehouseCode },
       });
-    if (request?.constructionId)
+    if (request?.constructionCode)
       condition['$and'].push({
-        constructionId: { $eq: request?.constructionId },
+        constructionCode: { $eq: request?.constructionCode },
       });
 
     if (request?.dateFrom)
@@ -73,58 +342,42 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
 
     switch (request?.reportType) {
       case ReportType.ITEM_IMPORTED_BUT_NOT_PUT_TO_POSITION:
-        // condition['$and'].push({
-        //   status: { $in: [OrderStatus.IMPORTED, OrderStatus.STORED] },
-        // });
+        condition['$and'].push({
+          status: {
+            $in: [
+              OrderStatus.Completed,
+              OrderStatus.Confirmed,
+              OrderStatus.Stored,
+            ],
+          },
+        });
 
         break;
       case ReportType.ITEM_INVENTORY_IMPORTED_NO_QR_CODE:
         condition['$and'].push({
           qrCode: { $eq: null },
         });
-        // condition['$and'].push({
-        //   status: { $eq: OrderStatus.IMPORTED },
-        // });
+        condition['$and'].push({
+          status: {
+            $in: [
+              OrderStatus.Completed,
+              OrderStatus.Confirmed,
+              OrderStatus.Stored,
+            ],
+          },
+        });
         break;
       case ReportType.SITUATION_IMPORT_PERIOD:
-      // condition['$and'].push({
-      //   status: {
-      //     $in: [
-      //       OrderStatus.RECEIVED,
-      //       OrderStatus.RECEIVING,
-      //       OrderStatus.STORING,
-      //       OrderStatus.IMPORT_COMPLETED,
-      //     ],
-      //   },
-      // });
-      // break;
+        break;
       case ReportType.SITUATION_EXPORT_PERIOD:
-        // condition['$and'].push({
-        //   status: {
-        //     $in: [
-        //       OrderStatus.EXPORTED,
-        //       OrderStatus.EXPORTING,
-        //       OrderStatus.EXPORT_COMPLETED,
-        //     ],
-        //   },
-        // });
         break;
       case ReportType.SITUATION_TRANSFER:
-        // condition['$and'].push({
-        //   status: {
-        //     $in: [
-        //       OrderStatus.IMPORTED,
-        //       OrderStatus.EXPORTED,
-        //       OrderStatus.TRANSFER_COMPLETED,
-        //     ],
-        //   },
-        // });
-        break;
-      default:
         break;
     }
 
-    if (ReportType.ITEM_IMPORTED_BUT_NOT_PUT_TO_POSITION) {
+    if (
+      request?.reportType === ReportType.ITEM_IMPORTED_BUT_NOT_PUT_TO_POSITION
+    ) {
       return reportItemImportedButNotPutToPosition(
         this.reportOrderItemLot,
         condition,
@@ -144,17 +397,17 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
       $and: [],
     };
 
-    if (request?.companyId)
+    if (request?.companyCode)
       condition['$and'].push({
-        companyId: { $eq: request?.companyId },
+        companyCode: { $eq: request?.companyCode },
       });
-    if (request?.warehouseId)
+    if (request?.warehouseCode)
       condition['$and'].push({
-        warehouseId: { $eq: request?.warehouseId },
+        warehouseCode: { $eq: request?.warehouseCode },
       });
-    if (request?.constructionId)
+    if (request?.constructionCode)
       condition['$and'].push({
-        constructionId: { $eq: request?.constructionId },
+        constructionCode: { $eq: request?.constructionCode },
       });
 
     if (request?.dateFrom)
@@ -183,7 +436,7 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
     switch (request?.reportType) {
       case ReportType.ITEM_IMPORTED_BUT_NOT_PUT_TO_POSITION:
         condition['$and'].push({
-          locatorId: { $eq: null },
+          locatorCode: { $eq: null },
         });
 
         condition['$and'].push({
@@ -254,14 +507,14 @@ function reportItemImportedButNotPutToPosition(
     {
       $group: {
         _id: {
-          warehouseId: '$warehouseId',
+          companyAddress: '$companyAddress',
+          companyName: '$companyName',
           warehouseCode: '$warehouseCode',
           warehouseName: '$warehouseName',
           orderCode: '$orderCode',
           ebsNumber: '$ebsNumber',
           reason: '$reason',
           explain: '$explain',
-          itemId: '$itemId',
           itemCode: '$itemCode',
           itemName: '$itemName',
           unit: '$unit',
@@ -274,12 +527,13 @@ function reportItemImportedButNotPutToPosition(
       },
     },
     {
-      $sort: { '_id.itemId': -1 },
+      $sort: { '_id.itemCode': -1 },
     },
     {
       $group: {
         _id: {
-          warehouseId: '$_id.warehouseId',
+          companyAddress: '$_id.companyAddress',
+          companyName: '$_id.companyName',
           warehouseCode: '$_id.warehouseCode',
           warehouseName: '$_id.warehouseName',
         },
@@ -297,7 +551,10 @@ function reportItemImportedButNotPutToPosition(
             planQuantity: { $sum: '$totalPlanQuantity' },
             actualQuantity: { $sum: '$totalActualQuantity' },
             remainQuantity: {
-              $subtract: ['$totalActualQuantity', '$totalActualQuantity'],
+              $subtract: [
+                { $sum: '$totalPlanQuantity' },
+                { $sum: '$totalActualQuantity' },
+              ],
             },
             note: '$_id.note',
             performerName: '$_id.performerName',
@@ -306,7 +563,25 @@ function reportItemImportedButNotPutToPosition(
       },
     },
     {
-      $sort: { '_id.warehouseId': -1 },
+      $sort: { '_id.warehouseCode': -1 },
+    },
+    {
+      $group: {
+        _id: {
+          companyAddress: '$_id.companyAddress',
+          companyName: '$_id.companyName',
+        },
+        warehouses: {
+          $push: {
+            warehouseCode: '$_id.warehouseCode',
+            warehouseName: '$_id.warehouseName',
+            items: '$items',
+          },
+        },
+      },
+    },
+    {
+      $sort: { '_id.companyName': -1 },
     },
   ]);
 }
@@ -318,18 +593,16 @@ function reportSituationExport(
   return reportOrderItemLot.aggregate([
     { $match: condition },
     {
-      $sort: { itemId: -1 },
+      $sort: { itemCode: -1 },
     },
     {
       $group: {
         _id: {
-          warehouseId: '$warehouseId',
           warehouseCode: '$warehouseCode',
           warehouseName: '$warehouseName',
           companyName: '$companyName',
           companyAddress: '$companyAddress',
           reason: '$reason',
-          orderId: '$orderId',
           orderCode: '$orderCode',
           orderCreatedAt: {
             $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' },
@@ -356,12 +629,11 @@ function reportSituationExport(
       },
     },
     {
-      $sort: { '_id.orderId': -1 },
+      $sort: { '_id.orderCode': -1 },
     },
     {
       $group: {
         _id: {
-          warehouseId: '$_id.warehouseId',
           warehouseCode: '$_id.warehouseCode',
           warehouseName: '$_id.warehouseName',
           companyName: '$_id.companyName',
@@ -389,7 +661,6 @@ function reportSituationExport(
     {
       $group: {
         _id: {
-          warehouseId: '$_id.warehouseId',
           warehouseCode: '$_id.warehouseCode',
           warehouseName: '$_id.warehouseName',
           companyName: '$_id.companyName',
@@ -405,7 +676,7 @@ function reportSituationExport(
       },
     },
     {
-      $sort: { '_id.warehouseId': -1 },
+      $sort: { '_id.warehouseCode': -1 },
     },
     {
       $group: {
@@ -433,18 +704,16 @@ function reportSituationImport(
   return reportOrderItemLot.aggregate([
     { $match: condition },
     {
-      $sort: { itemId: -1 },
+      $sort: { itemCode: -1 },
     },
     {
       $group: {
         _id: {
-          warehouseId: '$warehouseId',
           warehouseCode: '$warehouseCode',
           warehouseName: '$warehouseName',
           companyName: '$companyName',
           companyAddress: '$companyAddress',
           reason: '$reason',
-          orderId: '$orderId',
           orderCode: '$orderCode',
           orderCreatedAt: {
             $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' },
@@ -472,12 +741,11 @@ function reportSituationImport(
       },
     },
     {
-      $sort: { '_id.orderId': -1 },
+      $sort: { '_id.orderCode': -1 },
     },
     {
       $group: {
         _id: {
-          warehouseId: '$_id.warehouseId',
           warehouseCode: '$_id.warehouseCode',
           warehouseName: '$_id.warehouseName',
           companyName: '$_id.companyName',
@@ -505,7 +773,6 @@ function reportSituationImport(
     {
       $group: {
         _id: {
-          warehouseId: '$_id.warehouseId',
           warehouseCode: '$_id.warehouseCode',
           warehouseName: '$_id.warehouseName',
           companyName: '$_id.companyName',
@@ -521,7 +788,7 @@ function reportSituationImport(
       },
     },
     {
-      $sort: { '_id.warehouseId': -1 },
+      $sort: { '_id.warehouseCode': -1 },
     },
     {
       $group: {
@@ -549,17 +816,15 @@ function reportSituationTransfer(
   return reportOrderItemLot.aggregate([
     { $match: condition },
     {
-      $sort: { itemId: 1 },
+      $sort: { itemCode: 1 },
     },
     {
       $group: {
         _id: {
-          warehouseId: '$warehouseId',
           warehouseCode: '$warehouseCode',
           warehouseName: '$warehouseName',
           companyName: '$companyName',
           companyAddress: '$companyAddress',
-          orderId: '$orderId',
           orderCode: '$orderCode',
           orderCreatedAt: {
             $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' },
@@ -585,12 +850,11 @@ function reportSituationTransfer(
       },
     },
     {
-      $sort: { '_id.orderId': -1 },
+      $sort: { '_id.orderCode': -1 },
     },
     {
       $group: {
         _id: {
-          warehouseId: '$_id.warehouseId',
           warehouseCode: '$_id.warehouseCode',
           warehouseName: '$_id.warehouseName',
           companyName: '$_id.companyName',
@@ -615,7 +879,7 @@ function reportSituationTransfer(
       },
     },
     {
-      $sort: { '_id.warehouseId': -1 },
+      $sort: { '_id.warehouseCode': -1 },
     },
     {
       $group: {
@@ -625,7 +889,6 @@ function reportSituationTransfer(
         },
         warehouses: {
           $push: {
-            warehouseId: '$_id.warehouseId',
             warehouseCode: '$_id.warehouseCode',
             warehouseName: '$_id.warehouseName',
             totalPrice: { $sum: '$orders.totalPrice' },
@@ -644,12 +907,11 @@ function reportSituationInventory(
   return reportOrderItemLot.aggregate([
     { $match: condition },
     {
-      $sort: { itemId: -1 },
+      $sort: { itemCode: -1 },
     },
     {
       $group: {
         _id: {
-          warehouseId: '$warehouseId',
           warehouseCode: '$warehouseCode',
           warehouseName: '$warehouseName',
           companyName: '$companyName',
@@ -665,20 +927,20 @@ function reportSituationInventory(
             unit: '$unit',
             totalPlanQuantity: { $sum: '$planQuantity' },
             totalPricePlan: {
-              $sum: { $multiply: ['$cost', '$planQuantity'] },
+              $sum: { $multiply: ['$storageCost', '$planQuantity'] },
             },
             totalActualQuantity: { $sum: '$actualQuantity' },
             totalPriceActual: {
-              $sum: { $multiply: ['$cost', '$actualQuantity'] },
+              $sum: { $multiply: ['$storageCost', '$actualQuantity'] },
             },
-            cost: '$cost',
+            storageCost: '$storageCost',
             note: '$note',
           },
         },
       },
     },
     {
-      $sort: { '_id.warehouseId': -1 },
+      $sort: { '_id.warehouseCode': -1 },
     },
   ]);
 }

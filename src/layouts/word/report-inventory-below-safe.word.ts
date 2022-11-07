@@ -1,3 +1,5 @@
+import { ReportInventoryBelowSafeModel } from '@models/item-inventory-below-safe.model';
+import { TableData } from '@models/report.model';
 import {
   FONT_NAME,
   REPORT_ITEM_INVENTORY_BELOW_SAFE_CONFIG_COLUMNS,
@@ -16,22 +18,18 @@ import {
   Packer,
 } from 'docx';
 import { I18nRequestScopeService } from 'nestjs-i18n';
-import {
-  setHeight,
-  setWidth,
-  wordFileStyle,
-} from './word-common.styles';
+import { setHeight, setWidth, wordFileStyle } from './word-common.styles';
 
 let itemData = [];
 
 export async function generatereportItemInventoryBelowSafe(
-  dataWord,
+  dataWord: TableData<ReportInventoryBelowSafeModel>[],
   companyName,
   companyAddress,
   title,
   reportTime,
   i18n: I18nRequestScopeService,
-): Promise<string> {
+): Promise<any> {
   const companyInfo = new Table({
     columnWidths: [convertInchesToTwip(WORD_FILE_CONFIG.COLUMN_COMPANY_WIDTH)],
     width: setWidth(WORD_FILE_CONFIG.COLUMN_COMPANY_WIDTH),
@@ -173,7 +171,7 @@ export async function generatereportItemInventoryBelowSafe(
               }),
               ...dataWord
                 .map((warehouse) => {
-                  itemData = warehouse.items.map((item) => {
+                  itemData = warehouse.data.map((item, index) => {
                     return new TableRow({
                       height: setHeight(WORD_FILE_CONFIG.TABLE_ROW_HEIGHT),
                       children: [
@@ -184,7 +182,7 @@ export async function generatereportItemInventoryBelowSafe(
                               alignment: AlignmentType.CENTER,
                               children: [
                                 new TextRun({
-                                  text: item.index,
+                                  text: index + 1 + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -243,7 +241,7 @@ export async function generatereportItemInventoryBelowSafe(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.minInventoryLimit,
+                                  text: item.inventoryLimit + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -258,7 +256,7 @@ export async function generatereportItemInventoryBelowSafe(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.stockQuantity,
+                                  text: item.stockQuantity + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -278,7 +276,7 @@ export async function generatereportItemInventoryBelowSafe(
                             new Paragraph({
                               children: [
                                 new TextRun({
-                                  text: `Mã kho: ${warehouse?.warehouseCode}-${warehouse?.warehouseName}`,
+                                  text: warehouse?.warehouseCode,
                                   ...wordFileStyle.table_header_style,
                                 }),
                               ],
@@ -299,5 +297,5 @@ export async function generatereportItemInventoryBelowSafe(
     ],
   });
 
-  return Packer.toBase64String(doc);
+  return Packer.toBuffer(doc);
 }
