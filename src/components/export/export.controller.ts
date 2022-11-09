@@ -49,16 +49,12 @@ export class ExportController {
     }
     const result = await this.exportService.getReport(request);
     if (!result['error']) {
-      const nameFile = result?.nameFile;
-
-      res.header(
-        'Content-Disposition',
-        contentDisposition(
-          request.exportType === ExportType.EXCEL
-            ? nameFile + '.xlsx'
-            : nameFile + '.docx',
-        ),
-      );
+      let nameFile =
+        request.exportType === ExportType.EXCEL
+          ? result.nameFile + '.xlsx'
+          : result.nameFile + '.docx';
+      nameFile = encodeURIComponent(nameFile);
+      res.header('Content-Disposition', contentDisposition(nameFile));
       res.header('Access-Control-Expose-Headers', '*');
       return new StreamableFile(result.result);
     }
