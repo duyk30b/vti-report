@@ -75,14 +75,14 @@ deploy_staging:
     - bash -c 'echo "$SSH_PRIVATE_KEY" | ssh-add -'
     - mkdir -p ~/.ssh
 
-    - ssh-keyscan -H 10.1.47.52 >> ~/.ssh/known_hosts
+    - ssh-keyscan -H 10.1.47.45 >> ~/.ssh/known_hosts
 
     - mkdir -p ~/.ssh
 
     - chmod 644 ~/.ssh/known_hosts
 
     - >
-      ssh $SSH_STAGING_USER@10.1.47.52
+      ssh $SSH_STAGING_USER@10.1.47.45
       "docker login ${PRIVATE_REGISTRY_HOST} -u ${PRIVATE_REGISTRY_USERNAME} -p ${PRIVATE_REGISTRY_PASSWD};
        cd /home/stg_core/app/projects/avenue_wmsx_hq/be/services/report-service;
       docker pull ${CONTAINER_STAGING_IMAGE};
