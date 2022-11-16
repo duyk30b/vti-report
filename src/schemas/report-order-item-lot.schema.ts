@@ -138,6 +138,9 @@ export class ReportOrderItemLot implements ReportOrderItemLotInteface {
 
   @Prop({ required: false })
   orderCode: string;
+
+  @Prop({ required: false })
+  orderImportRequireCode: string; //Giấy đề nghị nhap VT
 }
 
 export const ReportOrderItemLotSchema =
