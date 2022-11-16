@@ -22,6 +22,9 @@ export class ReportOrderRepository extends BaseAbstractRepository<ReportOrder> {
     Object.assign(document, data);
     await document.save();
   }
+  saveMany(data: ReportOrderInteface[]) {
+    return this.reportOrder.create(data);
+  }
 
   async findOneBycompanyCode(code: string): Promise<ReportOrder> {
     return this.findOneByCondition({ companyCode: code });

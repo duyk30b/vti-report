@@ -1,8 +1,6 @@
 import { BaseDto } from '@core/dto/base.dto';
 import { ActionType } from '@enums/export-type.enum';
 import { OrderStatus } from '@enums/order-status.enum';
-import { Expose, Type } from 'class-transformer';
-import { IsArray } from 'class-validator';
 
 export class ItemResponseDto {
   itemId: number;
@@ -285,7 +283,7 @@ export class PurchasedOrderImportRequestDto {
   qrCode: string;
 }
 
-export class SyncOrderRequest extends BaseDto {
+export class SyncPurchasedOrderRequest extends BaseDto {
   actionType: ActionType;
   data: PurchasedOrderImportRequestDto;
 }

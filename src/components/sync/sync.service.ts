@@ -16,7 +16,7 @@ import { SyncTransactionRequest } from '@requests/sync-transaction.request';
 import { ActionType } from '@enums/export-type.enum';
 import {
   PurchasedOrderImportRequestDto,
-  SyncOrderRequest,
+  SyncPurchasedOrderRequest,
 } from '@requests/sync-purchased-order-import.request';
 import { ReportOrderInteface } from '@schemas/interface/report-order.interface';
 import { OrderType } from '@enums/order-type.enum';
@@ -31,6 +31,7 @@ import {
   WarehouseTransferResponseDto,
 } from '@requests/sync-warehouse-transfer-request';
 import { UserService } from '@components/user/user.service';
+import { Orders, SyncOrderRequest } from '@requests/sync-order.request';
 @Injectable()
 export class SyncService {
   constructor(
@@ -91,7 +92,7 @@ export class SyncService {
 
   async syncSaleOrderExport(request: SyncSaleOrderExportRequest) {
     const company = await this.userService.getCompanies({
-      code: request.data.syncCode,
+      code: request?.data?.syncCode,
     });
 
     if (company.statusCode !== ResponseCodeEnum.SUCCESS) {
@@ -121,7 +122,7 @@ export class SyncService {
 
   async syncWarehouseTransfer(request: SyncWarehouseTransferRequest) {
     const company = await this.userService.getCompanies({
-      code: request.data.syncCode,
+      code: request?.data?.syncCode,
     });
 
     if (company.statusCode !== ResponseCodeEnum.SUCCESS) {
@@ -148,9 +149,11 @@ export class SyncService {
     }
   }
 
-  async syncPurchasedOrderImport(request: SyncOrderRequest): Promise<any> {
+  async syncPurchasedOrderImport(
+    request: SyncPurchasedOrderRequest,
+  ): Promise<any> {
     const company = await this.userService.getCompanies({
-      code: request.data.syncCode,
+      code: request?.data?.syncCode,
     });
 
     if (company.statusCode !== ResponseCodeEnum.SUCCESS) {
@@ -200,7 +203,9 @@ export class SyncService {
       ]);
     }
     try {
-      const promiseAll: any = [];
+      const order: ReportOrderInteface[] = [];
+      const orderItem: ReportOrderItemInteface[] = [];
+      const orderItemLot: ReportOrderItemLotInteface[] = [];
       const reportOrder: ReportOrderInteface = {
         orderCode: request?.code,
         orderCreatedAt: request?.createdAt,
@@ -219,8 +224,7 @@ export class SyncService {
         description: request?.explanation,
       };
 
-      promiseAll.push(this.reportOrderRepository.save(reportOrder));
-
+      order.push(reportOrder);
       for (const item of request.itemsExport) {
         const reportOrderItem: ReportOrderItemInteface = {
           unit: item?.itemUnit?.name,
@@ -249,7 +253,7 @@ export class SyncService {
           storageCost: item.price ? Number(item.price) : 0,
           ...reportOrder,
         };
-        promiseAll.push(this.reportOrderItemRepository.save(reportOrderItem));
+        orderItem.push(reportOrderItem);
 
         for (const lot of item.lots) {
           const reportOrderItemLot: ReportOrderItemLotInteface = {
@@ -257,16 +261,24 @@ export class SyncService {
             lotNumber: lot?.lotNumber,
             explain: request?.explanation,
             note: request?.explanation,
+            planQuantity: lot?.planQuantity,
+            actualQuantity: lot?.actualQuantity,
+            receivedQuantity: 0,
+            storedQuantity: 0,
+            collectedQuantity: 0,
+            exportedQuantity: lot?.exportedQuantity,
             locatorName: null,
             locatorCode: null,
           };
-          promiseAll.push(
-            this.reportOrderItemLotRepository.save(reportOrderItemLot),
-          );
+          orderItemLot.push(reportOrderItemLot);
         }
       }
 
-      await Promise.all(promiseAll);
+      await Promise.all([
+        this.reportOrderRepository.saveMany(order),
+        this.reportOrderItemRepository.saveMany(orderItem),
+        this.reportOrderItemLotRepository.saveMany(orderItemLot),
+      ]);
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.SUCCESS)
         .withMessage(await this.i18n.translate('success.SUCCESS'))
@@ -299,7 +311,9 @@ export class SyncService {
       ]);
     }
     try {
-      const promiseAll: any = [];
+      const order: ReportOrderInteface[] = [];
+      const orderItem: ReportOrderItemInteface[] = [];
+      const orderItemLot: ReportOrderItemLotInteface[] = [];
       const reportOrder: ReportOrderInteface = {
         orderCode: request?.code,
         orderCreatedAt: request?.receiptDate,
@@ -318,7 +332,7 @@ export class SyncService {
         description: request?.explanation,
       };
 
-      promiseAll.push(this.reportOrderRepository.save(reportOrder));
+      order.push(reportOrder);
 
       for (const item of request.purchasedOrderImportDetails) {
         const reportOrderItem: ReportOrderItemInteface = {
@@ -348,7 +362,7 @@ export class SyncService {
           storageCost: item?.price ? Number(item?.price) : 0,
           ...reportOrder,
         };
-        promiseAll.push(this.reportOrderItemRepository.save(reportOrderItem));
+        orderItem.push(reportOrderItem);
 
         for (const lot of item.lots) {
           const reportOrderItemLot: ReportOrderItemLotInteface = {
@@ -356,16 +370,24 @@ export class SyncService {
             lotNumber: lot?.lotNumber,
             explain: request?.explanation,
             note: request?.explanation,
+            planQuantity: lot?.quantity,
+            actualQuantity: lot?.actualQuantity,
+            receivedQuantity: 0,
+            storedQuantity: 0,
+            collectedQuantity: 0,
+            exportedQuantity: 0,
             locatorName: null,
             locatorCode: null,
           };
-          promiseAll.push(
-            this.reportOrderItemLotRepository.save(reportOrderItemLot),
-          );
+          orderItemLot.push(reportOrderItemLot);
         }
       }
 
-      await Promise.all(promiseAll);
+      await Promise.all([
+        this.reportOrderRepository.saveMany(order),
+        this.reportOrderItemRepository.saveMany(orderItem),
+        this.reportOrderItemLotRepository.saveMany(orderItemLot),
+      ]);
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.SUCCESS)
         .withMessage(await this.i18n.translate('success.SUCCESS'))
@@ -397,7 +419,10 @@ export class SyncService {
     }
 
     try {
-      const promiseAll: any = [];
+      const order: ReportOrderInteface[] = [];
+      const orderItem: ReportOrderItemInteface[] = [];
+      const orderItemLot: ReportOrderItemLotInteface[] = [];
+
       const reportOrder: ReportOrderInteface = {
         orderCode: request?.code,
         orderCreatedAt: request?.receiptDate,
@@ -416,7 +441,7 @@ export class SyncService {
         description: null,
       };
 
-      promiseAll.push(this.reportOrderRepository.save(reportOrder));
+      order.push(reportOrder);
 
       for (const item of request.itemsSync) {
         const reportOrderItem: ReportOrderItemInteface = {
@@ -446,7 +471,7 @@ export class SyncService {
           storageCost: Number(item?.item?.price || 0),
           ...reportOrder,
         };
-        promiseAll.push(this.reportOrderItemRepository.save(reportOrderItem));
+        orderItem.push(reportOrderItem);
 
         for (const lot of item.lots) {
           const reportOrderItemLot: ReportOrderItemLotInteface = {
@@ -454,16 +479,24 @@ export class SyncService {
             lotNumber: lot?.lotNumber,
             explain: request?.explanation,
             note: request?.explanation,
+            planQuantity: lot?.planQuantity,
+            actualQuantity: lot?.actualQuantity,
+            receivedQuantity: 0,
+            storedQuantity: 0,
+            collectedQuantity: 0,
+            exportedQuantity: lot?.actualQuantity,
             locatorName: null,
             locatorCode: null,
           };
-          promiseAll.push(
-            this.reportOrderItemLotRepository.save(reportOrderItemLot),
-          );
+          orderItemLot.push(reportOrderItemLot);
         }
       }
 
-      await Promise.all(promiseAll);
+      await Promise.all([
+        this.reportOrderRepository.saveMany(order),
+        this.reportOrderItemRepository.saveMany(orderItem),
+        this.reportOrderItemLotRepository.saveMany(orderItemLot),
+      ]);
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.SUCCESS)
         .withMessage(await this.i18n.translate('success.SUCCESS'))
