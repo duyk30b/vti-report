@@ -27,6 +27,9 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
     await document.save();
   }
 
+  saveMany(data: ReportOrderItemLotInteface[]) {
+    return this.reportOrderItemLot.create(data);
+  }
   async getReportItemInventory(request: ReportRequest): Promise<any[]> {
     const condition = {
       $and: [],
@@ -40,7 +43,9 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
 
     if (request?.dateFrom) {
       condition['$and'].push({
-        orderCreatedAt: { $gte: new Date(request?.dateFrom) },
+        orderCreatedAt: {
+          $gte: moment(request?.dateFrom || new Date()).format(DATE_FOMAT),
+        },
       });
       dailyLotLocatorStock['$or'].push({
         $eq: [
@@ -57,7 +62,9 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
 
     if (request?.dateTo) {
       condition['$and'].push({
-        orderCreatedAt: { $lte: new Date(request?.dateTo) },
+        orderCreatedAt: {
+          $lte: moment(request?.dateTo || new Date()).format(DATE_FOMAT),
+        },
       });
       dailyLotLocatorStock['$or'].push({
         $eq: [
@@ -412,12 +419,16 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
 
     if (request?.dateFrom)
       condition['$and'].push({
-        orderCreatedAt: { $gte: new Date(request?.dateFrom) },
+        orderCreatedAt: {
+          $gte: moment(request?.dateFrom || new Date()).format(DATE_FOMAT),
+        },
       });
 
     if (request?.dateTo)
       condition['$and'].push({
-        orderCreatedAt: { $lte: new Date(request?.dateTo) },
+        orderCreatedAt: {
+          $lte: moment(request?.dateTo || new Date()).format(DATE_FOMAT),
+        },
       });
 
     switch (type) {
@@ -459,26 +470,27 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
         break;
       case ReportType.SITUATION_EXPORT_PERIOD:
         condition['$and'].push({
-          status: {
-            $in: [
-              OrderStatus.Pending,
-              OrderStatus.InProgress,
-              OrderStatus.Completed,
-            ],
-          },
+          // status: {
+          //   $in: [
+          //     OrderStatus.Pending,
+          //     OrderStatus.InProgress,
+          //     OrderStatus.Completed,
+          //   ],
+          // },
         });
 
         break;
       case ReportType.SITUATION_TRANSFER:
-        condition['$and'].push({
-          status: {
-            $in: [
-              OrderStatus.Completed,
-              OrderStatus.Stored,
-              OrderStatus.Received,
-            ],
-          },
-        });
+        // condition['$and'].push({
+        //   status: {
+        //     $in: [
+        //       OrderStatus.Completed,
+        //       OrderStatus.Completed,
+        //       OrderStatus.Stored,
+        //       OrderStatus.Received,
+        //     ],
+        //   },
+        // });
         break;
       default:
         break;
