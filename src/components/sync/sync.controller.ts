@@ -8,10 +8,11 @@ import { SyncTransactionRequest } from '@requests/sync-transaction.request';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { SyncReportDailyRequestDto } from './dto/request/sync-report-daily.request.dto';
 import { SYNC_REPORT_DAILY_TOPIC } from './sync.constants';
-import { SyncOrderRequest } from '@requests/sync-purchased-order-import.request';
+import { SyncPurchasedOrderRequest } from '@requests/sync-purchased-order-import.request';
 import { SyncSaleOrderExportRequest } from '@requests/sync-sale-order-export.request';
 import { SyncWarehouseTransferRequest } from '@requests/sync-warehouse-transfer-request';
 import { SyncDailyStockRequest } from '@requests/sync-daily.request';
+import { SyncOrderRequest } from '@requests/sync-order.request';
 
 @Controller('sync')
 export class SyncController {
@@ -53,7 +54,7 @@ export class SyncController {
     type: SuccessResponse,
   })
   async syncOrderImport(
-    @Body() payload: SyncOrderRequest,
+    @Body() payload: SyncPurchasedOrderRequest,
   ): Promise<ResponsePayload<any>> {
     const { request, responseError } = payload;
     if (responseError && !isEmpty(responseError)) {
