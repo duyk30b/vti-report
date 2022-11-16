@@ -21,6 +21,9 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
   ) {
     super(reportOrderItem);
   }
+  saveMany(data: ReportOrderItemInteface[]) {
+    return this.reportOrderItem.create(data);
+  }
 
   async save(data: ReportOrderItemInteface) {
     const document = new this.reportOrderItem();
