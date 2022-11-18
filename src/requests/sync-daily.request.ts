@@ -47,7 +47,7 @@ export class DailyLotLocatorStockRequest
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  account: number;
+  account: string;
 
   @ApiProperty()
   @IsOptional()

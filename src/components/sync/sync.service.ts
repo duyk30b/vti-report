@@ -32,6 +32,8 @@ import {
 } from '@requests/sync-warehouse-transfer-request';
 import { UserService } from '@components/user/user.service';
 import { Orders, SyncOrderRequest } from '@requests/sync-order.request';
+import isEmpty from '@core/utils/helper';
+import { TransactionItemInterface } from '@schemas/interface/TransactionItem.Interface';
 @Injectable()
 export class SyncService {
   constructor(
@@ -95,7 +97,10 @@ export class SyncService {
       code: request?.data?.syncCode,
     });
 
-    if (company.statusCode !== ResponseCodeEnum.SUCCESS) {
+    if (
+      company?.statusCode !== ResponseCodeEnum.SUCCESS ||
+      isEmpty(company.data)
+    ) {
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.BAD_REQUEST)
         .withMessage(await this.i18n.translate('error.COMPANY_NOT_FOUND'))
@@ -125,12 +130,16 @@ export class SyncService {
       code: request?.data?.syncCode,
     });
 
-    if (company.statusCode !== ResponseCodeEnum.SUCCESS) {
+    if (
+      company?.statusCode !== ResponseCodeEnum.SUCCESS ||
+      isEmpty(company.data)
+    ) {
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.BAD_REQUEST)
         .withMessage(await this.i18n.translate('error.COMPANY_NOT_FOUND'))
         .build();
     }
+
     request.data['company'] = company?.data?.pop();
 
     switch (request.actionType) {
@@ -156,7 +165,10 @@ export class SyncService {
       code: request?.data?.syncCode,
     });
 
-    if (company.statusCode !== ResponseCodeEnum.SUCCESS) {
+    if (
+      company?.statusCode !== ResponseCodeEnum.SUCCESS ||
+      isEmpty(company.data)
+    ) {
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.BAD_REQUEST)
         .withMessage(await this.i18n.translate('error.COMPANY_NOT_FOUND'))
@@ -206,13 +218,15 @@ export class SyncService {
       const order: ReportOrderInteface[] = [];
       const orderItem: ReportOrderItemInteface[] = [];
       const orderItemLot: ReportOrderItemLotInteface[] = [];
+      const transaction: TransactionItemInterface[] = [];
+
       const reportOrder: ReportOrderInteface = {
         orderCode: request?.code,
         orderCreatedAt: request?.createdAt,
         warehouseCode: request?.sourceWarehouse?.code,
         warehouseName: request?.sourceWarehouse?.name,
         orderType: OrderType.TRANSFER,
-        planDate: null,
+        planDate: request?.createdAt,
         status: request?.status,
         completedAt: request?.createdAt,
         ebsNumber: request?.ebsNumber,
@@ -270,6 +284,10 @@ export class SyncService {
             locatorName: null,
             locatorCode: null,
           };
+          const transactionItem: TransactionItemInterface = {
+            ...reportOrderItemLot,
+          };
+          transaction.push(transactionItem);
           orderItemLot.push(reportOrderItemLot);
         }
       }
@@ -278,6 +296,7 @@ export class SyncService {
         this.reportOrderRepository.saveMany(order),
         this.reportOrderItemRepository.saveMany(orderItem),
         this.reportOrderItemLotRepository.saveMany(orderItemLot),
+        this.transactionItemRepository.saveMany(transaction),
       ]);
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.SUCCESS)
@@ -314,6 +333,7 @@ export class SyncService {
       const order: ReportOrderInteface[] = [];
       const orderItem: ReportOrderItemInteface[] = [];
       const orderItemLot: ReportOrderItemLotInteface[] = [];
+      const transaction: TransactionItemInterface[] = [];
       const reportOrder: ReportOrderInteface = {
         orderCode: request?.code,
         orderCreatedAt: request?.receiptDate,
@@ -327,14 +347,14 @@ export class SyncService {
         companyCode: request?.company?.code,
         companyName: request?.company?.name,
         companyAddress: request?.company?.address,
-        constructionCode: request?.construction?.code,
-        constructionName: request?.construction?.name,
+        constructionCode: request?.constructions[0]?.code,
+        constructionName: request?.constructions[0]?.name,
         description: request?.explanation,
       };
 
       order.push(reportOrder);
 
-      for (const item of request.purchasedOrderImportDetails) {
+      for (const item of request?.purchasedOrderImportDetails || []) {
         const reportOrderItem: ReportOrderItemInteface = {
           unit: item?.item?.itemUnit,
           performerName: request?.deliver,
@@ -343,8 +363,8 @@ export class SyncService {
           warehouseTargetName: null,
           reason: request?.reason?.name,
           contract: null,
-          providerCode: request?.vendor?.code,
-          providerName: request?.vendor?.name,
+          providerCode: request?.vendors[0]?.code,
+          providerName: request?.vendors[0]?.name,
           departmentReceiptCode: request?.departmentReceipt?.code,
           departmentReceiptName: request?.departmentReceipt?.name,
           account: request?.source?.accountant,
@@ -364,7 +384,7 @@ export class SyncService {
         };
         orderItem.push(reportOrderItem);
 
-        for (const lot of item.lots) {
+        for (const lot of item?.lots || []) {
           const reportOrderItemLot: ReportOrderItemLotInteface = {
             ...reportOrderItem,
             lotNumber: lot?.lotNumber,
@@ -379,6 +399,10 @@ export class SyncService {
             locatorName: null,
             locatorCode: null,
           };
+          const transactionItem: TransactionItemInterface = {
+            ...reportOrderItemLot,
+          };
+          transaction.push(transactionItem);
           orderItemLot.push(reportOrderItemLot);
         }
       }
@@ -387,6 +411,7 @@ export class SyncService {
         this.reportOrderRepository.saveMany(order),
         this.reportOrderItemRepository.saveMany(orderItem),
         this.reportOrderItemLotRepository.saveMany(orderItemLot),
+        this.transactionItemRepository.saveMany(transaction),
       ]);
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.SUCCESS)
@@ -422,6 +447,7 @@ export class SyncService {
       const order: ReportOrderInteface[] = [];
       const orderItem: ReportOrderItemInteface[] = [];
       const orderItemLot: ReportOrderItemLotInteface[] = [];
+      const transaction: TransactionItemInterface[] = [];
 
       const reportOrder: ReportOrderInteface = {
         orderCode: request?.code,
@@ -488,6 +514,10 @@ export class SyncService {
             locatorName: null,
             locatorCode: null,
           };
+          const transactionItem: TransactionItemInterface = {
+            ...reportOrderItemLot,
+          };
+          transaction.push(transactionItem);
           orderItemLot.push(reportOrderItemLot);
         }
       }
@@ -496,6 +526,7 @@ export class SyncService {
         this.reportOrderRepository.saveMany(order),
         this.reportOrderItemRepository.saveMany(orderItem),
         this.reportOrderItemLotRepository.saveMany(orderItemLot),
+        this.transactionItemRepository.saveMany(transaction),
       ]);
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.SUCCESS)
@@ -515,7 +546,6 @@ export class SyncService {
     request: SyncTransactionRequest,
   ): Promise<ResponsePayload<any>> {
     try {
-      await this.transactionItemRepository.createOne(request);
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.SUCCESS)
         .withMessage(await this.i18n.translate('success.SUCCESS'))
