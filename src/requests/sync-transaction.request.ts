@@ -12,243 +12,129 @@ import {
   IsString,
 } from 'class-validator';
 
+interface DataCommont {
+  code: string;
+  name: string;
+  address: string;
+}
 export class SyncTransactionRequest
   extends BaseDto
   implements TransactionItemInterface
 {
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
+  reason: string;
+  explain: string;
+  performerName: string;
+  qrCode: string;
+  warehouseTargetCode: string;
+  warehouseTargetName: string;
+  contract: string;
+  providerCode: string;
+  providerName: string;
   departmentReceiptCode: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
+  departmentReceiptName: string;
+  accountDebt: string;
+  accountHave: string;
+  warehouseExportProposals: string;
+  orderCode: string;
+  orderCreatedAt: Date;
+  planDate: Date;
+  completedAt: Date;
   ebsNumber: string;
+  constructionCode: string;
+  constructionName: string;
+  description: string;
+  @ApiProperty()
+  @IsNotEmpty()
+  syncCode: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsString()
-  lotNumber: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  reason: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  explain: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  note: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  locatorName: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  locatorCode: string;
-
-  //------
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  unit: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  performerName: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  qrCode: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  warehouseTargetCode: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  warehouseTargetName: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  contract: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  providerCode: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  providerName: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  departmentReceiptName: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  accountId: number;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  accountCode: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  accountName: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  account: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  accountDebt: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  accountHave: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  warehouseExportProposals: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  itemName: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  itemCode: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  planQuantity: number;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  actualQuantity: number;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  receivedQuantity: number;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  storedQuantity: number;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  collectedQuantity: number;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  exportedQuantity: number;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  storageCost: number;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  orderCode: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsDateString()
-  orderCreatedAt: Date;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  warehouseCode: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  warehouseName: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsEnum(OrderType)
   orderType: OrderType;
 
   @ApiProperty()
-  @IsOptional()
-  @IsDateString()
-  planDate: Date;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsEnum(OrderStatus)
+  @IsNotEmpty()
   status: OrderStatus;
 
   @ApiProperty()
   @IsOptional()
-  @IsDateString()
-  completedAt: Date;
+  stockQuantity: number;
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
-  companyCode: string;
+  planQuantity: number;
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
+  actualQuantity: number;
+
+  @ApiProperty()
+  @IsOptional()
+  confirmQuantity: number;
+
+  @ApiProperty()
+  @IsOptional()
+  receivedQuantity: number;
+
+  @ApiProperty()
+  @IsOptional()
+  storedQuantity: number;
+
+  @ApiProperty()
+  @IsOptional()
+  collectedQuantity: number;
+
+  @ApiProperty()
+  @IsOptional()
+  exportedQuantity: number;
+
+  @ApiProperty()
+  @IsOptional()
+  warehouse: DataCommont;
+
+  @ApiProperty()
+  @IsOptional()
+  lotNumber: string;
+
+  @ApiProperty()
+  @IsOptional()
+  itemCode: string;
+
+  @ApiProperty()
+  @IsOptional()
+  itemName: string;
+
+  @ApiProperty()
+  @IsOptional()
+  locator: DataCommont;
+
+  @ApiProperty()
+  @IsOptional()
+  company: DataCommont;
+
+  @ApiProperty()
+  @IsOptional()
+  locatorCode: string;
+
+  @ApiProperty()
+  @IsOptional()
+  locatorName: string;
+
+  @ApiProperty()
+  @IsOptional()
+  transactionDate: Date;
+
+  account: string;
+  unit: string;
+  origin: string;
+  storageCost: number;
+  note: string;
+  reportDate: Date;
+  storageDate: Date;
+  minInventoryLimit: number;
+  inventoryLimit: number;
   companyName: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
+  companyCode: string;
   companyAddress: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  constructionCode: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  constructionName: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  description: string;
+  warehouseCode: string;
+  warehouseName: string;
 }

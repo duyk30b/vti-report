@@ -55,7 +55,7 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
     return quantity;
   }
 
-  async getReports(request: ReportRequest): Promise<DailyWarehouseItemStock[]> {
+  public getCondition(request: ReportRequest) {
     const condition = {
       $and: [],
     };
@@ -97,8 +97,13 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
         warehouseCode: { $eq: request?.warehouseCode },
       });
 
+    return condition;
+  }
+
+  async getReports(request: ReportRequest): Promise<DailyWarehouseItemStock[]> {
+    const condition = this.getCondition(request);
     return this.dailyWarehouseItemStock
-      .find(condition)
+      .find({})
       .sort({ warehouseCode: 1, itemCode: 1, stockQuantity: 1 })
       .lean();
   }

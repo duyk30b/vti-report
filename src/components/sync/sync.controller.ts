@@ -12,7 +12,6 @@ import { SyncPurchasedOrderRequest } from '@requests/sync-purchased-order-import
 import { SyncSaleOrderExportRequest } from '@requests/sync-sale-order-export.request';
 import { SyncWarehouseTransferRequest } from '@requests/sync-warehouse-transfer-request';
 import { SyncDailyStockRequest } from '@requests/sync-daily.request';
-import { SyncOrderRequest } from '@requests/sync-order.request';
 
 @Controller('sync')
 export class SyncController {

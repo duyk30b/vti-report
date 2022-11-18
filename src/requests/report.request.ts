@@ -1,6 +1,7 @@
 import { BaseDto } from '@core/dto/base.dto';
 import { ExportType } from '@enums/export-type.enum';
 import { ReportType } from '@enums/report-type.enum';
+import { getTimezone } from '@utils/common';
 import { Transform } from 'class-transformer';
 import {
   IsEnum,
@@ -43,19 +44,13 @@ export class ReportRequest extends BaseDto {
 
   @IsOptional()
   @Transform(({ value }) => {
-    const curDate = new Date(value);
-    const curHours = curDate.getHours();
-    curDate.setHours(curHours + 7);
-    return curDate;
+    return getTimezone(value);
   })
   dateTo: Date;
 
   @IsOptional()
   @Transform(({ value }) => {
-    const curDate = new Date(value);
-    const curHours = curDate.getHours();
-    curDate.setHours(curHours + 7);
-    return curDate;
+    return getTimezone(value);
   })
   dateFrom: Date;
 }

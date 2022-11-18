@@ -1,6 +1,14 @@
 import { BaseDto } from '@core/dto/base.dto';
 import { ActionType } from '@enums/export-type.enum';
 import { OrderStatus } from '@enums/order-status.enum';
+import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import {
+  IsNotEmpty,
+  IsEnum,
+  ValidateNested,
+  IsOptional,
+} from 'class-validator';
 
 export class ItemResponseDto {
   itemId: number;
@@ -61,6 +69,8 @@ class PurchasedOrderImportWarehouseLot {
   item: ItemResponseDto;
 
   storedQuantity: number;
+
+  exportableQuantity: number;
 }
 
 export class PoImportRelationData {
@@ -74,48 +84,91 @@ export class PoImportRelationData {
 }
 
 class PurchasedOrderImportDetail {
+  @ApiProperty()
+  @IsOptional()
   id: number;
 
+  @ApiProperty()
+  @IsOptional()
   purchasedOrderImportId: number;
 
+  @ApiProperty()
+  @IsOptional()
   itemId: number;
 
+  @ApiProperty()
+  @IsOptional()
   actualQuantity: number;
 
+  @ApiProperty()
+  @IsOptional()
   exportableQuantity: number;
 
+  @ApiProperty()
+  @IsOptional()
   quantity: number;
 
+  @ApiProperty()
+  @IsOptional()
   qcPassQuantity: number;
 
+  @ApiProperty()
+  @IsOptional()
   qcRejectQuantity: number;
 
+  @ApiProperty()
+  @IsOptional()
   confirmQuantity: number;
-
+  @ApiProperty()
+  @IsOptional()
   receivedQuantity: number;
 
+  @ApiProperty()
+  @IsOptional()
   lotNumber: string;
 
+  @ApiProperty()
+  @IsOptional()
   itemCode: string;
 
+  @ApiProperty()
+  @IsOptional()
   itemCodeImportActual: string;
 
+  @ApiProperty()
+  @IsOptional()
   unit: PoImportRelationData;
 
+  @ApiProperty()
+  @IsOptional()
   itemCategory: PoImportRelationData;
 
+  @ApiProperty()
+  @IsOptional()
   objectCategory: PoImportRelationData;
 
+  @ApiProperty()
+  @IsOptional()
   price: number;
 
+  @ApiProperty()
+  @IsOptional()
   amount: number;
 
+  @ApiProperty()
+  @IsOptional()
   debitAccount: any;
 
+  @ApiProperty()
+  @IsOptional()
   creditAccount: string;
 
+  @ApiProperty()
+  @IsOptional()
   item: ItemResponseDto;
 
+  @ApiProperty()
+  @IsOptional()
   lots: PurchasedOrderImportWarehouseLot[];
 }
 
@@ -224,66 +277,128 @@ export class Construction {
 }
 
 export class PurchasedOrderImportRequestDto {
+  @ApiProperty()
+  @IsOptional()
   id: number;
 
+  @ApiProperty()
+  @IsOptional()
   companyCode: number;
 
+  @ApiProperty()
+  @IsOptional()
   name: string;
 
+  @ApiProperty()
+  @IsOptional()
   code: string;
 
+  @ApiProperty()
+  @IsOptional()
   status: OrderStatus;
 
+  @ApiProperty()
+  @IsOptional()
   deliver: string;
 
+  @ApiProperty()
+  @IsOptional()
   explanation: string;
 
+  @ApiProperty()
+  @IsOptional()
   receiptDate: Date;
 
+  @ApiProperty()
+  @IsOptional()
   contractNumber: string;
 
+  @ApiProperty()
+  @IsOptional()
   receiptNumber: string;
 
+  @ApiProperty()
+  @IsOptional()
   departmentReceipt: PoImportRelationData;
 
-  vendor: PoImportRelationData;
+  @ApiProperty()
+  @IsOptional()
+  vendors: PoImportRelationData[];
 
+  @ApiProperty()
+  @IsOptional()
   businessType: PoImportRelationData;
 
+  @ApiProperty()
+  @IsOptional()
   source: PoImportRelationData;
 
+  @ApiProperty()
+  @IsOptional()
   reason: PoImportRelationData;
 
+  @ApiProperty()
+  @IsOptional()
   warehouse: PoImportRelationData;
 
-  construction: PoImportRelationData;
+  @ApiProperty()
+  @IsOptional()
+  constructions: PoImportRelationData[];
 
+  @ApiProperty()
+  @IsOptional()
   constructionCategory: PoImportRelationData;
 
+  @ApiProperty()
+  @IsOptional()
   warehouseExportProposal: PoImportRelationData;
 
+  @ApiProperty()
+  @IsOptional()
   purchasedOrderImportDetails: PurchasedOrderImportDetail[];
 
+  @ApiProperty()
+  @IsOptional()
   purchasedOrderImportWarehouseLots: PurchasedOrderImportWarehouseLot[];
 
+  @ApiProperty()
+  @IsOptional()
   purchasedOrderImportWarehouseDetails: PurchasedOrderImportWarehouseDetail[];
 
+  @ApiProperty()
+  @IsOptional()
   attributes: AttributeResponse[];
 
+  @ApiProperty()
+  @IsOptional()
   company: Company;
 
+  @ApiProperty()
+  @IsOptional()
   warehouseExportProposals: WarehouseExportProposal;
 
-  constructions: Construction[];
-
+  @ApiProperty()
+  @IsNotEmpty()
   syncCode: string;
 
+  @ApiProperty()
+  @IsOptional()
   ebsNumber: string;
 
+  @ApiProperty()
+  @IsOptional()
   qrCode: string;
 }
 
 export class SyncPurchasedOrderRequest extends BaseDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsEnum(ActionType)
   actionType: ActionType;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => PurchasedOrderImportRequestDto)
   data: PurchasedOrderImportRequestDto;
 }
