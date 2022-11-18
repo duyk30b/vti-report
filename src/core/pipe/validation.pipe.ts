@@ -168,7 +168,7 @@ export class ValidationPipe implements PipeTransform<any> {
     }
 
     const object = plainToClass(metatype, value);
-    const errors = await validate(object, { whitelist: true });
+    const errors = await validate(object);
 
     if (errors.length > 0) {
       const message = await this.getMessage(errors, value?.lang);

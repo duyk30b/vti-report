@@ -10,6 +10,24 @@ export class TransactionItem
   implements TransactionItemInterface
 {
   @Prop({ required: false })
+  reportDate: Date;
+
+  @Prop({ required: false })
+  storageDate: Date;
+
+  @Prop({ required: false })
+  account: string;
+
+  @Prop({ required: false })
+  minInventoryLimit: number;
+
+  @Prop({ required: false })
+  inventoryLimit: number;
+
+  @Prop({ required: false })
+  origin: string;
+
+  @Prop({ required: false })
   ebsNumber: string;
 
   @Prop({ required: false })
@@ -125,9 +143,6 @@ export class TransactionItem
 
   @Prop({ required: false })
   description: string;
-
-  @Prop({ required: false })
-  account: string;
 
   @Prop({ required: false })
   accountDebt: string;

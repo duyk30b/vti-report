@@ -5,6 +5,7 @@ import { DailyWarehouseItemStockRepository } from '@repositories/daily-warehouse
 import { ReportOrderItemLotRepository } from '@repositories/report-order-item-lot.repository';
 import { ReportOrderItemRepository } from '@repositories/report-order-item.repository';
 import { ReportOrderRepository } from '@repositories/report-order.repository';
+import { TransactionItemRepository } from '@repositories/transaction-item.repository';
 
 import {
   DailyLotLocatorStock,
@@ -23,6 +24,10 @@ import {
   ReportOrderItemSchema,
 } from '@schemas/report-order-item.schema';
 import { ReportOrder, ReportOrderSchema } from '@schemas/report-order.schema';
+import {
+  TransactionItem,
+  TransactionItemSchema,
+} from '@schemas/transaction-item.schema';
 
 import { ExportController } from './export.controller';
 import { ExportService } from './export.service';
@@ -49,6 +54,10 @@ import { ExportService } from './export.service';
       {
         name: ReportOrder.name,
         schema: ReportOrderSchema,
+      },
+      {
+        name: TransactionItem.name,
+        schema: TransactionItemSchema,
       },
     ]),
   ],
@@ -80,6 +89,10 @@ import { ExportService } from './export.service';
     {
       provide: ReportOrderRepository.name,
       useClass: ReportOrderRepository,
+    },
+    {
+      provide: TransactionItemRepository.name,
+      useClass: TransactionItemRepository,
     },
   ],
 })

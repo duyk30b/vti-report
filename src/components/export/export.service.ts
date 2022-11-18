@@ -42,8 +42,6 @@ import { reportSituationExportPeriodMapping } from '@mapping/words/report-situat
 import { reportAgeOfItemsMapping } from '@mapping/words/report-age-of-item-stock.mapping';
 import { reportSituationInventoryPeriodMapping } from '@mapping/words/report-situation-inventory-period.mapping';
 import { ReportOrderRepository } from '@repositories/report-order.repository';
-import { getReportInfo } from '@layout/excel/report-excel.layout';
-import { REPORT_INFO } from '@utils/constant';
 
 import { getItemInventoryDataMapping } from '@mapping/common/Item-inventory-mapped';
 import { getSituationTransfer } from '@mapping/common/situation-transfer-mapped';
@@ -61,6 +59,7 @@ import { getSituationInventoryPeriod } from '@mapping/common/report-situation-in
 import { getSituationImportPeriod } from '@mapping/common/report-situation-import-period.excel.mapped';
 import { getSituationImportPeriodMapped } from '@mapping/common/report-situation-export-period.excel.mapped';
 import { getSituationTransferMapped } from '@mapping/common/age-of-item-mapped';
+import { TransactionItemRepository } from '@repositories/transaction-item.repository';
 @Injectable()
 export class ExportService {
   constructor(
@@ -78,6 +77,9 @@ export class ExportService {
 
     @Inject(ReportOrderRepository.name)
     private reportOrderRepository: ReportOrderRepository,
+
+    @Inject(TransactionItemRepository.name)
+    private transactionItemRepository: TransactionItemRepository,
 
     private readonly i18n: I18nRequestScopeService,
   ) {}
@@ -542,10 +544,12 @@ export class ExportService {
   async reportItemInventoryBelowMinimum(
     request: ReportRequest,
   ): Promise<ReportResponse> {
-    const data = await this.dailyWarehouseItemStockRepository.getReports(
+    let data = await this.dailyWarehouseItemStockRepository.getReports(request);
+    data = await this.transactionItemRepository.updateQuantityItem(
       request,
+      this.dailyWarehouseItemStockRepository.getCondition(request),
+      data,
     );
-
     const dataMapped = getItemInventoryBelowMinimum(data, this.i18n);
     switch (request.exportType) {
       case ExportType.EXCEL:
@@ -569,8 +573,11 @@ export class ExportService {
   async reportItemInventoryBelowSafe(
     request: ReportRequest,
   ): Promise<ReportResponse> {
-    const data = await this.dailyWarehouseItemStockRepository.getReports(
+    let data = await this.dailyWarehouseItemStockRepository.getReports(request);
+    data = await this.transactionItemRepository.updateQuantityItem(
       request,
+      this.dailyWarehouseItemStockRepository.getCondition(request),
+      data,
     );
     const dataMaped = getItemInventoryBelowSafe(data, this.i18n);
     switch (request.exportType) {
