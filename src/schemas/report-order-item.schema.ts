@@ -11,6 +11,9 @@ export class ReportOrderItem
   implements ReportOrderItemInteface
 {
   @Prop({ required: false })
+  receiptNumber: string;
+
+  @Prop({ required: false })
   departmentReceiptCode: string;
 
   @Prop({ required: false })
