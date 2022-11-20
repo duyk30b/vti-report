@@ -21,6 +21,11 @@ export class ReportOrderItemRequest implements ReportOrderItemInteface {
   @ApiProperty()
   @IsOptional()
   @IsString()
+  receiptNumber: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
   departmentReceiptCode: string;
 
   @ApiProperty()

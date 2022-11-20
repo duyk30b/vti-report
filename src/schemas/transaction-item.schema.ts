@@ -1,6 +1,7 @@
 import { BaseEntity } from '@core/entity/base.entity';
 import { OrderStatus } from '@enums/order-status.enum';
 import { OrderType } from '@enums/order-type.enum';
+import { ActionType } from '@enums/report-type.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { TransactionItemInterface } from './interface/TransactionItem.Interface';
 export type TransactionItemDocument = TransactionItem & Document;
@@ -9,6 +10,18 @@ export class TransactionItem
   extends BaseEntity
   implements TransactionItemInterface
 {
+  @Prop({ required: false })
+  transactionDate: Date;
+
+  @Prop({ required: false })
+  actionType: ActionType;
+
+  @Prop({ required: false })
+  orderDetailId: number;
+
+  @Prop({ required: false })
+  receiptNumber: string;
+
   @Prop({ required: false })
   reportDate: Date;
 

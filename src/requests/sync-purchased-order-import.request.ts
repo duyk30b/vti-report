@@ -315,7 +315,7 @@ export class PurchasedOrderImportRequestDto {
 
   @ApiProperty()
   @IsOptional()
-  receiptNumber: string;
+  receiptNumber: string; //Phiếu yêu cầu nhập kho
 
   @ApiProperty()
   @IsOptional()

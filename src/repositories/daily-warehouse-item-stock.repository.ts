@@ -55,10 +55,31 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
     return quantity;
   }
 
-  public getCondition(request: ReportRequest) {
+  getCommontCondition(request: ReportRequest) {
     const condition = {
       $and: [],
     };
+    if (request?.dateFrom) {
+      const today = moment(request?.dateFrom).startOf('day');
+      const tomorrow = moment(today).endOf('day');
+      condition['$and'].push({
+        reportDate: { $gte: today, $lte: tomorrow },
+      });
+    }
+
+    if (request?.companyCode)
+      condition['$and'].push({
+        companyCode: { $eq: request?.companyCode },
+      });
+    if (request?.warehouseCode)
+      condition['$and'].push({
+        warehouseCode: { $eq: request?.warehouseCode },
+      });
+    return condition;
+  }
+
+  async getReports(request: ReportRequest): Promise<DailyWarehouseItemStock[]> {
+    let condition = this.getCommontCondition(request);
 
     switch (request?.reportType) {
       case ReportType.ITEM_INVENTORY_BELOW_SAFE:
@@ -97,13 +118,8 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
         warehouseCode: { $eq: request?.warehouseCode },
       });
 
-    return condition;
-  }
-
-  async getReports(request: ReportRequest): Promise<DailyWarehouseItemStock[]> {
-    const condition = this.getCondition(request);
     return this.dailyWarehouseItemStock
-      .find({})
+      .find(condition)
       .sort({ warehouseCode: 1, itemCode: 1, stockQuantity: 1 })
       .lean();
   }
