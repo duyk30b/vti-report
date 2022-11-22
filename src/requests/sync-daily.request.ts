@@ -26,57 +26,46 @@ export class DailyLotLocatorStockRequest
 {
   @ApiProperty()
   @IsOptional()
-  @IsString()
   lotNumber: string;
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
   stockQuantity: number;
 
   @ApiProperty()
   @IsOptional()
-  @IsDateString()
   reportDate: Date;
 
   @ApiProperty()
   @IsOptional()
-  @IsDateString()
   storageDate: Date;
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
   account: string;
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
   storageCost: number;
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
   minInventoryLimit: number;
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
   inventoryLimit: number;
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
   unit: string;
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
   origin: string;
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
   note: string;
 
   warehouseCode: string;
@@ -95,37 +84,30 @@ export class DailyItemLocatorStockRequest
 {
   @ApiProperty()
   @IsOptional()
-  @IsString()
   locatorName: string;
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
   locatorCode: string;
 
   @ApiProperty()
   @IsOptional()
-  @IsDateString()
   reportDate: Date;
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
   unit: string;
 
   @ApiProperty()
   @IsString()
-  @IsOptional()
   origin: string;
 
   @ApiProperty()
   @IsString()
-  @IsOptional()
   note: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
   minInventoryLimit: number;
 
   @ApiProperty()
@@ -135,12 +117,10 @@ export class DailyItemLocatorStockRequest
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
   stockQuantity: number;
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
   storageCost: number;
 
   @IsNotEmpty()
@@ -162,78 +142,63 @@ export class DailyWarehouseItemRequest
   implements DailyWarehouseItemStockInterface
 {
   @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
+  @IsOptional()
   itemName: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
+  @IsOptional()
   itemCode: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
+  @IsOptional()
   warehouseName: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
+  @IsOptional()
   warehouseCode: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
+  @IsOptional()
   companyCode: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
+  @IsOptional()
   companyName: string;
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
   companyAddress: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @IsDateString()
+  @IsOptional()
   reportDate: Date;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
+  @IsOptional()
   unit: string;
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
   origin: string;
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
   note: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
   minInventoryLimit: number;
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
   inventoryLimit: number;
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
   stockQuantity: number;
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
   storageCost: number;
 
   @IsNotEmpty()

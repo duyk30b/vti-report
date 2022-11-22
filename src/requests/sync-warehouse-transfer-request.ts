@@ -34,8 +34,6 @@ class Warehouse {
 
   code: string;
 
-  factory: Factory;
-
   manageByLot: number;
 }
 
@@ -57,8 +55,6 @@ export class WarehouseTransferResponse {
   sourceWarehouse: Warehouse;
 
   destinationWarehouse: Warehouse;
-
-  items: Item[];
 
   createdAt: Date;
 
@@ -87,68 +83,6 @@ export class WarehouseTransferResponse {
   explanation: string;
 }
 
-export class ItemType {
-  id: number;
-
-  name: string;
-
-  code: string;
-}
-
-export class ItemUnit {
-  id: number;
-
-  name: string;
-
-  code: string;
-}
-
-export class ItemGroup {
-  id: number;
-
-  name: string;
-
-  code: string;
-}
-
-class Factory {
-  id: number;
-
-  name: string;
-
-  code: string;
-}
-
-class LotNumber {
-  quantity: number;
-
-  lotNumber: string;
-}
-
-class Item {
-  id: number;
-
-  name: string;
-
-  code: string;
-
-  planQuantity: number;
-
-  actualQuantity: number;
-
-  exportedQuantity: number;
-
-  quantity: number;
-
-  itemType: ItemType;
-
-  itemGroup: ItemGroup;
-
-  itemUnit: ItemUnit;
-
-  lots: LotNumber[];
-}
-
 class ItemResponse {
   id: number;
 
@@ -158,72 +92,11 @@ class ItemResponse {
 
   code: string;
 
-  itemType: ItemType;
+  itemType: any;
 
-  itemGroup: ItemGroup;
+  itemGroup: any;
 
-  itemUnit: ItemUnit;
-}
-
-export class PackageResponse {
-  id: number;
-
-  name: string;
-
-  code: string;
-}
-
-export class WarehouseTransferDetailResponseDto {
-  id: number;
-
-  itemId: number;
-
-  warehouseTransferId: number;
-
-  planQuantity: number;
-
-  actualQuantity: number;
-
-  exportedQuantity: number;
-
-  item: ItemResponse[];
-}
-class Locator {
-  id: number;
-
-  name: string;
-
-  code: string;
-}
-
-export class WarehouseTransferDetailLotResponseDto {
-  id: number;
-
-  locatorId: number;
-
-  locator: Locator;
-
-  itemId: number;
-
-  warehouseTransferId: number;
-
-  warehouseTransferDetailId: number;
-
-  planQuantity: number;
-
-  actualQuantity: number;
-
-  exportedQuantity: number;
-
-  lotNumber: string;
-
-  mfg: string;
-
-  packageId: number;
-
-  package: PackageResponse;
-
-  item: ItemResponse[];
+  itemUnit: any;
 }
 
 class LotExport {
@@ -265,13 +138,9 @@ class LotExport {
 
   @ApiProperty()
   @IsOptional()
-  warehouseShelfFloorId: number;
-
-  @ApiProperty()
-  @IsOptional()
   locationId: number;
 }
-class ItemExport {
+class WarehouseTransferDetail {
   @ApiProperty()
   @IsOptional()
   id: number;
@@ -306,7 +175,7 @@ class ItemExport {
 
   @ApiProperty()
   @IsOptional()
-  itemUnit: ItemDetail;
+  item: ItemResponse;
 
   @ApiProperty()
   @IsOptional()
@@ -315,38 +184,14 @@ class ItemExport {
 export class WarehouseTransferResponseDto extends WarehouseTransferResponse {
   @ApiProperty()
   @IsOptional()
-  approvedAt: Date;
-
-  @ApiProperty()
-  @IsOptional()
   description: string;
-
-  @ApiProperty()
-  @IsOptional()
-  sourceFactory: Factory;
-
-  @ApiProperty()
-  @IsOptional()
-  destinationFactory: Factory;
-
-  @ApiProperty()
-  @IsOptional()
-  items: Item[];
 
   @ApiProperty()
   @IsNotEmpty()
   @IsArray()
-  @Type(() => ItemExport)
+  @Type(() => WarehouseTransferDetail)
   @ValidateNested({ each: true })
-  itemsExport: ItemExport[];
-
-  @ApiProperty()
-  @IsOptional()
-  warehouseTransferDetails: WarehouseTransferDetailResponseDto[];
-
-  @ApiProperty()
-  @IsOptional()
-  warehouseTransferDetailLots: WarehouseTransferDetailLotResponseDto[];
+  warehouseTransferDetails: WarehouseTransferDetail[];
 
   @ApiProperty()
   @IsOptional()
@@ -358,7 +203,7 @@ export class WarehouseTransferResponseDto extends WarehouseTransferResponse {
 
   @ApiProperty()
   @IsOptional()
-  constructions: Construction;
+  construction: Construction;
 
   @ApiProperty()
   @IsOptional()

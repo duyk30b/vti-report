@@ -4,7 +4,7 @@ import { isEmpty } from 'lodash';
 import { SuccessResponse } from '@core/utils/success.response.dto';
 import { ResponsePayload } from '@core/utils/response-payload';
 import { SyncService } from './sync.service';
-import { SyncTransactionRequest } from '@requests/sync-transaction.request';
+import { TransactionRequest } from '@requests/sync-transaction.request';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { SyncReportDailyRequestDto } from './dto/request/sync-report-daily.request.dto';
 import { SYNC_REPORT_DAILY_TOPIC } from './sync.constants';
@@ -120,10 +120,9 @@ export class SyncController {
     type: SuccessResponse,
   })
   async syncTransaction(
-    @Body() payload: SyncTransactionRequest,
+    @Body() payload: TransactionRequest,
   ): Promise<ResponsePayload<any>> {
     const { request, responseError } = payload;
-
     if (responseError && !isEmpty(responseError)) {
       return responseError;
     }

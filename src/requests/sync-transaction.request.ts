@@ -1,15 +1,20 @@
 import { BaseDto } from '@core/dto/base.dto';
 import { OrderStatus } from '@enums/order-status.enum';
 import { OrderType } from '@enums/order-type.enum';
+import { ActionType } from '@enums/report-type.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { TransactionItemInterface } from '@schemas/interface/TransactionItem.Interface';
+import { TransactionItem } from '@schemas/transaction-item.schema';
+import { Type } from 'class-transformer';
 import {
+  IsArray,
   IsDateString,
   IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
+  ValidateNested,
 } from 'class-validator';
 
 interface DataCommont {
@@ -17,42 +22,42 @@ interface DataCommont {
   name: string;
   address: string;
 }
-export class SyncTransactionRequest
-  extends BaseDto
-  implements TransactionItemInterface
-{
-  reason: string;
-  explain: string;
-  performerName: string;
-  qrCode: string;
-  warehouseTargetCode: string;
-  warehouseTargetName: string;
-  contract: string;
-  providerCode: string;
-  providerName: string;
-  departmentReceiptCode: string;
-  departmentReceiptName: string;
-  accountDebt: string;
-  accountHave: string;
-  warehouseExportProposals: string;
-  orderCode: string;
-  orderCreatedAt: Date;
-  planDate: Date;
-  completedAt: Date;
-  ebsNumber: string;
-  constructionCode: string;
-  constructionName: string;
-  description: string;
+export class SyncTransactionRequest implements TransactionItemInterface {
   @ApiProperty()
   @IsNotEmpty()
   syncCode: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  orderType: OrderType;
+  @IsOptional()
+  orderCode: string;
+
+  @ApiProperty()
+  @IsOptional()
+  ebsNumber: string;
+
+  @ApiProperty()
+  @IsOptional()
+  qrCode: string;
+
+  @ApiProperty()
+  @IsOptional()
+  receiptNumber: string;
+
+  @ApiProperty()
+  @IsOptional()
+  orderDetailId: number;
 
   @ApiProperty()
   @IsNotEmpty()
+  @IsEnum(ActionType)
+  actionType: ActionType;
+
+  @ApiProperty()
+  @IsOptional()
+  orderType: OrderType;
+
+  @ApiProperty()
+  @IsOptional()
   status: OrderStatus;
 
   @ApiProperty()
@@ -109,20 +114,31 @@ export class SyncTransactionRequest
 
   @ApiProperty()
   @IsOptional()
-  company: DataCommont;
+  reason: string;
 
-  @ApiProperty()
-  @IsOptional()
-  locatorCode: string;
-
-  @ApiProperty()
-  @IsOptional()
-  locatorName: string;
-
-  @ApiProperty()
-  @IsOptional()
+  explain: string;
+  performerName: string;
+  warehouseTargetCode: string;
+  warehouseTargetName: string;
+  contract: string;
+  providerCode: string;
+  providerName: string;
+  departmentReceiptCode: string;
+  departmentReceiptName: string;
+  accountDebt: string;
+  accountHave: string;
+  warehouseExportProposals: string;
+  orderName: string;
+  orderCreatedAt: Date;
+  planDate: Date;
+  completedAt: Date;
+  constructionCode: string;
+  constructionName: string;
+  description: string;
   transactionDate: Date;
 
+  locatorCode: string;
+  locatorName: string;
   account: string;
   unit: string;
   origin: string;
@@ -137,4 +153,16 @@ export class SyncTransactionRequest
   companyAddress: string;
   warehouseCode: string;
   warehouseName: string;
+}
+
+export class TransactionRequest extends BaseDto {
+  @ApiProperty()
+  @IsOptional()
+  company: DataCommont;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => SyncTransactionRequest)
+  data: SyncTransactionRequest[];
 }
