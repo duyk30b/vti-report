@@ -37,6 +37,7 @@ import { UserService } from '@components/user/user.service';
 import { Orders, SyncOrderRequest } from '@requests/sync-order.request';
 import isEmpty from '@core/utils/helper';
 import { TransactionItemInterface } from '@schemas/interface/TransactionItem.Interface';
+import { first } from 'lodash';
 @Injectable()
 export class SyncService {
   constructor(
@@ -189,7 +190,6 @@ export class SyncService {
           request.data,
           true,
         );
-
       default:
         break;
     }
@@ -235,15 +235,15 @@ export class SyncService {
         companyCode: request?.company?.code,
         companyName: request?.company?.name,
         companyAddress: request?.company?.address,
-        constructionCode: request?.constructions?.code || null,
-        constructionName: request?.constructions?.name || null,
+        constructionCode: request?.construction?.code || null,
+        constructionName: request?.construction?.name || null,
         description: request?.explanation,
       };
 
       order.push(reportOrder);
-      for (const item of request.itemsExport) {
+      for (const item of request.warehouseTransferDetails) {
         const reportOrderItem: ReportOrderItemInteface = {
-          unit: item?.itemUnit?.name,
+          unit: item?.item?.itemUnit?.name,
           performerName: request?.receiver,
           qrCode: request?.qrCode,
           warehouseTargetCode: request?.destinationWarehouse?.code,
@@ -345,8 +345,8 @@ export class SyncService {
         companyCode: request?.company?.code,
         companyName: request?.company?.name,
         companyAddress: request?.company?.address,
-        constructionCode: request?.constructions[0]?.code,
-        constructionName: request?.constructions[0]?.name,
+        constructionCode: request?.construction?.code || null,
+        constructionName: request?.construction?.name || null,
         description: request?.explanation,
       };
 
@@ -361,14 +361,14 @@ export class SyncService {
           warehouseTargetName: null,
           reason: request?.reason?.name,
           contract: request.contractNumber,
-          providerCode: request?.vendors[0]?.code,
-          providerName: request?.vendors[0]?.name,
+          providerCode: request?.vendor?.code,
+          providerName: request?.vendor?.name,
           departmentReceiptCode: request?.departmentReceipt?.code,
           departmentReceiptName: request?.departmentReceipt?.name,
           account: request?.source?.accountant,
           accountDebt: item?.debitAccount,
           accountHave: item?.creditAccount,
-          warehouseExportProposals: request?.warehouseExportProposals?.code,
+          warehouseExportProposals: request?.warehouseExportProposal?.code,
           itemName: item?.item?.name,
           itemCode: item?.item?.code,
           planQuantity: item?.quantity,
@@ -412,6 +412,7 @@ export class SyncService {
         .withMessage(await this.i18n.translate('success.SUCCESS'))
         .build();
     } catch (error) {
+      console.log(error);
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.BAD_REQUEST)
         .withMessage(await this.i18n.translate('error.BAD_REQUEST'))
@@ -455,16 +456,16 @@ export class SyncService {
         companyCode: request?.company?.code,
         companyName: request?.company?.name,
         companyAddress: request?.company?.address,
-        constructionCode: request?.constructions?.code || null,
-        constructionName: request?.constructions?.name || null,
+        constructionCode: request?.construction?.code || null,
+        constructionName: request?.construction?.name || null,
         description: null,
       };
 
       order.push(reportOrder);
 
-      for (const item of request.itemsSync) {
+      for (const item of request.saleOrderExportDetails) {
         const reportOrderItem: ReportOrderItemInteface = {
-          unit: item?.itemUnit,
+          unit: item?.item?.itemUnit,
           performerName: request?.receiver,
           qrCode: request?.qrCode,
           warehouseTargetCode: null,
@@ -479,8 +480,8 @@ export class SyncService {
           accountDebt: item?.debitAccount,
           accountHave: item?.creditAccount,
           warehouseExportProposals: request?.warehouseExportProposals?.code,
-          itemName: item?.name,
-          itemCode: item?.code,
+          itemName: item.item?.name,
+          itemCode: item?.item?.code,
           planQuantity: item?.quantity,
           actualQuantity: item?.actualQuantity,
           receivedQuantity: 0,

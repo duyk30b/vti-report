@@ -323,11 +323,7 @@ export class PurchasedOrderImportRequestDto {
 
   @ApiProperty()
   @IsOptional()
-  vendors: PoImportRelationData[];
-
-  @ApiProperty()
-  @IsOptional()
-  businessType: PoImportRelationData;
+  vendor: PoImportRelationData;
 
   @ApiProperty()
   @IsOptional()
@@ -343,11 +339,7 @@ export class PurchasedOrderImportRequestDto {
 
   @ApiProperty()
   @IsOptional()
-  constructions: PoImportRelationData[];
-
-  @ApiProperty()
-  @IsOptional()
-  constructionCategory: PoImportRelationData;
+  construction: PoImportRelationData;
 
   @ApiProperty()
   @IsOptional()
@@ -356,18 +348,6 @@ export class PurchasedOrderImportRequestDto {
   @ApiProperty()
   @IsOptional()
   purchasedOrderImportDetails: PurchasedOrderImportDetail[];
-
-  @ApiProperty()
-  @IsOptional()
-  purchasedOrderImportWarehouseLots: PurchasedOrderImportWarehouseLot[];
-
-  @ApiProperty()
-  @IsOptional()
-  purchasedOrderImportWarehouseDetails: PurchasedOrderImportWarehouseDetail[];
-
-  @ApiProperty()
-  @IsOptional()
-  attributes: AttributeResponse[];
 
   @ApiProperty()
   @IsOptional()
