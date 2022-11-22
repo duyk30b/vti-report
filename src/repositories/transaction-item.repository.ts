@@ -12,6 +12,7 @@ import { getTimezone } from '@utils/common';
 import { FORMAT_DATE } from '@utils/constant';
 import { OrderType } from '@enums/order-type.enum';
 import { keyBy } from 'lodash';
+import { ActionType } from '@enums/report-type.enum';
 @Injectable()
 export class TransactionItemRepository extends BaseAbstractRepository<TransactionItem> {
   constructor(
@@ -43,7 +44,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
     const CurTime = moment(getTimezone()).format(FORMAT_DATE);
     const dateRequest = moment(request.dateFrom).format(FORMAT_DATE);
     if (CurTime === dateRequest) {
-      const dataTransactionByCurDate = await this.groupByItemPOandSO(condition);
+      const dataTransactionByCurDate = await this.groupByItem(condition);
 
       const keyByItem = keyBy(data, function (o) {
         return [o.warehouseCode, o.itemCode].join('-');
@@ -58,21 +59,6 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
             item.quantityImported -
             item.quantityExported;
         }
-        if (item.warehouseTargetCode) {
-          let keyWarehouseTarget = [
-            item.warehouseTargetCode,
-            item.itemCode,
-          ].join('-');
-          let keyWarehouse = [item.warehouseCode, item.itemCode].join('-');
-          if (keyByItem[keyWarehouseTarget]) {
-            const itemStock = keyByItem[keyWarehouseTarget];
-            itemStock.stockQuantity += item.quantityTransfered;
-          }
-          if (keyByItem[keyWarehouse]) {
-            const itemStock = keyByItem[keyWarehouseTarget];
-            itemStock.stockQuantity -= item.quantityTransfered;
-          }
-        }
       });
       return dataTransactionByCurDate;
     } else {
@@ -80,20 +66,19 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
     }
   }
 
-  async groupByItemPOandSO(condition: any) {
+  async groupByItem(condition: any) {
     const curCondition = condition;
     return this.transactionItem.aggregate([
-      // { $match: curCondition },
+      { $match: curCondition },
       {
         $project: {
           _id: 0,
           warehouseCode: 1,
-          warehouseTargetCode: 1,
           itemCode: 1,
           quantityExported: {
             $cond: [
               {
-                $eq: ['$orderType', OrderType.EXPORT],
+                $eq: ['$actionType', ActionType.EXPORT],
               },
               '$actualQuantity',
               0,
@@ -102,16 +87,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           quantityImported: {
             $cond: [
               {
-                $eq: ['$orderType', OrderType.IMPORT],
-              },
-              '$actualQuantity',
-              0,
-            ],
-          },
-          quantityTransfered: {
-            $cond: [
-              {
-                $eq: ['$orderType', OrderType.TRANSFER],
+                $eq: ['$actionType', ActionType.IMPORT],
               },
               '$actualQuantity',
               0,
@@ -124,23 +100,19 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           _id: {
             warehouseCode: '$warehouseCode',
             itemCode: '$itemCode',
-            warehouseTargetCode: '$warehouseTargetCode',
           },
           quantityExported: { $sum: '$quantityExported' },
           quantityImported: { $sum: '$quantityImported' },
-          quantityTransfered: { $sum: '$quantityTransfered' },
         },
       },
       {
         $project: {
           _id: 0,
           warehouseCode: '$_id.warehouseCode',
-          warehouseTargetCode: '$_id.warehouseTargetCode',
           orderCode: '$_id.orderCode',
           itemCode: '$_id.itemCode',
           quantityExported: 1,
           quantityImported: 1,
-          quantityTransfered: 1,
         },
       },
     ]);

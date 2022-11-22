@@ -34,7 +34,7 @@ export class ReportOrderItemLot implements ReportOrderItemLotInteface {
   @Prop({ required: false })
   warehouseName: string;
 
-  @Prop({ required: false })
+  @Prop({ required: false, default: null })
   lotNumber: string;
 
   @Prop({ required: false, default: 0 })
@@ -141,9 +141,6 @@ export class ReportOrderItemLot implements ReportOrderItemLotInteface {
 
   @Prop({ required: false })
   orderCode: string;
-
-  @Prop({ required: false })
-  orderImportRequireCode: string; //Giấy đề nghị nhap VT
 }
 
 export const ReportOrderItemLotSchema =

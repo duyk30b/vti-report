@@ -48,14 +48,7 @@ export class DailyItemLocatorStockRepository extends BaseAbstractRepository<Dail
           dailyWarehouseItemRequest,
           dailyItemLocatorStock,
         );
-        document.stockQuantity = this.sumItem(
-          dailyItemLocatorStock,
-          'stockQuantity',
-        );
-        document.storageCost = this.sumItem(
-          dailyItemLocatorStock,
-          'storageCost',
-        );
+
         await document.save();
       }
     }

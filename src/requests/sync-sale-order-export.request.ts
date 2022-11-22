@@ -59,26 +59,32 @@ export class SoExportRelationData {
 }
 
 class SaleOrderExportDetail {
-  id: number;
-
-  saleOrderExportId: number;
-
-  itemId: number;
-
+  @ApiProperty()
+  @IsOptional()
   itemCode: string;
 
-  unitId: number;
-
+  @ApiProperty()
+  @IsOptional()
   quantity: number;
 
+  @ApiProperty()
+  @IsOptional()
   actualQuantity: number;
 
+  @ApiProperty()
+  @IsOptional()
   debitAccount: string;
 
+  @ApiProperty()
+  @IsOptional()
   creditAccount: string;
 
+  @ApiProperty()
+  @IsOptional()
   item: ItemResponseDto;
 
+  @ApiProperty()
+  @IsOptional()
   lots: LotItems[];
 }
 
@@ -88,14 +94,24 @@ class Warehouse {
   code: string;
 }
 export class LotItems {
+  @ApiProperty()
+  @IsOptional()
   lotNumber: string;
 
+  @ApiProperty()
+  @IsOptional()
   mfg: string;
 
+  @ApiProperty()
+  @IsOptional()
   planQuantity: number;
 
+  @ApiProperty()
+  @IsOptional()
   confirmedQuantity: number;
 
+  @ApiProperty()
+  @IsOptional()
   actualQuantity: number;
 }
 
@@ -115,10 +131,6 @@ export class SaleOrderExportResponseDto extends BaseDto {
 
   @ApiProperty()
   @IsOptional()
-  id: number;
-
-  @ApiProperty()
-  @IsOptional()
   code: string;
 
   @ApiProperty()
@@ -135,14 +147,6 @@ export class SaleOrderExportResponseDto extends BaseDto {
 
   @ApiProperty()
   @IsOptional()
-  departmentReceiptId: number;
-
-  @ApiProperty()
-  @IsOptional()
-  businessTypeId: number;
-
-  @ApiProperty()
-  @IsOptional()
   explanation: string;
 
   @ApiProperty()
@@ -152,14 +156,6 @@ export class SaleOrderExportResponseDto extends BaseDto {
   @ApiProperty()
   @IsOptional()
   receiptNumber: string;
-
-  @ApiProperty()
-  @IsOptional()
-  createdAt: Date;
-
-  @ApiProperty()
-  @IsOptional()
-  updatedAt: Date;
 
   @ApiProperty()
   @IsOptional()
@@ -180,10 +176,6 @@ export class SaleOrderExportResponseDto extends BaseDto {
   @ApiProperty()
   @IsOptional()
   departmentReceipt: SoExportRelationData;
-
-  @ApiProperty()
-  @IsOptional()
-  updatedBy: any;
 
   @ApiProperty()
   @IsOptional()

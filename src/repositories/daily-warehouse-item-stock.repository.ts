@@ -25,15 +25,6 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
       const document = new this.dailyWarehouseItemStock();
       Object.assign(document, dailyWarehouseItemRequest);
 
-      document.stockQuantity = this.sumWarehouse(
-        dailyWarehouseItemRequest,
-        'stockQuantity',
-      );
-      document.storageCost = this.sumWarehouse(
-        dailyWarehouseItemRequest,
-        'storageCost',
-      );
-
       await document.save();
     }
   }
