@@ -75,9 +75,6 @@ export class ExportService {
     @Inject(ReportOrderItemRepository.name)
     private reportOrderItemRepository: ReportOrderItemRepository,
 
-    @Inject(ReportOrderRepository.name)
-    private reportOrderRepository: ReportOrderRepository,
-
     @Inject(TransactionItemRepository.name)
     private transactionItemRepository: TransactionItemRepository,
 
