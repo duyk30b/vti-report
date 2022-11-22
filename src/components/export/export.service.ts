@@ -547,7 +547,7 @@ export class ExportService {
     let data = await this.dailyWarehouseItemStockRepository.getReports(request);
     data = await this.transactionItemRepository.updateQuantityItem(
       request,
-      this.dailyWarehouseItemStockRepository.getCondition(request),
+      this.dailyWarehouseItemStockRepository.getCommontCondition(request),
       data,
     );
     const dataMapped = getItemInventoryBelowMinimum(data, this.i18n);
@@ -576,7 +576,7 @@ export class ExportService {
     let data = await this.dailyWarehouseItemStockRepository.getReports(request);
     data = await this.transactionItemRepository.updateQuantityItem(
       request,
-      this.dailyWarehouseItemStockRepository.getCondition(request),
+      this.dailyWarehouseItemStockRepository.getCommontCondition(request),
       data,
     );
     const dataMaped = getItemInventoryBelowSafe(data, this.i18n);
