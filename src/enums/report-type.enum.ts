@@ -19,5 +19,5 @@ export enum ReportType {
 
 export enum ActionType {
   IMPORT = 0,
-  export = 1,
+  EXPORT = 1,
 }

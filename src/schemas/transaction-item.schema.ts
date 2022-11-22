@@ -58,7 +58,7 @@ export class TransactionItem
   @Prop({ required: false })
   warehouseName: string;
 
-  @Prop({ required: false })
+  @Prop({ required: false, default: null })
   lotNumber: string;
 
   @Prop({ required: false, default: 0 })

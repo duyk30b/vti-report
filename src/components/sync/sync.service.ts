@@ -35,9 +35,8 @@ import {
 } from '@requests/sync-warehouse-transfer-request';
 import { UserService } from '@components/user/user.service';
 import { Orders, SyncOrderRequest } from '@requests/sync-order.request';
-import isEmpty from '@core/utils/helper';
 import { TransactionItemInterface } from '@schemas/interface/TransactionItem.Interface';
-import { first } from 'lodash';
+import { isEmpty } from 'lodash';
 @Injectable()
 export class SyncService {
   constructor(
@@ -72,6 +71,27 @@ export class SyncService {
     request: SyncDailyStockRequest,
   ): Promise<ResponsePayload<any>> {
     try {
+      const company = await this.userService.getCompanies({
+        code: request?.dailyWarehouseItems[0]?.syncCode,
+      });
+
+      if (
+        company?.statusCode !== ResponseCodeEnum.SUCCESS ||
+        isEmpty(company.data)
+      ) {
+        return new ResponseBuilder()
+          .withCode(ResponseCodeEnum.BAD_REQUEST)
+          .withMessage(await this.i18n.translate('error.COMPANY_NOT_FOUND'))
+          .build();
+      }
+
+      const temp = company?.data?.pop();
+      for (const item of request?.dailyWarehouseItems) {
+        item.companyName = temp.name;
+        item.companyCode = temp.code;
+        item.companyAddress = temp.address;
+      }
+
       await Promise.all([
         this.dailyWarehouseItemStockRepository.createMany(
           request?.dailyWarehouseItems,
@@ -204,19 +224,6 @@ export class SyncService {
     request: WarehouseTransferResponseDto,
     isUpdate = false,
   ) {
-    if (isUpdate) {
-      await Promise.all([
-        this.reportOrderRepository.deleteAllByConditin({
-          orderCode: request.code,
-        }),
-        this.reportOrderItemRepository.deleteAllByConditin({
-          orderCode: request.code,
-        }),
-        this.reportOrderItemLotRepository.deleteAllByConditin({
-          orderCode: request.code,
-        }),
-      ]);
-    }
     try {
       const order: ReportOrderInteface[] = [];
       const orderItem: ReportOrderItemInteface[] = [];
@@ -275,7 +282,7 @@ export class SyncService {
         for (const lot of item.lots) {
           const reportOrderItemLot: ReportOrderItemLotInteface = {
             ...reportOrderItem,
-            lotNumber: lot?.lotNumber,
+            lotNumber: lot?.lotNumber?.toLowerCase(),
             explain: request?.explanation,
             note: request?.explanation,
             planQuantity: lot?.planQuantity,
@@ -292,6 +299,19 @@ export class SyncService {
         }
       }
 
+      if (isUpdate) {
+        await Promise.all([
+          this.reportOrderRepository.deleteAllByConditin({
+            orderCode: request.code,
+          }),
+          this.reportOrderItemRepository.deleteAllByConditin({
+            orderCode: request.code,
+          }),
+          this.reportOrderItemLotRepository.deleteAllByConditin({
+            orderCode: request.code,
+          }),
+        ]);
+      }
       await Promise.all([
         this.reportOrderRepository.saveMany(order),
         this.reportOrderItemRepository.saveMany(orderItem),
@@ -315,19 +335,6 @@ export class SyncService {
     request: PurchasedOrderImportRequestDto,
     isUpdate = false,
   ) {
-    if (isUpdate) {
-      await Promise.all([
-        this.reportOrderRepository.deleteAllByConditin({
-          orderCode: request.code,
-        }),
-        this.reportOrderItemRepository.deleteAllByConditin({
-          orderCode: request.code,
-        }),
-        this.reportOrderItemLotRepository.deleteAllByConditin({
-          orderCode: request.code,
-        }),
-      ]);
-    }
     try {
       const order: ReportOrderInteface[] = [];
       const orderItem: ReportOrderItemInteface[] = [];
@@ -386,7 +393,7 @@ export class SyncService {
         for (const lot of item?.lots || []) {
           const reportOrderItemLot: ReportOrderItemLotInteface = {
             ...reportOrderItem,
-            lotNumber: lot?.lotNumber,
+            lotNumber: lot?.lotNumber?.toLowerCase(),
             explain: request?.explanation,
             note: request?.explanation,
             planQuantity: lot?.quantity,
@@ -400,6 +407,19 @@ export class SyncService {
           };
           orderItemLot.push(reportOrderItemLot);
         }
+      }
+      if (isUpdate) {
+        await Promise.all([
+          this.reportOrderRepository.deleteAllByConditin({
+            orderCode: request.code,
+          }),
+          this.reportOrderItemRepository.deleteAllByConditin({
+            orderCode: request.code,
+          }),
+          this.reportOrderItemLotRepository.deleteAllByConditin({
+            orderCode: request.code,
+          }),
+        ]);
       }
 
       await Promise.all([
@@ -424,20 +444,6 @@ export class SyncService {
     request: SaleOrderExportResponseDto,
     isUpdate = false,
   ) {
-    if (isUpdate) {
-      await Promise.all([
-        this.reportOrderRepository.deleteAllByConditin({
-          orderCode: request.code,
-        }),
-        this.reportOrderItemRepository.deleteAllByConditin({
-          orderCode: request.code,
-        }),
-        this.reportOrderItemLotRepository.deleteAllByConditin({
-          orderCode: request.code,
-        }),
-      ]);
-    }
-
     try {
       const order: ReportOrderInteface[] = [];
       const orderItem: ReportOrderItemInteface[] = [];
@@ -497,7 +503,7 @@ export class SyncService {
         for (const lot of item.lots) {
           const reportOrderItemLot: ReportOrderItemLotInteface = {
             ...reportOrderItem,
-            lotNumber: lot?.lotNumber,
+            lotNumber: lot?.lotNumber?.toLowerCase(),
             explain: request?.explanation,
             note: request?.explanation,
             planQuantity: lot?.planQuantity,
@@ -512,6 +518,19 @@ export class SyncService {
 
           orderItemLot.push(reportOrderItemLot);
         }
+      }
+      if (isUpdate) {
+        await Promise.all([
+          this.reportOrderRepository.deleteAllByConditin({
+            orderCode: request.code,
+          }),
+          this.reportOrderItemRepository.deleteAllByConditin({
+            orderCode: request.code,
+          }),
+          this.reportOrderItemLotRepository.deleteAllByConditin({
+            orderCode: request.code,
+          }),
+        ]);
       }
 
       await Promise.all([
@@ -551,13 +570,14 @@ export class SyncService {
           .build();
       }
       request['company'] = company?.data?.pop();
+
       const transactionitems: TransactionItemInterface[] = [];
       for (const item of request.data) {
         let temp: TransactionItemInterface = {
           transactionDate: item.transactionDate,
           orderDetailId: item.orderDetailId,
           actionType: item.actionType,
-          lotNumber: item.lotNumber,
+          lotNumber: item?.lotNumber?.toLowerCase(),
           reason: undefined,
           explain: undefined,
           note: undefined,
@@ -603,9 +623,12 @@ export class SyncService {
           constructionName: undefined,
           description: undefined,
         };
+        if (item?.locator) {
+        }
         transactionitems.push(temp);
       }
-      this.transactionItemRepository.create(transactionitems);
+      await this.transactionItemRepository.create(transactionitems);
+      await this.updateLocator(request);
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.SUCCESS)
         .withMessage(await this.i18n.translate('success.SUCCESS'))
@@ -631,5 +654,27 @@ export class SyncService {
       .withCode(ResponseCodeEnum.SUCCESS)
       .withMessage(await this.i18n.translate('success.SUCCESS'))
       .build();
+  }
+
+  async updateLocator(request: TransactionRequest) {
+    const orderItemLotsToBeSaved = [];
+    for (const itemRequest of request.data) {
+      const orderItemLots =
+        await this.reportOrderItemLotRepository.findAllByCondition({
+          orderCode: itemRequest.orderCode,
+          companyCode: request?.company?.code,
+          warehouseCode: itemRequest?.warehouse?.code,
+          itemCode: itemRequest.itemCode,
+          lotNumber: itemRequest?.lotNumber?.toLowerCase(),
+        });
+      for (const item of orderItemLots) {
+        if (item) {
+          item.locatorName = itemRequest?.locator?.code;
+          item.locatorCode = itemRequest?.locator?.name;
+          orderItemLotsToBeSaved.push(item);
+        }
+      }
+      await this.reportOrderItemLotRepository.saveMany(orderItemLotsToBeSaved);
+    }
   }
 }

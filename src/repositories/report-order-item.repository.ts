@@ -6,11 +6,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ReportOrderItemRequest } from '@requests/report-order-items.request';
 import { ReportRequest } from '@requests/report.request';
-import { ReportOrderRequest } from '@requests/sync-daily.request';
 import { ReportOrderItemInteface } from '@schemas/interface/report-order-item.interface';
 import { ReportOrderItem } from '@schemas/report-order-item.schema';
 import { plus } from '@utils/common';
-import { ClientSession } from 'mongoose';
 import { Model } from 'mongoose';
 
 @Injectable()
