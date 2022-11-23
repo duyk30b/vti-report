@@ -41,10 +41,13 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
       $or: [],
     };
 
-    if (request?.dateFrom) {
+    if (request?.dateFrom === request?.dateTo) {
       condition['$and'].push({
-        orderCreatedAt: {
-          $gte: moment(request?.dateFrom || new Date()).format(DATE_FOMAT),
+        $expr: {
+          $eq: [
+            { $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' } },
+            moment(request?.dateFrom).format(DATE_FOMAT),
+          ],
         },
       });
       dailyLotLocatorStock['$or'].push({
@@ -55,28 +58,57 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
               format: '%Y-%m-%d',
             },
           },
-          moment(request?.dateFrom || new Date()).format(DATE_FOMAT),
+          moment(request?.dateFrom).format(DATE_FOMAT),
         ],
       });
-    }
+    } else {
+      if (request?.dateFrom) {
+        condition['$and'].push({
+          $expr: {
+            $gte: [
+              {
+                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' },
+              },
+              moment(request?.dateFrom).format(DATE_FOMAT),
+            ],
+          },
+        });
+        dailyLotLocatorStock['$or'].push({
+          $eq: [
+            {
+              $dateToString: {
+                date: '$reportDate',
+                format: '%Y-%m-%d',
+              },
+            },
+            moment(request?.dateFrom).format(DATE_FOMAT),
+          ],
+        });
+      }
 
-    if (request?.dateTo) {
-      condition['$and'].push({
-        orderCreatedAt: {
-          $lte: moment(request?.dateTo || new Date()).format(DATE_FOMAT),
-        },
-      });
-      dailyLotLocatorStock['$or'].push({
-        $eq: [
-          {
-            $dateToString: {
-              date: '$reportDate',
-              format: '%Y-%m-%d',
-            },
+      if (request?.dateTo) {
+        condition['$and'].push({
+          $expr: {
+            $lte: [
+              {
+                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' },
+              },
+              moment(request?.dateTo).format(DATE_FOMAT),
+            ],
           },
-          moment(request?.dateTo || new Date()).format(DATE_FOMAT),
-        ],
-      });
+        });
+        dailyLotLocatorStock['$or'].push({
+          $eq: [
+            {
+              $dateToString: {
+                date: '$reportDate',
+                format: '%Y-%m-%d',
+              },
+            },
+            moment(request?.dateTo).format(DATE_FOMAT),
+          ],
+        });
+      }
     }
 
     if (request?.companyCode) {
@@ -417,19 +449,41 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
         constructionCode: { $eq: request?.constructionCode },
       });
 
-    if (request?.dateFrom)
+    if (request?.dateFrom === request?.dateTo) {
       condition['$and'].push({
-        orderCreatedAt: {
-          $gte: moment(request?.dateFrom || new Date()).format(DATE_FOMAT),
+        $expr: {
+          $eq: [
+            { $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' } },
+            moment(request?.dateFrom).format(DATE_FOMAT),
+          ],
         },
       });
-
-    if (request?.dateTo)
-      condition['$and'].push({
-        orderCreatedAt: {
-          $lte: moment(request?.dateTo || new Date()).format(DATE_FOMAT),
-        },
-      });
+    } else {
+      if (request?.dateFrom) {
+        condition['$and'].push({
+          $expr: {
+            $gte: [
+              {
+                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' },
+              },
+              moment(request?.dateFrom).format(DATE_FOMAT),
+            ],
+          },
+        });
+      }
+      if (request?.dateTo) {
+        condition['$and'].push({
+          $expr: {
+            $lte: [
+              {
+                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' },
+              },
+              moment(request?.dateTo).format(DATE_FOMAT),
+            ],
+          },
+        });
+      }
+    }
 
     switch (type) {
       case OrderType.IMPORT:
@@ -470,27 +524,23 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
         break;
       case ReportType.SITUATION_EXPORT_PERIOD:
         condition['$and'].push({
-          // status: {
-          //   $in: [
-          //     OrderStatus.Pending,
-          //     OrderStatus.InProgress,
-          //     OrderStatus.Completed,
-          //   ],
-          // },
+          status: {
+            $in: [OrderStatus.Completed],
+          },
         });
 
         break;
       case ReportType.SITUATION_TRANSFER:
-        // condition['$and'].push({
-        //   status: {
-        //     $in: [
-        //       OrderStatus.Completed,
-        //       OrderStatus.Completed,
-        //       OrderStatus.Stored,
-        //       OrderStatus.Received,
-        //     ],
-        //   },
-        // });
+        condition['$and'].push({
+          status: {
+            $in: [
+              OrderStatus.Completed,
+              OrderStatus.Completed,
+              OrderStatus.Stored,
+              OrderStatus.Received,
+            ],
+          },
+        });
         break;
       default:
         break;

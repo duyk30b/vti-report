@@ -46,30 +46,28 @@ export class WarehouseResponseDto {
   manageByLot: boolean;
 }
 class PurchasedOrderImportWarehouseLot {
-  id: number;
-
+  @ApiProperty()
+  @IsOptional()
   itemId: number;
 
-  purchasedOrderImportWarehouseDetailId: number;
-
-  purchasedOrderImportId: number;
-
+  @ApiProperty()
+  @IsOptional()
   actualQuantity: number;
 
+  @ApiProperty()
+  @IsOptional()
   quantity: number;
 
-  qcRejectQuantity: number;
-
-  qcPassQuantity: number;
-
-  isEven: boolean;
-
+  @ApiProperty()
+  @IsOptional()
   lotNumber: string;
 
-  item: ItemResponseDto;
-
+  @ApiProperty()
+  @IsOptional()
   storedQuantity: number;
 
+  @ApiProperty()
+  @IsOptional()
   exportableQuantity: number;
 }
 
@@ -86,14 +84,6 @@ export class PoImportRelationData {
 class PurchasedOrderImportDetail {
   @ApiProperty()
   @IsOptional()
-  id: number;
-
-  @ApiProperty()
-  @IsOptional()
-  purchasedOrderImportId: number;
-
-  @ApiProperty()
-  @IsOptional()
   itemId: number;
 
   @ApiProperty()
@@ -110,15 +100,8 @@ class PurchasedOrderImportDetail {
 
   @ApiProperty()
   @IsOptional()
-  qcPassQuantity: number;
-
-  @ApiProperty()
-  @IsOptional()
-  qcRejectQuantity: number;
-
-  @ApiProperty()
-  @IsOptional()
   confirmQuantity: number;
+
   @ApiProperty()
   @IsOptional()
   receivedQuantity: number;
@@ -133,27 +116,7 @@ class PurchasedOrderImportDetail {
 
   @ApiProperty()
   @IsOptional()
-  itemCodeImportActual: string;
-
-  @ApiProperty()
-  @IsOptional()
-  unit: PoImportRelationData;
-
-  @ApiProperty()
-  @IsOptional()
-  itemCategory: PoImportRelationData;
-
-  @ApiProperty()
-  @IsOptional()
-  objectCategory: PoImportRelationData;
-
-  @ApiProperty()
-  @IsOptional()
   price: number;
-
-  @ApiProperty()
-  @IsOptional()
-  amount: number;
 
   @ApiProperty()
   @IsOptional()
@@ -170,60 +133,6 @@ class PurchasedOrderImportDetail {
   @ApiProperty()
   @IsOptional()
   lots: PurchasedOrderImportWarehouseLot[];
-}
-
-class PurchasedOrderImportWarehouseDetail {
-  id: number;
-
-  purchasedOrderImportId: number;
-
-  itemId: number;
-
-  actualQuantity: number;
-
-  quantity: number;
-
-  confirmQuantity: number;
-
-  qcRejectQuantity: number;
-
-  qcPassQuantity: number;
-
-  errorQuantity: number;
-
-  qcCheck: number;
-
-  qcCriteriaId: number;
-
-  item: ItemResponseDto;
-
-  warehouse: WarehouseResponseDto;
-
-  purchasedOrderImportWarehouseLots: PurchasedOrderImportWarehouseLot[];
-}
-
-export class ManufacturingOrder {
-  id: number;
-
-  code: number;
-
-  name: string;
-
-  factoryId: number;
-
-  saleOrderId: number;
-
-  planFrom: Date;
-
-  planTo: Date;
-
-  status: string;
-
-  description: string;
-
-  createdAt: Date;
-
-  updatedAt: Date;
 }
 
 export class PurchasedOrderImportReceive {
@@ -267,20 +176,21 @@ export class Company {
 }
 
 export class WarehouseExportProposal {
-  id: number;
+  @ApiProperty()
+  @IsOptional()
   code: string;
 }
 export class Construction {
-  id: number;
+  @ApiProperty()
+  @IsOptional()
   code: string;
+
+  @ApiProperty()
+  @IsOptional()
   name: string;
 }
 
 export class PurchasedOrderImportRequestDto {
-  @ApiProperty()
-  @IsOptional()
-  id: number;
-
   @ApiProperty()
   @IsOptional()
   companyCode: number;
@@ -352,10 +262,6 @@ export class PurchasedOrderImportRequestDto {
   @ApiProperty()
   @IsOptional()
   company: Company;
-
-  @ApiProperty()
-  @IsOptional()
-  warehouseExportProposals: WarehouseExportProposal;
 
   @ApiProperty()
   @IsNotEmpty()

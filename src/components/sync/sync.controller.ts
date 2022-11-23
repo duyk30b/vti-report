@@ -20,7 +20,7 @@ export class SyncController {
     private readonly syncService: SyncService,
   ) {}
 
-  @Post('/test')
+  @Post('/dailyStock')
   @ApiOperation({
     tags: ['Sync'],
     summary: 'Đồng bộ dữ liệu hàng ngày',

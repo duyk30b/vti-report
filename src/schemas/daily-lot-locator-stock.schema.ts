@@ -7,7 +7,7 @@ export class DailyLotLocatorStock implements DailyItemLotLocatorStockInterface {
   @Prop({ required: false })
   warehouseCode: string;
 
-  @Prop({ required: false })
+  @Prop({ required: false, default: null })
   lotNumber: string;
 
   @Prop({ required: false, default: 0 })

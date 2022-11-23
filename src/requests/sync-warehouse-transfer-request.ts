@@ -102,10 +102,6 @@ class ItemResponse {
 class LotExport {
   @ApiProperty()
   @IsOptional()
-  id: number;
-
-  @ApiProperty()
-  @IsOptional()
   mfg: string;
 
   @ApiProperty()
@@ -135,16 +131,8 @@ class LotExport {
   @ApiProperty()
   @IsOptional()
   lotNumber: string;
-
-  @ApiProperty()
-  @IsOptional()
-  locationId: number;
 }
 class WarehouseTransferDetail {
-  @ApiProperty()
-  @IsOptional()
-  id: number;
-
   @ApiProperty()
   @IsOptional()
   name: string;
