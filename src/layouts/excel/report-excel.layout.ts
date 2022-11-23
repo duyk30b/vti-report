@@ -107,7 +107,7 @@ export const generateTable = async (
         translate: false,
         heightRow: {
           index: 3,
-          value: 50,
+          value: 35,
         },
       },
       {
