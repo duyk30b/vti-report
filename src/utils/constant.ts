@@ -906,7 +906,7 @@ export const SITUATION_IMPORT_PERIOD_COLUMNS: TableColumn[] = [
     rowSpan: 2,
   },
   {
-    name: 'RECEIVER_DEPARMENT',
+    name: 'DEPARTMENT_RECEIPT',
     width: 1.6,
     rowSpan: 2,
   },
