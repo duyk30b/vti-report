@@ -155,7 +155,7 @@ export function reportSituationTransferTemplateData(
             },
             {
               nameCell: `L${curRowIdx}`,
-              value: row3.planQuantity,
+              value: row3.actualQuantity,
               font: FONT_NORMAL_9,
               aligment: ALIGNMENT_RIGHT,
               border: BORDER,

@@ -6,7 +6,7 @@ export interface DataSituationExportItem {
   accountHave: string;
   unit: string;
   planQuantity: number;
-  exportedQuantity: number;
+  actualQuantity: number;
   locatorCode: string;
   storageCost: number;
   totalPrice: number;
