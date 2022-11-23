@@ -126,6 +126,7 @@ export class SyncController {
     if (responseError && !isEmpty(responseError)) {
       return responseError;
     }
+    console.log('=====', request);
     return await this.syncService.syncTransaction(request);
   }
 
