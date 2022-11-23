@@ -12,10 +12,7 @@ import { TransactionItemRepository } from '@repositories/transaction-item.reposi
 import { SyncDailyStockRequest } from '@requests/sync-daily.request';
 import { SyncItemStockLocatorByDate } from '@requests/sync-item-stock-locator-by-date';
 import { I18nRequestScopeService } from 'nestjs-i18n';
-import {
-  SyncTransactionRequest,
-  TransactionRequest,
-} from '@requests/sync-transaction.request';
+import { TransactionRequest } from '@requests/sync-transaction.request';
 import { ActionType } from '@enums/export-type.enum';
 import {
   PurchasedOrderImportRequestDto,
@@ -34,7 +31,6 @@ import {
   WarehouseTransferResponseDto,
 } from '@requests/sync-warehouse-transfer-request';
 import { UserService } from '@components/user/user.service';
-import { Orders, SyncOrderRequest } from '@requests/sync-order.request';
 import { TransactionItemInterface } from '@schemas/interface/TransactionItem.Interface';
 import { isEmpty } from 'lodash';
 @Injectable()

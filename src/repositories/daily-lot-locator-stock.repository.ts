@@ -42,10 +42,13 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
     };
 
     if (request?.dateFrom) {
-      const today = moment(request?.dateTo).startOf('day');
-      const tomorrow = moment(today).endOf('day');
       condition['$and'].push({
-        reportDate: { $gte: today, $lte: tomorrow },
+        $expr: {
+          $eq: [
+            { $dateToString: { date: '$reportDate', format: '%Y-%m-%d' } },
+            moment(request?.dateFrom).format(DATE_FOMAT),
+          ],
+        },
       });
     }
     if (request?.companyCode)

@@ -1,3 +1,4 @@
+import { UserModule } from '@components/user/user.module';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DailyLotLocatorStockRepository } from '@repositories/daily-lot-locator-stock.repository';
@@ -60,6 +61,7 @@ import { ExportService } from './export.service';
         schema: TransactionItemSchema,
       },
     ]),
+    UserModule,
   ],
   controllers: [ExportController],
   providers: [

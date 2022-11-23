@@ -12,8 +12,8 @@ export function getItemInventoryDataMapping(
   i18n: I18nRequestScopeService,
 ): ReportInfo<ItemInventoryModel> {
   const dataMaping: ReportInfo<any> = {
-    companyName: data[0]?.companyName || '',
-    companyAddress: data[0]?.companyAddress || '',
+    companyName: '',
+    companyAddress: '',
     warehouseName: data[0]?.warehouseName || '',
     dataMapped: null,
   };
