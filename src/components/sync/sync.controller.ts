@@ -126,7 +126,6 @@ export class SyncController {
     if (responseError && !isEmpty(responseError)) {
       return responseError;
     }
-    console.log('=====', request);
     return await this.syncService.syncTransaction(request);
   }
 
@@ -135,6 +134,7 @@ export class SyncController {
     @Payload() body: SyncReportDailyRequestDto,
   ): Promise<ResponsePayload<any>> {
     const { request } = body;
+    console.log('=====', request);
     return await this.syncService.saveItemStockWarehouseLocatorByDate(
       request.value,
     );
