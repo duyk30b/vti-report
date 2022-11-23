@@ -122,7 +122,6 @@ export class SyncController {
   async syncTransaction(
     @Body() payload: SyncTransactionRequest,
   ): Promise<ResponsePayload<any>> {
-    console.log('===== DEBUG KAFKA');
     const { request, responseError } = payload;
 
     if (responseError && !isEmpty(responseError)) {
@@ -136,6 +135,7 @@ export class SyncController {
     @Payload() body: SyncReportDailyRequestDto,
   ): Promise<ResponsePayload<any>> {
     const { request } = body;
+    console.log('===== DEBUG KAFKA');
     return await this.syncService.saveItemStockWarehouseLocatorByDate(
       request.value,
     );
