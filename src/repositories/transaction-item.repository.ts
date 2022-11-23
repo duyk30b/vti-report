@@ -44,7 +44,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
     const CurTime = moment(getTimezone()).format(FORMAT_DATE);
     const dateRequest = moment(request.dateFrom).format(FORMAT_DATE);
     if (CurTime === dateRequest) {
-      const dataTransactionByCurDate = await this.groupByItemPOandSO(condition);
+      const dataTransactionByCurDate = await this.groupByItem(condition);
 
       const keyByItem = keyBy(data, function (o) {
         return [o.warehouseCode, o.itemCode].join('-');
