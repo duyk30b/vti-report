@@ -212,7 +212,7 @@ export function reportSituationExportPeriodTemplateData(
               },
               {
                 nameCell: `N${curRowIdx}`,
-                value: item.exportedQuantity,
+                value: item.actualQuantity,
                 font: FONT_NORMAL_9,
                 aligment: ALIGNMENT_BOTTOM_RIGHT,
                 border: BORDER,

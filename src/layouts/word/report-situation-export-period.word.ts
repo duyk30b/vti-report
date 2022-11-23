@@ -326,7 +326,7 @@ export async function generateReportSituationExportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: item.exportedQuantity + '',
+                                          text: item.actualQuantity + '',
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
