@@ -1,3 +1,4 @@
+import { SyncDailyItemStockWarehouseRequestDto } from '@components/sync/dto/request/sync-daily-item-stock-warehouse.request.dto';
 import { BaseAbstractRepository } from '@core/repository/base.abstract.repository';
 import { ReportType } from '@enums/report-type.enum';
 import { Injectable } from '@nestjs/common';
@@ -16,6 +17,22 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
     private readonly dailyWarehouseItemStock: Model<DailyWarehouseItemStock>,
   ) {
     super(dailyWarehouseItemStock);
+  }
+
+  createEntity(
+    dailyItemStockLocator: SyncDailyItemStockWarehouseRequestDto,
+  ): DailyWarehouseItemStock {
+    const document = new this.dailyWarehouseItemStock();
+    document.itemName = dailyItemStockLocator?.itemName;
+    document.itemCode = dailyItemStockLocator?.itemCode;
+    document.warehouseName = dailyItemStockLocator?.warehouseName;
+    document.warehouseCode = dailyItemStockLocator?.warehouseCode;
+    document.companyCode = dailyItemStockLocator?.companyCode;
+    document.companyName = dailyItemStockLocator?.companyName;
+    document.companyAddress = dailyItemStockLocator?.companyAddress;
+    document.reportDate = dailyItemStockLocator?.reportDate;
+    document.stockQuantity = dailyItemStockLocator?.stockQuantity;
+    return document;
   }
 
   async createMany(
