@@ -53,7 +53,7 @@ async function bootstrap() {
           },
         },
         consumer: {
-          groupId: 'report_service',
+          groupId: 'hq_report_service',
           maxInFlightRequests: 1,
           maxPollRecords: 1,
         },
