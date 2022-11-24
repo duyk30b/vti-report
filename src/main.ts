@@ -33,9 +33,9 @@ async function bootstrap() {
     fastifyAdapter,
     {
       logger:
-        process.env.NODE_ENV === 'development'
-          ? ['debug', 'error', 'log', 'verbose', 'warn']
-          : ['error'],
+        // process.env.NODE_ENV === 'development'
+           ['debug', 'error', 'log', 'verbose', 'warn']
+          // : ['error'],
     },
   );
 
@@ -104,6 +104,6 @@ async function bootstrap() {
   await app.listen(new ConfigService().get('httpPort'), '0.0.0.0');
 }
 
-process.env.NODE_ENV === 'development'
-  ? bootstrap()
-  : ClusterService.clusterize(bootstrap);
+// process.env.NODE_ENV === 'development'
+  bootstrap()
+  // : ClusterService.clusterize(bootstrap);
