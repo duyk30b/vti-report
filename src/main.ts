@@ -10,14 +10,26 @@ import { ExceptionInterceptor } from '@core/interceptors/exception.interceptor';
 import fastifyMultipart from 'fastify-multipart';
 import {
   KafkaOptions,
-  MicroserviceOptions,
+  
   TcpOptions,
   Transport,
 } from '@nestjs/microservices';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { ClusterService } from '@core/cluster/cluster.service';
 import { APIPrefix } from '@core/common';
 import { ConfigService } from '@core/config/config.service';
+
+
+console.log( {
+  brokers: process.env.KAFKA_BROKERS.split(','),
+  ssl: true,
+  sasl: {
+    mechanism: 'plain',
+    username: process.env.KAFKA_SASL_USERNAME,
+    password: process.env.KAFKA_SASL_PASSWD,
+  },
+},);
+
+
 async function bootstrap() {
   const fastifyAdapter = new FastifyAdapter();
 
