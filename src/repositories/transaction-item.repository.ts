@@ -9,7 +9,7 @@ import { TransactionItem } from '@schemas/transaction-item.schema';
 import { Model } from 'mongoose';
 import * as moment from 'moment';
 import { getTimezone } from '@utils/common';
-import { FORMAT_DATE } from '@utils/constant';
+import { DATE_FOMAT, FORMAT_DATE } from '@utils/constant';
 import { OrderType } from '@enums/order-type.enum';
 import { keyBy } from 'lodash';
 import { ActionType } from '@enums/report-type.enum';
@@ -38,13 +38,12 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
 
   async updateQuantityItem(
     request: ReportRequest,
-    condition: any,
     data: DailyWarehouseItemStock[],
   ): Promise<any> {
     const CurTime = moment(getTimezone()).format(FORMAT_DATE);
     const dateRequest = moment(request.dateFrom).format(FORMAT_DATE);
     if (CurTime === dateRequest) {
-      const dataTransactionByCurDate = await this.groupByItem(condition);
+      const dataTransactionByCurDate = await this.groupByItem(request);
 
       const keyByItem = keyBy(data, function (o) {
         return [o.warehouseCode, o.itemCode].join('-');
@@ -66,10 +65,30 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
     }
   }
 
-  async groupByItem(condition: any) {
-    const curCondition = condition;
+  async groupByItem(request: ReportRequest) {
+    const condition = {
+      $and: [],
+    };
+
+    condition['$and'].push({
+      companyCode: { $eq: request?.companyCode },
+    });
+
+    if (request?.warehouseCode)
+      condition['$and'].push({
+        warehouseCode: { $eq: request?.warehouseCode },
+      });
+
+    condition['$and'].push({
+      $expr: {
+        $eq: [
+          { $dateToString: { date: '$createdAt', format: '%Y-%m-%d' } },
+          moment(request?.dateFrom).format(DATE_FOMAT),
+        ],
+      },
+    });
     return this.transactionItem.aggregate([
-      { $match: curCondition },
+      { $match: condition },
       {
         $project: {
           _id: 0,

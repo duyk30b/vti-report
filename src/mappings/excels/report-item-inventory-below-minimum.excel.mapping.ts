@@ -40,7 +40,6 @@ export async function reportItemInventoryBelowMinimumExcelMapping(
     aligmentCell: formatByKey,
     key: REPORT_INFO[ReportType[ReportType.ITEM_INVENTORY_BELOW_MINIMUM]].key,
     dateFrom: request.dateFrom,
-    dateTo: request.dateTo,
     warehouse: request.warehouseCode ? data?.warehouseName : null,
     footer: footerItemBelowMinumum,
   };

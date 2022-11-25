@@ -20,7 +20,7 @@ export function getItemInventoryDataMapping(
 
   dataMaping.dataMapped = data[0];
   let dataExcell = [];
-  if (dataMaping) {
+  if (dataMaping.dataMapped) {
     dataMaping.companyName = dataMaping['dataMapped']?._id?.companyName || '';
     dataMaping.companyAddress =
       dataMaping['dataMapped']?._id?.companyAddress || '';
