@@ -278,6 +278,18 @@ export class ExportService {
         request,
         OrderType.INVENTORY,
       );
+    let company = await this.userService.getCompanies({
+      code: request.companyCode,
+    });
+    company = company?.data?.pop();
+    if (!data.length) {
+      data[0] = {
+        _id: {
+          companyName: company?.name,
+          companyAddress: company?.address,
+        },
+      } as any;
+    }
     const dataMaped = getSituationInventoryPeriod(data, this.i18n);
     switch (request.exportType) {
       case ExportType.EXCEL:
@@ -343,7 +355,25 @@ export class ExportService {
       request,
       OrderType.EXPORT,
     );
-    const dataMapped = getOrderExportByRequestForItemMapped(data, this.i18n);
+    let company = await this.userService.getCompanies({
+      code: request.companyCode,
+    });
+    company = company?.data?.pop();
+    let isEmpty = false;
+
+    if (!data.length) {
+      isEmpty = true;
+      data[0] = {
+        companyName: company?.name,
+        companyAddress: company?.address,
+      } as any;
+    }
+
+    const dataMapped = getOrderExportByRequestForItemMapped(
+      data,
+      this.i18n,
+      isEmpty,
+    );
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -394,9 +424,8 @@ export class ExportService {
   }
 
   async reportItemInventory(request: ReportRequest): Promise<ReportResponse> {
-    const data = await this.reportOrderItemLotRepository.getReportItemInventory(
-      request,
-    );
+    const data =
+      await this.dailyLotLocatorStockRepository.getReportItemInventory(request);
     let company = await this.userService.getCompanies({
       code: request.companyCode,
     });
@@ -404,8 +433,8 @@ export class ExportService {
     if (!data.length) {
       data[0] = {
         _id: {
-          companyName: company.name,
-          companyAddress: company.address,
+          companyName: company?.name,
+          companyAddress: company?.address,
         },
       };
     }
@@ -479,6 +508,21 @@ export class ExportService {
       request,
       OrderType.IMPORT,
     );
+    let company = await this.userService.getCompanies({
+      code: request.companyCode,
+    });
+
+    company = company?.data?.pop();
+    let isEmpty = false;
+    if (!data.length) {
+      isEmpty = true;
+      data.push({
+        _id: {
+          companyName: company?.name,
+          companyAddress: company?.address,
+        },
+      } as any);
+    }
     const dataMapped = getItemImportedButNotPutToPositionMapped(
       data,
       this.i18n,
@@ -510,8 +554,25 @@ export class ExportService {
       request,
       OrderType.IMPORT,
     );
+    let company = await this.userService.getCompanies({
+      code: request.companyCode,
+    });
 
-    const dataMapped = getOrderImportIncompletedMapped(data, this.i18n);
+    company = company?.data?.pop();
+    let isEmpty = false;
+    if (!data.length) {
+      isEmpty = true;
+      data.push({
+        companyName: company?.name,
+        companyAddress: company?.address,
+      } as any);
+    }
+
+    const dataMapped = getOrderImportIncompletedMapped(
+      data,
+      this.i18n,
+      isEmpty,
+    );
 
     switch (request.exportType) {
       case ExportType.EXCEL:
@@ -540,8 +601,25 @@ export class ExportService {
       request,
       OrderType.EXPORT,
     );
+    let company = await this.userService.getCompanies({
+      code: request.companyCode,
+    });
 
-    const dataMapped = getOrderExportIncompletedMapped(data, this.i18n);
+    company = company?.data?.pop();
+    let isEmpty = false;
+    if (!data.length) {
+      isEmpty = true;
+      data.push({
+        companyName: company?.name,
+        companyAddress: company?.address,
+      } as any);
+    }
+
+    const dataMapped = getOrderExportIncompletedMapped(
+      data,
+      this.i18n,
+      isEmpty,
+    );
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -569,7 +647,24 @@ export class ExportService {
       request,
       OrderType.TRANSFER,
     );
-    const dataMapped = getOrderTransferIncompletedMapped(data, this.i18n);
+    let company = await this.userService.getCompanies({
+      code: request.companyCode,
+    });
+
+    company = company?.data?.pop();
+    let isEmpty = false;
+    if (!data.length) {
+      isEmpty = true;
+      data.push({
+        companyName: company?.name,
+        companyAddress: company?.address,
+      } as any);
+    }
+    const dataMapped = getOrderTransferIncompletedMapped(
+      data,
+      this.i18n,
+      isEmpty,
+    );
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -596,7 +691,6 @@ export class ExportService {
     let data = await this.dailyWarehouseItemStockRepository.getReports(request);
     data = await this.transactionItemRepository.updateQuantityItem(
       request,
-      this.dailyWarehouseItemStockRepository.getCommontCondition(request),
       data,
     );
     let company = await this.userService.getCompanies({
@@ -638,10 +732,22 @@ export class ExportService {
     let data = await this.dailyWarehouseItemStockRepository.getReports(request);
     data = await this.transactionItemRepository.updateQuantityItem(
       request,
-      this.dailyWarehouseItemStockRepository.getCommontCondition(request),
       data,
     );
-    const dataMaped = getItemInventoryBelowSafe(data, this.i18n);
+    let company = await this.userService.getCompanies({
+      code: request.companyCode,
+    });
+
+    company = company?.data?.pop();
+    let isEmpty = false;
+    if (!data.length) {
+      isEmpty = true;
+      data.push({
+        companyName: company?.name,
+        companyAddress: company?.address,
+      } as any);
+    }
+    const dataMaped = getItemInventoryBelowSafe(data, this.i18n, isEmpty);
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
