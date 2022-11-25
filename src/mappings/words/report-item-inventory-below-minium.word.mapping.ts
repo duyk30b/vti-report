@@ -19,7 +19,6 @@ export async function reportItemInventoryBelowMinimumWordMapping(
     REPORT_INFO[ReportType[ReportType.ITEM_INVENTORY_BELOW_MINIMUM]].key,
     request.warehouseCode ? data?.warehouseName : null,
     request.dateFrom,
-    request.dateTo,
   );
   return {
     nameFile: nameFile,

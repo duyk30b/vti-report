@@ -50,6 +50,9 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
           ],
         },
       });
+
+      const prevDate = new Date(request?.dateFrom);
+      prevDate.setDate(prevDate.getDate() - 1);
       dailyLotLocatorStock['$or'].push({
         $eq: [
           {
@@ -58,7 +61,7 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
               format: '%Y-%m-%d',
             },
           },
-          moment(request?.dateFrom).format(DATE_FOMAT),
+          moment(prevDate).format(DATE_FOMAT),
         ],
       });
     } else {
@@ -356,15 +359,41 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
         constructionCode: { $eq: request?.constructionCode },
       });
 
-    if (request?.dateFrom)
+    if (request?.dateFrom === request?.dateTo) {
       condition['$and'].push({
-        orderCreatedAt: { $gte: new Date(request?.dateFrom) },
+        $expr: {
+          $eq: [
+            { $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' } },
+            moment(request?.dateFrom).format(DATE_FOMAT),
+          ],
+        },
       });
-
-    if (request?.dateTo)
-      condition['$and'].push({
-        orderCreatedAt: { $lte: new Date(request?.dateTo) },
-      });
+    } else {
+      if (request?.dateFrom) {
+        condition['$and'].push({
+          $expr: {
+            $gte: [
+              {
+                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' },
+              },
+              moment(request?.dateFrom).format(DATE_FOMAT),
+            ],
+          },
+        });
+      }
+      if (request?.dateTo) {
+        condition['$and'].push({
+          $expr: {
+            $lte: [
+              {
+                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' },
+              },
+              moment(request?.dateTo).format(DATE_FOMAT),
+            ],
+          },
+        });
+      }
+    }
 
     switch (type) {
       case OrderType.IMPORT:
@@ -544,6 +573,7 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
       default:
         break;
     }
+    console.log(JSON.stringify(condition['$and']));
 
     switch (request?.reportType) {
       case ReportType.SITUATION_TRANSFER:
@@ -564,7 +594,7 @@ function reportItemImportedButNotPutToPosition(
   condition: any,
 ) {
   return reportOrderItemLot.aggregate([
-    { $match: condition },
+    // { $match: condition },
     {
       $group: {
         _id: {
@@ -1108,6 +1138,7 @@ function getCommonConditionSituation() {
     },
   ];
 }
+
 function reportSituationInventory(
   reportOrderItemLot: Model<ReportOrderItemLot>,
   condition: any,

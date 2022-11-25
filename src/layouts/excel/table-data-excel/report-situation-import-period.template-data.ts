@@ -46,6 +46,7 @@ export function reportSituationImportPeriodTemplateData(
             value: item.totalPrice ? item.totalPrice : '0',
             font: FONT_BOLD_8,
             aligment: ALIGNMENT_RIGHT,
+            numFmt: '### ### ### ###',
             border: BORDER,
           },
         ],

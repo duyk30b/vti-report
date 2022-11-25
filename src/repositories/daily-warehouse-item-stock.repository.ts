@@ -6,7 +6,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { ReportRequest } from '@requests/report.request';
 import { DailyWarehouseItemRequest } from '@requests/sync-daily.request';
 import { DailyWarehouseItemStock } from '@schemas/daily-warehouse-item-stock.schema';
-import { plus } from '@utils/common';
+import { getTimezone, plus } from '@utils/common';
+import { DATE_FOMAT, FORMAT_DATE } from '@utils/constant';
 import * as moment from 'moment';
 import { Model } from 'mongoose';
 
@@ -63,31 +64,10 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
     return quantity;
   }
 
-  getCommontCondition(request: ReportRequest) {
+  async getReports(request: ReportRequest): Promise<DailyWarehouseItemStock[]> {
     const condition = {
       $and: [],
     };
-    if (request?.dateFrom) {
-      const today = moment(request?.dateFrom).startOf('day');
-      const tomorrow = moment(today).endOf('day');
-      condition['$and'].push({
-        reportDate: { $gte: today, $lte: tomorrow },
-      });
-    }
-
-    if (request?.companyCode)
-      condition['$and'].push({
-        companyCode: { $eq: request?.companyCode },
-      });
-    if (request?.warehouseCode)
-      condition['$and'].push({
-        warehouseCode: { $eq: request?.warehouseCode },
-      });
-    return condition;
-  }
-
-  async getReports(request: ReportRequest): Promise<DailyWarehouseItemStock[]> {
-    let condition = this.getCommontCondition(request);
 
     switch (request?.reportType) {
       case ReportType.ITEM_INVENTORY_BELOW_SAFE:
@@ -109,14 +89,6 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
         break;
     }
 
-    if (request?.dateFrom) {
-      const today = moment(request?.dateFrom).startOf('day');
-      const tomorrow = moment(today).endOf('day');
-      condition['$and'].push({
-        reportDate: { $gte: today, $lte: tomorrow },
-      });
-    }
-
     if (request?.companyCode)
       condition['$and'].push({
         companyCode: { $eq: request?.companyCode },
@@ -125,6 +97,28 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
       condition['$and'].push({
         warehouseCode: { $eq: request?.warehouseCode },
       });
+
+    if (request?.dateFrom == getTimezone(undefined, FORMAT_DATE)) {
+      const prevDate = new Date(request?.dateFrom);
+      prevDate.setDate(prevDate.getDate() - 1);
+      condition['$and'].push({
+        $expr: {
+          $eq: [
+            { $dateToString: { date: '$reportDate', format: '%Y-%m-%d' } },
+            moment(prevDate).format(DATE_FOMAT),
+          ],
+        },
+      });
+    } else {
+      condition['$and'].push({
+        $expr: {
+          $eq: [
+            { $dateToString: { date: '$reportDate', format: '%Y-%m-%d' } },
+            moment(request?.dateFrom).format(DATE_FOMAT),
+          ],
+        },
+      });
+    }
 
     return this.dailyWarehouseItemStock
       .find(condition)
