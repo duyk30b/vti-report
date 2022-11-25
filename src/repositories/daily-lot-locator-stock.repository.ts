@@ -27,6 +27,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
     const document = new this.dailyLotLocatorStock();
     document.itemName = dailyItemStockLocator?.itemName;
     document.itemCode = dailyItemStockLocator?.itemCode;
+    document.unit = dailyItemStockLocator.unit;
     document.warehouseName = dailyItemStockLocator?.warehouseName;
     document.warehouseCode = dailyItemStockLocator?.warehouseCode;
     document.locatorName = dailyItemStockLocator?.locatorName;
