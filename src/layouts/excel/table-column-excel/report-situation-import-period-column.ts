@@ -43,7 +43,7 @@ export const SITUATION_IMPORT_PERIOD_COLUMN: TableColumn[] = [
   },
   {
     name: 'LOT',
-    width: 5,
+    width: 20,
   },
   {
     name: 'ACCOUNT',
