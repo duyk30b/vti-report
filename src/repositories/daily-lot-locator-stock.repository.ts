@@ -1,9 +1,11 @@
+import { SyncDailyItemLotStockLocatorRequestDto } from '@components/sync/dto/request/sync-daily-item-stock-warehouse.request.dto';
 import { BaseAbstractRepository } from '@core/repository/base.abstract.repository';
 import { OrderType } from '@enums/order-type.enum';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ReportRequest } from '@requests/report.request';
 import { DailyWarehouseItemRequest } from '@requests/sync-daily.request';
+import { SyncItemStockLocatorByDate } from '@requests/sync-item-stock-locator-by-date';
 import { DailyLotLocatorStock } from '@schemas/daily-lot-locator-stock.schema';
 import { DATE_FOMAT, MONTHS, YEARS } from '@utils/constant';
 import * as moment from 'moment';
@@ -15,6 +17,27 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
     private readonly dailyLotLocatorStock: Model<DailyLotLocatorStock>,
   ) {
     super(dailyLotLocatorStock);
+  }
+
+  createEntity(
+    dailyItemStockLocator: SyncDailyItemLotStockLocatorRequestDto,
+  ): DailyLotLocatorStock {
+    const document = new this.dailyLotLocatorStock();
+    document.itemName = dailyItemStockLocator?.itemName;
+    document.itemCode = dailyItemStockLocator?.itemCode;
+    document.warehouseName = dailyItemStockLocator?.warehouseName;
+    document.warehouseCode = dailyItemStockLocator?.warehouseCode;
+    document.locatorName = dailyItemStockLocator?.locatorName;
+    document.locatorCode = dailyItemStockLocator?.locatorCode;
+    document.companyCode = dailyItemStockLocator?.companyCode;
+    document.companyName = dailyItemStockLocator?.companyName;
+    document.companyAddress = dailyItemStockLocator?.companyAddress;
+    document.reportDate = dailyItemStockLocator?.reportDate;
+    document.stockQuantity = dailyItemStockLocator?.stockQuantity;
+    document.lotNumber = dailyItemStockLocator?.lotNumber;
+    document.storageDate = dailyItemStockLocator?.storageDate;
+    document.stockQuantity = dailyItemStockLocator?.stockQuantity;
+    return document;
   }
 
   async createMany(

@@ -1,3 +1,4 @@
+import { SyncDailyItemStockLocatorRequestDto } from '@components/sync/dto/request/sync-daily-item-stock-warehouse.request.dto';
 import { BaseAbstractRepository } from '@core/repository/base.abstract.repository';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -20,7 +21,7 @@ export class DailyItemLocatorStockRepository extends BaseAbstractRepository<Dail
   }
 
   createEntity(
-    dailyItemStockLocator: SyncItemStockLocatorByDate,
+    dailyItemStockLocator: SyncDailyItemStockLocatorRequestDto,
   ): DailyItemLocatorStock {
     const document = new this.dailyItemLocatorStock();
     document.itemName = dailyItemStockLocator?.itemName;

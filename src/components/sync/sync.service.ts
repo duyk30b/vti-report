@@ -1,3 +1,4 @@
+import { SyncDailyStockRequestDto } from './dto/request/sync-daily-item-stock-warehouse.request.dto';
 import { ResponseCodeEnum } from '@core/response-code.enum';
 import { ResponseBuilder } from '@core/utils/response-builder';
 import { ResponsePayload } from '@core/utils/response-payload';
@@ -638,13 +639,30 @@ export class SyncService {
   }
 
   async saveItemStockWarehouseLocatorByDate(
-    data: SyncItemStockLocatorByDate[],
+    data: SyncDailyStockRequestDto,
   ): Promise<any> {
-    const itemStockLocatorEntities = data.map((dailyItemStockLocator) =>
-      this.dailyItemLocatorStockRepository.createEntity(dailyItemStockLocator),
+    const itemStockLocatorEntities = data.itemStockLocatorDaily.map(
+      (dailyItemStockLocator) =>
+        this.dailyItemLocatorStockRepository.createEntity(
+          dailyItemStockLocator,
+        ),
+    );
+
+    const itemLotStockLocatorEntities = data.itemLotStockLocatorDaily.map(
+      (dailyItemStockLocator) =>
+        this.dailyLotLocatorStockRepository.createEntity(dailyItemStockLocator),
+    );
+
+    const itemStockWarehouseEntities = data.itemStockWarehouseDaily.map(
+      (dailyItemStockLocator) =>
+        this.dailyWarehouseItemStockRepository.createEntity(
+          dailyItemStockLocator,
+        ),
     );
 
     this.dailyItemLocatorStockRepository.create(itemStockLocatorEntities);
+    this.dailyLotLocatorStockRepository.create(itemLotStockLocatorEntities);
+    this.dailyWarehouseItemStockRepository.create(itemStockWarehouseEntities);
     return new ResponseBuilder()
       .withCode(ResponseCodeEnum.SUCCESS)
       .withMessage(await this.i18n.translate('success.SUCCESS'))
