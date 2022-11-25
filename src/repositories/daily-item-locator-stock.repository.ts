@@ -26,6 +26,8 @@ export class DailyItemLocatorStockRepository extends BaseAbstractRepository<Dail
     const document = new this.dailyItemLocatorStock();
     document.itemName = dailyItemStockLocator?.itemName;
     document.itemCode = dailyItemStockLocator?.itemCode;
+    document.itemCode = dailyItemStockLocator?.itemCode;
+    document.unit = dailyItemStockLocator.unit;
     document.warehouseName = dailyItemStockLocator?.warehouseName;
     document.warehouseCode = dailyItemStockLocator?.warehouseCode;
     document.locatorName = dailyItemStockLocator?.locatorName;

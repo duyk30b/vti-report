@@ -26,6 +26,7 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
     const document = new this.dailyWarehouseItemStock();
     document.itemName = dailyItemStockLocator?.itemName;
     document.itemCode = dailyItemStockLocator?.itemCode;
+    document.unit = dailyItemStockLocator.unit;
     document.warehouseName = dailyItemStockLocator?.warehouseName;
     document.warehouseCode = dailyItemStockLocator?.warehouseCode;
     document.companyCode = dailyItemStockLocator?.companyCode;
