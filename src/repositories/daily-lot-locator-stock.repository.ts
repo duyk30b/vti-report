@@ -67,7 +67,18 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       $and: [],
     };
 
-    if (request?.dateFrom) {
+    if (request?.dateFrom == getTimezone(undefined, FORMAT_DATE)) {
+      const prevDate = new Date(request?.dateFrom);
+      prevDate.setDate(prevDate.getDate() - 1);
+      condition['$and'].push({
+        $expr: {
+          $eq: [
+            { $dateToString: { date: '$reportDate', format: '%Y-%m-%d' } },
+            moment(prevDate).format(DATE_FOMAT),
+          ],
+        },
+      });
+    } else {
       condition['$and'].push({
         $expr: {
           $eq: [
@@ -670,6 +681,15 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       condition['$and'].push({
         warehouseCode: { $eq: request?.warehouseCode },
       });
+
+    condition['$and'].push({
+      $expr: {
+        $lte: [
+          { $dateToString: { date: '$reportDate', format: '%Y-%m-%d' } },
+          moment(request?.dateFrom).format(DATE_FOMAT),
+        ],
+      },
+    });
     return this.dailyLotLocatorStock.aggregate([
       {
         $match: condition,
@@ -697,8 +717,8 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
               locatorCode: '$locatorCode',
               unit: '$unit',
               stockQuantity: '$stockQuantity',
-              cost: '$cost',
-              totalPrice: { $multiply: ['$cost', '$stockQuantity'] },
+              storageCost: '$storageCost',
+              totalPrice: { $multiply: ['$storageCost', '$stockQuantity'] },
               ...getQueryAgeOfItems(),
             },
           },

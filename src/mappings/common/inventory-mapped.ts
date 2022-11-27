@@ -16,25 +16,23 @@ export function getInventoryDataMapping(
   };
 
   const groupByWarehouseCode = data.reduce((prev, cur) => {
-    if (cur.warehouseCode && cur.warehouseName) {
-      const warehouseCode = cur.warehouseCode + ' - ' + cur.warehouseName;
-      if (!prev[warehouseCode]) {
-        prev[warehouseCode] = [];
-      }
-      const data: InventoryModel = {
-        index: 0,
-        itemCode: cur.itemCode,
-        itemName: cur.itemName,
-        unit: cur.unit,
-        lotNumber: cur.lotNumber,
-        stockQuantity: cur.stockQuantity,
-        locatorCode: cur.locatorCode,
-        storageCost: cur.storageCost,
-        totalPrice: cur.storageCost * cur.stockQuantity,
-      };
-      prev[warehouseCode].push(data);
-      return prev;
+    const warehouseCode = cur.warehouseCode + '_' + cur.warehouseName;
+    if (!prev[warehouseCode]) {
+      prev[warehouseCode] = [];
     }
+    const data: InventoryModel = {
+      index: 0,
+      itemCode: cur.itemCode,
+      itemName: cur.itemName,
+      unit: cur.unit,
+      lotNumber: cur.lotNumber,
+      stockQuantity: cur.stockQuantity,
+      locatorCode: cur.locatorCode,
+      storageCost: cur.storageCost,
+      totalPrice: cur.storageCost * cur.stockQuantity,
+    };
+    prev[warehouseCode].push(data);
+    return prev;
   }, {});
   const dataExcell: TableData<InventoryModel>[] = [];
 
