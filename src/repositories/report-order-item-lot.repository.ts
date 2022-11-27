@@ -563,7 +563,6 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
           status: {
             $in: [
               OrderStatus.Completed,
-              OrderStatus.Completed,
               OrderStatus.Stored,
               OrderStatus.Received,
             ],
@@ -573,7 +572,6 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
       default:
         break;
     }
-    console.log(JSON.stringify(condition['$and']));
 
     switch (request?.reportType) {
       case ReportType.SITUATION_TRANSFER:

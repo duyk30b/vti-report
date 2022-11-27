@@ -59,7 +59,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
             item.quantityExported;
         }
       });
-      return dataTransactionByCurDate;
+      return Object.values(keyByItem);
     } else {
       return data;
     }

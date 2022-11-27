@@ -484,7 +484,11 @@ export class ExportService {
   }
 
   async reportInventory(request: ReportRequest): Promise<ReportResponse> {
-    const data = await this.dailyLotLocatorStockRepository.getReports(request);
+    let data = await this.dailyLotLocatorStockRepository.getReports(request);
+    data = await this.transactionItemRepository.updateQuantityItem(
+      request,
+      data,
+    );
     const dataMaped = getInventoryDataMapping(data, this.i18n);
     switch (request.exportType) {
       case ExportType.EXCEL:
