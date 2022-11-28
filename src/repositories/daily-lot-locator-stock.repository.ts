@@ -684,7 +684,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
 
     condition['$and'].push({
       $expr: {
-        $lte: [
+        $eq: [
           { $dateToString: { date: '$reportDate', format: '%Y-%m-%d' } },
           moment(request?.dateFrom).format(DATE_FOMAT),
         ],
