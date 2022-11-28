@@ -1,5 +1,8 @@
 import { BaseAbstractRepository } from '@core/repository/base.abstract.repository';
-import { OrderStatus } from '@enums/order-status.enum';
+import {
+  OrderStatus,
+  WarehouseTransferStatusEnum,
+} from '@enums/order-status.enum';
 import { OrderType } from '@enums/order-type.enum';
 import { ReportType } from '@enums/report-type.enum';
 import { Injectable } from '@nestjs/common';
@@ -562,9 +565,9 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
         condition['$and'].push({
           status: {
             $in: [
-              OrderStatus.Completed,
-              OrderStatus.Stored,
-              OrderStatus.Received,
+              WarehouseTransferStatusEnum.COMPLETED,
+              WarehouseTransferStatusEnum.EXPORTED,
+              WarehouseTransferStatusEnum.RECEIVED,
             ],
           },
         });

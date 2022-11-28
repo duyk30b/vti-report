@@ -18,3 +18,19 @@ export enum OrderStatus {
   Returned = 16,
   Stored = 17,
 }
+
+export enum WarehouseTransferStatusEnum {
+  CREATED = 0,
+  PENDING = 1,
+  COMPLETED = 2,
+  REJECTED = 3,
+  CONFIRMED = 4,
+  EXPORTING = 5,
+  INRECEIVING = 6,
+  RECEIVED = 7,
+  INCOLLECTING = 8,
+  COLLECTED = 9,
+  EXPORTED = 10,
+  INSTORING = 11,
+  INPROGRESS = 12,
+}
