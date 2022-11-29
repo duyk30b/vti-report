@@ -110,30 +110,6 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
     const condition = {
       $and: [],
     };
-    const orderCreatedAtCondition = [
-      {
-        $gte: [
-          {
-            $dateToString: {
-              date: '$orderCreatedAt',
-              format: '%Y-%m-%d',
-            },
-          },
-          moment(request?.dateFrom).format(DATE_FOMAT),
-        ],
-      },
-      {
-        $lte: [
-          {
-            $dateToString: {
-              date: '$orderCreatedAt',
-              format: '%Y-%m-%d',
-            },
-          },
-          moment(request?.dateTo).format(DATE_FOMAT),
-        ],
-      },
-    ];
 
     if (request?.companyCode) {
       condition['$and'].push({
@@ -399,7 +375,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
                     $eq: [
                       {
                         $dateToString: {
-                          date: '$createdAt',
+                          date: '$transactionDate',
                           format: '%Y-%m-%d',
                         },
                       },
@@ -516,84 +492,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       });
     }
 
-    // join với bảng report-order-item-lot
     aggregateState.push(
-      {
-        $lookup: {
-          from: 'report-order-item-lot',
-          let: {
-            companyCode: '$_id.companyCode',
-            itemCode: '$_id.itemCode',
-            warehouseCode: '$_id.warehouseCode',
-            lotNumber: '$_id.lotNumber',
-          },
-          as: 'report-order-item-lot',
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ['$companyCode', '$$companyCode'] },
-                    { $eq: ['$warehouseCode', '$$warehouseCode'] },
-                    { $eq: ['$itemCode', '$$itemCode'] },
-                    { $eq: ['$lotNumber', '$$lotNumber'] },
-                    {
-                      $or: [
-                        {
-                          $eq: ['$orderType', OrderType.IMPORT],
-                        },
-                        {
-                          $eq: ['$orderType', OrderType.EXPORT],
-                        },
-                      ],
-                    },
-                    ...orderCreatedAtCondition,
-                  ],
-                },
-              },
-            },
-            {
-              $project: {
-                itemCode: 1,
-                orderType: 1,
-                importIn: {
-                  $cond: [
-                    {
-                      $eq: ['$orderType', OrderType.IMPORT],
-                    },
-                    '$actualQuantity',
-                    0,
-                  ],
-                },
-                exportIn: {
-                  $cond: [
-                    {
-                      $eq: ['$orderType', OrderType.EXPORT],
-                    },
-                    '$actualQuantity',
-                    0,
-                  ],
-                },
-              },
-            },
-            {
-              $group: {
-                _id: {
-                  itemCode: '$itemCode',
-                  orderType: '$orderType',
-                },
-                importIn: { $sum: '$importIn' },
-                exportIn: { $sum: '$exportIn' },
-              },
-            },
-            {
-              $project: {
-                _id: 0,
-              },
-            },
-          ],
-        },
-      },
       {
         $group: {
           _id: {
@@ -610,33 +509,14 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
               unit: '$_id.unit',
               lotNumber: '$_id.lotNumber',
               storageCost: '$_id.storageCost',
-
               stockStart: '$stockStart',
               totalStockStart: {
                 $multiply: ['$_id.storageCost', '$stockStart'],
               },
-
-              importIn: { $sum: '$report-order-item-lot.importIn' },
-              totalImportIn: {
-                $multiply: [
-                  '$_id.storageCost',
-                  { $sum: '$report-order-item-lot.importIn' },
-                ],
-              },
-
-              exportIn: { $sum: '$report-order-item-lot.exportIn' },
-              totalExportIn: {
-                $multiply: [
-                  '$_id.storageCost',
-                  { $sum: '$report-order-item-lot.exportIn' },
-                ],
-              },
-
               stockEnd: '$stockEnd',
               totalStockEnd: {
                 $multiply: ['$_id.storageCost', '$stockEnd'],
               },
-
               note: '$_id.note',
             },
           },
@@ -646,19 +526,26 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
         $sort: { warehouseCode: -1, itemCode: -1 },
       },
       {
-        $group: {
-          _id: {
-            companyCode: '$_id.companyCode',
-            companyName: '$_id.companyName',
-            companyAddress: '$_id.companyAddress',
-          },
-          warehouses: {
-            $push: {
-              warehouseCode: '$_id.warehouseCode',
-              warehouseName: '$_id.warehouseName',
-              items: '$items',
-            },
-          },
+        $unwind: { path: '$items' },
+      },
+      {
+        $project: {
+          _id: 0,
+          companyCode: '$_id.companyCode',
+          companyName: '$_id.companyName',
+          companyAddress: '$_id.companyAddress',
+          warehouseCode: '$_id.warehouseCode',
+          warehouseName: '$_id.warehouseName',
+          itemCode: '$items.itemCode',
+          itemName: '$items.itemName',
+          unit: '$items.unit',
+          lotNumber: '$items.lotNumber',
+          storageCost: '$items.storageCost',
+          stockStart: '$items.stockStart',
+          totalStockStart: '$items.totalStockStart',
+          stockEnd: '$items.stockEnd',
+          totalStockEnd: '$items.totalStockEnd',
+          note: '$items.note',
         },
       },
     );

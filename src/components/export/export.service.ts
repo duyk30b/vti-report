@@ -59,7 +59,7 @@ import { getSituationExportPeriodMapped } from '@mapping/common/report-situation
 import { getSituationTransferMapped } from '@mapping/common/age-of-item-mapped';
 import { TransactionItemRepository } from '@repositories/transaction-item.repository';
 import { UserService } from '@components/user/user.service';
-
+import { keyBy } from 'lodash';
 @Injectable()
 export class ExportService {
   constructor(
@@ -424,21 +424,82 @@ export class ExportService {
   }
 
   async reportItemInventory(request: ReportRequest): Promise<ReportResponse> {
-    const data =
+    const OrderItemLot =
+      await this.reportOrderItemLotRepository.getReportItemInventory(request);
+    const dailyLotLocatorStock =
       await this.dailyLotLocatorStockRepository.getReportItemInventory(request);
+
+    let keyByDailyItem = {};
+    if (dailyLotLocatorStock.length) {
+      keyByDailyItem = keyBy(dailyLotLocatorStock, function (o) {
+        return [
+          o?.companyCode,
+          o?.warehouseCode,
+          o?.itemCode,
+          o?.lotNumber,
+        ].join('_');
+      });
+      for (const itemLot of OrderItemLot) {
+        const key = [
+          itemLot?.companyCode,
+          itemLot?.warehouseCode,
+          itemLot?.itemCode,
+          itemLot?.lotNumber,
+        ].join('_');
+
+        if (keyByDailyItem[key]) {
+          const dailyItem = keyByDailyItem[key];
+          if (!dailyItem.importIn) dailyItem['importIn'] = 0;
+          dailyItem['importIn'] += itemLot?.importIn || 0;
+
+          if (!dailyItem.totalImportIn) dailyItem['totalImportIn'] = 0;
+          dailyItem['totalImportIn'] +=
+            itemLot?.importIn * dailyItem.storageCost;
+
+          if (!dailyItem.exportIn) dailyItem['exportIn'] = 0;
+          dailyItem['exportIn'] += itemLot?.exportIn || 0;
+
+          if (!dailyItem.totalExportIn) dailyItem['totalExportIn'] = 0;
+          dailyItem['totalExportIn'] +=
+            itemLot?.exportIn * dailyItem.storageCost;
+        }
+      }
+    }
+
+    if (OrderItemLot.length) {
+      for (const itemLot of OrderItemLot) {
+        const key = [
+          itemLot?.companyCode,
+          itemLot?.warehouseCode,
+          itemLot?.itemCode,
+          itemLot?.lotNumber,
+        ].join('_');
+
+        if (!keyByDailyItem[key]) {
+          itemLot['stockStart'] = 0;
+          itemLot['stockEnd'] = 0;
+          itemLot['totalStockStart'] = 0;
+          itemLot['totalStockEnd'] = 0;
+          itemLot['totalImportIn'] = itemLot.storageCost * itemLot.importIn;
+          itemLot['totalExportIn'] = itemLot.storageCost * itemLot.exportIn;
+          keyByDailyItem[key] = itemLot;
+        }
+      }
+    }
+    const data = Object.values(keyByDailyItem);
     let company = await this.userService.getCompanies({
       code: request.companyCode,
     });
     company = company?.data?.pop();
+    let isEmpty = false;
     if (!data.length) {
-      data[0] = {
-        _id: {
-          companyName: company?.name,
-          companyAddress: company?.address,
-        },
-      };
+      isEmpty = true;
+      data.push({
+        companyName: company?.name,
+        companyAddress: company?.address,
+      } as any);
     }
-    const dataMapping = getItemInventoryDataMapping(data, this.i18n);
+    const dataMapping = getItemInventoryDataMapping(data, this.i18n, isEmpty);
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } = await reportItemInventoryExcelMapping(
