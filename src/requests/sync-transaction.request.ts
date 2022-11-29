@@ -22,7 +22,11 @@ interface DataCommont {
   name: string;
   address: string;
 }
-export class SyncTransactionRequest implements TransactionItemInterface {
+export class SyncTransactionRequest {
+  @ApiProperty()
+  @IsOptional()
+  transactionDate: Date;
+
   @ApiProperty()
   @IsNotEmpty()
   syncCode: string;
@@ -30,18 +34,6 @@ export class SyncTransactionRequest implements TransactionItemInterface {
   @ApiProperty()
   @IsOptional()
   orderCode: string;
-
-  @ApiProperty()
-  @IsOptional()
-  ebsNumber: string;
-
-  @ApiProperty()
-  @IsOptional()
-  qrCode: string;
-
-  @ApiProperty()
-  @IsOptional()
-  receiptNumber: string;
 
   @ApiProperty()
   @IsOptional()
@@ -58,39 +50,11 @@ export class SyncTransactionRequest implements TransactionItemInterface {
 
   @ApiProperty()
   @IsOptional()
-  status: OrderStatus;
-
-  @ApiProperty()
-  @IsOptional()
-  stockQuantity: number;
-
-  @ApiProperty()
-  @IsOptional()
   planQuantity: number;
 
   @ApiProperty()
   @IsOptional()
   actualQuantity: number;
-
-  @ApiProperty()
-  @IsOptional()
-  confirmQuantity: number;
-
-  @ApiProperty()
-  @IsOptional()
-  receivedQuantity: number;
-
-  @ApiProperty()
-  @IsOptional()
-  storedQuantity: number;
-
-  @ApiProperty()
-  @IsOptional()
-  collectedQuantity: number;
-
-  @ApiProperty()
-  @IsOptional()
-  exportedQuantity: number;
 
   @ApiProperty()
   @IsOptional()
@@ -111,48 +75,6 @@ export class SyncTransactionRequest implements TransactionItemInterface {
   @ApiProperty()
   @IsOptional()
   locator: DataCommont;
-
-  @ApiProperty()
-  @IsOptional()
-  reason: string;
-
-  explain: string;
-  performerName: string;
-  warehouseTargetCode: string;
-  warehouseTargetName: string;
-  contract: string;
-  providerCode: string;
-  providerName: string;
-  departmentReceiptCode: string;
-  departmentReceiptName: string;
-  accountDebt: string;
-  accountHave: string;
-  warehouseExportProposals: string;
-  orderName: string;
-  orderCreatedAt: Date;
-  planDate: Date;
-  completedAt: Date;
-  constructionCode: string;
-  constructionName: string;
-  description: string;
-  transactionDate: Date;
-
-  locatorCode: string;
-  locatorName: string;
-  account: string;
-  unit: string;
-  origin: string;
-  storageCost: number;
-  note: string;
-  reportDate: Date;
-  storageDate: Date;
-  minInventoryLimit: number;
-  inventoryLimit: number;
-  companyName: string;
-  companyCode: string;
-  companyAddress: string;
-  warehouseCode: string;
-  warehouseName: string;
 }
 
 export class TransactionRequest extends BaseDto {
