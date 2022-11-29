@@ -40,10 +40,6 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
     condition['$and'].push({
       orderType: { $in: [OrderType.IMPORT, OrderType.EXPORT] },
     });
-    const dailyLotLocatorStock = {
-      $or: [],
-    };
-
     if (request?.dateFrom === request?.dateTo) {
       condition['$and'].push({
         $expr: {
@@ -52,20 +48,6 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
             moment(request?.dateFrom).format(DATE_FOMAT),
           ],
         },
-      });
-
-      const prevDate = new Date(request?.dateFrom);
-      prevDate.setDate(prevDate.getDate() - 1);
-      dailyLotLocatorStock['$or'].push({
-        $eq: [
-          {
-            $dateToString: {
-              date: '$reportDate',
-              format: '%Y-%m-%d',
-            },
-          },
-          moment(prevDate).format(DATE_FOMAT),
-        ],
       });
     } else {
       if (request?.dateFrom) {
@@ -79,17 +61,6 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
             ],
           },
         });
-        dailyLotLocatorStock['$or'].push({
-          $eq: [
-            {
-              $dateToString: {
-                date: '$reportDate',
-                format: '%Y-%m-%d',
-              },
-            },
-            moment(request?.dateFrom).format(DATE_FOMAT),
-          ],
-        });
       }
 
       if (request?.dateTo) {
@@ -102,17 +73,6 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
               moment(request?.dateTo).format(DATE_FOMAT),
             ],
           },
-        });
-        dailyLotLocatorStock['$or'].push({
-          $eq: [
-            {
-              $dateToString: {
-                date: '$reportDate',
-                format: '%Y-%m-%d',
-              },
-            },
-            moment(request?.dateTo).format(DATE_FOMAT),
-          ],
         });
       }
     }
@@ -188,90 +148,6 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
         },
       },
       {
-        $lookup: {
-          from: 'daily-lot-locator-stock',
-          let: {
-            companyCode: '$_id.companyCode',
-            itemCode: '$_id.itemCode',
-            warehouseCode: '$_id.warehouseCode',
-            lotNumber: '$_id.lotNumber',
-          },
-          as: 'daily-lot-locator-stock',
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ['$companyCode', '$$companyCode'] },
-                    { $eq: ['$warehouseCode', '$$warehouseCode'] },
-                    { $eq: ['$itemCode', '$$itemCode'] },
-                    { $eq: ['$lotNumber', '$$lotNumber'] },
-                    dailyLotLocatorStock,
-                  ],
-                },
-              },
-            },
-            {
-              $project: {
-                itemCode: 1,
-                stockStart: {
-                  $cond: [
-                    {
-                      $eq: [
-                        {
-                          $dateToString: {
-                            date: '$reportDate',
-                            format: '%Y-%m-%d',
-                          },
-                        },
-                        moment(request?.dateFrom || new Date()).format(
-                          DATE_FOMAT,
-                        ),
-                      ],
-                    },
-                    '$stockQuantity',
-                    0,
-                  ],
-                },
-                stockEnd: {
-                  $cond: [
-                    {
-                      $eq: [
-                        {
-                          $dateToString: {
-                            date: '$reportDate',
-                            format: '%Y-%m-%d',
-                          },
-                        },
-                        moment(request?.dateTo || new Date()).format(
-                          DATE_FOMAT,
-                        ),
-                      ],
-                    },
-                    '$stockQuantity',
-                    0,
-                  ],
-                },
-              },
-            },
-            {
-              $group: {
-                _id: {
-                  itemCode: '$itemCode',
-                },
-                stockStart: { $sum: '$stockStart' },
-                stockEnd: { $sum: '$stockEnd' },
-              },
-            },
-            {
-              $project: {
-                _id: 0,
-              },
-            },
-          ],
-        },
-      },
-      {
         $group: {
           _id: {
             companyCode: '$_id.companyCode',
@@ -287,33 +163,8 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
               unit: '$_id.unit',
               lotNumber: '$_id.lotNumber',
               storageCost: '$_id.storageCost',
-
-              stockStart: { $sum: '$daily-lot-locator-stock.stockStart' },
-              totalStockStart: {
-                $multiply: [
-                  '$_id.storageCost',
-                  { $sum: '$daily-lot-locator-stock.stockStart' },
-                ],
-              },
-
               importIn: '$importIn',
-              totalImportIn: {
-                $multiply: ['$_id.storageCost', '$importIn'],
-              },
-
               exportIn: '$exportIn',
-              totalExportIn: {
-                $multiply: ['$_id.storageCost', '$exportIn'],
-              },
-
-              stockEnd: { $sum: '$daily-lot-locator-stock.stockEnd' },
-              totalStockEnd: {
-                $multiply: [
-                  '$_id.storageCost',
-                  { $sum: '$daily-lot-locator-stock.stockEnd' },
-                ],
-              },
-
               note: '$_id.note',
             },
           },
@@ -323,19 +174,24 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
         $sort: { warehouseCode: -1, itemCode: -1 },
       },
       {
-        $group: {
-          _id: {
-            companyCode: '$_id.companyCode',
-            companyName: '$_id.companyName',
-            companyAddress: '$_id.companyAddress',
-          },
-          warehouses: {
-            $push: {
-              warehouseCode: '$_id.warehouseCode',
-              warehouseName: '$_id.warehouseName',
-              items: '$items',
-            },
-          },
+        $unwind: { path: '$items' },
+      },
+      {
+        $project: {
+          _id: 0,
+          companyCode: '$_id.companyCode',
+          companyName: '$_id.companyName',
+          companyAddress: '$_id.companyAddress',
+          warehouseCode: '$_id.warehouseCode',
+          warehouseName: '$_id.warehouseName',
+          itemCode: '$items.itemCode',
+          itemName: '$items.itemName',
+          unit: '$items.unit',
+          lotNumber: '$items.lotNumber',
+          storageCost: '$items.storageCost',
+          importIn: '$items.importIn',
+          exportIn: '$items.exportIn',
+          note: '$items.note',
         },
       },
     ]);
@@ -1069,6 +925,7 @@ function getCommonConditionSituation() {
           orderCode: '$orderCode',
           warehouseCode: '$warehouseCode',
           lotNumber: '$lotNumber',
+          status: '$status',
         },
         pipeline: [
           {
@@ -1080,6 +937,7 @@ function getCommonConditionSituation() {
                   { $eq: ['$warehouseCode', '$$warehouseCode'] },
                   { $eq: ['$orderCode', '$$orderCode'] },
                   { $eq: ['$lotNumber', '$$lotNumber'] },
+                  { $eq: ['$status', '$$status'] },
                 ],
               },
             },
