@@ -30,13 +30,6 @@ export class ConfigService {
       },
       transport: Transport.TCP,
     };
-    this.envConfig.warehouseService = {
-      options: {
-        port: process.env.WAREHOUSE_SERVICE_PORT || 3000,
-        host: process.env.WAREHOUSE_SERVICE_HOST || 'warehouse-service',
-      },
-      transport: Transport.TCP,
-    };
   }
 
   get(key: string): any {

@@ -589,8 +589,6 @@ export class SyncService {
           companyName: request.company.name,
           companyAddress: request.company.address,
         } as any;
-        if (item?.locator) {
-        }
         transactionitems.push(temp);
       }
       await this.transactionItemRepository.create(transactionitems);
