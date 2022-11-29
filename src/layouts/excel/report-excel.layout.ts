@@ -315,8 +315,8 @@ export const getReportInfo = (
       },
     });
   } else {
-    const dateForFile = moment(dateTo).format(DATE_FOMAT_EXCELL_FILE);
-    const date = moment(dateTo).format(DATE_FOMAT_EXCELL);
+    const dateForFile = moment(dateFrom).format(DATE_FOMAT_EXCELL_FILE);
+    const date = moment(dateFrom).format(DATE_FOMAT_EXCELL);
     nameFile = i18n.translate(`report.${key}.SHEET_NAME`, {
       args: { property: dateForFile },
     });

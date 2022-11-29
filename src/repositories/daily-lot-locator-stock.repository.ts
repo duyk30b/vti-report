@@ -674,6 +674,15 @@ function getQueryAgeOfItems(sum = false) {
   const fourYearAgo = moment().subtract(4, YEARS).format(FORMAT_DATE);
   const fiveYearAgo = moment().subtract(5, YEARS).format(FORMAT_DATE);
 
+  console.log({
+    sixMonthAgo,
+    oneYearAgo,
+    twoYearAgo,
+    threeYearAgo,
+    fourYearAgo,
+    fiveYearAgo,
+  });
+
   return {
     sixMonthAgo: {
       $cond: [
@@ -685,7 +694,7 @@ function getQueryAgeOfItems(sum = false) {
             sixMonthAgo,
           ],
         },
-        { $multiply: ['$cost', '$stockQuantity'] },
+        { $multiply: ['$storageCost', '$stockQuantity'] },
         0,
       ],
     },
@@ -711,7 +720,7 @@ function getQueryAgeOfItems(sum = false) {
             },
           ],
         },
-        { $multiply: ['$cost', '$stockQuantity'] },
+        { $multiply: ['$storageCost', '$stockQuantity'] },
         0,
       ],
     },
@@ -737,7 +746,7 @@ function getQueryAgeOfItems(sum = false) {
             },
           ],
         },
-        { $multiply: ['$cost', '$stockQuantity'] },
+        { $multiply: ['$storageCost', '$stockQuantity'] },
         0,
       ],
     },
@@ -763,7 +772,7 @@ function getQueryAgeOfItems(sum = false) {
             },
           ],
         },
-        { $multiply: ['$cost', '$stockQuantity'] },
+        { $multiply: ['$storageCost', '$stockQuantity'] },
         0,
       ],
     },
@@ -789,7 +798,7 @@ function getQueryAgeOfItems(sum = false) {
             },
           ],
         },
-        { $multiply: ['$cost', '$stockQuantity'] },
+        { $multiply: ['$storageCost', '$stockQuantity'] },
         0,
       ],
     },
@@ -815,7 +824,7 @@ function getQueryAgeOfItems(sum = false) {
             },
           ],
         },
-        { $multiply: ['$cost', '$stockQuantity'] },
+        { $multiply: ['$storageCost', '$stockQuantity'] },
         0,
       ],
     },
@@ -833,7 +842,7 @@ function getQueryAgeOfItems(sum = false) {
             },
           ],
         },
-        { $multiply: ['$cost', '$stockQuantity'] },
+        { $multiply: ['$storageCost', '$stockQuantity'] },
         0,
       ],
     },

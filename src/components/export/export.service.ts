@@ -60,6 +60,7 @@ import { getSituationTransferMapped } from '@mapping/common/age-of-item-mapped';
 import { TransactionItemRepository } from '@repositories/transaction-item.repository';
 import { UserService } from '@components/user/user.service';
 import { keyBy } from 'lodash';
+import { WarehouseServiceInterface } from '@components/warehouse/interface/warehouse.service.interface';
 @Injectable()
 export class ExportService {
   constructor(
@@ -80,6 +81,9 @@ export class ExportService {
 
     @Inject('UserServiceInterface')
     private readonly userService: UserService,
+
+    @Inject('WarehouseServiceInterface')
+    private readonly warehouseServiceInterface: WarehouseServiceInterface,
 
     private readonly i18n: I18nRequestScopeService,
   ) {}
@@ -170,6 +174,7 @@ export class ExportService {
       await this.dailyLotLocatorStockRepository.getReportAgeOfItemStock(
         request,
       );
+    await this.getInfoWarehouse(request, data, true);
     const dataMapped = getSituationTransferMapped(data, this.i18n);
     switch (request.exportType) {
       case ExportType.EXCEL:
@@ -194,18 +199,7 @@ export class ExportService {
         request,
         OrderType.EXPORT,
       );
-    let company = await this.userService.getCompanies({
-      code: request.companyCode,
-    });
-    company = company?.data?.pop();
-    if (!data.length) {
-      data[0] = {
-        _id: {
-          companyName: company?.name,
-          companyAddress: company?.address,
-        },
-      } as any;
-    }
+    await this.getInfoWarehouse(request, data, true);
     const dataMapped = getSituationExportPeriodMapped(data, this.i18n);
     switch (request.exportType) {
       case ExportType.EXCEL:
@@ -235,18 +229,7 @@ export class ExportService {
         request,
         OrderType.IMPORT,
       );
-    let company = await this.userService.getCompanies({
-      code: request.companyCode,
-    });
-    company = company?.data?.pop();
-    if (!data.length) {
-      data[0] = {
-        _id: {
-          companyName: company?.name,
-          companyAddress: company?.address,
-        },
-      } as any;
-    }
+    await this.getInfoWarehouse(request, data, true);
 
     const dataMapped = getSituationImportPeriod(data, this.i18n);
 
@@ -278,18 +261,7 @@ export class ExportService {
         request,
         OrderType.INVENTORY,
       );
-    let company = await this.userService.getCompanies({
-      code: request.companyCode,
-    });
-    company = company?.data?.pop();
-    if (!data.length) {
-      data[0] = {
-        _id: {
-          companyName: company?.name,
-          companyAddress: company?.address,
-        },
-      } as any;
-    }
+    await this.getInfoWarehouse(request, data, true);
     const dataMaped = getSituationInventoryPeriod(data, this.i18n);
     switch (request.exportType) {
       case ExportType.EXCEL:
@@ -319,18 +291,8 @@ export class ExportService {
         request,
         OrderType.TRANSFER,
       );
-    let company = await this.userService.getCompanies({
-      code: request.companyCode,
-    });
-    company = company?.data?.pop();
-    if (!data.length) {
-      data[0] = {
-        _id: {
-          companyName: company?.name,
-          companyAddress: company?.address,
-        },
-      } as any;
-    }
+    await this.getInfoWarehouse(request, data, true);
+
     const dataMapped = getSituationTransfer(data, this.i18n);
     switch (request.exportType) {
       case ExportType.EXCEL:
@@ -355,19 +317,7 @@ export class ExportService {
       request,
       OrderType.EXPORT,
     );
-    let company = await this.userService.getCompanies({
-      code: request.companyCode,
-    });
-    company = company?.data?.pop();
-    let isEmpty = false;
-
-    if (!data.length) {
-      isEmpty = true;
-      data[0] = {
-        companyName: company?.name,
-        companyAddress: company?.address,
-      } as any;
-    }
+    let isEmpty = await this.getInfoWarehouse(request, data);
 
     const dataMapped = getOrderExportByRequestForItemMapped(
       data,
@@ -487,18 +437,7 @@ export class ExportService {
       }
     }
     const data = Object.values(keyByDailyItem);
-    let company = await this.userService.getCompanies({
-      code: request.companyCode,
-    });
-    company = company?.data?.pop();
-    let isEmpty = false;
-    if (!data.length) {
-      isEmpty = true;
-      data.push({
-        companyName: company?.name,
-        companyAddress: company?.address,
-      } as any);
-    }
+    let isEmpty = await this.getInfoWarehouse(request, data);
     const dataMapping = getItemInventoryDataMapping(data, this.i18n, isEmpty);
     switch (request.exportType) {
       case ExportType.EXCEL:
@@ -573,21 +512,7 @@ export class ExportService {
       request,
       OrderType.IMPORT,
     );
-    let company = await this.userService.getCompanies({
-      code: request.companyCode,
-    });
-
-    company = company?.data?.pop();
-    let isEmpty = false;
-    if (!data.length) {
-      isEmpty = true;
-      data.push({
-        _id: {
-          companyName: company?.name,
-          companyAddress: company?.address,
-        },
-      } as any);
-    }
+    await this.getInfoWarehouse(request, data, true);
     const dataMapped = getItemImportedButNotPutToPositionMapped(
       data,
       this.i18n,
@@ -619,19 +544,7 @@ export class ExportService {
       request,
       OrderType.IMPORT,
     );
-    let company = await this.userService.getCompanies({
-      code: request.companyCode,
-    });
-
-    company = company?.data?.pop();
-    let isEmpty = false;
-    if (!data.length) {
-      isEmpty = true;
-      data.push({
-        companyName: company?.name,
-        companyAddress: company?.address,
-      } as any);
-    }
+    let isEmpty = await this.getInfoWarehouse(request, data);
 
     const dataMapped = getOrderImportIncompletedMapped(
       data,
@@ -666,20 +579,7 @@ export class ExportService {
       request,
       OrderType.EXPORT,
     );
-    let company = await this.userService.getCompanies({
-      code: request.companyCode,
-    });
-
-    company = company?.data?.pop();
-    let isEmpty = false;
-    if (!data.length) {
-      isEmpty = true;
-      data.push({
-        companyName: company?.name,
-        companyAddress: company?.address,
-      } as any);
-    }
-
+    let isEmpty = await this.getInfoWarehouse(request, data);
     const dataMapped = getOrderExportIncompletedMapped(
       data,
       this.i18n,
@@ -712,19 +612,7 @@ export class ExportService {
       request,
       OrderType.TRANSFER,
     );
-    let company = await this.userService.getCompanies({
-      code: request.companyCode,
-    });
-
-    company = company?.data?.pop();
-    let isEmpty = false;
-    if (!data.length) {
-      isEmpty = true;
-      data.push({
-        companyName: company?.name,
-        companyAddress: company?.address,
-      } as any);
-    }
+    let isEmpty = await this.getInfoWarehouse(request, data);
     const dataMapped = getOrderTransferIncompletedMapped(
       data,
       this.i18n,
@@ -758,19 +646,8 @@ export class ExportService {
       request,
       data,
     );
-    let company = await this.userService.getCompanies({
-      code: request.companyCode,
-    });
+    let isEmpty = await this.getInfoWarehouse(request, data);
 
-    company = company?.data?.pop();
-    let isEmpty = false;
-    if (!data.length) {
-      isEmpty = true;
-      data.push({
-        companyName: company?.name,
-        companyAddress: company?.address,
-      } as any);
-    }
     const dataMapped = getItemInventoryBelowMinimum(data, this.i18n, isEmpty);
     switch (request.exportType) {
       case ExportType.EXCEL:
@@ -799,19 +676,7 @@ export class ExportService {
       request,
       data,
     );
-    let company = await this.userService.getCompanies({
-      code: request.companyCode,
-    });
-
-    company = company?.data?.pop();
-    let isEmpty = false;
-    if (!data.length) {
-      isEmpty = true;
-      data.push({
-        companyName: company?.name,
-        companyAddress: company?.address,
-      } as any);
-    }
+    let isEmpty = await this.getInfoWarehouse(request, data);
     const dataMaped = getItemInventoryBelowSafe(data, this.i18n, isEmpty);
     switch (request.exportType) {
       case ExportType.EXCEL:
@@ -831,5 +696,46 @@ export class ExportService {
       default:
         return;
     }
+  }
+
+  private async getInfoWarehouse(
+    request: ReportRequest,
+    data = [],
+    parentObject?: boolean,
+  ) {
+    let isEmpty = false;
+    if (!data.length) {
+      let company = await this.userService.getCompanies({
+        code: request.companyCode,
+      });
+
+      let warehouse = '';
+      if (request.warehouseCode) {
+        const warehouseHq =
+          await this.warehouseServiceInterface.getWarehouseByCode(
+            request.warehouseCode,
+          );
+        if (warehouseHq) warehouse = warehouseHq?.name || '';
+      }
+
+      company = company?.data?.pop();
+      if (parentObject) {
+        data.push({
+          _id: {
+            companyName: company?.name,
+            companyAddress: company?.address,
+            warehouseName: warehouse,
+          },
+        } as any);
+      } else {
+        data.push({
+          companyName: company?.name,
+          companyAddress: company?.address,
+          warehouseName: warehouse,
+        } as any);
+      }
+      isEmpty = true;
+    }
+    return isEmpty;
   }
 }
