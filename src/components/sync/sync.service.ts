@@ -625,7 +625,6 @@ export class SyncService {
         transactionitems.push(temp);
       }
       await this.transactionItemRepository.create(transactionitems);
-      await this.updateLocator(request);
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.SUCCESS)
         .withMessage(await this.i18n.translate('success.SUCCESS'))
@@ -668,27 +667,5 @@ export class SyncService {
       .withCode(ResponseCodeEnum.SUCCESS)
       .withMessage(await this.i18n.translate('success.SUCCESS'))
       .build();
-  }
-
-  async updateLocator(request: TransactionRequest) {
-    const orderItemLotsToBeSaved = [];
-    for (const itemRequest of request.data) {
-      const orderItemLots =
-        await this.reportOrderItemLotRepository.findAllByCondition({
-          orderCode: itemRequest.orderCode,
-          companyCode: request?.company?.code,
-          warehouseCode: itemRequest?.warehouse?.code,
-          itemCode: itemRequest.itemCode,
-          lotNumber: itemRequest?.lotNumber?.toLowerCase(),
-        });
-      for (const item of orderItemLots) {
-        if (item) {
-          item.locatorName = itemRequest?.locator?.code;
-          item.locatorCode = itemRequest?.locator?.name;
-          orderItemLotsToBeSaved.push(item);
-        }
-      }
-      await this.reportOrderItemLotRepository.saveMany(orderItemLotsToBeSaved);
-    }
   }
 }

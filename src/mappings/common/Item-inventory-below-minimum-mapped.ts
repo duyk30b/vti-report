@@ -28,8 +28,8 @@ export function getItemInventoryBelowMinimum(
         itemCode: cur.itemCode,
         itemName: cur.itemName,
         unit: cur.unit,
-        stockQuantity: cur.stockQuantity,
         minInventoryLimit: cur.minInventoryLimit,
+        stockQuantity: cur.stockQuantity,
       });
       return prev;
     }, {});

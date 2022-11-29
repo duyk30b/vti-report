@@ -1,4 +1,6 @@
 import { UserModule } from '@components/user/user.module';
+import { WarehouseService } from '@components/warehouse/warehouse.service';
+import { ConfigService } from '@core/config/config.service';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DailyLotLocatorStockRepository } from '@repositories/daily-lot-locator-stock.repository';
@@ -32,6 +34,7 @@ import {
 
 import { ExportController } from './export.controller';
 import { ExportService } from './export.service';
+import { WarehouseModule } from '@components/warehouse/warehouse.module';
 
 @Module({
   imports: [
@@ -62,14 +65,19 @@ import { ExportService } from './export.service';
       },
     ]),
     UserModule,
+    WarehouseModule,
   ],
   controllers: [ExportController],
   providers: [
+    ConfigService,
+    {
+      provide: 'WarehouseServiceInterface',
+      useClass: WarehouseService,
+    },
     {
       provide: ExportService.name,
       useClass: ExportService,
     },
-
     {
       provide: DailyWarehouseItemStockRepository.name,
       useClass: DailyWarehouseItemStockRepository,
