@@ -242,7 +242,7 @@ export async function generateReportItemInventoryBelowMinimum(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.minInventoryLimit + '',
+                                  text: (item.minInventoryLimit || '') + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],

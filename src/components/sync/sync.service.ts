@@ -574,57 +574,23 @@ export class SyncService {
           orderDetailId: item.orderDetailId,
           actionType: item.actionType,
           lotNumber: item?.lotNumber?.toLowerCase(),
-          reason: undefined,
-          explain: undefined,
-          note: undefined,
           locatorName: item?.locator?.code,
           locatorCode: item?.locator?.name,
-          unit: undefined,
-          performerName: undefined,
-          qrCode: undefined,
-          warehouseTargetCode: undefined,
-          warehouseTargetName: undefined,
-          contract: undefined,
-          providerCode: undefined,
-          providerName: undefined,
-          departmentReceiptCode: undefined,
-          departmentReceiptName: undefined,
-          account: undefined,
-          accountDebt: undefined,
-          accountHave: undefined,
-          warehouseExportProposals: undefined,
           itemName: item.itemCode,
           itemCode: item.itemName,
           planQuantity: item.planQuantity,
           actualQuantity: item.actualQuantity,
-          receivedQuantity: item.receivedQuantity,
-          storedQuantity: item.storedQuantity,
-          collectedQuantity: item.collectedQuantity,
-          exportedQuantity: item.exportedQuantity,
-          storageCost: item.storageCost,
-          receiptNumber: undefined,
           orderCode: item.orderCode,
-          orderCreatedAt: undefined,
           warehouseCode: item?.warehouse?.code,
           warehouseName: item?.warehouse?.name,
           orderType: item.orderType,
-          planDate: undefined,
-          status: item.status,
-          completedAt: undefined,
-          ebsNumber: undefined,
           companyCode: request.company.code,
           companyName: request.company.name,
           companyAddress: request.company.address,
-          constructionCode: undefined,
-          constructionName: undefined,
-          description: undefined,
-        };
-        if (item?.locator) {
-        }
+        } as any;
         transactionitems.push(temp);
       }
       await this.transactionItemRepository.create(transactionitems);
-      await this.updateLocator(request);
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.SUCCESS)
         .withMessage(await this.i18n.translate('success.SUCCESS'))
@@ -667,27 +633,5 @@ export class SyncService {
       .withCode(ResponseCodeEnum.SUCCESS)
       .withMessage(await this.i18n.translate('success.SUCCESS'))
       .build();
-  }
-
-  async updateLocator(request: TransactionRequest) {
-    const orderItemLotsToBeSaved = [];
-    for (const itemRequest of request.data) {
-      const orderItemLots =
-        await this.reportOrderItemLotRepository.findAllByCondition({
-          orderCode: itemRequest.orderCode,
-          companyCode: request?.company?.code,
-          warehouseCode: itemRequest?.warehouse?.code,
-          itemCode: itemRequest.itemCode,
-          lotNumber: itemRequest?.lotNumber?.toLowerCase(),
-        });
-      for (const item of orderItemLots) {
-        if (item) {
-          item.locatorName = itemRequest?.locator?.code;
-          item.locatorCode = itemRequest?.locator?.name;
-          orderItemLotsToBeSaved.push(item);
-        }
-      }
-      await this.reportOrderItemLotRepository.saveMany(orderItemLotsToBeSaved);
-    }
   }
 }

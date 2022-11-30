@@ -4,7 +4,7 @@ import {
   WarehouseTransferStatusEnum,
 } from '@enums/order-status.enum';
 import { OrderType } from '@enums/order-type.enum';
-import { ReportType } from '@enums/report-type.enum';
+import { ActionType, ReportType } from '@enums/report-type.enum';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ReportRequest } from '@requests/report.request';
@@ -582,7 +582,7 @@ function reportSituationExport(
                 else: '$actualQuantity',
               },
             },
-            locatorCode: '$locatorCode',
+            locatorCode: '$transactionItem.locatorCode',
             storageCost: '$storageCost',
             totalPrice: {
               $cond: {
@@ -714,7 +714,7 @@ function reportSituationImport(
                 else: '$actualQuantity',
               },
             },
-            locatorCode: '$locatorCode',
+            locatorCode: '$transactionItem.locatorCode',
             storageCost: '$storageCost',
             totalPrice: {
               $cond: {
@@ -809,7 +809,7 @@ function reportSituationTransfer(
 ) {
   return reportOrderItemLot.aggregate([
     { $match: condition },
-    ...getCommonConditionSituation(),
+    ...getCommonConditionSituation(true),
     {
       $sort: { itemCode: 1 },
     },
@@ -843,7 +843,7 @@ function reportSituationTransfer(
                 else: '$actualQuantity',
               },
             },
-            locatorCode: '$locatorCode',
+            locatorCode: '$transactionItem.locatorCode',
             storageCost: '$storageCost',
             totalPrice: {
               $cond: {
@@ -914,7 +914,21 @@ function reportSituationTransfer(
   ]);
 }
 
-function getCommonConditionSituation() {
+function getCommonConditionSituation(isTransfer?: boolean) {
+  const condition = {
+    $and: [
+      { $eq: ['$itemCode', '$$itemCode'] },
+      { $eq: ['$companyCode', '$$companyCode'] },
+      { $eq: ['$warehouseCode', '$$warehouseCode'] },
+      { $eq: ['$orderCode', '$$orderCode'] },
+      { $eq: ['$lotNumber', '$$lotNumber'] },
+    ],
+  };
+  if (isTransfer) {
+    condition['$and'].push({ $eq: ['$actionType', ActionType.EXPORT as any] });
+  }
+  console.log(JSON.stringify(condition));
+
   return [
     {
       $lookup: {
@@ -931,14 +945,7 @@ function getCommonConditionSituation() {
           {
             $match: {
               $expr: {
-                $and: [
-                  { $eq: ['$itemCode', '$$itemCode'] },
-                  { $eq: ['$companyCode', '$$companyCode'] },
-                  { $eq: ['$warehouseCode', '$$warehouseCode'] },
-                  { $eq: ['$orderCode', '$$orderCode'] },
-                  { $eq: ['$lotNumber', '$$lotNumber'] },
-                  { $eq: ['$status', '$$status'] },
-                ],
+                ...condition,
               },
             },
           },

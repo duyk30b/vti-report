@@ -18,21 +18,19 @@ export function getItemInventoryBelowSafe(
 
   if (!isEmpty) {
     const groupByWarehouseCode = data.reduce((prev, cur) => {
-      if (cur.warehouseCode && cur.warehouseName) {
-        const warehouseCode = cur.warehouseCode + ' - ' + cur.warehouseName;
-        if (!prev[warehouseCode]) {
-          prev[warehouseCode] = [];
-        }
-        prev[warehouseCode].push({
-          index: 0,
-          itemCode: cur.itemCode,
-          itemName: cur.itemName,
-          unit: cur.unit,
-          inventoryLimit: cur.inventoryLimit,
-          stockQuantity: cur.stockQuantity,
-        });
-        return prev;
+      const warehouseCode = cur.warehouseCode + ' - ' + cur.warehouseName;
+      if (!prev[warehouseCode]) {
+        prev[warehouseCode] = [];
       }
+      prev[warehouseCode].push({
+        index: 0,
+        itemCode: cur.itemCode,
+        itemName: cur.itemName,
+        unit: cur.unit,
+        inventoryLimit: cur.inventoryLimit,
+        stockQuantity: cur.stockQuantity,
+      });
+      return prev;
     }, {});
     const dataExcell: TableData<ReportInventoryBelowSafeModel>[] = [];
 
