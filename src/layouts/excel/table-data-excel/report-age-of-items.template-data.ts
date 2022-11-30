@@ -272,14 +272,14 @@ export function reportAgeOfItemsTemplateData(
             },
             {
               nameCell: `I${curRowIdx}`,
-              value: order.totalPrice,
+              value: order.stockQuantity,
               font: FONT_NORMAL_9,
               border: BORDER,
               aligment: ALIGNMENT_RIGHT,
             },
             {
               nameCell: `J${curRowIdx}`,
-              value: order.unit,
+              value: order.storageCost,
               font: FONT_NORMAL_9,
               border: BORDER,
               aligment: ALIGNMENT_RIGHT,

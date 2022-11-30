@@ -350,7 +350,7 @@ export async function generateReportOrderExportIncompleted(
                       new Paragraph({
                         children: [
                           new TextRun({
-                            text: 'Bình Thuận,  ngày ... tháng ... năm ....',
+                            text: i18n.translate('report.REPORT_FOOTER_DATE'),
                             ...wordFileStyle.text_style,
                           }),
                         ],
@@ -386,7 +386,9 @@ export async function generateReportOrderExportIncompleted(
                       new Paragraph({
                         children: [
                           new TextRun({
-                            text: 'Người lập biểu',
+                            text: i18n.translate(
+                              'report.REPORT_FOOTER_SCHEDULER',
+                            ),
                             ...wordFileStyle.text_style_bold,
                           }),
                         ],
@@ -404,7 +406,9 @@ export async function generateReportOrderExportIncompleted(
                       new Paragraph({
                         children: [
                           new TextRun({
-                            text: 'Thủ kho',
+                            text: i18n.translate(
+                              'report.REPORT_FOOTER_STOCKER',
+                            ),
                             ...wordFileStyle.text_style_bold,
                           }),
                         ],

@@ -927,7 +927,6 @@ function getCommonConditionSituation(isTransfer?: boolean) {
   if (isTransfer) {
     condition['$and'].push({ $eq: ['$actionType', ActionType.EXPORT as any] });
   }
-  console.log(JSON.stringify(condition));
 
   return [
     {

@@ -584,9 +584,9 @@ export class SyncService {
           warehouseCode: item?.warehouse?.code,
           warehouseName: item?.warehouse?.name,
           orderType: item.orderType,
-          companyCode: request.company.code,
-          companyName: request.company.name,
-          companyAddress: request.company.address,
+          companyCode: request?.company?.code,
+          companyName: request?.company?.name,
+          companyAddress: request?.company?.address,
         } as any;
         transactionitems.push(temp);
       }
