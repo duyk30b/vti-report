@@ -15,7 +15,7 @@ export class WarehouseService implements WarehouseServiceInterface {
       .send('get_warehouses_by_code', { code })
       .toPromise();
 
-    if (response.statusCode !== ResponseCodeEnum.SUCCESS) {
+    if (response?.statusCode !== ResponseCodeEnum.SUCCESS) {
       return null;
     }
     return response.data;
