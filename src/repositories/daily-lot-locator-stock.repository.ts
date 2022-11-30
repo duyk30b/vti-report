@@ -585,6 +585,27 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
         $sort: { storageDate: -1 },
       },
       {
+        $project: {
+          companyCode: '$companyCode',
+          companyName: '$companyName',
+          companyAddress: '$companyAddress',
+          warehouseCode: '$warehouseCode',
+          warehouseName: '$warehouseName',
+          itemCode: '$itemCode',
+          itemName: '$itemName',
+          storageDate: '$storageDate',
+          origin: '$origin',
+          account: '$account',
+          lotNumber: '$lotNumber',
+          locatorCode: '$locatorCode',
+          unit: '$unit',
+          stockQuantity: '$stockQuantity',
+          storageCost: '$storageCost',
+          totalPrice: { $multiply: ['$storageCost', '$stockQuantity'] },
+          ...getQueryAgeOfItems(),
+        },
+      },
+      {
         $group: {
           _id: {
             companyCode: '$companyCode',
@@ -605,8 +626,14 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
               unit: '$unit',
               stockQuantity: '$stockQuantity',
               storageCost: '$storageCost',
-              totalPrice: { $multiply: ['$storageCost', '$stockQuantity'] },
-              ...getQueryAgeOfItems(),
+              totalPrice: '$totalPrice',
+              sixMonthAgo: '$sixMonthAgo',
+              oneYearAgo: '$oneYearAgo',
+              twoYearAgo: '$twoYearAgo',
+              threeYearAgo: '$threeYearAgo',
+              fourYearAgo: '$fourYearAgo',
+              fiveYearAgo: '$fiveYearAgo',
+              greaterfiveYear: '$greaterfiveYear',
             },
           },
         },
@@ -673,16 +700,6 @@ function getQueryAgeOfItems(sum = false) {
   const threeYearAgo = moment().subtract(3, YEARS).format(FORMAT_DATE);
   const fourYearAgo = moment().subtract(4, YEARS).format(FORMAT_DATE);
   const fiveYearAgo = moment().subtract(5, YEARS).format(FORMAT_DATE);
-
-  console.log({
-    sixMonthAgo,
-    oneYearAgo,
-    twoYearAgo,
-    threeYearAgo,
-    fourYearAgo,
-    fiveYearAgo,
-  });
-
   return {
     sixMonthAgo: {
       $cond: [
