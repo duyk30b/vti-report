@@ -416,26 +416,6 @@ export class ExportService {
       }
     }
 
-    if (OrderItemLot.length) {
-      for (const itemLot of OrderItemLot) {
-        const key = [
-          itemLot?.companyCode,
-          itemLot?.warehouseCode,
-          itemLot?.itemCode,
-          itemLot?.lotNumber,
-        ].join('_');
-
-        if (!keyByDailyItem[key]) {
-          itemLot['stockStart'] = 0;
-          itemLot['stockEnd'] = 0;
-          itemLot['totalStockStart'] = 0;
-          itemLot['totalStockEnd'] = 0;
-          itemLot['totalImportIn'] = itemLot.storageCost * itemLot.importIn;
-          itemLot['totalExportIn'] = itemLot.storageCost * itemLot.exportIn;
-          keyByDailyItem[key] = itemLot;
-        }
-      }
-    }
     const data = Object.values(keyByDailyItem);
     let isEmpty = await this.getInfoWarehouse(request, data);
     const dataMapping = getItemInventoryDataMapping(data, this.i18n, isEmpty);
@@ -700,7 +680,7 @@ export class ExportService {
 
   private async getInfoWarehouse(
     request: ReportRequest,
-    data = [],
+    data: any,
     parentObject?: boolean,
   ) {
     let isEmpty = false;
