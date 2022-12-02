@@ -579,6 +579,7 @@ export class SyncService {
           locatorCode: item?.locator?.name,
           itemName: item.itemCode,
           itemCode: item.itemName,
+          unit: item?.itemUnitName,
           planQuantity: item.planQuantity,
           actualQuantity: item.actualQuantity,
           orderCode: item.orderCode,
