@@ -74,6 +74,10 @@ export class SyncTransactionRequest {
 
   @ApiProperty()
   @IsOptional()
+  itemUnitName: string;
+
+  @ApiProperty()
+  @IsOptional()
   locator: DataCommont;
 }
 
