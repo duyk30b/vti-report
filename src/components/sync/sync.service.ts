@@ -298,14 +298,20 @@ export class SyncService {
 
       if (isUpdate) {
         await Promise.all([
-          this.reportOrderRepository.deleteAllByConditin({
+          this.reportOrderRepository.deleteAllByCondition({
             orderCode: request.code,
+            companyCode: request?.company?.code,
+            orderType: OrderType.TRANSFER,
           }),
-          this.reportOrderItemRepository.deleteAllByConditin({
+          this.reportOrderItemRepository.deleteAllByCondition({
             orderCode: request.code,
+            companyCode: request?.company?.code,
+            orderType: OrderType.TRANSFER,
           }),
-          this.reportOrderItemLotRepository.deleteAllByConditin({
+          this.reportOrderItemLotRepository.deleteAllByCondition({
             orderCode: request.code,
+            companyCode: request?.company?.code,
+            orderType: OrderType.TRANSFER,
           }),
         ]);
       }
@@ -407,14 +413,20 @@ export class SyncService {
       }
       if (isUpdate) {
         await Promise.all([
-          this.reportOrderRepository.deleteAllByConditin({
+          this.reportOrderRepository.deleteAllByCondition({
             orderCode: request.code,
+            companyCode: request?.company?.code,
+            orderType: OrderType.IMPORT,
           }),
-          this.reportOrderItemRepository.deleteAllByConditin({
+          this.reportOrderItemRepository.deleteAllByCondition({
             orderCode: request.code,
+            companyCode: request?.company?.code,
+            orderType: OrderType.IMPORT,
           }),
-          this.reportOrderItemLotRepository.deleteAllByConditin({
+          this.reportOrderItemLotRepository.deleteAllByCondition({
             orderCode: request.code,
+            companyCode: request?.company?.code,
+            orderType: OrderType.IMPORT,
           }),
         ]);
       }
@@ -518,14 +530,20 @@ export class SyncService {
       }
       if (isUpdate) {
         await Promise.all([
-          this.reportOrderRepository.deleteAllByConditin({
+          this.reportOrderRepository.deleteAllByCondition({
             orderCode: request.code,
+            companyCode: request?.company?.code,
+            orderType: OrderType.EXPORT,
           }),
-          this.reportOrderItemRepository.deleteAllByConditin({
+          this.reportOrderItemRepository.deleteAllByCondition({
             orderCode: request.code,
+            companyCode: request?.company?.code,
+            orderType: OrderType.EXPORT,
           }),
-          this.reportOrderItemLotRepository.deleteAllByConditin({
+          this.reportOrderItemLotRepository.deleteAllByCondition({
             orderCode: request.code,
+            companyCode: request?.company?.code,
+            orderType: OrderType.EXPORT,
           }),
         ]);
       }
