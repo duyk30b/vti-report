@@ -473,7 +473,7 @@ export class SyncService {
         companyAddress: request?.company?.address,
         constructionCode: request?.construction?.code || null,
         constructionName: request?.construction?.name || null,
-        description: null,
+        description: request?.explanation,
       };
 
       order.push(reportOrder);
