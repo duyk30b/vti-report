@@ -72,7 +72,7 @@ export abstract class BaseAbstractRepository<T>
     return await this.model.insertMany(data);
   }
 
-  public async deleteAllByConditin(data: T | any): Promise<any> {
+  public async deleteAllByCondition(data: T | any): Promise<any> {
     return await this.model.deleteMany(data);
   }
 
