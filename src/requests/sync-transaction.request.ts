@@ -1,19 +1,12 @@
 import { BaseDto } from '@core/dto/base.dto';
-import { OrderStatus } from '@enums/order-status.enum';
-import { OrderType } from '@enums/order-type.enum';
+import { OrderTypeEnum } from '@enums/order-type.enum';
 import { ActionType } from '@enums/report-type.enum';
 import { ApiProperty } from '@nestjs/swagger';
-import { TransactionItemInterface } from '@schemas/interface/TransactionItem.Interface';
-import { TransactionItem } from '@schemas/transaction-item.schema';
 import { Type } from 'class-transformer';
 import {
-  IsArray,
-  IsDateString,
   IsEnum,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
-  IsString,
   ValidateNested,
 } from 'class-validator';
 
@@ -46,7 +39,7 @@ export class SyncTransactionRequest {
 
   @ApiProperty()
   @IsOptional()
-  orderType: OrderType;
+  orderType: OrderTypeEnum;
 
   @ApiProperty()
   @IsOptional()
