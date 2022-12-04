@@ -5,4 +5,5 @@ export interface TransactionItemInterface extends ReportOrderItemLotInteface {
   actionType: ActionType;
   orderDetailId: number;
   transactionDate: Date;
+  movementType: number;
 }
