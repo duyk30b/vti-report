@@ -588,8 +588,9 @@ export class SyncService {
 
       const transactionitems: TransactionItemInterface[] = [];
       for (const item of request.data) {
-        let temp: TransactionItemInterface = {
+        const temp: TransactionItemInterface = {
           transactionDate: item.transactionDate,
+          movementType: item.movementType,
           orderDetailId: item.orderDetailId,
           actionType: item.actionType,
           lotNumber: item?.lotNumber?.toLowerCase(),

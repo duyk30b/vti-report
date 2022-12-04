@@ -164,6 +164,9 @@ export class TransactionItem
   accountHave: string;
 
   @Prop({ required: false })
+  movementType: number;
+
+  @Prop({ required: false })
   warehouseExportProposals: string; //Giấy đề nghị xuất VT
 
   @Prop({ required: false })

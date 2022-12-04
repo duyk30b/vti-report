@@ -26,6 +26,10 @@ export class SyncTransactionRequest {
 
   @ApiProperty()
   @IsOptional()
+  movementType: number;
+
+  @ApiProperty()
+  @IsOptional()
   orderCode: string;
 
   @ApiProperty()
