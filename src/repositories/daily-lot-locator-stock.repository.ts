@@ -1,11 +1,15 @@
+import { SyncDailyItemLotStockLocatorRequestDto } from '@components/sync/dto/request/sync-daily-item-stock-warehouse.request.dto';
 import { BaseAbstractRepository } from '@core/repository/base.abstract.repository';
 import { OrderType } from '@enums/order-type.enum';
+import { ActionType } from '@enums/report-type.enum';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ReportRequest } from '@requests/report.request';
 import { DailyWarehouseItemRequest } from '@requests/sync-daily.request';
+import { SyncItemStockLocatorByDate } from '@requests/sync-item-stock-locator-by-date';
 import { DailyLotLocatorStock } from '@schemas/daily-lot-locator-stock.schema';
-import { DATE_FOMAT, MONTHS, YEARS } from '@utils/constant';
+import { getTimezone } from '@utils/common';
+import { DATE_FOMAT, FORMAT_DATE, MONTHS, YEARS } from '@utils/constant';
 import * as moment from 'moment';
 import { Model } from 'mongoose';
 @Injectable()
@@ -15,6 +19,28 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
     private readonly dailyLotLocatorStock: Model<DailyLotLocatorStock>,
   ) {
     super(dailyLotLocatorStock);
+  }
+
+  createEntity(
+    dailyItemStockLocator: SyncDailyItemLotStockLocatorRequestDto,
+  ): DailyLotLocatorStock {
+    const document = new this.dailyLotLocatorStock();
+    document.itemName = dailyItemStockLocator?.itemName;
+    document.itemCode = dailyItemStockLocator?.itemCode;
+    document.unit = dailyItemStockLocator.unit;
+    document.warehouseName = dailyItemStockLocator?.warehouseName;
+    document.warehouseCode = dailyItemStockLocator?.warehouseCode;
+    document.locatorName = dailyItemStockLocator?.locatorName;
+    document.locatorCode = dailyItemStockLocator?.locatorCode;
+    document.companyCode = dailyItemStockLocator?.companyCode;
+    document.companyName = dailyItemStockLocator?.companyName;
+    document.companyAddress = dailyItemStockLocator?.companyAddress;
+    document.reportDate = dailyItemStockLocator?.reportDate;
+    document.stockQuantity = dailyItemStockLocator?.stockQuantity;
+    document.lotNumber = dailyItemStockLocator?.lotNumber;
+    document.storageDate = dailyItemStockLocator?.storageDate;
+    document.stockQuantity = dailyItemStockLocator?.stockQuantity;
+    return document;
   }
 
   async createMany(
@@ -41,11 +67,25 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       $and: [],
     };
 
-    if (request?.dateFrom) {
-      const today = moment(request?.dateTo).startOf('day');
-      const tomorrow = moment(today).endOf('day');
+    if (request?.dateFrom == getTimezone(undefined, FORMAT_DATE)) {
+      const prevDate = new Date(request?.dateFrom);
+      prevDate.setDate(prevDate.getDate() - 1);
       condition['$and'].push({
-        reportDate: { $gte: today, $lte: tomorrow },
+        $expr: {
+          $eq: [
+            { $dateToString: { date: '$reportDate', format: '%Y-%m-%d' } },
+            moment(prevDate).format(DATE_FOMAT),
+          ],
+        },
+      });
+    } else {
+      condition['$and'].push({
+        $expr: {
+          $eq: [
+            { $dateToString: { date: '$reportDate', format: '%Y-%m-%d' } },
+            moment(request?.dateFrom).format(DATE_FOMAT),
+          ],
+        },
       });
     }
     if (request?.companyCode)
@@ -63,32 +103,13 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       .lean();
   }
 
-  async getReportItemInventory(
-    request: ReportRequest,
-  ): Promise<DailyLotLocatorStock[]> {
+  async getReportItemInventory(request: ReportRequest): Promise<any[]> {
+    const curDate = getTimezone(undefined, FORMAT_DATE);
+    const prevDate = new Date(curDate);
+    prevDate.setDate(prevDate.getDate() - 1);
     const condition = {
       $and: [],
     };
-
-    const reportOrderItemLot = [];
-
-    if (request?.dateFrom) {
-      condition['$and'].push({
-        reportDate: { $gte: new Date(request?.dateFrom) },
-      });
-      reportOrderItemLot.push({
-        $gte: ['$orderCreatedAt', new Date(request?.dateFrom)],
-      });
-    }
-
-    if (request?.dateTo) {
-      condition['$and'].push({
-        reportDate: { $lte: new Date(request?.dateTo) },
-      });
-      reportOrderItemLot.push({
-        $lte: ['$orderCreatedAt', new Date(request?.dateTo)],
-      });
-    }
 
     if (request?.companyCode) {
       condition['$and'].push({
@@ -101,151 +122,377 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       });
     }
 
-    return this.dailyLotLocatorStock.aggregate([
-      {
-        $match: condition,
-      },
-      {
-        $project: {
-          companyCode: 1,
-          companyName: 1,
-          companyAddress: 1,
-          warehouseCode: 1,
-          warehouseName: 1,
-          itemCode: 1,
-          itemName: 1,
-          unit: 1,
-          lotNumber: 1,
-          storageCost: 1,
-          note: 1,
-          stockStart: {
-            $cond: [
+    //Điều kiện hàng tồn kho đầu và cuối kỳ
+    const conditionStockQuantity = {
+      stockStart: {
+        $cond: [
+          {
+            $eq: [
               {
-                $eq: [
-                  {
-                    $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
-                  },
-                  moment(request?.dateFrom || new Date()).format(DATE_FOMAT),
-                ],
+                $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
               },
-              '$stockQuantity',
-              0,
+              moment(request?.dateFrom).format(DATE_FOMAT),
             ],
           },
-          stockEnd: {
-            $cond: [
+          '$stockQuantity',
+          0,
+        ],
+      },
+      stockEnd: {
+        $cond: [
+          {
+            $eq: [
               {
-                $eq: [
-                  {
-                    $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
-                  },
-                  moment(request?.dateTo || new Date()).format(DATE_FOMAT),
-                ],
+                $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
               },
-              '$stockQuantity',
-              0,
+              moment(request?.dateTo).format(DATE_FOMAT),
             ],
           },
-        },
+          '$stockQuantity',
+          0,
+        ],
       },
-      {
-        $group: {
-          _id: {
-            companyCode: '$companyCode',
-            companyName: '$companyName',
-            companyAddress: '$companyAddress',
-            warehouseCode: '$warehouseCode',
-            warehouseName: '$warehouseName',
-            itemCode: '$itemCode',
-            itemName: '$itemName',
-            unit: '$unit',
-            lotNumber: '$lotNumber',
-            storageCost: '$storageCost',
-            reportDate: {
+    };
+
+    //================
+    let isCurDateStockStartDate = false;
+    let isCurDatestockEndDate = false;
+    let isCurBoth = false;
+    if (
+      request?.dateFrom === request?.dateTo &&
+      request?.dateFrom === curDate
+    ) {
+      isCurBoth = true;
+      conditionStockQuantity['stockStart'] = {
+        $cond: [
+          {
+            $eq: [
+              {
+                $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
+              },
+              moment(prevDate).format(DATE_FOMAT),
+            ],
+          },
+          '$stockQuantity',
+          0,
+        ],
+      };
+      conditionStockQuantity['stockEnd'] = {
+        $cond: [
+          {
+            $eq: [
+              {
+                $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
+              },
+              moment(prevDate).format(DATE_FOMAT),
+            ],
+          },
+          '$stockQuantity',
+          0,
+        ],
+      };
+      if (!condition['$or']) condition['$or'] = [];
+      condition['$or'].push({
+        $expr: {
+          $eq: [
+            {
               $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
             },
-            note: '$note',
-          },
-          stockStart: { $sum: '$stockStart' },
-          stockEnd: { $sum: '$stockEnd' },
-        },
-      },
-      {
-        $lookup: {
-          from: 'report-order-item-lot',
-          let: {
-            companyCode: '$_id.companyCode',
-            itemCode: '$_id.itemCode',
-            warehouseCode: '$_id.warehouseCode',
-            lotNumber: '$_id.lotNumber',
-          },
-          as: 'report-order-item-lot',
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ['$companyCode', '$$companyCode'] },
-                    { $eq: ['$warehouseCode', '$$warehouseCode'] },
-                    { $eq: ['$itemCode', '$$itemCode'] },
-                    { $eq: ['$lotNumber', '$$lotNumber'] },
-                    {
-                      $or: [
-                        {
-                          $eq: ['$orderType', OrderType.IMPORT],
-                        },
-                        {
-                          $eq: ['$orderType', OrderType.EXPORT],
-                        },
-                      ],
-                    },
-                    ...reportOrderItemLot,
-                  ],
-                },
-              },
-            },
-            {
-              $project: {
-                itemCode: 1,
-                orderType: 1,
-                importIn: {
-                  $cond: [
-                    {
-                      $eq: ['$orderType', OrderType.IMPORT],
-                    },
-                    '$actualQuantity',
-                    0,
-                  ],
-                },
-                exportIn: {
-                  $cond: [
-                    {
-                      $eq: ['$orderType', OrderType.EXPORT],
-                    },
-                    '$actualQuantity',
-                    0,
-                  ],
-                },
-              },
-            },
-            {
-              $group: {
-                _id: {
-                  itemCode: '$itemCode',
-                  orderType: '$orderType',
-                },
-                importIn: { $sum: '$importIn' },
-                exportIn: { $sum: '$exportIn' },
-              },
-            },
-            {
-              $project: {
-                _id: 0,
-              },
-            },
+            moment(prevDate).format(DATE_FOMAT),
           ],
         },
+      });
+    } else if (request?.dateFrom === curDate) {
+      isCurDateStockStartDate = true;
+      conditionStockQuantity['stockStart'] = {
+        $cond: [
+          {
+            $eq: [
+              {
+                $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
+              },
+              moment(prevDate).format(DATE_FOMAT),
+            ],
+          },
+          '$stockQuantity',
+          0,
+        ],
+      };
+      if (!condition['$or']) condition['$or'] = [];
+
+      condition['$or'].push({
+        $expr: {
+          $eq: [
+            {
+              $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
+            },
+            moment(prevDate).format(DATE_FOMAT),
+          ],
+        },
+      });
+
+      condition['$or'].push({
+        $expr: {
+          $eq: [
+            {
+              $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
+            },
+            moment(request?.dateTo).format(DATE_FOMAT),
+          ],
+        },
+      });
+    } else if (request?.dateTo === curDate) {
+      isCurDatestockEndDate = true;
+      conditionStockQuantity['stockEnd'] = {
+        $cond: [
+          {
+            $eq: [
+              {
+                $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
+              },
+              moment(prevDate).format(DATE_FOMAT),
+            ],
+          },
+          '$stockQuantity',
+          0,
+        ],
+      };
+      if (!condition['$or']) condition['$or'] = [];
+
+      condition['$or'].push({
+        $expr: {
+          $eq: [
+            {
+              $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
+            },
+            moment(request.dateFrom).format(DATE_FOMAT),
+          ],
+        },
+      });
+
+      condition['$or'].push({
+        $expr: {
+          $eq: [
+            {
+              $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
+            },
+            moment(prevDate).format(DATE_FOMAT),
+          ],
+        },
+      });
+    } else {
+      if (!condition['$or']) condition['$or'] = [];
+      condition['$or'].push({
+        $expr: {
+          $eq: [
+            {
+              $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
+            },
+            moment(request.dateFrom).format(DATE_FOMAT),
+          ],
+        },
+      });
+
+      condition['$or'].push({
+        $expr: {
+          $eq: [
+            {
+              $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
+            },
+            moment(request.dateTo).format(DATE_FOMAT),
+          ],
+        },
+      });
+    }
+
+    const aggregateState = [];
+    aggregateState.push({
+      $match: condition,
+    });
+    aggregateState.push({
+      $project: {
+        companyCode: 1,
+        companyName: 1,
+        companyAddress: 1,
+        warehouseCode: 1,
+        warehouseName: 1,
+        itemCode: 1,
+        itemName: 1,
+        unit: 1,
+        lotNumber: 1,
+        storageCost: 1,
+        note: 1,
+        ...conditionStockQuantity,
       },
+    });
+    aggregateState.push({
+      $group: {
+        _id: {
+          companyCode: '$companyCode',
+          companyName: '$companyName',
+          companyAddress: '$companyAddress',
+          warehouseCode: '$warehouseCode',
+          warehouseName: '$warehouseName',
+          itemCode: '$itemCode',
+          itemName: '$itemName',
+          unit: '$unit',
+          lotNumber: '$lotNumber',
+          storageCost: '$storageCost',
+          note: '$note',
+        },
+        stockStart: { $sum: '$stockStart' },
+        stockEnd: { $sum: '$stockEnd' },
+      },
+    });
+
+    let dateTransaction = null;
+    if (isCurDatestockEndDate) {
+      dateTransaction = request.dateTo;
+    } else if (isCurDateStockStartDate || isCurBoth) {
+      dateTransaction = request.dateFrom;
+    }
+
+    aggregateState.push({
+      $lookup: {
+        from: 'transaction-item',
+        let: {
+          companyCode: '$_id.companyCode',
+          warehouseCode: '$_id.warehouseCode',
+          itemCode: '$_id.itemCode',
+          lotNumber: '$_id.lotNumber',
+        },
+        as: 'transaction-item',
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ['$companyCode', '$$companyCode'] },
+                  { $eq: ['$warehouseCode', '$$warehouseCode'] },
+                  { $eq: ['$itemCode', '$$itemCode'] },
+                  { $eq: ['$lotNumber', '$$lotNumber'] },
+                  {
+                    $eq: [
+                      {
+                        $dateToString: {
+                          date: '$transactionDate',
+                          format: '%Y-%m-%d',
+                        },
+                      },
+                      dateTransaction,
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+          {
+            $project: {
+              itemCode: 1,
+              lotNumber: 1,
+              quantityExported: {
+                $cond: [
+                  {
+                    $eq: ['$actionType', ActionType.EXPORT],
+                  },
+                  {
+                    $subtract: [
+                      '$actualQuantity',
+                      { $multiply: ['$actualQuantity', 2] },
+                    ],
+                  },
+                  0,
+                ],
+              },
+              quantityImported: {
+                $cond: [
+                  {
+                    $eq: ['$actionType', ActionType.IMPORT],
+                  },
+                  '$actualQuantity',
+                  0,
+                ],
+              },
+            },
+          },
+        ],
+      },
+    });
+    if (isCurDatestockEndDate) {
+      aggregateState.push({
+        $project: {
+          _id: 1,
+          stockStart: 1,
+          stockEnd: {
+            $reduce: {
+              input: '$transaction-item',
+              initialValue: '$stockEnd',
+              in: {
+                $add: [
+                  '$$value',
+                  '$$this.quantityExported',
+                  '$$this.quantityImported',
+                ],
+              },
+            },
+          },
+        },
+      });
+    } else if (isCurDateStockStartDate) {
+      aggregateState.push({
+        $project: {
+          _id: 1,
+          stockEnd: 1,
+          stockStart: {
+            $reduce: {
+              input: '$transaction-item',
+              initialValue: '$stockStart',
+              in: {
+                $add: [
+                  '$$value',
+                  '$$this.quantityExported',
+                  '$$this.quantityImported',
+                ],
+              },
+            },
+          },
+        },
+      });
+    } else if (isCurBoth) {
+      aggregateState.push({
+        $project: {
+          _id: 1,
+          stockStart: {
+            $reduce: {
+              input: '$transaction-item',
+              initialValue: '$stockStart',
+              in: {
+                $add: [
+                  '$$value',
+                  '$$this.quantityExported',
+                  '$$this.quantityImported',
+                ],
+              },
+            },
+          },
+          stockEnd: {
+            $reduce: {
+              input: '$transaction-item',
+              initialValue: '$stockEnd',
+              in: {
+                $add: [
+                  '$$value',
+                  '$$this.quantityExported',
+                  '$$this.quantityImported',
+                ],
+              },
+            },
+          },
+        },
+      });
+    }
+
+    aggregateState.push(
       {
         $group: {
           _id: {
@@ -262,33 +509,14 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
               unit: '$_id.unit',
               lotNumber: '$_id.lotNumber',
               storageCost: '$_id.storageCost',
-
               stockStart: '$stockStart',
               totalStockStart: {
                 $multiply: ['$_id.storageCost', '$stockStart'],
               },
-
-              importIn: { $sum: '$report-order-item-lot.importIn' },
-              totalImportIn: {
-                $multiply: [
-                  '$_id.storageCost',
-                  { $sum: '$report-order-item-lot.importIn' },
-                ],
-              },
-
-              exportIn: { $sum: '$report-order-item-lot.exportIn' },
-              totalExportIn: {
-                $multiply: [
-                  '$_id.storageCost',
-                  { $sum: '$report-order-item-lot.exportIn' },
-                ],
-              },
-
               stockEnd: '$stockEnd',
               totalStockEnd: {
                 $multiply: ['$_id.storageCost', '$stockEnd'],
               },
-
               note: '$_id.note',
             },
           },
@@ -298,18 +526,30 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
         $sort: { warehouseCode: -1, itemCode: -1 },
       },
       {
-        $group: {
-          _id: {
-            companyCode: '$_id.companyCode',
-            companyName: '$_id.companyName',
-            companyAddress: '$_id.companyAddress',
-          },
-          warehouses: {
-            $push: '$items',
-          },
+        $unwind: { path: '$items' },
+      },
+      {
+        $project: {
+          _id: 0,
+          companyCode: '$_id.companyCode',
+          companyName: '$_id.companyName',
+          companyAddress: '$_id.companyAddress',
+          warehouseCode: '$_id.warehouseCode',
+          warehouseName: '$_id.warehouseName',
+          itemCode: '$items.itemCode',
+          itemName: '$items.itemName',
+          unit: '$items.unit',
+          lotNumber: '$items.lotNumber',
+          storageCost: '$items.storageCost',
+          stockStart: '$items.stockStart',
+          totalStockStart: '$items.totalStockStart',
+          stockEnd: '$items.stockEnd',
+          totalStockEnd: '$items.totalStockEnd',
+          note: '$items.note',
         },
       },
-    ]);
+    );
+    return this.dailyLotLocatorStock.aggregate(aggregateState);
   }
 
   async getReportAgeOfItemStock(
@@ -328,12 +568,42 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       condition['$and'].push({
         warehouseCode: { $eq: request?.warehouseCode },
       });
+
+    condition['$and'].push({
+      $expr: {
+        $eq: [
+          { $dateToString: { date: '$reportDate', format: '%Y-%m-%d' } },
+          moment(request?.dateFrom).format(DATE_FOMAT),
+        ],
+      },
+    });
     return this.dailyLotLocatorStock.aggregate([
       {
         $match: condition,
       },
       {
         $sort: { storageDate: -1 },
+      },
+      {
+        $project: {
+          companyCode: '$companyCode',
+          companyName: '$companyName',
+          companyAddress: '$companyAddress',
+          warehouseCode: '$warehouseCode',
+          warehouseName: '$warehouseName',
+          itemCode: '$itemCode',
+          itemName: '$itemName',
+          storageDate: '$storageDate',
+          origin: '$origin',
+          account: '$account',
+          lotNumber: '$lotNumber',
+          locatorCode: '$locatorCode',
+          unit: '$unit',
+          stockQuantity: '$stockQuantity',
+          storageCost: '$storageCost',
+          totalPrice: { $multiply: ['$storageCost', '$stockQuantity'] },
+          ...getQueryAgeOfItems(),
+        },
       },
       {
         $group: {
@@ -355,9 +625,15 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
               locatorCode: '$locatorCode',
               unit: '$unit',
               stockQuantity: '$stockQuantity',
-              cost: '$cost',
-              totalPrice: { $multiply: ['$cost', '$stockQuantity'] },
-              ...getQueryAgeOfItems(),
+              storageCost: '$storageCost',
+              totalPrice: '$totalPrice',
+              sixMonthAgo: '$sixMonthAgo',
+              oneYearAgo: '$oneYearAgo',
+              twoYearAgo: '$twoYearAgo',
+              threeYearAgo: '$threeYearAgo',
+              fourYearAgo: '$fourYearAgo',
+              fiveYearAgo: '$fiveYearAgo',
+              greaterfiveYear: '$greaterfiveYear',
             },
           },
         },
@@ -418,17 +694,24 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
 }
 
 function getQueryAgeOfItems(sum = false) {
-  const sixMonthAgo = moment().subtract(6, MONTHS).toISOString();
-  const oneYearAgo = moment().subtract(1, YEARS).toISOString();
-  const twoYearAgo = moment().subtract(2, YEARS).toISOString();
-  const threeYearAgo = moment().subtract(3, YEARS).toISOString();
-  const fourYearAgo = moment().subtract(4, YEARS).toISOString();
-  const fiveYearAgo = moment().subtract(5, YEARS).toISOString();
+  const sixMonthAgo = moment().subtract(6, MONTHS).format(FORMAT_DATE);
+  const oneYearAgo = moment().subtract(1, YEARS).format(FORMAT_DATE);
+  const twoYearAgo = moment().subtract(2, YEARS).format(FORMAT_DATE);
+  const threeYearAgo = moment().subtract(3, YEARS).format(FORMAT_DATE);
+  const fourYearAgo = moment().subtract(4, YEARS).format(FORMAT_DATE);
+  const fiveYearAgo = moment().subtract(5, YEARS).format(FORMAT_DATE);
   return {
     sixMonthAgo: {
       $cond: [
-        { $gt: ['$storageDate', new Date(sixMonthAgo)] },
-        { $multiply: ['$cost', '$stockQuantity'] },
+        {
+          $gt: [
+            {
+              $dateToString: { date: '$storageDate', format: '%Y-%m-%d' },
+            },
+            sixMonthAgo,
+          ],
+        },
+        { $multiply: ['$storageCost', '$stockQuantity'] },
         0,
       ],
     },
@@ -436,11 +719,25 @@ function getQueryAgeOfItems(sum = false) {
       $cond: [
         {
           $and: [
-            { $lte: ['$storageDate', new Date(sixMonthAgo)] },
-            { $gt: ['$storageDate', new Date(oneYearAgo)] },
+            {
+              $lte: [
+                {
+                  $dateToString: { date: '$storageDate', format: '%Y-%m-%d' },
+                },
+                sixMonthAgo,
+              ],
+            },
+            {
+              $gt: [
+                {
+                  $dateToString: { date: '$storageDate', format: '%Y-%m-%d' },
+                },
+                oneYearAgo,
+              ],
+            },
           ],
         },
-        { $multiply: ['$cost', '$stockQuantity'] },
+        { $multiply: ['$storageCost', '$stockQuantity'] },
         0,
       ],
     },
@@ -448,11 +745,25 @@ function getQueryAgeOfItems(sum = false) {
       $cond: [
         {
           $and: [
-            { $lte: ['$storageDate', new Date(oneYearAgo)] },
-            { $gt: ['$storageDate', new Date(twoYearAgo)] },
+            {
+              $lte: [
+                {
+                  $dateToString: { date: '$storageDate', format: '%Y-%m-%d' },
+                },
+                oneYearAgo,
+              ],
+            },
+            {
+              $gt: [
+                {
+                  $dateToString: { date: '$storageDate', format: '%Y-%m-%d' },
+                },
+                twoYearAgo,
+              ],
+            },
           ],
         },
-        { $multiply: ['$cost', '$stockQuantity'] },
+        { $multiply: ['$storageCost', '$stockQuantity'] },
         0,
       ],
     },
@@ -460,11 +771,25 @@ function getQueryAgeOfItems(sum = false) {
       $cond: [
         {
           $and: [
-            { $lte: ['$storageDate', new Date(twoYearAgo)] },
-            { $gt: ['$storageDate', new Date(threeYearAgo)] },
+            {
+              $lte: [
+                {
+                  $dateToString: { date: '$storageDate', format: '%Y-%m-%d' },
+                },
+                twoYearAgo,
+              ],
+            },
+            {
+              $gt: [
+                {
+                  $dateToString: { date: '$storageDate', format: '%Y-%m-%d' },
+                },
+                threeYearAgo,
+              ],
+            },
           ],
         },
-        { $multiply: ['$cost', '$stockQuantity'] },
+        { $multiply: ['$storageCost', '$stockQuantity'] },
         0,
       ],
     },
@@ -472,11 +797,25 @@ function getQueryAgeOfItems(sum = false) {
       $cond: [
         {
           $and: [
-            { $lte: ['$storageDate', new Date(threeYearAgo)] },
-            { $gt: ['$storageDate', new Date(fourYearAgo)] },
+            {
+              $lte: [
+                {
+                  $dateToString: { date: '$storageDate', format: '%Y-%m-%d' },
+                },
+                threeYearAgo,
+              ],
+            },
+            {
+              $gt: [
+                {
+                  $dateToString: { date: '$storageDate', format: '%Y-%m-%d' },
+                },
+                fourYearAgo,
+              ],
+            },
           ],
         },
-        { $multiply: ['$cost', '$stockQuantity'] },
+        { $multiply: ['$storageCost', '$stockQuantity'] },
         0,
       ],
     },
@@ -484,20 +823,43 @@ function getQueryAgeOfItems(sum = false) {
       $cond: [
         {
           $and: [
-            { $lte: ['$storageDate', new Date(fourYearAgo)] },
-            { $gt: ['$storageDate', new Date(fiveYearAgo)] },
+            {
+              $lte: [
+                {
+                  $dateToString: { date: '$storageDate', format: '%Y-%m-%d' },
+                },
+                fourYearAgo,
+              ],
+            },
+            {
+              $gt: [
+                {
+                  $dateToString: { date: '$storageDate', format: '%Y-%m-%d' },
+                },
+                fiveYearAgo,
+              ],
+            },
           ],
         },
-        { $multiply: ['$cost', '$stockQuantity'] },
+        { $multiply: ['$storageCost', '$stockQuantity'] },
         0,
       ],
     },
     greaterfiveYear: {
       $cond: [
         {
-          $and: [{ $lt: ['$storageDate', new Date(fiveYearAgo)] }],
+          $and: [
+            {
+              $lt: [
+                {
+                  $dateToString: { date: '$storageDate', format: '%Y-%m-%d' },
+                },
+                fiveYearAgo,
+              ],
+            },
+          ],
         },
-        { $multiply: ['$cost', '$stockQuantity'] },
+        { $multiply: ['$storageCost', '$stockQuantity'] },
         0,
       ],
     },

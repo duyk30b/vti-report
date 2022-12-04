@@ -26,7 +26,7 @@ export const SITUATION_IMPORT_PERIOD_COLUMN: TableColumn[] = [
     width: 20,
   },
   {
-    name: 'RECEIVER_DEPARMENT',
+    name: 'DEPARTMENT_RECEIPT',
     width: 20,
   },
   {
@@ -43,7 +43,7 @@ export const SITUATION_IMPORT_PERIOD_COLUMN: TableColumn[] = [
   },
   {
     name: 'LOT',
-    width: 5,
+    width: 20,
   },
   {
     name: 'ACCOUNT',

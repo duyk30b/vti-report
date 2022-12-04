@@ -6,7 +6,7 @@ export interface DailyItemLotLocatorStockInterface {
   locatorCode: string;
   locatorName: string;
   storageDate: Date;
-  account: number;
+  account: string;
   companyCode: string;
   itemCode: string;
   itemName: string;

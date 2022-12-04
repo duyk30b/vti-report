@@ -1,7 +1,14 @@
 import { BaseDto } from '@core/dto/base.dto';
 import { ActionType } from '@enums/export-type.enum';
+import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Transform, Type } from 'class-transformer';
-import { IsArray } from 'class-validator';
+import {
+  IsArray,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  ValidateNested,
+} from 'class-validator';
 import {
   Company,
   Construction,
@@ -27,8 +34,6 @@ class Warehouse {
 
   code: string;
 
-  factory: Factory;
-
   manageByLot: number;
 }
 
@@ -50,8 +55,6 @@ export class WarehouseTransferResponse {
   sourceWarehouse: Warehouse;
 
   destinationWarehouse: Warehouse;
-
-  items: Item[];
 
   createdAt: Date;
 
@@ -80,68 +83,6 @@ export class WarehouseTransferResponse {
   explanation: string;
 }
 
-export class ItemType {
-  id: number;
-
-  name: string;
-
-  code: string;
-}
-
-export class ItemUnit {
-  id: number;
-
-  name: string;
-
-  code: string;
-}
-
-export class ItemGroup {
-  id: number;
-
-  name: string;
-
-  code: string;
-}
-
-class Factory {
-  id: number;
-
-  name: string;
-
-  code: string;
-}
-
-class LotNumber {
-  quantity: number;
-
-  lotNumber: string;
-}
-
-class Item {
-  id: number;
-
-  name: string;
-
-  code: string;
-
-  planQuantity: number;
-
-  actualQuantity: number;
-
-  exportedQuantity: number;
-
-  quantity: number;
-
-  itemType: ItemType;
-
-  itemGroup: ItemGroup;
-
-  itemUnit: ItemUnit;
-
-  lots: LotNumber[];
-}
-
 class ItemResponse {
   id: number;
 
@@ -151,150 +92,133 @@ class ItemResponse {
 
   code: string;
 
-  itemType: ItemType;
+  itemType: any;
 
-  itemGroup: ItemGroup;
+  itemGroup: any;
 
-  itemUnit: ItemUnit;
-}
-
-export class PackageResponse {
-  id: number;
-
-  name: string;
-
-  code: string;
-}
-
-export class WarehouseTransferDetailResponseDto {
-  id: number;
-
-  itemId: number;
-
-  warehouseTransferId: number;
-
-  planQuantity: number;
-
-  actualQuantity: number;
-
-  exportedQuantity: number;
-
-  item: ItemResponse[];
-}
-class Locator {
-  id: number;
-
-  name: string;
-
-  code: string;
-}
-
-export class WarehouseTransferDetailLotResponseDto {
-  id: number;
-
-  locatorId: number;
-
-  locator: Locator;
-
-  itemId: number;
-
-  warehouseTransferId: number;
-
-  warehouseTransferDetailId: number;
-
-  planQuantity: number;
-
-  actualQuantity: number;
-
-  exportedQuantity: number;
-
-  lotNumber: string;
-
-  mfg: string;
-
-  packageId: number;
-
-  package: PackageResponse;
-
-  item: ItemResponse[];
+  itemUnit: any;
 }
 
 class LotExport {
-  id: number;
-
+  @ApiProperty()
+  @IsOptional()
   mfg: string;
 
+  @ApiProperty()
+  @IsOptional()
   inventoryQuantity: number;
 
+  @ApiProperty()
+  @IsOptional()
   actualQuantity: number;
 
+  @ApiProperty()
+  @IsOptional()
   exportedQuantity: number;
 
+  @ApiProperty()
+  @IsOptional()
   collectedQuantity: number;
 
+  @ApiProperty()
+  @IsOptional()
   receivedQuantity: number;
 
+  @ApiProperty()
+  @IsOptional()
   planQuantity: number;
 
+  @ApiProperty()
+  @IsOptional()
   lotNumber: string;
-
-  warehouseShelfFloorId: number;
-
-  locationId: number;
 }
-class ItemExport {
-  id: number;
-
+class WarehouseTransferDetail {
+  @ApiProperty()
+  @IsOptional()
   name: string;
 
+  @ApiProperty()
+  @IsOptional()
   code: string;
+
+  @ApiProperty()
+  @IsOptional()
   price: string;
 
+  @ApiProperty()
+  @IsOptional()
   planQuantity: number;
 
+  @ApiProperty()
+  @IsOptional()
   actualQuantity: number;
 
+  @ApiProperty()
+  @IsOptional()
   exportedQuantity: number;
 
+  @ApiProperty()
+  @IsOptional()
   quantity: number;
 
-  itemUnit: ItemDetail;
+  @ApiProperty()
+  @IsOptional()
+  item: ItemResponse;
 
+  @ApiProperty()
+  @IsOptional()
   lots: LotExport[];
 }
 export class WarehouseTransferResponseDto extends WarehouseTransferResponse {
-  approvedAt: Date;
-
+  @ApiProperty()
+  @IsOptional()
   description: string;
 
-  sourceFactory: Factory;
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsArray()
+  @Type(() => WarehouseTransferDetail)
+  @ValidateNested({ each: true })
+  warehouseTransferDetails: WarehouseTransferDetail[];
 
-  destinationFactory: Factory;
-
-  items: Item[];
-
-  itemsExport: ItemExport[];
-
-  warehouseTransferDetails: WarehouseTransferDetailResponseDto[];
-
-  warehouseTransferDetailLots: WarehouseTransferDetailLotResponseDto[];
-
+  @ApiProperty()
+  @IsOptional()
   company: Company;
 
+  @ApiProperty()
+  @IsOptional()
   warehouseExportProposals: WarehouseExportProposal;
 
-  constructions: Construction;
+  @ApiProperty()
+  @IsOptional()
+  construction: Construction;
 
+  @ApiProperty()
+  @IsOptional()
   departmentReceipt: PoImportRelationData;
 
+  @ApiProperty()
+  @IsNotEmpty()
   syncCode: string;
 
+  @ApiProperty()
+  @IsOptional()
   ebsNumber: string;
 
+  @ApiProperty()
+  @IsOptional()
   qrCode: string;
 }
 
 export class SyncWarehouseTransferRequest extends BaseDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsEnum(ActionType)
   actionType: ActionType;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => WarehouseTransferResponseDto)
   data: WarehouseTransferResponseDto;
 }

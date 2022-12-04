@@ -11,12 +11,9 @@ import { Type } from 'class-transformer';
 import {
   ArrayMinSize,
   IsArray,
-  IsDateString,
   IsEnum,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
-  IsString,
   ValidateNested,
 } from 'class-validator';
 import { ReportOrderItemRequest } from './report-order-items.request';
@@ -26,57 +23,46 @@ export class DailyLotLocatorStockRequest
 {
   @ApiProperty()
   @IsOptional()
-  @IsString()
   lotNumber: string;
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
   stockQuantity: number;
 
   @ApiProperty()
   @IsOptional()
-  @IsDateString()
   reportDate: Date;
 
   @ApiProperty()
   @IsOptional()
-  @IsDateString()
   storageDate: Date;
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
-  account: number;
+  account: string;
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
   storageCost: number;
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
   minInventoryLimit: number;
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
   inventoryLimit: number;
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
   unit: string;
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
   origin: string;
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
   note: string;
 
   warehouseCode: string;
@@ -95,52 +81,42 @@ export class DailyItemLocatorStockRequest
 {
   @ApiProperty()
   @IsOptional()
-  @IsString()
   locatorName: string;
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
   locatorCode: string;
 
   @ApiProperty()
   @IsOptional()
-  @IsDateString()
   reportDate: Date;
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
   unit: string;
 
   @ApiProperty()
-  @IsString()
   @IsOptional()
   origin: string;
 
   @ApiProperty()
-  @IsString()
   @IsOptional()
   note: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @IsNumber()
+  @IsOptional()
   minInventoryLimit: number;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @IsNumber()
+  @IsOptional()
   inventoryLimit: number;
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
   stockQuantity: number;
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
   storageCost: number;
 
   @IsNotEmpty()
@@ -163,77 +139,66 @@ export class DailyWarehouseItemRequest
 {
   @ApiProperty()
   @IsNotEmpty()
-  @IsString()
+  syncCode: string;
+
+  @ApiProperty()
+  @IsOptional()
   itemName: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
+  @IsOptional()
   itemCode: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
+  @IsOptional()
   warehouseName: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
+  @IsOptional()
   warehouseCode: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
+  @IsOptional()
   companyCode: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
+  @IsOptional()
   companyName: string;
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
   companyAddress: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @IsDateString()
+  @IsOptional()
   reportDate: Date;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
+  @IsOptional()
   unit: string;
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
   origin: string;
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
   note: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @IsNumber()
+  @IsOptional()
   minInventoryLimit: number;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @IsNumber()
+  @IsOptional()
   inventoryLimit: number;
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
   stockQuantity: number;
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
   storageCost: number;
 
   @IsNotEmpty()
@@ -244,89 +209,6 @@ export class DailyWarehouseItemRequest
   dailyItemLocatorStocks: DailyItemLocatorStockRequest[];
 }
 
-export class ReportOrderRequest implements ReportOrderInteface {
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  orderCode: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsDateString()
-  orderCreatedAt: Date;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  warehouseCode: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  warehouseName: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsEnum(OrderType)
-  orderType: OrderType;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsDateString()
-  planDate: Date;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsEnum(OrderStatus)
-  status: OrderStatus;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsDateString()
-  completedAt: Date;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  companyCode: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  companyName: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  companyAddress: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  constructionCode: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  constructionName: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  description: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  ebsNumber: string;
-
-  @IsNotEmpty()
-  @IsArray()
-  @ValidateNested({ each: true })
-  @ArrayMinSize(1)
-  @Type(() => ReportOrderItemRequest)
-  reportOrderItems: ReportOrderItemRequest[];
-}
 export class SyncDailyStockRequest extends BaseDto {
   @IsNotEmpty()
   @IsArray()
@@ -334,17 +216,4 @@ export class SyncDailyStockRequest extends BaseDto {
   @ArrayMinSize(1)
   @Type(() => DailyWarehouseItemRequest)
   dailyWarehouseItems: DailyWarehouseItemRequest[];
-}
-
-export class SyncDailyReportRequest extends BaseDto {
-  @IsNotEmpty()
-  @IsArray()
-  @ValidateNested({ each: true })
-  @ArrayMinSize(1)
-  @Type(() => ReportOrderRequest)
-  reportOrders: ReportOrderRequest[];
-
-  @IsNotEmpty()
-  @IsEnum(ActionType)
-  actionype: ActionType;
 }

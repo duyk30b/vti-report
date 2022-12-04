@@ -22,7 +22,6 @@ export async function reportAgeOfItemsExcelMapping(
     header: true,
     key: REPORT_INFO[ReportType[ReportType.AGE_OF_ITEM_STOCK]].key,
     dateFrom: request.dateFrom,
-    dateTo: request.dateTo,
     warehouse: request.warehouseCode ? data.warehouseName : null,
   };
 

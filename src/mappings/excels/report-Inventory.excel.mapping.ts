@@ -17,7 +17,7 @@ import { I18nRequestScopeService } from 'nestjs-i18n';
 
 export async function reportInventoryExcelMapping(
   request: ReportRequest,
-  data: ReportInfo<TableData<InventoryModel>[]>,
+  data: ReportInfo<any>,
   i18n: I18nRequestScopeService,
 ) {
   const formatByKey: FormatByKey<InventoryModel> = {
@@ -33,8 +33,8 @@ export async function reportInventoryExcelMapping(
   };
 
   const model: ReportModel<any> = {
-    childCompany: data[0]?.companyName,
-    addressChildCompany: data[0]?.companyAddress,
+    childCompany: data.companyName,
+    addressChildCompany: data.companyAddress,
     tableColumn: INVENTORY_COLUMN,
     tableData: data.dataMapped,
     header: false,
@@ -42,7 +42,7 @@ export async function reportInventoryExcelMapping(
     key: REPORT_INFO[ReportType[ReportType.INVENTORY]].key,
     dateFrom: request.dateFrom,
     dateTo: request?.dateTo,
-    warehouse: request.warehouseCode ? data[0].warehouseName : null,
+    warehouse: request.warehouseCode ? data.warehouseName : null,
   };
 
   const { dataBase64, nameFile } = await generateTable(

@@ -1,5 +1,5 @@
 import Big from 'big.js';
-
+const moment = require('moment-timezone');
 export const minus = (first: number, second: number): number => {
   return Number(new Big(first).minus(new Big(second)));
 };
@@ -21,6 +21,10 @@ export const escapeCharForSearch = (str: string): string => {
     return '\\' + x;
   });
 };
+
+export function getTimezone(date?: any, format?: string) {
+  return moment(date).tz('Asia/Ho_Chi_Minh').format(format);
+}
 
 export enum EnumSort {
   ASC = 'ASC',

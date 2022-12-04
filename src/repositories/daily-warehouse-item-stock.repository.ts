@@ -1,3 +1,4 @@
+import { SyncDailyItemStockWarehouseRequestDto } from '@components/sync/dto/request/sync-daily-item-stock-warehouse.request.dto';
 import { BaseAbstractRepository } from '@core/repository/base.abstract.repository';
 import { ReportType } from '@enums/report-type.enum';
 import { Injectable } from '@nestjs/common';
@@ -5,7 +6,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { ReportRequest } from '@requests/report.request';
 import { DailyWarehouseItemRequest } from '@requests/sync-daily.request';
 import { DailyWarehouseItemStock } from '@schemas/daily-warehouse-item-stock.schema';
-import { plus } from '@utils/common';
+import { getTimezone, plus } from '@utils/common';
+import { DATE_FOMAT, FORMAT_DATE } from '@utils/constant';
 import * as moment from 'moment';
 import { Model } from 'mongoose';
 
@@ -18,21 +20,29 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
     super(dailyWarehouseItemStock);
   }
 
+  createEntity(
+    dailyItemStockLocator: SyncDailyItemStockWarehouseRequestDto,
+  ): DailyWarehouseItemStock {
+    const document = new this.dailyWarehouseItemStock();
+    document.itemName = dailyItemStockLocator?.itemName;
+    document.itemCode = dailyItemStockLocator?.itemCode;
+    document.unit = dailyItemStockLocator.unit;
+    document.warehouseName = dailyItemStockLocator?.warehouseName;
+    document.warehouseCode = dailyItemStockLocator?.warehouseCode;
+    document.companyCode = dailyItemStockLocator?.companyCode;
+    document.companyName = dailyItemStockLocator?.companyName;
+    document.companyAddress = dailyItemStockLocator?.companyAddress;
+    document.reportDate = dailyItemStockLocator?.reportDate;
+    document.stockQuantity = dailyItemStockLocator?.stockQuantity;
+    return document;
+  }
+
   async createMany(
     dailyWarehouseItemRequests: DailyWarehouseItemRequest[],
   ): Promise<void> {
     for (const dailyWarehouseItemRequest of dailyWarehouseItemRequests) {
       const document = new this.dailyWarehouseItemStock();
       Object.assign(document, dailyWarehouseItemRequest);
-
-      document.stockQuantity = this.sumWarehouse(
-        dailyWarehouseItemRequest,
-        'stockQuantity',
-      );
-      document.storageCost = this.sumWarehouse(
-        dailyWarehouseItemRequest,
-        'storageCost',
-      );
 
       await document.save();
     }
@@ -80,14 +90,6 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
         break;
     }
 
-    if (request?.dateFrom) {
-      const today = moment(request?.dateFrom).startOf('day');
-      const tomorrow = moment(today).endOf('day');
-      condition['$and'].push({
-        reportDate: { $gte: today, $lte: tomorrow },
-      });
-    }
-
     if (request?.companyCode)
       condition['$and'].push({
         companyCode: { $eq: request?.companyCode },
@@ -96,6 +98,28 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
       condition['$and'].push({
         warehouseCode: { $eq: request?.warehouseCode },
       });
+
+    if (request?.dateFrom == getTimezone(undefined, FORMAT_DATE)) {
+      const prevDate = new Date(request?.dateFrom);
+      prevDate.setDate(prevDate.getDate() - 1);
+      condition['$and'].push({
+        $expr: {
+          $eq: [
+            { $dateToString: { date: '$reportDate', format: '%Y-%m-%d' } },
+            moment(prevDate).format(DATE_FOMAT),
+          ],
+        },
+      });
+    } else {
+      condition['$and'].push({
+        $expr: {
+          $eq: [
+            { $dateToString: { date: '$reportDate', format: '%Y-%m-%d' } },
+            moment(request?.dateFrom).format(DATE_FOMAT),
+          ],
+        },
+      });
+    }
 
     return this.dailyWarehouseItemStock
       .find(condition)

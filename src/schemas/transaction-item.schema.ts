@@ -1,6 +1,7 @@
 import { BaseEntity } from '@core/entity/base.entity';
 import { OrderStatus } from '@enums/order-status.enum';
 import { OrderType } from '@enums/order-type.enum';
+import { ActionType } from '@enums/report-type.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { TransactionItemInterface } from './interface/TransactionItem.Interface';
 export type TransactionItemDocument = TransactionItem & Document;
@@ -9,6 +10,36 @@ export class TransactionItem
   extends BaseEntity
   implements TransactionItemInterface
 {
+  @Prop({ required: false })
+  transactionDate: Date;
+
+  @Prop({ required: false })
+  actionType: ActionType;
+
+  @Prop({ required: false })
+  orderDetailId: number;
+
+  @Prop({ required: false })
+  receiptNumber: string;
+
+  @Prop({ required: false })
+  reportDate: Date;
+
+  @Prop({ required: false })
+  storageDate: Date;
+
+  @Prop({ required: false })
+  account: string;
+
+  @Prop({ required: false })
+  minInventoryLimit: number;
+
+  @Prop({ required: false })
+  inventoryLimit: number;
+
+  @Prop({ required: false })
+  origin: string;
+
   @Prop({ required: false })
   ebsNumber: string;
 
@@ -27,7 +58,7 @@ export class TransactionItem
   @Prop({ required: false })
   warehouseName: string;
 
-  @Prop({ required: false })
+  @Prop({ required: false, default: null })
   lotNumber: string;
 
   @Prop({ required: false, default: 0 })
@@ -125,9 +156,6 @@ export class TransactionItem
 
   @Prop({ required: false })
   description: string;
-
-  @Prop({ required: false })
-  account: string;
 
   @Prop({ required: false })
   accountDebt: string;

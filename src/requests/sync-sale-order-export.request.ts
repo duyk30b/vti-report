@@ -1,4 +1,4 @@
-import { Expose, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { BaseDto } from '@core/dto/base.dto';
 import { ActionType } from '@enums/export-type.enum';
@@ -7,6 +7,12 @@ import {
   Construction,
   WarehouseExportProposal,
 } from './sync-purchased-order-import.request';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  ValidateNested,
+} from 'class-validator';
 
 export class WarehouseResponseDto {
   id: number;
@@ -52,115 +58,60 @@ export class SoExportRelationData {
   accountant: string;
 }
 
-class SaleOrderExportWarehouseLot {
-  id: number;
-
-  saleOrderExportId: number;
-
-  saleOrderExportWarehouseDetailId: number;
-
-  itemId: number;
-
-  lotNumber: string;
-
-  quantity: number;
-
-  collectedQuantity: number;
-
-  actualQuantity: number;
-
-  item: ItemResponseDto;
-
-  warehouse: WarehouseResponseDto;
-}
-
 class SaleOrderExportDetail {
-  id: number;
-
-  saleOrderExportId: number;
-
-  itemId: number;
-
+  @ApiProperty()
+  @IsOptional()
   itemCode: string;
 
-  unitId: number;
-
+  @ApiProperty()
+  @IsOptional()
   quantity: number;
 
-  debitAccount: string;
-
-  creditAccount: string;
-
-  item: ItemResponseDto;
-}
-
-class SaleOrderExportWarehouseDetail {
-  id: number;
-
-  saleOrderExportId: number;
-
-  saleOrderExportDetailId: number;
-
-  itemId: number;
-
+  @ApiProperty()
+  @IsOptional()
   actualQuantity: number;
 
-  collectedQuantity: number;
+  @ApiProperty()
+  @IsOptional()
+  debitAccount: string;
 
-  quantity: number;
+  @ApiProperty()
+  @IsOptional()
+  creditAccount: string;
 
-  lots: string;
-
-  warehouse: WarehouseResponseDto;
-
+  @ApiProperty()
+  @IsOptional()
   item: ItemResponseDto;
+
+  @ApiProperty()
+  @IsOptional()
+  lots: LotItems[];
 }
 
-class SaleOrderExportWarehouse {
-  id: number;
-
+class Warehouse {
   name: string;
 
   code: string;
-
-  description: string;
-
-  factoryId: number;
-}
-
-class BusinessTypeAttributes {
-  id: number;
-
-  code: string;
-
-  fieldName: string;
-
-  type: number;
-
-  columnName: string;
-
-  tableName: string;
-
-  required: number;
-
-  value: any;
-}
-
-export class itemWarehouseSources {
-  sourceId: number;
-  name: string;
-  code: string;
-  accountIdentifier: string;
 }
 export class LotItems {
+  @ApiProperty()
+  @IsOptional()
   lotNumber: string;
 
+  @ApiProperty()
+  @IsOptional()
   mfg: string;
 
+  @ApiProperty()
+  @IsOptional()
   planQuantity: number;
 
+  @ApiProperty()
+  @IsOptional()
   confirmedQuantity: number;
 
+  @ApiProperty()
+  @IsOptional()
   actualQuantity: number;
 }
 
@@ -171,95 +122,87 @@ export class ItemDetail {
   itemUnit: string;
   description: string;
   details: [];
-  itemWarehouseSources: itemWarehouseSources[];
-}
-class ItemImoRespone {
-  id: number;
-
-  code: string;
-
-  name: string;
-
-  itemUnit: string;
-
-  quantity: number;
-
-  confirmedQuantity: number;
-
-  planQuantity: number;
-
-  actualQuantity: number;
-
-  debitAccount: string;
-
-  creditAccount: string;
-
-  item: ItemDetail;
-
-  lots: LotItems[];
 }
 
 export class SaleOrderExportResponseDto extends BaseDto {
+  @ApiProperty()
+  @IsOptional()
   company: Company;
 
-  id: number;
-
+  @ApiProperty()
+  @IsOptional()
   code: string;
 
+  @ApiProperty()
+  @IsOptional()
   receiptDate: Date;
 
+  @ApiProperty()
+  @IsOptional()
   status: number;
 
+  @ApiProperty()
+  @IsOptional()
   receiver: string;
 
-  departmentReceiptId: number;
-
-  businessTypeId: number;
-
+  @ApiProperty()
+  @IsOptional()
   explanation: string;
 
+  @ApiProperty()
+  @IsNotEmpty()
   syncCode: string;
 
+  @ApiProperty()
+  @IsOptional()
   receiptNumber: string;
 
-  createdAt: Date;
-
-  updatedAt: Date;
-
+  @ApiProperty()
+  @IsOptional()
   saleOrderExportDetails: SaleOrderExportDetail[];
 
-  saleOrderExportWarehouseLots: SaleOrderExportWarehouseLot[];
+  @ApiProperty()
+  @IsOptional()
+  warehouse: Warehouse;
 
-  saleOrderExportWarehouseDetails: SaleOrderExportWarehouseDetail[];
-
-  warehouse: SaleOrderExportWarehouse;
-
+  @ApiProperty()
+  @IsOptional()
   source: SoExportRelationData;
 
+  @ApiProperty()
+  @IsOptional()
   reason: SoExportRelationData;
 
+  @ApiProperty()
+  @IsOptional()
   departmentReceipt: SoExportRelationData;
 
-  businessType: SoExportRelationData;
-
-  attributes: BusinessTypeAttributes[];
-
-  createdByUser: any;
-
-  updatedBy: any;
-
-  itemsSync: ItemImoRespone[];
-
+  @ApiProperty()
+  @IsOptional()
   warehouseExportProposals: WarehouseExportProposal;
 
-  constructions: Construction;
+  @ApiProperty()
+  @IsOptional()
+  construction: Construction;
 
+  @ApiProperty()
+  @IsOptional()
   ebsNumber: string;
 
+  @ApiProperty()
+  @IsOptional()
   qrCode: string;
 }
 
 export class SyncSaleOrderExportRequest extends BaseDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsEnum(ActionType)
   actionType: ActionType;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => SaleOrderExportResponseDto)
   data: SaleOrderExportResponseDto;
 }

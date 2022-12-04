@@ -19,6 +19,7 @@ import { Response } from 'express';
 import { ResponseBuilder } from '@core/utils/response-builder';
 import { ResponseCodeEnum } from '@core/response-code.enum';
 import { I18nRequestScopeService } from 'nestjs-i18n';
+import { Public } from '@core/decorator/set-public.decorator';
 @Controller('')
 export class ExportController {
   constructor(
@@ -28,6 +29,7 @@ export class ExportController {
     private readonly i18n: I18nRequestScopeService,
   ) {}
 
+  @Public()
   @Get('/export')
   @ApiOperation({
     tags: ['export'],

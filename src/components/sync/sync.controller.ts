@@ -4,11 +4,11 @@ import { isEmpty } from 'lodash';
 import { SuccessResponse } from '@core/utils/success.response.dto';
 import { ResponsePayload } from '@core/utils/response-payload';
 import { SyncService } from './sync.service';
-import { SyncTransactionRequest } from '@requests/sync-transaction.request';
+import { TransactionRequest } from '@requests/sync-transaction.request';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { SyncReportDailyRequestDto } from './dto/request/sync-report-daily.request.dto';
 import { SYNC_REPORT_DAILY_TOPIC } from './sync.constants';
-import { SyncOrderRequest } from '@requests/sync-purchased-order-import.request';
+import { SyncPurchasedOrderRequest } from '@requests/sync-purchased-order-import.request';
 import { SyncSaleOrderExportRequest } from '@requests/sync-sale-order-export.request';
 import { SyncWarehouseTransferRequest } from '@requests/sync-warehouse-transfer-request';
 import { SyncDailyStockRequest } from '@requests/sync-daily.request';
@@ -20,7 +20,7 @@ export class SyncController {
     private readonly syncService: SyncService,
   ) {}
 
-  @Post('/test')
+  @Post('/dailyStock')
   @ApiOperation({
     tags: ['Sync'],
     summary: 'Đồng bộ dữ liệu hàng ngày',
@@ -53,7 +53,7 @@ export class SyncController {
     type: SuccessResponse,
   })
   async syncOrderImport(
-    @Body() payload: SyncOrderRequest,
+    @Body() payload: SyncPurchasedOrderRequest,
   ): Promise<ResponsePayload<any>> {
     const { request, responseError } = payload;
     if (responseError && !isEmpty(responseError)) {
@@ -120,10 +120,9 @@ export class SyncController {
     type: SuccessResponse,
   })
   async syncTransaction(
-    @Body() payload: SyncTransactionRequest,
+    @Body() payload: TransactionRequest,
   ): Promise<ResponsePayload<any>> {
     const { request, responseError } = payload;
-
     if (responseError && !isEmpty(responseError)) {
       return responseError;
     }

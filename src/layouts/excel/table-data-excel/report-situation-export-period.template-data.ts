@@ -42,7 +42,7 @@ export function reportSituationExportPeriodTemplateData(
         },
         {
           nameCell: `L${curRowIdx}:Q${curRowIdx}`,
-          value: item.totalPrice,
+          value: item.totalPrice || '0',
           font: FONT_BOLD_9,
           aligment: ALIGNMENT_RIGHT,
           border: BORDER,
@@ -69,7 +69,7 @@ export function reportSituationExportPeriodTemplateData(
           },
           {
             nameCell: `L${curRowIdx}:Q${curRowIdx}`,
-            value: reason.totalPrice,
+            value: reason.totalPrice || '0',
             font: FONT_BOLD_9,
             aligment: ALIGNMENT_RIGHT,
             border: BORDER,
@@ -127,7 +127,7 @@ export function reportSituationExportPeriodTemplateData(
             },
             {
               nameCell: `N${curRowIdx}`,
-              value: order.totalPrice,
+              value: order.totalPrice || '0',
               font: FONT_BOLD_9,
               aligment: ALIGNMENT_LEFT,
             },
@@ -212,7 +212,7 @@ export function reportSituationExportPeriodTemplateData(
               },
               {
                 nameCell: `N${curRowIdx}`,
-                value: item.exportedQuantity,
+                value: item.actualQuantity,
                 font: FONT_NORMAL_9,
                 aligment: ALIGNMENT_BOTTOM_RIGHT,
                 border: BORDER,
@@ -234,7 +234,7 @@ export function reportSituationExportPeriodTemplateData(
               },
               {
                 nameCell: `Q${curRowIdx}`,
-                value: item.totalPrice || 0,
+                value: item.totalPrice || '0',
                 font: FONT_NORMAL_9,
                 aligment: ALIGNMENT_BOTTOM_RIGHT,
                 border: BORDER,
@@ -261,7 +261,7 @@ export function reportSituationExportPeriodTemplateData(
       {
         nameCell: `L${curRowIdx}:Q${curRowIdx}`,
         value: totalPriceAll,
-        font: FONT_NORMAL_9,
+        font: FONT_BOLD_9,
         aligment: ALIGNMENT_RIGHT,
         border: BORDER,
         merge: true,
