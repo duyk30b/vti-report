@@ -405,12 +405,7 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
       case ReportType.SITUATION_IMPORT_PERIOD:
         condition['$and'].push({
           status: {
-            $in: [
-              OrderStatus.Received,
-              OrderStatus.Confirmed,
-              OrderStatus.InProgress,
-              OrderStatus.Completed,
-            ],
+            $in: [OrderStatus.InProgress, OrderStatus.Completed],
           },
         });
         break;
