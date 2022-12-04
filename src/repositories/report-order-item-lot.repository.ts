@@ -932,9 +932,8 @@ function getCommonConditionSituation(isTransfer?: boolean) {
     condition['$and'].push({ $eq: ['$actionType', ActionType.EXPORT as any] });
   } else {
     condition['$and'].push({
-      movementType: {
-        $in: MOVEMENT_TYPE_IMPORT,
-      },
+      $in: ['$movementType',  MOVEMENT_TYPE_IMPORT]
+    ,
     } as any);
   }
   return [
