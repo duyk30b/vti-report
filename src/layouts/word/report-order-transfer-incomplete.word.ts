@@ -322,6 +322,103 @@ export async function generatereportOrderTransferIncompleted(
                 .flat(),
             ],
           }),
+          new Paragraph({}),
+          new Table({
+            width: {
+              size: 100,
+              type: WidthType.PERCENTAGE,
+            },
+            borders: wordFileStyle.border_none,
+            rows: [
+              new TableRow({
+                children: [
+                  new TableCell({
+                    borders: wordFileStyle.border_none,
+                    children: [],
+                    width: {
+                      size: 100 / 3,
+                      type: WidthType.PERCENTAGE,
+                    },
+                  }),
+                  new TableCell({
+                    borders: wordFileStyle.border_none,
+                    children: [],
+                    width: {
+                      size: 100 / 3,
+                      type: WidthType.PERCENTAGE,
+                    },
+                  }),
+                  new TableCell({
+                    borders: wordFileStyle.border_none,
+                    children: [
+                      new Paragraph({
+                        children: [
+                          new TextRun({
+                            text: i18n.translate('report.REPORT_FOOTER_DATE'),
+                            ...wordFileStyle.text_style,
+                          }),
+                        ],
+                        alignment: AlignmentType.CENTER,
+                      }),
+                    ],
+                    width: {
+                      size: 100 / 3,
+                      type: WidthType.PERCENTAGE,
+                    },
+                  }),
+                ],
+              }),
+              new TableRow({
+                children: [
+                  new TableCell({
+                    children: [],
+                    columnSpan: 3,
+                    borders: wordFileStyle.border_none,
+                  }),
+                ],
+              }),
+              new TableRow({
+                children: [
+                  new TableCell({
+                    borders: wordFileStyle.border_none,
+                    children: [],
+                  }),
+                  new TableCell({
+                    borders: wordFileStyle.border_none,
+                    children: [
+                      new Paragraph({
+                        children: [
+                          new TextRun({
+                            text: i18n.translate(
+                              'report.REPORT_FOOTER_SCHEDULER',
+                            ),
+                            ...wordFileStyle.text_style_bold,
+                          }),
+                        ],
+                        alignment: AlignmentType.CENTER,
+                      }),
+                    ],
+                  }),
+                  new TableCell({
+                    borders: wordFileStyle.border_none,
+                    children: [
+                      new Paragraph({
+                        children: [
+                          new TextRun({
+                            text: i18n.translate(
+                              'report.REPORT_FOOTER_STOCKER',
+                            ),
+                            ...wordFileStyle.text_style_bold,
+                          }),
+                        ],
+                        alignment: AlignmentType.CENTER,
+                      }),
+                    ],
+                  }),
+                ],
+              }),
+            ],
+          }),
         ],
       },
     ],

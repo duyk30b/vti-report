@@ -1,33 +1,23 @@
 import { BaseDto } from '@core/dto/base.dto';
 import { ActionType } from '@enums/export-type.enum';
 import { OrderStatus } from '@enums/order-status.enum';
+import { OrderType } from '@enums/order-type.enum';
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
 import {
-  IsNotEmpty,
+  IsArray,
   IsEnum,
-  ValidateNested,
+  IsNotEmpty,
   IsOptional,
+  IsString,
+  ValidateNested,
 } from 'class-validator';
 
 export class ItemResponseDto {
-  itemId: number;
-
-  name: string;
-
-  code: string;
-
   price: number;
 
   itemUnit: string;
 
   description: string;
-
-  quantity: number;
-
-  itemDetails: any;
-
-  details: any;
 }
 
 export class WarehouseResponseDto {
@@ -45,10 +35,10 @@ export class WarehouseResponseDto {
 
   manageByLot: boolean;
 }
-class PurchasedOrderImportWarehouseLot {
+class Lots {
   @ApiProperty()
   @IsOptional()
-  itemId: number;
+  planQuantity: number;
 
   @ApiProperty()
   @IsOptional()
@@ -56,11 +46,7 @@ class PurchasedOrderImportWarehouseLot {
 
   @ApiProperty()
   @IsOptional()
-  quantity: number;
-
-  @ApiProperty()
-  @IsOptional()
-  lotNumber: string;
+  receivedQuantity: number;
 
   @ApiProperty()
   @IsOptional()
@@ -68,10 +54,22 @@ class PurchasedOrderImportWarehouseLot {
 
   @ApiProperty()
   @IsOptional()
-  exportableQuantity: number;
+  collectedQuantity: number;
+
+  @ApiProperty()
+  @IsOptional()
+  exportedQuantity: number;
+
+  @ApiProperty()
+  @IsOptional()
+  confirmQuantity: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  lotNumber: string;
 }
 
-export class PoImportRelationData {
+export class RelationData {
   id: number;
 
   code: string;
@@ -81,10 +79,30 @@ export class PoImportRelationData {
   accountant: string;
 }
 
-class PurchasedOrderImportDetail {
+class ItemDetail {
+  name: string;
+
+  code: string;
+
+  price: string;
+
+  itemUnit: string;
+
+  description: string;
+}
+
+class OrderDetail {
+  @ApiProperty()
+  @IsNotEmpty()
+  itemName: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  itemCode: string;
+
   @ApiProperty()
   @IsOptional()
-  itemId: number;
+  planQuantity: number;
 
   @ApiProperty()
   @IsOptional()
@@ -92,35 +110,27 @@ class PurchasedOrderImportDetail {
 
   @ApiProperty()
   @IsOptional()
-  exportableQuantity: number;
-
-  @ApiProperty()
-  @IsOptional()
-  quantity: number;
-
-  @ApiProperty()
-  @IsOptional()
-  confirmQuantity: number;
-
-  @ApiProperty()
-  @IsOptional()
   receivedQuantity: number;
 
   @ApiProperty()
   @IsOptional()
-  lotNumber: string;
+  storedQuantity: number;
 
   @ApiProperty()
   @IsOptional()
-  itemCode: string;
+  collectedQuantity: number;
 
   @ApiProperty()
   @IsOptional()
-  price: number;
+  exportedQuantity: number;
 
   @ApiProperty()
   @IsOptional()
-  debitAccount: any;
+  itemDetail: ItemResponseDto;
+
+  @ApiProperty()
+  @IsOptional()
+  debitAccount: string;
 
   @ApiProperty()
   @IsOptional()
@@ -128,41 +138,12 @@ class PurchasedOrderImportDetail {
 
   @ApiProperty()
   @IsOptional()
-  item: ItemResponseDto;
+  locator: RelationData;
 
   @ApiProperty()
   @IsOptional()
-  lots: PurchasedOrderImportWarehouseLot[];
-}
-
-export class PurchasedOrderImportReceive {
-  referenceDoc: string;
-
-  postedAt: Date;
-
-  note: string;
-}
-
-export class AttributeResponse {
-  id: number;
-
-  code: string;
-
-  bussinessTypeId: number;
-
-  fieldName: string;
-
-  ebsLabel: string;
-
-  type: number;
-
-  columnName: string;
-
-  tableName: string;
-
-  value: any;
-
-  required: boolean;
+  @ValidateNested()
+  lots: Lots[];
 }
 
 export class Company {
@@ -176,25 +157,16 @@ export class Company {
 }
 
 export class WarehouseExportProposal {
-  @ApiProperty()
-  @IsOptional()
+  id: number;
   code: string;
 }
 export class Construction {
-  @ApiProperty()
-  @IsOptional()
+  id: number;
   code: string;
-
-  @ApiProperty()
-  @IsOptional()
   name: string;
 }
 
-export class PurchasedOrderImportRequestDto {
-  @ApiProperty()
-  @IsOptional()
-  companyCode: number;
-
+export class Orders {
   @ApiProperty()
   @IsOptional()
   name: string;
@@ -205,6 +177,7 @@ export class PurchasedOrderImportRequestDto {
 
   @ApiProperty()
   @IsOptional()
+  @IsEnum(OrderStatus)
   status: OrderStatus;
 
   @ApiProperty()
@@ -217,7 +190,7 @@ export class PurchasedOrderImportRequestDto {
 
   @ApiProperty()
   @IsOptional()
-  receiptDate: Date;
+  receiptDate: Date; //ngày lập phiếu
 
   @ApiProperty()
   @IsOptional()
@@ -225,45 +198,46 @@ export class PurchasedOrderImportRequestDto {
 
   @ApiProperty()
   @IsOptional()
-  receiptNumber: string; //Phiếu yêu cầu nhập kho
+  departmentReceipt: RelationData;
 
   @ApiProperty()
   @IsOptional()
-  departmentReceipt: PoImportRelationData;
+  vendor: RelationData;
 
   @ApiProperty()
   @IsOptional()
-  vendor: PoImportRelationData;
+  businessType: RelationData;
 
   @ApiProperty()
   @IsOptional()
-  source: PoImportRelationData;
+  source: RelationData;
 
   @ApiProperty()
   @IsOptional()
-  reason: PoImportRelationData;
+  reason: RelationData;
 
   @ApiProperty()
   @IsOptional()
-  warehouse: PoImportRelationData;
+  warehouse: RelationData;
 
   @ApiProperty()
   @IsOptional()
-  construction: PoImportRelationData;
-
-  @ApiProperty()
-  @IsOptional()
-  warehouseExportProposal: PoImportRelationData;
-
-  @ApiProperty()
-  @IsOptional()
-  purchasedOrderImportDetails: PurchasedOrderImportDetail[];
+  construction: RelationData;
 
   @ApiProperty()
   @IsOptional()
   company: Company;
 
   @ApiProperty()
+  @IsOptional()
+  warehouseExportProposals: WarehouseExportProposal;
+
+  @ApiProperty()
+  @IsOptional()
+  constructions: Construction;
+
+  @ApiProperty()
+  @IsOptional()
   @IsNotEmpty()
   syncCode: string;
 
@@ -274,9 +248,23 @@ export class PurchasedOrderImportRequestDto {
   @ApiProperty()
   @IsOptional()
   qrCode: string;
+
+  @ApiProperty()
+  @IsOptional()
+  destinationWarehouse: RelationData;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsEnum(OrderType)
+  orderType: OrderType;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @ValidateNested()
+  orderDetail: OrderDetail[];
 }
 
-export class SyncPurchasedOrderRequest extends BaseDto {
+export class SyncOrderRequest extends BaseDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsEnum(ActionType)
@@ -284,7 +272,6 @@ export class SyncPurchasedOrderRequest extends BaseDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @ValidateNested({ each: true })
-  @Type(() => PurchasedOrderImportRequestDto)
-  data: PurchasedOrderImportRequestDto;
+  @ValidateNested()
+  data: Orders;
 }

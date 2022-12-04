@@ -16,7 +16,6 @@ export async function reportAgeOfItemsMapping(
     REPORT_INFO[ReportType[ReportType.AGE_OF_ITEM_STOCK]].key,
     request.warehouseCode ? data?.warehouseName : null,
     request.dateFrom,
-    request.dateTo,
   );
   return {
     nameFile: nameFile,

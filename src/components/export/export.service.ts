@@ -41,10 +41,6 @@ import { reportSituationTransferMapping } from '@mapping/words/report-situation-
 import { reportSituationExportPeriodMapping } from '@mapping/words/report-situation-export-period.mapping';
 import { reportAgeOfItemsMapping } from '@mapping/words/report-age-of-item-stock.mapping';
 import { reportSituationInventoryPeriodMapping } from '@mapping/words/report-situation-inventory-period.mapping';
-import { ReportOrderRepository } from '@repositories/report-order.repository';
-import { getReportInfo } from '@layout/excel/report-excel.layout';
-import { REPORT_INFO } from '@utils/constant';
-
 import { getItemInventoryDataMapping } from '@mapping/common/Item-inventory-mapped';
 import { getSituationTransfer } from '@mapping/common/situation-transfer-mapped';
 import { getInventoryDataMapping } from '@mapping/common/inventory-mapped';
@@ -59,8 +55,12 @@ import { getOrderExportByRequestForItemMapped } from '@mapping/common/report-ord
 import { getOrderImportByRequestForItemMapped } from '@mapping/common/report-order-import-by-request-for-item.mapped';
 import { getSituationInventoryPeriod } from '@mapping/common/report-situation-inventory-period.excel.mapped';
 import { getSituationImportPeriod } from '@mapping/common/report-situation-import-period.excel.mapped';
-import { getSituationImportPeriodMapped } from '@mapping/common/report-situation-export-period.excel.mapped';
+import { getSituationExportPeriodMapped } from '@mapping/common/report-situation-export-period.excel.mapped';
 import { getSituationTransferMapped } from '@mapping/common/age-of-item-mapped';
+import { TransactionItemRepository } from '@repositories/transaction-item.repository';
+import { UserService } from '@components/user/user.service';
+import { keyBy } from 'lodash';
+import { WarehouseServiceInterface } from '@components/warehouse/interface/warehouse.service.interface';
 @Injectable()
 export class ExportService {
   constructor(
@@ -76,8 +76,14 @@ export class ExportService {
     @Inject(ReportOrderItemRepository.name)
     private reportOrderItemRepository: ReportOrderItemRepository,
 
-    @Inject(ReportOrderRepository.name)
-    private reportOrderRepository: ReportOrderRepository,
+    @Inject(TransactionItemRepository.name)
+    private transactionItemRepository: TransactionItemRepository,
+
+    @Inject('UserServiceInterface')
+    private readonly userService: UserService,
+
+    @Inject('WarehouseServiceInterface')
+    private readonly warehouseServiceInterface: WarehouseServiceInterface,
 
     private readonly i18n: I18nRequestScopeService,
   ) {}
@@ -168,6 +174,7 @@ export class ExportService {
       await this.dailyLotLocatorStockRepository.getReportAgeOfItemStock(
         request,
       );
+    await this.getInfoWarehouse(request, data, true);
     const dataMapped = getSituationTransferMapped(data, this.i18n);
     switch (request.exportType) {
       case ExportType.EXCEL:
@@ -192,7 +199,8 @@ export class ExportService {
         request,
         OrderType.EXPORT,
       );
-    const dataMapped = getSituationImportPeriodMapped(data, this.i18n);
+    await this.getInfoWarehouse(request, data, true);
+    const dataMapped = getSituationExportPeriodMapped(data, this.i18n);
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -221,6 +229,8 @@ export class ExportService {
         request,
         OrderType.IMPORT,
       );
+    await this.getInfoWarehouse(request, data, true);
+
     const dataMapped = getSituationImportPeriod(data, this.i18n);
 
     switch (request.exportType) {
@@ -251,6 +261,7 @@ export class ExportService {
         request,
         OrderType.INVENTORY,
       );
+    await this.getInfoWarehouse(request, data, true);
     const dataMaped = getSituationInventoryPeriod(data, this.i18n);
     switch (request.exportType) {
       case ExportType.EXCEL:
@@ -280,6 +291,8 @@ export class ExportService {
         request,
         OrderType.TRANSFER,
       );
+    await this.getInfoWarehouse(request, data, true);
+
     const dataMapped = getSituationTransfer(data, this.i18n);
     switch (request.exportType) {
       case ExportType.EXCEL:
@@ -304,7 +317,13 @@ export class ExportService {
       request,
       OrderType.EXPORT,
     );
-    const dataMapped = getOrderExportByRequestForItemMapped(data, this.i18n);
+    let isEmpty = await this.getInfoWarehouse(request, data);
+
+    const dataMapped = getOrderExportByRequestForItemMapped(
+      data,
+      this.i18n,
+      isEmpty,
+    );
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -355,10 +374,51 @@ export class ExportService {
   }
 
   async reportItemInventory(request: ReportRequest): Promise<ReportResponse> {
-    const data = await this.reportOrderItemLotRepository.getReportItemInventory(
-      request,
-    );
-    const dataMapping = getItemInventoryDataMapping(data, this.i18n);
+    const OrderItemLot =
+      await this.reportOrderItemLotRepository.getReportItemInventory(request);
+    const dailyLotLocatorStock =
+      await this.dailyLotLocatorStockRepository.getReportItemInventory(request);
+
+    let keyByDailyItem = {};
+    if (dailyLotLocatorStock.length) {
+      keyByDailyItem = keyBy(dailyLotLocatorStock, function (o) {
+        return [
+          o?.companyCode,
+          o?.warehouseCode,
+          o?.itemCode,
+          o?.lotNumber,
+        ].join('_');
+      });
+      for (const itemLot of OrderItemLot) {
+        const key = [
+          itemLot?.companyCode,
+          itemLot?.warehouseCode,
+          itemLot?.itemCode,
+          itemLot?.lotNumber,
+        ].join('_');
+
+        if (keyByDailyItem[key]) {
+          const dailyItem = keyByDailyItem[key];
+          if (!dailyItem.importIn) dailyItem['importIn'] = 0;
+          dailyItem['importIn'] += itemLot?.importIn || 0;
+
+          if (!dailyItem.totalImportIn) dailyItem['totalImportIn'] = 0;
+          dailyItem['totalImportIn'] +=
+            itemLot?.importIn * dailyItem.storageCost;
+
+          if (!dailyItem.exportIn) dailyItem['exportIn'] = 0;
+          dailyItem['exportIn'] += itemLot?.exportIn || 0;
+
+          if (!dailyItem.totalExportIn) dailyItem['totalExportIn'] = 0;
+          dailyItem['totalExportIn'] +=
+            itemLot?.exportIn * dailyItem.storageCost;
+        }
+      }
+    }
+
+    const data = Object.values(keyByDailyItem);
+    let isEmpty = await this.getInfoWarehouse(request, data);
+    const dataMapping = getItemInventoryDataMapping(data, this.i18n, isEmpty);
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } = await reportItemInventoryExcelMapping(
@@ -404,7 +464,11 @@ export class ExportService {
   }
 
   async reportInventory(request: ReportRequest): Promise<ReportResponse> {
-    const data = await this.dailyLotLocatorStockRepository.getReports(request);
+    let data = await this.dailyLotLocatorStockRepository.getReports(request);
+    data = await this.transactionItemRepository.updateQuantityItem(
+      request,
+      data,
+    );
     const dataMaped = getInventoryDataMapping(data, this.i18n);
     switch (request.exportType) {
       case ExportType.EXCEL:
@@ -428,6 +492,7 @@ export class ExportService {
       request,
       OrderType.IMPORT,
     );
+    await this.getInfoWarehouse(request, data, true);
     const dataMapped = getItemImportedButNotPutToPositionMapped(
       data,
       this.i18n,
@@ -459,8 +524,13 @@ export class ExportService {
       request,
       OrderType.IMPORT,
     );
+    let isEmpty = await this.getInfoWarehouse(request, data);
 
-    const dataMapped = getOrderImportIncompletedMapped(data, this.i18n);
+    const dataMapped = getOrderImportIncompletedMapped(
+      data,
+      this.i18n,
+      isEmpty,
+    );
 
     switch (request.exportType) {
       case ExportType.EXCEL:
@@ -489,8 +559,12 @@ export class ExportService {
       request,
       OrderType.EXPORT,
     );
-
-    const dataMapped = getOrderExportIncompletedMapped(data, this.i18n);
+    let isEmpty = await this.getInfoWarehouse(request, data);
+    const dataMapped = getOrderExportIncompletedMapped(
+      data,
+      this.i18n,
+      isEmpty,
+    );
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -518,7 +592,12 @@ export class ExportService {
       request,
       OrderType.TRANSFER,
     );
-    const dataMapped = getOrderTransferIncompletedMapped(data, this.i18n);
+    let isEmpty = await this.getInfoWarehouse(request, data);
+    const dataMapped = getOrderTransferIncompletedMapped(
+      data,
+      this.i18n,
+      isEmpty,
+    );
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -542,11 +621,14 @@ export class ExportService {
   async reportItemInventoryBelowMinimum(
     request: ReportRequest,
   ): Promise<ReportResponse> {
-    const data = await this.dailyWarehouseItemStockRepository.getReports(
+    let data = await this.dailyWarehouseItemStockRepository.getReports(request);
+    data = await this.transactionItemRepository.updateQuantityItem(
       request,
+      data,
     );
+    let isEmpty = await this.getInfoWarehouse(request, data);
 
-    const dataMapped = getItemInventoryBelowMinimum(data, this.i18n);
+    const dataMapped = getItemInventoryBelowMinimum(data, this.i18n, isEmpty);
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -569,10 +651,13 @@ export class ExportService {
   async reportItemInventoryBelowSafe(
     request: ReportRequest,
   ): Promise<ReportResponse> {
-    const data = await this.dailyWarehouseItemStockRepository.getReports(
+    let data = await this.dailyWarehouseItemStockRepository.getReports(request);
+    data = await this.transactionItemRepository.updateQuantityItem(
       request,
+      data,
     );
-    const dataMaped = getItemInventoryBelowSafe(data, this.i18n);
+    let isEmpty = await this.getInfoWarehouse(request, data);
+    const dataMaped = getItemInventoryBelowSafe(data, this.i18n, isEmpty);
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -591,5 +676,46 @@ export class ExportService {
       default:
         return;
     }
+  }
+
+  private async getInfoWarehouse(
+    request: ReportRequest,
+    data: any,
+    parentObject?: boolean,
+  ) {
+    let isEmpty = false;
+    if (!data.length) {
+      let company = await this.userService.getCompanies({
+        code: request.companyCode,
+      });
+
+      let warehouse = '';
+      if (request.warehouseCode) {
+        const warehouseHq =
+          await this.warehouseServiceInterface.getWarehouseByCode(
+            request.warehouseCode,
+          );
+        if (warehouseHq) warehouse = warehouseHq?.name || '';
+      }
+
+      company = company?.data?.pop();
+      if (parentObject) {
+        data.push({
+          _id: {
+            companyName: company?.name,
+            companyAddress: company?.address,
+            warehouseName: warehouse,
+          },
+        } as any);
+      } else {
+        data.push({
+          companyName: company?.name,
+          companyAddress: company?.address,
+          warehouseName: warehouse,
+        } as any);
+      }
+      isEmpty = true;
+    }
+    return isEmpty;
   }
 }

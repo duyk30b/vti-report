@@ -2,7 +2,7 @@ import { TableDataSituationExportPeriod } from '@models/situation_export.model';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
 
-export function getSituationImportPeriodMapped(
+export function getSituationExportPeriodMapped(
   data: any[],
   i18n: I18nRequestScopeService,
 ): ReportInfo<TableDataSituationExportPeriod[]> {

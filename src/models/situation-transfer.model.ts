@@ -5,7 +5,7 @@ export interface SituationTransferItem {
   accountDebt: number;
   accountHave: number;
   unit: string;
-  planQuantity: number;
+  actualQuantity: number;
   locatorCode: string;
   storageCost: number;
   totalPrice: number;

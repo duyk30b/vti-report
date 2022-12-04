@@ -1,11 +1,10 @@
 import { TableDataSituationImportPeriod } from '@models/situation_import.model';
 import {
   ALIGNMENT_CENTER,
-  ALIGNMENT_CENTER_BOTTOM,
   ALIGNMENT_LEFT,
   ALIGNMENT_RIGHT,
   BORDER,
-  FONT_BOLD_8,
+  FONT_BOLD_9,
   FONT_NORMAL_9,
 } from '@utils/constant';
 import * as ExcelJS from 'exceljs';
@@ -28,7 +27,7 @@ export function reportSituationImportPeriodTemplateData(
           {
             nameCell: `A${curRowIdx}:Q${curRowIdx}`,
             value: item.warehouseCode,
-            font: FONT_BOLD_8,
+            font: FONT_BOLD_9,
             aligment: ALIGNMENT_LEFT,
             border: BORDER,
             merge: true,
@@ -43,9 +42,10 @@ export function reportSituationImportPeriodTemplateData(
           },
           {
             nameCell: `S${curRowIdx}`,
-            value: item.totalPrice,
-            font: FONT_BOLD_8,
+            value: item.totalPrice ? item.totalPrice : '0',
+            font: FONT_BOLD_9,
             aligment: ALIGNMENT_RIGHT,
+            numFmt: '### ### ### ###',
             border: BORDER,
           },
         ],
@@ -57,7 +57,7 @@ export function reportSituationImportPeriodTemplateData(
             {
               nameCell: `A${curRowIdx}:Q${curRowIdx}`,
               value: i18n.translate('report.REASON') + reason.value,
-              font: FONT_BOLD_8,
+              font: FONT_BOLD_9,
               aligment: ALIGNMENT_LEFT,
               border: BORDER,
               merge: true,
@@ -92,7 +92,7 @@ export function reportSituationImportPeriodTemplateData(
                 nameCell: `B${curRowIdx}`,
                 value: order.orderCode,
                 border: BORDER,
-                font: FONT_BOLD_8,
+                font: FONT_BOLD_9,
                 aligment: ALIGNMENT_LEFT,
               },
               {
@@ -138,10 +138,11 @@ export function reportSituationImportPeriodTemplateData(
               },
               {
                 nameCell: `S${curRowIdx}`,
-                value: order.totalPrice,
+                value: order.totalPrice ? order.totalPrice : '0',
                 border: BORDER,
-                font: FONT_NORMAL_9,
+                font: FONT_BOLD_9,
                 numFmt: '### ### ### ###',
+                aligment: ALIGNMENT_RIGHT,
               },
             ],
           );
@@ -158,7 +159,7 @@ export function reportSituationImportPeriodTemplateData(
                 {
                   nameCell: `H${curRowIdx}:I${curRowIdx}`,
                   value: item.itemCode,
-                  font: FONT_BOLD_8,
+                  font: FONT_BOLD_9,
                   aligment: ALIGNMENT_LEFT,
                   border: BORDER,
                   merge: true,
@@ -237,8 +238,8 @@ export function reportSituationImportPeriodTemplateData(
                 },
                 {
                   nameCell: `S${curRowIdx}`,
-                  value: item.totalPrice,
-                  font: FONT_BOLD_8,
+                  value: item.totalPrice ? item.totalPrice : '0',
+                  font: FONT_BOLD_9,
                   aligment: ALIGNMENT_RIGHT,
                   border: BORDER,
                   numFmt: '### ### ### ###',
@@ -256,7 +257,7 @@ export function reportSituationImportPeriodTemplateData(
         {
           nameCell: `A${curRowIdx}:Q${curRowIdx}`,
           value: i18n.translate('report.TOTAL'),
-          font: FONT_BOLD_8,
+          font: FONT_BOLD_9,
           aligment: ALIGNMENT_CENTER,
           border: BORDER,
           merge: true,
@@ -264,14 +265,14 @@ export function reportSituationImportPeriodTemplateData(
         {
           nameCell: `R${curRowIdx}`,
           value: 0,
-          font: FONT_BOLD_8,
+          font: FONT_BOLD_9,
           aligment: ALIGNMENT_RIGHT,
           border: BORDER,
         },
         {
           nameCell: `S${curRowIdx}`,
           value: totalPrice,
-          font: FONT_BOLD_8,
+          font: FONT_BOLD_9,
           aligment: ALIGNMENT_RIGHT,
           border: BORDER,
           numFmt: '### ### ### ### ###',

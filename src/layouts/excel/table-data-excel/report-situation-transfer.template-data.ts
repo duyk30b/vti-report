@@ -32,7 +32,7 @@ export function reportSituationTransferTemplateData(
     });
     cells.push({
       nameCell: `O${curRowIdx}`,
-      value: item.totalPrice,
+      value: item.totalPrice || '0',
       font: FONT_BOLD_8,
       aligment: ALIGNMENT_RIGHT,
       translate: false,
@@ -86,7 +86,7 @@ export function reportSituationTransferTemplateData(
           },
           {
             nameCell: `O${curRowIdx}`,
-            value: order.totalPrice,
+            value: order.totalPrice || '0',
             font: FONT_NORMAL_9,
             aligment: ALIGNMENT_RIGHT,
             translate: false,
@@ -155,7 +155,7 @@ export function reportSituationTransferTemplateData(
             },
             {
               nameCell: `L${curRowIdx}`,
-              value: row3.planQuantity,
+              value: row3.actualQuantity,
               font: FONT_NORMAL_9,
               aligment: ALIGNMENT_RIGHT,
               border: BORDER,
@@ -178,7 +178,7 @@ export function reportSituationTransferTemplateData(
             },
             {
               nameCell: `O${curRowIdx}`,
-              value: row3.totalPrice,
+              value: row3.totalPrice || '0',
               font: FONT_NORMAL_9,
               aligment: ALIGNMENT_RIGHT,
               border: BORDER,

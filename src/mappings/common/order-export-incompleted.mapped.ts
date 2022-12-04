@@ -10,6 +10,7 @@ import { ReportInfo } from './Item-inventory-mapped';
 export function getOrderExportIncompletedMapped(
   data: ReportOrderItem[],
   i18n: I18nRequestScopeService,
+  isEmpty: boolean,
 ): ReportInfo<TableData<OrderExportIncompleteModel>[]> {
   const dataMaping: ReportInfo<any> = {
     companyName: data[0]?.companyName || '',
@@ -17,36 +18,39 @@ export function getOrderExportIncompletedMapped(
     warehouseName: data[0]?.warehouseName || '',
     dataMapped: null,
   };
-
-  const groupByWarehouseCode = data.reduce((prev, cur) => {
-    if (cur.warehouseCode && cur.warehouseName) {
-      const warehouseCode = cur.warehouseCode + ' - ' + cur.warehouseName;
-      if (!prev[warehouseCode]) {
-        prev[warehouseCode] = [];
+  if (!isEmpty) {
+    const groupByWarehouseCode = data.reduce((prev, cur) => {
+      if (cur.warehouseCode && cur.warehouseName) {
+        const warehouseCode = cur.warehouseCode + ' - ' + cur.warehouseName;
+        if (!prev[warehouseCode]) {
+          prev[warehouseCode] = [];
+        }
+        const data: OrderExportIncompleteModel = {
+          index: 0,
+          orderCode: cur.orderCode,
+          itemCode: cur.itemCode,
+          itemName: cur.itemName,
+          unit: cur.unit,
+          actualQuantity: cur.actualQuantity,
+          constructionName: cur.constructionName,
+          receiver: cur.performerName,
+        };
+        prev[warehouseCode].push(data);
+        return prev;
       }
-      const data: OrderExportIncompleteModel = {
-        index: 0,
-        orderCode: cur.orderCode,
-        itemCode: cur.itemCode,
-        itemName: cur.itemName,
-        unit: cur.unit,
-        actualQuantity: cur.actualQuantity,
-        constructionName: cur.constructionName,
-        receiver: cur.performerName,
-      };
-      prev[warehouseCode].push(data);
-      return prev;
-    }
-  }, {});
-  const dataExcell: TableData<OrderExportIncompleteModel>[] = [];
+    }, {});
+    const dataExcell: TableData<OrderExportIncompleteModel>[] = [];
 
-  for (const key in groupByWarehouseCode) {
-    dataExcell.push({
-      warehouseCode: i18n.translate('report.WAREHOUSE_GROUP_CODE') + key,
-      data: groupByWarehouseCode[key],
-    });
+    for (const key in groupByWarehouseCode) {
+      dataExcell.push({
+        warehouseCode: i18n.translate('report.WAREHOUSE_GROUP_CODE') + key,
+        data: groupByWarehouseCode[key],
+      });
+    }
+    dataMaping.dataMapped = dataExcell || [];
+  } else {
+    dataMaping.dataMapped = [];
   }
-  dataMaping.dataMapped = dataExcell || [];
 
   return dataMaping;
 }

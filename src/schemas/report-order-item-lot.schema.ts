@@ -8,6 +8,9 @@ export type OrderItemLotDocument = ReportOrderItemLot & Document;
 @Schema({ collection: 'report-order-item-lot', timestamps: true })
 export class ReportOrderItemLot implements ReportOrderItemLotInteface {
   @Prop({ required: false })
+  receiptNumber: string;
+
+  @Prop({ required: false })
   departmentReceiptCode: string;
 
   @Prop({ required: false })
@@ -31,7 +34,7 @@ export class ReportOrderItemLot implements ReportOrderItemLotInteface {
   @Prop({ required: false })
   warehouseName: string;
 
-  @Prop({ required: false })
+  @Prop({ required: false, default: null })
   lotNumber: string;
 
   @Prop({ required: false, default: 0 })

@@ -7,6 +7,7 @@ import { ReportInfo } from './Item-inventory-mapped';
 export function getItemInventoryBelowSafe(
   data: DailyWarehouseItemStock[],
   i18n: I18nRequestScopeService,
+  isEmpty: boolean,
 ): ReportInfo<TableData<ReportInventoryBelowSafeModel>[]> {
   const dataMaping: ReportInfo<any> = {
     companyName: data[0]?.companyName || '',
@@ -15,8 +16,8 @@ export function getItemInventoryBelowSafe(
     dataMapped: null,
   };
 
-  const groupByWarehouseCode = data.reduce((prev, cur) => {
-    if (cur.warehouseCode && cur.warehouseName) {
+  if (!isEmpty) {
+    const groupByWarehouseCode = data.reduce((prev, cur) => {
       const warehouseCode = cur.warehouseCode + ' - ' + cur.warehouseName;
       if (!prev[warehouseCode]) {
         prev[warehouseCode] = [];
@@ -30,18 +31,20 @@ export function getItemInventoryBelowSafe(
         stockQuantity: cur.stockQuantity,
       });
       return prev;
+    }, {});
+    const dataExcell: TableData<ReportInventoryBelowSafeModel>[] = [];
+
+    for (const key in groupByWarehouseCode) {
+      dataExcell.push({
+        warehouseCode: i18n.translate('report.WAREHOUSE_GROUP_CODE') + key,
+        data: groupByWarehouseCode[key],
+      });
     }
-  }, {});
-  const dataExcell: TableData<ReportInventoryBelowSafeModel>[] = [];
 
-  for (const key in groupByWarehouseCode) {
-    dataExcell.push({
-      warehouseCode: i18n.translate('report.WAREHOUSE_GROUP_CODE') + key,
-      data: groupByWarehouseCode[key],
-    });
+    dataMaping.dataMapped = dataExcell || [];
+  } else {
+    dataMaping.dataMapped = [];
   }
-
-  dataMaping.dataMapped = dataExcell || [];
 
   return dataMaping;
 }

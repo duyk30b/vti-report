@@ -15,6 +15,11 @@ export class ReportOrderItemLotRequest implements ReportOrderItemLotInteface {
   @ApiProperty()
   @IsOptional()
   @IsString()
+  receiptNumber: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
   ebsNumber: string;
 
   @ApiProperty()

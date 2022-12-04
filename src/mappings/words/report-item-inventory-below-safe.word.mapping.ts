@@ -19,7 +19,6 @@ export async function reportItemInventoryBelowSafeWordMapping(
     REPORT_INFO[ReportType[ReportType.ITEM_INVENTORY_BELOW_SAFE]].key,
     request.warehouseCode ? data?.warehouseName : null,
     request.dateFrom,
-    request.dateTo,
   );
 
   return {

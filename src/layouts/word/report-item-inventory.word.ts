@@ -15,6 +15,7 @@ import {
   TableRow,
   TextRun,
   VerticalAlign,
+  WidthType,
 } from 'docx';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { setHeight, setWidth, wordFileStyle } from './word-common.styles';
@@ -450,6 +451,152 @@ export async function generateReportItemInventory(
                   ];
                 })
                 .flat(),
+            ],
+          }),
+          // =================
+          new Paragraph({}),
+          new Table({
+            width: {
+              size: 100,
+              type: WidthType.PERCENTAGE,
+            },
+            borders: wordFileStyle.border_none,
+            rows: [
+              new TableRow({
+                children: [
+                  new TableCell({
+                    borders: wordFileStyle.border_none,
+                    children: [],
+                    width: {
+                      size: 100 / 5,
+                      type: WidthType.PERCENTAGE,
+                    },
+                  }),
+                  new TableCell({
+                    borders: wordFileStyle.border_none,
+                    children: [],
+                    width: {
+                      size: 100 / 5,
+                      type: WidthType.PERCENTAGE,
+                    },
+                  }),
+                  new TableCell({
+                    borders: wordFileStyle.border_none,
+                    children: [],
+                    width: {
+                      size: 100 / 5,
+                      type: WidthType.PERCENTAGE,
+                    },
+                  }),
+                  new TableCell({
+                    borders: wordFileStyle.border_none,
+                    children: [],
+                    width: {
+                      size: 100 / 5,
+                      type: WidthType.PERCENTAGE,
+                    },
+                  }),
+                  new TableCell({
+                    borders: wordFileStyle.border_none,
+                    children: [
+                      new Paragraph({
+                        children: [
+                          new TextRun({
+                            text: i18n.translate('report.REPORT_FOOTER_DATE'),
+                            ...wordFileStyle.text_style,
+                          }),
+                        ],
+                        alignment: AlignmentType.CENTER,
+                      }),
+                    ],
+                    width: {
+                      size: 100 / 5,
+                      type: WidthType.PERCENTAGE,
+                    },
+                  }),
+                ],
+              }),
+              new TableRow({
+                children: [
+                  new TableCell({
+                    children: [],
+                    columnSpan: 5,
+                    borders: wordFileStyle.border_none,
+                  }),
+                ],
+              }),
+              new TableRow({
+                children: [
+                  new TableCell({
+                    borders: wordFileStyle.border_none,
+                    children: [],
+                  }),
+                  new TableCell({
+                    borders: wordFileStyle.border_none,
+                    children: [
+                      new Paragraph({
+                        children: [
+                          new TextRun({
+                            text: i18n.translate(
+                              'report.REPORT_FOOTER_SCHEDULER',
+                            ),
+                            ...wordFileStyle.text_style_bold,
+                          }),
+                        ],
+                        alignment: AlignmentType.CENTER,
+                      }),
+                    ],
+                  }),
+                  new TableCell({
+                    borders: wordFileStyle.border_none,
+                    children: [
+                      new Paragraph({
+                        children: [
+                          new TextRun({
+                            text: i18n.translate(
+                              'report.REPORT_FOOTER_OFFICE_SUPPLIES',
+                            ),
+                            ...wordFileStyle.text_style_bold,
+                          }),
+                        ],
+                        alignment: AlignmentType.CENTER,
+                      }),
+                    ],
+                  }),
+                  new TableCell({
+                    borders: wordFileStyle.border_none,
+                    children: [
+                      new Paragraph({
+                        children: [
+                          new TextRun({
+                            text: i18n.translate(
+                              'report.REPORT_FOOTER_CHIEF_ACCOUNTANT',
+                            ),
+                            ...wordFileStyle.text_style_bold,
+                          }),
+                        ],
+                        alignment: AlignmentType.CENTER,
+                      }),
+                    ],
+                  }),
+                  new TableCell({
+                    borders: wordFileStyle.border_none,
+                    children: [
+                      new Paragraph({
+                        children: [
+                          new TextRun({
+                            text: i18n.translate(
+                              'report.REPORT_FOOTER_VICE_PRESIDENT',
+                            ),
+                            ...wordFileStyle.text_style_bold,
+                          }),
+                        ],
+                        alignment: AlignmentType.CENTER,
+                      }),
+                    ],
+                  }),
+                ],
+              }),
             ],
           }),
         ],

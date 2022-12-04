@@ -567,7 +567,9 @@ export async function generateReportSituationImportPeriod(
                                   alignment: AlignmentType.LEFT,
                                   children: [
                                     new TextRun({
-                                      text: reason.value,
+                                      text:
+                                        i18n.translate('report.REASON') +
+                                        reason.value,
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],

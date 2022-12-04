@@ -7,7 +7,7 @@ export class DailyLotLocatorStock implements DailyItemLotLocatorStockInterface {
   @Prop({ required: false })
   warehouseCode: string;
 
-  @Prop({ required: false })
+  @Prop({ required: false, default: null })
   lotNumber: string;
 
   @Prop({ required: false, default: 0 })
@@ -26,7 +26,7 @@ export class DailyLotLocatorStock implements DailyItemLotLocatorStockInterface {
   storageDate: Date;
 
   @Prop({ required: false })
-  account: number;
+  account: string;
 
   @Prop({ required: false })
   companyCode: string;
