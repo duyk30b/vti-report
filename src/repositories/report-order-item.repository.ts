@@ -50,6 +50,11 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
       $and: [],
     };
 
+    if (request?.departmentReceiptCode)
+      condition['$and'].push({
+        departmentReceiptCode: { $eq: request?.departmentReceiptCode },
+      });
+
     if (request?.companyCode)
       condition['$and'].push({
         companyCode: { $eq: request?.companyCode },

@@ -3,7 +3,7 @@ import {
   OrderStatus,
   WarehouseTransferStatusEnum,
 } from '@enums/order-status.enum';
-import { OrderType } from '@enums/order-type.enum';
+import { MOVEMENT_TYPE_IMPORT, OrderType } from '@enums/order-type.enum';
 import { ActionType, ReportType } from '@enums/report-type.enum';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -324,6 +324,10 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
       $and: [],
     };
 
+    if (request?.departmentReceiptCode)
+      condition['$and'].push({
+        departmentReceiptCode: { $eq: request?.departmentReceiptCode },
+      });
     if (request?.companyCode)
       condition['$and'].push({
         companyCode: { $eq: request?.companyCode },
@@ -926,8 +930,13 @@ function getCommonConditionSituation(isTransfer?: boolean) {
   };
   if (isTransfer) {
     condition['$and'].push({ $eq: ['$actionType', ActionType.EXPORT as any] });
+  } else {
+    condition['$and'].push({
+      movementType: {
+        $in: MOVEMENT_TYPE_IMPORT,
+      },
+    } as any);
   }
-
   return [
     {
       $lookup: {
