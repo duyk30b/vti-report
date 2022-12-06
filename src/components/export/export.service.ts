@@ -429,27 +429,16 @@ export class ExportService {
             dailyItem.storageCost * transactionItem?.quantityImported || 0;
           dailyItem.totalExportIn =
             dailyItem.storageCost * transactionItem?.quantityExported || 0;
-        } else if (
-          !keyByDailyItem[key] &&
-          (request?.dateTo === curDate || request?.dateFrom === curDate)
-        ) {
+        } else if (!keyByDailyItem[key]) {
           if (request?.dateFrom === curDate && request?.dateTo === curDate) {
             transactionItem.stockEnd = 0;
             transactionItem.stockEnd += transactionItem?.quantityImported || 0;
             transactionItem.stockEnd -= transactionItem?.quantityExported || 0;
           } else {
-            if (request?.dateFrom === curDate) {
-              transactionItem.stockStart =
-                transactionItem?.quantityImported || 0;
-              transactionItem.stockStart -=
-                transactionItem?.quantityExported || 0;
-            }
-
-            if (request?.dateTo === curDate) {
-              transactionItem.stockEnd = transactionItem?.quantityImported || 0;
-              transactionItem.stockEnd -=
-                transactionItem?.quantityExported || 0;
-            }
+            transactionItem.stockEnd = transactionItem?.quantityImported || 0;
+            transactionItem.stockEnd -= transactionItem?.quantityExported || 0;
+            transactionItem.totalStockEnd =
+              transactionItem.stockEnd * transactionItem.storageCost;
           }
 
           transactionItem.importIn = transactionItem?.quantityImported || 0;

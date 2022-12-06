@@ -107,6 +107,9 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
     const curDate = getTimezone(undefined, FORMAT_DATE);
     const prevDate = new Date(curDate);
     prevDate.setDate(prevDate.getDate() - 1);
+    let dateFromSubtractOne = new Date(request?.dateFrom);
+    dateFromSubtractOne.setDate(dateFromSubtractOne.getDate() - 1);
+    dateFromSubtractOne = getTimezone(dateFromSubtractOne, FORMAT_DATE);
     const condition = {
       $and: [],
     };
@@ -131,7 +134,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
               {
                 $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
               },
-              moment(request?.dateFrom).format(DATE_FOMAT),
+              dateFromSubtractOne,
             ],
           },
           '$stockQuantity',
@@ -155,13 +158,10 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
     };
 
     //================
-    let isCurDateStockStartDate = false;
-    let isCurBoth = false;
     if (
       request?.dateFrom === request?.dateTo &&
       request?.dateFrom === curDate
     ) {
-      isCurBoth = true;
       conditionStockQuantity['stockStart'] = {
         $cond: [
           {
@@ -169,7 +169,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
               {
                 $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
               },
-              moment(prevDate).format(DATE_FOMAT),
+              moment(prevDate).format(DATE_FOMAT) as any,
             ],
           },
           '$stockQuantity',
@@ -202,7 +202,6 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
         },
       });
     } else if (request?.dateFrom === curDate) {
-      isCurDateStockStartDate = true;
       conditionStockQuantity['stockStart'] = {
         $cond: [
           {
@@ -210,7 +209,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
               {
                 $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
               },
-              moment(prevDate).format(DATE_FOMAT),
+              moment(prevDate).format(DATE_FOMAT) as any,
             ],
           },
           '$stockQuantity',
@@ -241,6 +240,20 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
         },
       });
     } else if (request?.dateTo === curDate) {
+      conditionStockQuantity['stockStart'] = {
+        $cond: [
+          {
+            $eq: [
+              {
+                $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
+              },
+              moment(dateFromSubtractOne).format(DATE_FOMAT) as any,
+            ],
+          },
+          '$stockQuantity',
+          0,
+        ],
+      };
       conditionStockQuantity['stockEnd'] = {
         $cond: [
           {
@@ -263,7 +276,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
             {
               $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
             },
-            moment(request.dateFrom).format(DATE_FOMAT),
+            dateFromSubtractOne,
           ],
         },
       });
@@ -278,6 +291,47 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
           ],
         },
       });
+    } else if (request?.dateFrom === request?.dateTo) {
+      conditionStockQuantity['stockStart'] = {
+        $cond: [
+          {
+            $eq: [
+              {
+                $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
+              },
+              request.dateFrom,
+            ],
+          },
+          '$stockQuantity',
+          0,
+        ],
+      };
+
+      conditionStockQuantity['stockEnd'] = {
+        $cond: [
+          {
+            $eq: [
+              {
+                $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
+              },
+              request.dateTo as any,
+            ],
+          },
+          '$stockQuantity',
+          0,
+        ],
+      };
+      if (!condition['$or']) condition['$or'] = [];
+      condition['$or'].push({
+        $expr: {
+          $eq: [
+            {
+              $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
+            },
+            moment(request.dateTo).format(DATE_FOMAT),
+          ],
+        },
+      });
     } else {
       if (!condition['$or']) condition['$or'] = [];
       condition['$or'].push({
@@ -286,7 +340,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
             {
               $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
             },
-            moment(request.dateFrom).format(DATE_FOMAT),
+            moment(dateFromSubtractOne).format(DATE_FOMAT),
           ],
         },
       });
