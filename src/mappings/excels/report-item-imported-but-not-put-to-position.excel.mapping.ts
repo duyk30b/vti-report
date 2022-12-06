@@ -39,6 +39,7 @@ export async function reportItemImportedButNotPutToPositionExcelMapping(
   };
 
   const model: ReportModel<any> = {
+    companyCode: data.companyCode,
     childCompany: data.companyName,
     addressChildCompany: data.companyAddress,
     tableColumn: REPORT_ITEM_IMPORT_BUT_NOT_PUT_TO_POSITION_COLUMN,

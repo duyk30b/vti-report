@@ -2,11 +2,9 @@ import isEmpty from '@core/utils/helper';
 import { SuccessResponse } from '@core/utils/success.response.dto';
 import { ExportType } from '@enums/export-type.enum';
 import {
-  Body,
   Controller,
   Get,
   Inject,
-  Post,
   Query,
   Res,
   StreamableFile,

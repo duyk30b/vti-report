@@ -156,7 +156,6 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
 
     //================
     let isCurDateStockStartDate = false;
-    let isCurDatestockEndDate = false;
     let isCurBoth = false;
     if (
       request?.dateFrom === request?.dateTo &&
@@ -242,7 +241,6 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
         },
       });
     } else if (request?.dateTo === curDate) {
-      isCurDatestockEndDate = true;
       conditionStockQuantity['stockEnd'] = {
         $cond: [
           {
@@ -345,153 +343,6 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       },
     });
 
-    let dateTransaction = null;
-    if (isCurDatestockEndDate) {
-      dateTransaction = request.dateTo;
-    } else if (isCurDateStockStartDate || isCurBoth) {
-      dateTransaction = request.dateFrom;
-    }
-
-    aggregateState.push({
-      $lookup: {
-        from: 'transaction-item',
-        let: {
-          companyCode: '$_id.companyCode',
-          warehouseCode: '$_id.warehouseCode',
-          itemCode: '$_id.itemCode',
-          lotNumber: '$_id.lotNumber',
-        },
-        as: 'transaction-item',
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $and: [
-                  { $eq: ['$companyCode', '$$companyCode'] },
-                  { $eq: ['$warehouseCode', '$$warehouseCode'] },
-                  { $eq: ['$itemCode', '$$itemCode'] },
-                  { $eq: ['$lotNumber', '$$lotNumber'] },
-                  {
-                    $eq: [
-                      {
-                        $dateToString: {
-                          date: '$transactionDate',
-                          format: '%Y-%m-%d',
-                        },
-                      },
-                      dateTransaction,
-                    ],
-                  },
-                ],
-              },
-            },
-          },
-          {
-            $project: {
-              itemCode: 1,
-              lotNumber: 1,
-              quantityExported: {
-                $cond: [
-                  {
-                    $eq: ['$actionType', ActionType.EXPORT],
-                  },
-                  {
-                    $subtract: [
-                      '$actualQuantity',
-                      { $multiply: ['$actualQuantity', 2] },
-                    ],
-                  },
-                  0,
-                ],
-              },
-              quantityImported: {
-                $cond: [
-                  {
-                    $eq: ['$actionType', ActionType.IMPORT],
-                  },
-                  '$actualQuantity',
-                  0,
-                ],
-              },
-            },
-          },
-        ],
-      },
-    });
-    if (isCurDatestockEndDate) {
-      aggregateState.push({
-        $project: {
-          _id: 1,
-          stockStart: 1,
-          stockEnd: {
-            $reduce: {
-              input: '$transaction-item',
-              initialValue: '$stockEnd',
-              in: {
-                $add: [
-                  '$$value',
-                  '$$this.quantityExported',
-                  '$$this.quantityImported',
-                ],
-              },
-            },
-          },
-        },
-      });
-    } else if (isCurDateStockStartDate) {
-      aggregateState.push({
-        $project: {
-          _id: 1,
-          stockEnd: 1,
-          stockStart: {
-            $reduce: {
-              input: '$transaction-item',
-              initialValue: '$stockStart',
-              in: {
-                $add: [
-                  '$$value',
-                  '$$this.quantityExported',
-                  '$$this.quantityImported',
-                ],
-              },
-            },
-          },
-        },
-      });
-    } else if (isCurBoth) {
-      aggregateState.push({
-        $project: {
-          _id: 1,
-          stockStart: {
-            $reduce: {
-              input: '$transaction-item',
-              initialValue: '$stockStart',
-              in: {
-                $add: [
-                  '$$value',
-                  '$$this.quantityExported',
-                  '$$this.quantityImported',
-                ],
-              },
-            },
-          },
-          stockEnd: {
-            $reduce: {
-              input: '$transaction-item',
-              initialValue: '$stockEnd',
-              in: {
-                $add: [
-                  '$$value',
-                  '$$this.quantityExported',
-                  '$$this.quantityImported',
-                ],
-              },
-            },
-          },
-        },
-      });
-    }
-
     aggregateState.push(
       {
         $group: {
@@ -546,6 +397,14 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
           stockEnd: '$items.stockEnd',
           totalStockEnd: '$items.totalStockEnd',
           note: '$items.note',
+        },
+      },
+      {
+        $sort: {
+          warehouseCode: -1,
+          itemCode: -1,
+          stockStart: -1,
+          stockEnd: -1,
         },
       },
     );

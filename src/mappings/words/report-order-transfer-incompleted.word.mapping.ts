@@ -27,6 +27,7 @@ export async function reportOrderTransferIncompletedWordMapping(
       data.dataMapped,
       data.companyName,
       data.companyAddress,
+      data.companyCode,
       title,
       reportTime,
       i18n,
