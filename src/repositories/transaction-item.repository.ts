@@ -10,9 +10,9 @@ import { Model } from 'mongoose';
 import * as moment from 'moment';
 import { getTimezone } from '@utils/common';
 import { DATE_FOMAT, FORMAT_DATE } from '@utils/constant';
-import { OrderType } from '@enums/order-type.enum';
 import { keyBy } from 'lodash';
-import { ActionType } from '@enums/report-type.enum';
+import { ActionType, ReportType } from '@enums/report-type.enum';
+import { WarehouseMovementTypeEnum } from '@enums/order-type.enum';
 @Injectable()
 export class TransactionItemRepository extends BaseAbstractRepository<TransactionItem> {
   constructor(
@@ -40,32 +40,69 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
     request: ReportRequest,
     data: DailyWarehouseItemStock[],
   ): Promise<any> {
-    const CurTime = moment(getTimezone()).format(FORMAT_DATE);
-    const dateRequest = moment(request.dateFrom).format(FORMAT_DATE);
-    if (CurTime === dateRequest) {
-      const dataTransactionByCurDate = await this.groupByItem(request);
+    const curDate = getTimezone(undefined, FORMAT_DATE);
+    if (curDate !== request.dateFrom || curDate !== request.dateTo) return data;
+    switch (request.reportType) {
+      case ReportType.INVENTORY:
+        if (curDate === request.dateFrom || curDate === request.dateTo) {
+          const dataTransactionByCurDate = await this.groupByItemLotLocator(
+            request,
+          );
+          const keyByItem = keyBy(data, function (o) {
+            return [o.warehouseCode, o.itemCode, o.locatorCode].join('-');
+          });
 
-      const keyByItem = keyBy(data, function (o) {
-        return [o.warehouseCode, o.itemCode].join('-');
-      });
+          dataTransactionByCurDate.forEach((item) => {
+            let key = [
+              item.warehouseCode,
+              item.itemCode,
+              item.locatorCode,
+            ].join('-');
 
-      dataTransactionByCurDate.forEach((item) => {
-        let key = [item.warehouseCode, item.itemCode].join('-');
-        if (keyByItem[key]) {
-          const itemStock = keyByItem[key];
-          itemStock.stockQuantity =
-            itemStock.stockQuantity +
-            item.quantityImported -
-            item.quantityExported;
+            if (keyByItem[key]) {
+              const itemStock = keyByItem[key];
+              itemStock.stockQuantity =
+                itemStock.stockQuantity +
+                item.quantityImported -
+                item.quantityExported;
+            } else {
+              item['stockQuantity'] = item.quantityImported;
+              if (item.quantityImported) keyByItem[key] = item;
+            }
+          });
+          return Object.values(keyByItem);
+        } else {
+          return data;
         }
-      });
-      return Object.values(keyByItem);
-    } else {
-      return data;
+      default:
+        if (curDate === request.dateFrom || curDate === request.dateTo) {
+          const dataTransactionByCurDate = await this.groupByItemLot(request);
+
+          const keyByItem = keyBy(data, function (o) {
+            return [o.warehouseCode, o.itemCode].join('-');
+          });
+
+          dataTransactionByCurDate.forEach((item) => {
+            let key = [item.warehouseCode, item.itemCode].join('-');
+            if (keyByItem[key]) {
+              const itemStock = keyByItem[key];
+              itemStock.stockQuantity =
+                itemStock.stockQuantity +
+                item.quantityImported -
+                item.quantityExported;
+            } else {
+              item['stockQuantity'] = item.quantityImported;
+              keyByItem[key] = item;
+            }
+          });
+          return Object.values(keyByItem);
+        } else {
+          return data;
+        }
     }
   }
 
-  async groupByItem(request: ReportRequest) {
+  async groupByItemLot(request: ReportRequest) {
     const condition = {
       $and: [],
     };
@@ -79,21 +116,46 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
         warehouseCode: { $eq: request?.warehouseCode },
       });
 
-    condition['$and'].push({
-      $expr: {
-        $eq: [
-          { $dateToString: { date: '$createdAt', format: '%Y-%m-%d' } },
-          moment(request?.dateFrom).format(DATE_FOMAT),
-        ],
-      },
-    });
+    if (request?.dateFrom) {
+      condition['$and'].push({
+        $expr: {
+          $gte: [
+            {
+              $dateToString: { date: '$transactionDate', format: '%Y-%m-%d' },
+            },
+            moment(request?.dateFrom).format(DATE_FOMAT),
+          ],
+        },
+      });
+    }
+
+    if (request?.dateTo) {
+      condition['$and'].push({
+        $expr: {
+          $lte: [
+            {
+              $dateToString: { date: '$transactionDate', format: '%Y-%m-%d' },
+            },
+            moment(request?.dateTo).format(DATE_FOMAT),
+          ],
+        },
+      });
+    }
     return this.transactionItem.aggregate([
       { $match: condition },
       {
         $project: {
           _id: 0,
+          companyCode: 1,
+          companyName: 1,
+          companyAddress: 1,
           warehouseCode: 1,
+          warehouseName: 1,
           itemCode: 1,
+          itemName: 1,
+          unit: 1,
+          lotNumber: 1,
+          storageCost: 1,
           quantityExported: {
             $cond: [
               {
@@ -117,8 +179,16 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
       {
         $group: {
           _id: {
+            companyCode: '$companyCode',
+            companyName: '$companyName',
+            companyAddress: '$companyAddress',
             warehouseCode: '$warehouseCode',
+            warehouseName: '$warehouseName',
             itemCode: '$itemCode',
+            itemName: '$itemCode',
+            lotNumber: '$lotNumber',
+            storageCost: '$storageCost',
+            unit: '$unit',
           },
           quantityExported: { $sum: '$quantityExported' },
           quantityImported: { $sum: '$quantityImported' },
@@ -127,9 +197,16 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
       {
         $project: {
           _id: 0,
+          companyCode: '$_id.companyCode',
+          companyName: '$_id.companyName',
+          companyAddress: '$_id.companyAddress',
           warehouseCode: '$_id.warehouseCode',
-          orderCode: '$_id.orderCode',
+          warehouseName: '$_id.warehouseName',
           itemCode: '$_id.itemCode',
+          itemName: '$_id.itemName',
+          lotNumber: '$_id.lotNumber',
+          storageCost: '$_id.storageCost',
+          unit: '$_id.unit',
           quantityExported: 1,
           quantityImported: 1,
         },
@@ -137,25 +214,55 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
     ]);
   }
 
-  async groupByItemTransfer(condition: any) {
-    const curCondition = condition;
+  async groupByItemLotLocator(request: ReportRequest) {
+    const curDate = getTimezone(undefined, FORMAT_DATE);
 
-    curCondition['$and'].push({
-      orderType: {
-        $in: [OrderType.TRANSFER],
-      },
+    const condition = {
+      $and: [],
+    };
+
+    condition['$and'].push({
+      companyCode: { $eq: request?.companyCode },
     });
+
+    if (request?.warehouseCode)
+      condition['$and'].push({
+        warehouseCode: { $eq: request?.warehouseCode },
+      });
+
+    if (request?.dateFrom) {
+      condition['$and'].push({
+        $expr: {
+          $gte: [
+            {
+              $dateToString: { date: '$transactionDate', format: '%Y-%m-%d' },
+            },
+            moment(curDate).format(DATE_FOMAT),
+          ],
+        },
+      });
+    }
+
     return this.transactionItem.aggregate([
-      { $match: curCondition },
+      { $match: condition },
       {
         $project: {
           _id: 0,
+          companyCode: 1,
+          companyName: 1,
+          companyAddress: 1,
           warehouseCode: 1,
+          warehouseName: 1,
           itemCode: 1,
+          itemName: 1,
+          locatorCode: 1,
+          unit: 1,
+          lotNumber: 1,
+          storageCost: 1,
           quantityExported: {
             $cond: [
               {
-                $eq: ['$orderType', OrderType.EXPORT],
+                $eq: ['$actionType', ActionType.EXPORT],
               },
               '$actualQuantity',
               0,
@@ -164,7 +271,15 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           quantityImported: {
             $cond: [
               {
-                $eq: ['$orderType', OrderType.IMPORT],
+                $and: [
+                  { $eq: ['$actionType', ActionType.IMPORT] },
+                  {
+                    $ne: [
+                      '$movementType',
+                      WarehouseMovementTypeEnum.PO_IMPORT_RECEIVE,
+                    ],
+                  },
+                ],
               },
               '$actualQuantity',
               0,
@@ -175,8 +290,17 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
       {
         $group: {
           _id: {
+            companyCode: '$companyCode',
+            companyName: '$companyName',
+            companyAddress: '$companyAddress',
             warehouseCode: '$warehouseCode',
+            warehouseName: '$warehouseName',
             itemCode: '$itemCode',
+            itemName: '$itemName',
+            locatorCode: '$locatorCode',
+            unit: '$unit',
+            lotNumber: '$lotNumber',
+            storageCost: '$storageCost',
           },
           quantityExported: { $sum: '$quantityExported' },
           quantityImported: { $sum: '$quantityImported' },
@@ -185,9 +309,17 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
       {
         $project: {
           _id: 0,
+          companyCode: '$_id.companyCode',
+          companyName: '$_id.companyName',
+          companyAddress: '$_id.companyAddress',
           warehouseCode: '$_id.warehouseCode',
-          orderCode: '$_id.orderCode',
+          warehouseName: '$_id.warehouseName',
           itemCode: '$_id.itemCode',
+          itemName: '$_id.itemName',
+          locatorCode: '$_id.locatorCode',
+          unit: '$_id.unit',
+          lotNumber: '$_id.lotNumber',
+          storageCost: '$_id.storageCost',
           quantityExported: 1,
           quantityImported: 1,
         },

@@ -3,7 +3,7 @@ import {
   OrderStatus,
   WarehouseTransferStatusEnum,
 } from '@enums/order-status.enum';
-import { MOVEMENT_TYPE_IMPORT, OrderType } from '@enums/order-type.enum';
+import { OrderType, WarehouseMovementTypeEnum } from '@enums/order-type.enum';
 import { ActionType, ReportType } from '@enums/report-type.enum';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -405,7 +405,12 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
       case ReportType.SITUATION_IMPORT_PERIOD:
         condition['$and'].push({
           status: {
-            $in: [OrderStatus.InProgress, OrderStatus.Completed],
+            $in: [
+              OrderStatus.Received,
+              OrderStatus.Confirmed,
+              OrderStatus.InProgress,
+              OrderStatus.Completed,
+            ],
           },
         });
         break;
@@ -539,7 +544,7 @@ function reportSituationExport(
 ) {
   return reportOrderItemLot.aggregate([
     { $match: condition },
-    ...getCommonConditionSituation(),
+    ...getCommonConditionSituation(OrderType.EXPORT),
     {
       $sort: { itemCode: -1 },
     },
@@ -676,7 +681,7 @@ function reportSituationImport(
 ) {
   return reportOrderItemLot.aggregate([
     { $match: condition },
-    ...getCommonConditionSituation(),
+    ...getCommonConditionSituation(OrderType.IMPORT),
     {
       $sort: { itemCode: -1 },
     },
@@ -808,7 +813,7 @@ function reportSituationTransfer(
 ) {
   return reportOrderItemLot.aggregate([
     { $match: condition },
-    ...getCommonConditionSituation(true),
+    ...getCommonConditionSituation(OrderType.TRANSFER),
     {
       $sort: { itemCode: 1 },
     },
@@ -913,7 +918,7 @@ function reportSituationTransfer(
   ]);
 }
 
-function getCommonConditionSituation(isTransfer?: boolean) {
+function getCommonConditionSituation(orderType: OrderType) {
   const condition = {
     $and: [
       { $eq: ['$itemCode', '$$itemCode'] },
@@ -923,13 +928,30 @@ function getCommonConditionSituation(isTransfer?: boolean) {
       { $eq: ['$lotNumber', '$$lotNumber'] },
     ],
   };
-  if (isTransfer) {
-    condition['$and'].push({ $eq: ['$actionType', ActionType.EXPORT as any] });
-  } else {
-    // condition['$and'].push({
-    //   $in: ['$movementType', MOVEMENT_TYPE_IMPORT],
-    // } as any);
+  switch (orderType) {
+    case OrderType.TRANSFER:
+      condition['$and'].push({
+        $eq: ['$actionType', ActionType.EXPORT as any],
+      });
+      break;
+
+    case OrderType.IMPORT:
+      condition['$and'].push({
+        $ne: [
+          '$movementType',
+          WarehouseMovementTypeEnum.PO_IMPORT_RECEIVE as any,
+        ],
+      } as any);
+      condition['$and'].push({
+        $eq: ['$actionType', ActionType.IMPORT as any],
+      });
+      break;
+
+    case OrderType.EXPORT:
+    default:
+      break;
   }
+
   return [
     {
       $lookup: {
