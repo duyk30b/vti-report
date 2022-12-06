@@ -3,6 +3,7 @@ import { TableData } from '@models/report.model';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 
 export interface ReportInfo<T> {
+  companyCode?: string;
   companyName: string;
   companyAddress: string;
   warehouseName: string;
@@ -17,6 +18,7 @@ export function getItemInventoryDataMapping(
     companyName: data[0]?.companyName || '',
     companyAddress: data[0]?.companyAddress || '',
     warehouseName: data[0]?.warehouseName || '',
+    companyCode: data[0]?.companyCode,
     dataMapped: [],
   };
 
