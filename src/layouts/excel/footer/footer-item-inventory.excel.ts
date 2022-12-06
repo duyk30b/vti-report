@@ -7,6 +7,7 @@ export function footerItemInventory(
   curRowIdx: number,
   worksheet: ExcelJS.Worksheet,
   i18n: I18nRequestScopeService,
+  companyCode: string,
 ) {
   curRowIdx++;
   const cells: ConfigCells[] = [];
@@ -14,7 +15,7 @@ export function footerItemInventory(
     ...[
       {
         nameCell: `F${curRowIdx}:H${curRowIdx}`,
-        value: 'REPORT_FOOTER_DATE',
+        value: `${companyCode}_REPORT_FOOTER_DATE`,
         font: FONT_ITALIC_9,
         aligment: ALIGNMENT_CENTER,
         merge: true,

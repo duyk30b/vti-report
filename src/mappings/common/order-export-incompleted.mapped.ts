@@ -13,6 +13,7 @@ export function getOrderExportIncompletedMapped(
   isEmpty: boolean,
 ): ReportInfo<TableData<OrderExportIncompleteModel>[]> {
   const dataMaping: ReportInfo<any> = {
+    companyCode: data[0]?.companyCode || '',
     companyName: data[0]?.companyName || '',
     companyAddress: data[0]?.companyAddress || '',
     warehouseName: data[0]?.warehouseName || '',

@@ -34,6 +34,7 @@ export async function reportOrderTransferIncompletedExcelMapping(
   };
 
   const model: ReportModel<OrderTransferIncompleteModel> = {
+    companyCode: data?.companyCode,
     childCompany: data.companyName,
     addressChildCompany: data.companyAddress,
     tableColumn: REPORT_ORDER_TRANSFER_INCOMPLETE_COLUMN,
