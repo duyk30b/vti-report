@@ -299,7 +299,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
               {
                 $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
               },
-              request.dateFrom,
+              dateFromSubtractOne,
             ],
           },
           '$stockQuantity',
@@ -321,6 +321,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
           0,
         ],
       };
+
       if (!condition['$or']) condition['$or'] = [];
       condition['$or'].push({
         $expr: {

@@ -51,7 +51,7 @@ export const wordFileStyle = {
     bold: WORD_FILE_CONFIG.WORD_BOLD,
     size: WORD_FILE_CONFIG.WORD_FONT_SIZE_10,
     font: FONT_NAME,
-    allCaps: true,
+    // allCaps: true,
   },
   margin_left: {
     left: convertInchesToTwip(WORD_FILE_CONFIG.MARGIN_LEFT),
