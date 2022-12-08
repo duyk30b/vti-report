@@ -10,6 +10,7 @@ export function getItemImportedButNotPutToPositionMapped(
   i18n: I18nRequestScopeService,
 ): ReportInfo<TableData<ItemImportedButNotStoreToPositionModel>[]> {
   const dataMaping: ReportInfo<any> = {
+    companyCode: data[0]?._id?.companyCode || '',
     companyName: data[0]?._id?.companyName || '',
     companyAddress: data[0]?._id?.companyAddress || '',
     warehouseName: '',
