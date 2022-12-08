@@ -61,6 +61,8 @@ import { TransactionItemRepository } from '@repositories/transaction-item.reposi
 import { UserService } from '@components/user/user.service';
 import { keyBy } from 'lodash';
 import { WarehouseServiceInterface } from '@components/warehouse/interface/warehouse.service.interface';
+import { getTimezone } from '@utils/common';
+import { FORMAT_DATE } from '@utils/constant';
 @Injectable()
 export class ExportService {
   constructor(
@@ -374,44 +376,81 @@ export class ExportService {
   }
 
   async reportItemInventory(request: ReportRequest): Promise<ReportResponse> {
-    const OrderItemLot =
-      await this.reportOrderItemLotRepository.getReportItemInventory(request);
+    const curDate = getTimezone(undefined, FORMAT_DATE);
+
     const dailyLotLocatorStock =
       await this.dailyLotLocatorStockRepository.getReportItemInventory(request);
 
-    let keyByDailyItem = {};
-    if (dailyLotLocatorStock.length) {
-      keyByDailyItem = keyBy(dailyLotLocatorStock, function (o) {
-        return [
-          o?.companyCode,
-          o?.warehouseCode,
-          o?.itemCode,
-          o?.lotNumber,
-        ].join('_');
-      });
-      for (const itemLot of OrderItemLot) {
-        const key = [
-          itemLot?.companyCode,
-          itemLot?.warehouseCode,
-          itemLot?.itemCode,
-          itemLot?.lotNumber,
-        ].join('_');
+    const transactionItemInCurDate =
+      await this.transactionItemRepository.groupByItemLot(request);
 
+    let keyByDailyItem = keyBy(dailyLotLocatorStock, function (o) {
+      return [o?.companyCode, o?.warehouseCode, o?.itemCode, o?.lotNumber].join(
+        '_',
+      );
+    });
+
+    //case item new in transaction
+    if (transactionItemInCurDate.length) {
+      for (const transactionItem of transactionItemInCurDate) {
+        const key = [
+          transactionItem?.companyCode,
+          transactionItem?.warehouseCode,
+          transactionItem?.itemCode,
+          transactionItem?.lotNumber,
+        ].join('_');
         if (keyByDailyItem[key]) {
           const dailyItem = keyByDailyItem[key];
-          if (!dailyItem.importIn) dailyItem['importIn'] = 0;
-          dailyItem['importIn'] += itemLot?.importIn || 0;
+          if (request?.dateFrom === curDate && request?.dateTo === curDate) {
+            dailyItem.stockEnd += transactionItem?.quantityImported || 0;
+            dailyItem.stockEnd -= transactionItem?.quantityExported || 0;
+            dailyItem.totalStockEnd =
+              dailyItem.stockEnd * dailyItem.storageCost;
+          } else {
+            if (request?.dateFrom === curDate) {
+              dailyItem.stockStart += transactionItem?.quantityImported || 0;
+              dailyItem.stockStart -= transactionItem?.quantityExported || 0;
+              dailyItem.totalStockStart =
+                dailyItem.stockStart * dailyItem.storageCost;
+            }
 
-          if (!dailyItem.totalImportIn) dailyItem['totalImportIn'] = 0;
-          dailyItem['totalImportIn'] +=
-            itemLot?.importIn * dailyItem.storageCost;
+            if (request?.dateTo === curDate) {
+              dailyItem.stockEnd += transactionItem?.quantityImported || 0;
+              dailyItem.stockEnd -= transactionItem?.quantityExported || 0;
+              dailyItem.totalStockEnd =
+                dailyItem.stockEnd * dailyItem.storageCost;
+            }
+          }
 
-          if (!dailyItem.exportIn) dailyItem['exportIn'] = 0;
-          dailyItem['exportIn'] += itemLot?.exportIn || 0;
+          dailyItem.importIn = transactionItem?.quantityImported || 0;
+          dailyItem.exportIn = transactionItem?.quantityExported || 0;
 
-          if (!dailyItem.totalExportIn) dailyItem['totalExportIn'] = 0;
-          dailyItem['totalExportIn'] +=
-            itemLot?.exportIn * dailyItem.storageCost;
+          dailyItem.totalImportIn =
+            dailyItem.storageCost * transactionItem?.quantityImported || 0;
+          dailyItem.totalExportIn =
+            dailyItem.storageCost * transactionItem?.quantityExported || 0;
+        } else if (!keyByDailyItem[key]) {
+          if (request?.dateFrom === curDate && request?.dateTo === curDate) {
+            transactionItem.stockEnd = 0;
+            transactionItem.stockEnd += transactionItem?.quantityImported || 0;
+            transactionItem.stockEnd -= transactionItem?.quantityExported || 0;
+          } else {
+            transactionItem.stockEnd = transactionItem?.quantityImported || 0;
+            transactionItem.stockEnd -= transactionItem?.quantityExported || 0;
+            transactionItem.totalStockEnd =
+              transactionItem.stockEnd * transactionItem.storageCost;
+          }
+
+          transactionItem.importIn = transactionItem?.quantityImported || 0;
+          transactionItem.exportIn = transactionItem?.quantityExported || 0;
+
+          transactionItem.totalImportIn =
+            transactionItem.storageCost * transactionItem?.quantityImported ||
+            0;
+          transactionItem.totalExportIn =
+            transactionItem.storageCost * transactionItem?.quantityExported ||
+            0;
+          keyByDailyItem[key] = transactionItem;
         }
       }
     }
@@ -702,6 +741,7 @@ export class ExportService {
       if (parentObject) {
         data.push({
           _id: {
+            companyCode: company?.code,
             companyName: company?.name,
             companyAddress: company?.address,
             warehouseName: warehouse,
@@ -709,6 +749,7 @@ export class ExportService {
         } as any);
       } else {
         data.push({
+          companyCode: company?.code,
           companyName: company?.name,
           companyAddress: company?.address,
           warehouseName: warehouse,

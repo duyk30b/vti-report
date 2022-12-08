@@ -27,6 +27,7 @@ export type FormatByKey<T> = {
 };
 
 export interface ReportModel<T> {
+  companyCode?: string;
   childCompany: string;
   addressChildCompany: string;
   tableColumn: TableColumn[];
@@ -41,5 +42,6 @@ export interface ReportModel<T> {
     curRowIdx: number,
     worksheet: ExcelJS.Worksheet,
     i18n: I18nRequestScopeService,
+    companyCode: string,
   ) => void;
 }
