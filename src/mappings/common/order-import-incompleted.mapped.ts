@@ -14,6 +14,7 @@ export function getOrderImportIncompletedMapped(
   isEmpty: boolean,
 ): ReportInfo<TableData<OrderImportIncompleteModel>[]> {
   const dataMaping: ReportInfo<any> = {
+    companyCode: data[0]?.companyCode || '',
     companyName: data[0]?.companyName || '',
     companyAddress: data[0]?.companyAddress || '',
     warehouseName: data[0]?.warehouseName || '',

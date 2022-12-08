@@ -34,6 +34,7 @@ import {
 import { UserService } from '@components/user/user.service';
 import { TransactionItemInterface } from '@schemas/interface/TransactionItem.Interface';
 import { isEmpty } from 'lodash';
+import { Inventory, SyncInventory } from '@requests/sync-inventory-request';
 @Injectable()
 export class SyncService {
   constructor(
@@ -179,6 +180,36 @@ export class SyncService {
     }
   }
 
+  async syncInventory(request: SyncInventory) {
+    const company = await this.userService.getCompanies({
+      code: request?.data?.syncCode,
+    });
+
+    if (
+      company?.statusCode !== ResponseCodeEnum.SUCCESS ||
+      isEmpty(company.data)
+    ) {
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.BAD_REQUEST)
+        .withMessage(await this.i18n.translate('error.COMPANY_NOT_FOUND'))
+        .build();
+    }
+
+    request.data['company'] = company?.data?.pop();
+
+    switch (request.actionType) {
+      case ActionType.create:
+        return this.createItemInventory(request.data);
+      case ActionType.update:
+      case ActionType.confirm:
+      case ActionType.reject:
+      case ActionType.delete:
+        return this.createItemInventory(request.data, true);
+      default:
+        break;
+    }
+  }
+
   async syncPurchasedOrderImport(
     request: SyncPurchasedOrderRequest,
   ): Promise<any> {
@@ -312,6 +343,77 @@ export class SyncService {
             orderCode: request.code,
             companyCode: request?.company?.code,
             orderType: OrderType.TRANSFER,
+          }),
+        ]);
+      }
+      await Promise.all([
+        this.reportOrderRepository.saveMany(order),
+        this.reportOrderItemRepository.saveMany(orderItem),
+        this.reportOrderItemLotRepository.saveMany(orderItemLot),
+      ]);
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.SUCCESS)
+        .withMessage(await this.i18n.translate('success.SUCCESS'))
+        .build();
+    } catch (error) {
+      console.log(error);
+
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.BAD_REQUEST)
+        .withMessage(await this.i18n.translate('error.BAD_REQUEST'))
+        .build();
+    }
+  }
+
+  async createItemInventory(request: Inventory, isUpdate = false) {
+    try {
+      const order: ReportOrderInteface[] = [];
+      const orderItem: ReportOrderItemInteface[] = [];
+      const orderItemLot: ReportOrderItemLotInteface[] = [];
+
+      for (const item of request.itemInventory) {
+        const reportOrderItem: ReportOrderItemInteface = {
+          orderCode: request?.code,
+          warehouseCode: request?.warehouse?.code,
+          warehouseName: request?.warehouse?.name,
+          companyCode: request?.company?.code,
+          companyName: request?.company?.name,
+          companyAddress: request?.company?.address,
+          orderCreatedAt: request?.orderCreatedAt,
+          orderType: OrderType.INVENTORY,
+          unit: item?.unit,
+          itemName: item?.name,
+          itemCode: item?.code,
+          planQuantity: item?.planQuantity,
+          actualQuantity: item?.actualQuantity,
+          storageCost: item.price ? Number(item.price) : 0,
+        } as any;
+        orderItem.push(reportOrderItem);
+
+        for (const lot of item.lots) {
+          const reportOrderItemLot: ReportOrderItemLotInteface = {
+            ...reportOrderItem,
+            lotNumber: lot?.lotNumber?.toLowerCase(),
+            note: request?.note,
+            planQuantity: lot?.planQuantity,
+            actualQuantity: lot?.actualQuantity,
+          } as any;
+
+          orderItemLot.push(reportOrderItemLot);
+        }
+      }
+
+      if (isUpdate) {
+        await Promise.all([
+          this.reportOrderItemRepository.deleteAllByCondition({
+            orderCode: request.code,
+            companyCode: request?.company?.code,
+            orderType: OrderType.INVENTORY,
+          }),
+          this.reportOrderItemLotRepository.deleteAllByCondition({
+            orderCode: request.code,
+            companyCode: request?.company?.code,
+            orderType: OrderType.INVENTORY,
           }),
         ]);
       }

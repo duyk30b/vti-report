@@ -3,7 +3,7 @@ import {
   OrderStatus,
   WarehouseTransferStatusEnum,
 } from '@enums/order-status.enum';
-import { MOVEMENT_TYPE_IMPORT, OrderType } from '@enums/order-type.enum';
+import { OrderType, WarehouseMovementTypeEnum } from '@enums/order-type.enum';
 import { ActionType, ReportType } from '@enums/report-type.enum';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -405,7 +405,11 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
       case ReportType.SITUATION_IMPORT_PERIOD:
         condition['$and'].push({
           status: {
-            $in: [OrderStatus.InProgress, OrderStatus.Completed],
+            $in: [
+              // OrderStatus.Received,
+              OrderStatus.InProgress,
+              OrderStatus.Completed,
+            ],
           },
         });
         break;
@@ -539,7 +543,7 @@ function reportSituationExport(
 ) {
   return reportOrderItemLot.aggregate([
     { $match: condition },
-    ...getCommonConditionSituation(),
+    ...getCommonConditionSituation(OrderType.EXPORT),
     {
       $sort: { itemCode: -1 },
     },
@@ -674,9 +678,37 @@ function reportSituationImport(
   reportOrderItemLot: Model<ReportOrderItemLot>,
   condition: any,
 ) {
+  const itemGroup = {
+    itemCode: '$itemCode',
+    itemName: '$itemName',
+    lotNumber: '$lotNumber',
+    accountDebt: '$accountDebt',
+    accountHave: '$accountHave',
+    unit: '$unit',
+    actualQuantity: {
+      $cond: {
+        if: '$transactionItem.actualQuantity',
+        then: '$transactionItem.actualQuantity',
+        else: '$actualQuantity',
+      },
+    },
+    locatorCode: '$transactionItem.locatorCode',
+    storageCost: '$storageCost',
+    totalPrice: {
+      $cond: {
+        if: '$transactionItem.actualQuantity',
+        then: {
+          $multiply: ['$storageCost', '$transactionItem.actualQuantity'],
+        },
+        else: {
+          $multiply: ['$storageCost', '$actualQuantity'],
+        },
+      },
+    },
+  };
   return reportOrderItemLot.aggregate([
     { $match: condition },
-    ...getCommonConditionSituation(),
+    ...getCommonConditionSituation(OrderType.IMPORT),
     {
       $sort: { itemCode: -1 },
     },
@@ -700,34 +732,16 @@ function reportSituationImport(
         },
         items: {
           $push: {
-            itemCode: '$itemCode',
-            itemName: '$itemName',
-            lotNumber: '$lotNumber',
-            accountDebt: '$accountDebt',
-            accountHave: '$accountHave',
-            unit: '$unit',
-            actualQuantity: {
-              $cond: {
-                if: '$transactionItem.actualQuantity',
-                then: '$transactionItem.actualQuantity',
-                else: '$actualQuantity',
-              },
-            },
-            locatorCode: '$transactionItem.locatorCode',
-            storageCost: '$storageCost',
-            totalPrice: {
-              $cond: {
-                if: '$transactionItem.actualQuantity',
-                then: {
-                  $multiply: [
-                    '$storageCost',
-                    '$transactionItem.actualQuantity',
-                  ],
-                },
-                else: {
-                  $multiply: ['$storageCost', '$actualQuantity'],
+            $cond: {
+              if: OrderStatus.InProgress,
+              then: {
+                $cond: {
+                  if: '$transactionItem',
+                  then: itemGroup,
+                  else: '$$REMOVE',
                 },
               },
+              else: itemGroup,
             },
           },
         },
@@ -747,15 +761,21 @@ function reportSituationImport(
         },
         orders: {
           $push: {
-            orderCode: '$_id.orderCode',
-            orderCreatedAt: '$_id.orderCreatedAt',
-            contract: '$_id.contract',
-            constructionName: '$_id.constructionName',
-            providerName: '$_id.providerName',
-            departmentReceiptName: '$_id.departmentReceiptName',
-            explain: '$_id.explain',
-            totalPrice: { $sum: '$items.totalPrice' },
-            items: '$items',
+            $cond: {
+              if: { $gt: [{ $size: '$items' }, 0] },
+              then: {
+                orderCode: '$_id.orderCode',
+                orderCreatedAt: '$_id.orderCreatedAt',
+                contract: '$_id.contract',
+                constructionName: '$_id.constructionName',
+                providerName: '$_id.providerName',
+                departmentReceiptName: '$_id.departmentReceiptName',
+                explain: '$_id.explain',
+                totalPrice: { $sum: '$items.totalPrice' },
+                items: '$items',
+              },
+              else: '$$REMOVE',
+            },
           },
         },
       },
@@ -773,9 +793,15 @@ function reportSituationImport(
         },
         reasons: {
           $push: {
-            value: '$_id.reason',
-            totalPrice: { $sum: '$orders.totalPrice' },
-            orders: '$orders',
+            $cond: {
+              if: { $gt: [{ $size: '$orders' }, 0] },
+              then: {
+                value: '$_id.reason',
+                totalPrice: { $sum: '$orders.totalPrice' },
+                orders: '$orders',
+              },
+              else: '$$REMOVE',
+            },
           },
         },
       },
@@ -791,10 +817,16 @@ function reportSituationImport(
         },
         warehouses: {
           $push: {
-            warehouseCode: '$_id.warehouseCode',
-            warehouseName: '$_id.warehouseName',
-            totalPrice: { $sum: '$reasons.totalPrice' },
-            reasons: '$reasons',
+            $cond: {
+              if: { $gt: [{ $size: '$reasons' }, 0] },
+              then: {
+                warehouseCode: '$_id.warehouseCode',
+                warehouseName: '$_id.warehouseName',
+                totalPrice: { $sum: '$reasons.totalPrice' },
+                reasons: '$reasons',
+              },
+              else: '$$REMOVE',
+            },
           },
         },
       },
@@ -808,7 +840,7 @@ function reportSituationTransfer(
 ) {
   return reportOrderItemLot.aggregate([
     { $match: condition },
-    ...getCommonConditionSituation(true),
+    ...getCommonConditionSituation(OrderType.TRANSFER),
     {
       $sort: { itemCode: 1 },
     },
@@ -913,7 +945,7 @@ function reportSituationTransfer(
   ]);
 }
 
-function getCommonConditionSituation(isTransfer?: boolean) {
+function getCommonConditionSituation(orderType: OrderType) {
   const condition = {
     $and: [
       { $eq: ['$itemCode', '$$itemCode'] },
@@ -923,13 +955,24 @@ function getCommonConditionSituation(isTransfer?: boolean) {
       { $eq: ['$lotNumber', '$$lotNumber'] },
     ],
   };
-  if (isTransfer) {
-    condition['$and'].push({ $eq: ['$actionType', ActionType.EXPORT as any] });
-  } else {
-    // condition['$and'].push({
-    //   $in: ['$movementType', MOVEMENT_TYPE_IMPORT],
-    // } as any);
+  switch (orderType) {
+    case OrderType.TRANSFER:
+      condition['$and'].push({
+        $eq: ['$actionType', ActionType.EXPORT as any],
+      });
+      break;
+
+    case OrderType.IMPORT:
+      condition['$and'].push({
+        $eq: ['$actionType', ActionType.IMPORT as any],
+      });
+      break;
+
+    case OrderType.EXPORT:
+    default:
+      break;
   }
+
   return [
     {
       $lookup: {
@@ -957,10 +1000,7 @@ function getCommonConditionSituation(isTransfer?: boolean) {
               locatorName: 1,
               planQuantity: 1,
               actualQuantity: 1,
-              receivedQuantity: 1,
-              storedQuantity: 1,
-              collectedQuantity: 1,
-              exportedQuantity: 1,
+              movementType: 1,
               _id: 0,
             },
           },
@@ -974,10 +1014,6 @@ function getCommonConditionSituation(isTransfer?: boolean) {
               },
               planQuantity: { $sum: '$planQuantity' },
               actualQuantity: { $sum: '$actualQuantity' },
-              receivedQuantity: { $sum: '$receivedQuantity' },
-              storedQuantity: { $sum: '$storedQuantity' },
-              collectedQuantity: { $sum: '$collectedQuantity' },
-              exportedQuantity: { $sum: '$exportedQuantity' },
             },
           },
           {
@@ -988,10 +1024,6 @@ function getCommonConditionSituation(isTransfer?: boolean) {
               locatorName: '$_id.locatorName',
               planQuantity: 1,
               actualQuantity: 1,
-              receivedQuantity: 1,
-              storedQuantity: 1,
-              collectedQuantity: 1,
-              exportedQuantity: 1,
               _id: 0,
             },
           },

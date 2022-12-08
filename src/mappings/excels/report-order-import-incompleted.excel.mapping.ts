@@ -38,6 +38,7 @@ export async function reportOrderImportIncompletedExcelMapping(
   };
 
   const model: ReportModel<OrderImportIncompleteModel> = {
+    companyCode: data.companyCode,
     childCompany: data.companyName,
     addressChildCompany: data.companyAddress,
     tableColumn: REPORT_IMPORT_INCOMPLETE_COLUMN,

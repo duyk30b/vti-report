@@ -28,6 +28,7 @@ export async function generateReportOrderImportIncompleted(
   dataWord: TableData<OrderImportIncompleteModel>[],
   companyName,
   companyAddress,
+  companyCode,
   title,
   reportTime,
   i18n: I18nRequestScopeService,
@@ -417,7 +418,9 @@ export async function generateReportOrderImportIncompleted(
                       new Paragraph({
                         children: [
                           new TextRun({
-                            text: i18n.translate('report.REPORT_FOOTER_DATE'),
+                            text: i18n.translate(
+                              `report.${companyCode}_REPORT_FOOTER_DATE`,
+                            ),
                             ...wordFileStyle.text_style,
                           }),
                         ],

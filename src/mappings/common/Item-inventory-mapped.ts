@@ -3,6 +3,7 @@ import { TableData } from '@models/report.model';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 
 export interface ReportInfo<T> {
+  companyCode?: string;
   companyName: string;
   companyAddress: string;
   warehouseName: string;
@@ -17,6 +18,7 @@ export function getItemInventoryDataMapping(
     companyName: data[0]?.companyName || '',
     companyAddress: data[0]?.companyAddress || '',
     warehouseName: data[0]?.warehouseName || '',
+    companyCode: data[0]?.companyCode,
     dataMapped: [],
   };
 
@@ -32,15 +34,15 @@ export function getItemInventoryDataMapping(
         itemName: cur.itemName,
         unit: cur.unit,
         lotNumber: cur.lotNumber,
-        storageCost: cur.storageCost || null,
-        stockStart: cur.stockStart || null,
-        totalStockStart: cur.totalStockStart || null,
-        importIn: cur.importIn || null,
-        totalImportIn: cur.totalImportIn || null,
-        exportIn: cur.exportIn || null,
-        totalExportIn: cur.totalExportIn || null,
-        stockEnd: cur.stockEnd || null,
-        totalStockEnd: cur.totalStockEnd || null,
+        storageCost: cur.storageCost,
+        stockStart: cur.stockStart,
+        totalStockStart: cur.totalStockStart,
+        importIn: cur.importIn,
+        totalImportIn: cur.totalImportIn,
+        exportIn: cur.exportIn,
+        totalExportIn: cur.totalExportIn,
+        stockEnd: cur.stockEnd,
+        totalStockEnd: cur.totalStockEnd,
         note: cur.note,
       };
       prev[warehouseCode].push(returnData);

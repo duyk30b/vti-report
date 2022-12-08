@@ -32,6 +32,7 @@ export async function reportItemInventoryBelowMinimumExcelMapping(
   };
 
   const model: ReportModel<ReportInventoryBelowMinimumModel> = {
+    companyCode: data?.companyCode,
     childCompany: data.companyName,
     addressChildCompany: data.companyAddress,
     tableColumn: ITEM_INVENTORY_BELOW_MINIMUM,
