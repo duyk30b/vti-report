@@ -145,7 +145,7 @@ export const generateTable = async (
     );
   }
   if (typeof model.footer == 'function') {
-    model.footer(rowIndex, worksheet, i18n);
+    model.footer(rowIndex, worksheet, i18n, model?.companyCode);
   }
   const buffer = await workbook.xlsx.writeBuffer();
   // workbook.xlsx.writeFile(`demo${Math.floor(Math.random() * 1000)}.xlsx`);

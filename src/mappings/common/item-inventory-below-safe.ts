@@ -11,6 +11,7 @@ export function getItemInventoryBelowSafe(
 ): ReportInfo<TableData<ReportInventoryBelowSafeModel>[]> {
   const dataMaping: ReportInfo<any> = {
     companyName: data[0]?.companyName || '',
+    companyCode: data[0]?.companyCode || '',
     companyAddress: data[0]?.companyAddress || '',
     warehouseName: data[0]?.warehouseName || '',
     dataMapped: null,

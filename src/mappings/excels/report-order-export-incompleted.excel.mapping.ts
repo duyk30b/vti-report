@@ -33,6 +33,7 @@ export async function reportOrderExportIncompletedExcelMapping(
   };
 
   const model: ReportModel<OrderExportIncompleteModel> = {
+    companyCode: data.companyCode,
     childCompany: data.companyName,
     addressChildCompany: data.companyAddress,
     tableColumn: REPORT_ORDER_EXPORT_INCOMPLETE_COLUMN,

@@ -28,6 +28,7 @@ export async function reportOrderImportIncompletedMapping(
       data.dataMapped,
       data.companyName,
       data.companyAddress,
+      data.companyCode,
       title,
       reportTime,
       i18n,
