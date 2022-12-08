@@ -291,48 +291,6 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
           ],
         },
       });
-    } else if (request?.dateFrom === request?.dateTo) {
-      conditionStockQuantity['stockStart'] = {
-        $cond: [
-          {
-            $eq: [
-              {
-                $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
-              },
-              dateFromSubtractOne,
-            ],
-          },
-          '$stockQuantity',
-          0,
-        ],
-      };
-
-      conditionStockQuantity['stockEnd'] = {
-        $cond: [
-          {
-            $eq: [
-              {
-                $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
-              },
-              request.dateTo as any,
-            ],
-          },
-          '$stockQuantity',
-          0,
-        ],
-      };
-
-      if (!condition['$or']) condition['$or'] = [];
-      condition['$or'].push({
-        $expr: {
-          $eq: [
-            {
-              $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
-            },
-            moment(request.dateTo).format(DATE_FOMAT),
-          ],
-        },
-      });
     } else {
       if (!condition['$or']) condition['$or'] = [];
       condition['$or'].push({
