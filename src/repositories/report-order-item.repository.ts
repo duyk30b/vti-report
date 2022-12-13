@@ -1,5 +1,8 @@
 import { BaseAbstractRepository } from '@core/repository/base.abstract.repository';
-import { OrderStatus } from '@enums/order-status.enum';
+import {
+  OrderStatus,
+  WarehouseTransferStatusEnum,
+} from '@enums/order-status.enum';
 import { OrderType } from '@enums/order-type.enum';
 import { ReportType } from '@enums/report-type.enum';
 import { Injectable } from '@nestjs/common';
@@ -129,13 +132,28 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
           ebsNumber: { $eq: null },
         });
         condition['$and'].push({
-          status: { $eq: OrderStatus.Completed },
+          status: {
+            $in: [
+              OrderStatus.Completed,
+              OrderStatus.InProgress,
+              OrderStatus.Received,
+            ],
+          },
         });
         break;
 
       case ReportType.ORDER_TRANSFER_INCOMPLETED:
         condition['$and'].push({
           ebsNumber: { $eq: null },
+        });
+        condition['$and'].push({
+          status: {
+            $in: [
+              WarehouseTransferStatusEnum.COMPLETED,
+              WarehouseTransferStatusEnum.EXPORTED,
+              WarehouseTransferStatusEnum.INCOLLECTING,
+            ],
+          },
         });
         break;
 
