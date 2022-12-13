@@ -105,7 +105,9 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
   async groupByItemLot(request: ReportRequest) {
     const condition = {
       $and: [],
+      $or: [],
     };
+    const curDate = getTimezone(undefined, FORMAT_DATE);
 
     condition['$and'].push({
       companyCode: { $eq: request?.companyCode },
@@ -141,6 +143,17 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
         },
       });
     }
+
+    condition['$or'].push({
+      $expr: {
+        $lte: [
+          {
+            $dateToString: { date: '$transactionDate', format: '%Y-%m-%d' },
+          },
+          moment(curDate).format(DATE_FOMAT),
+        ],
+      },
+    });
     return this.transactionItem.aggregate([
       { $match: condition },
       {
@@ -174,6 +187,54 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
               0,
             ],
           },
+          quantityExportedCurDate: {
+            $cond: [
+              {
+                $and: [
+                  {
+                    $eq: ['$actionType', ActionType.EXPORT],
+                  },
+                  {
+                    $eq: [
+                      {
+                        $dateToString: {
+                          date: '$transactionDate',
+                          format: '%Y-%m-%d',
+                        },
+                      },
+                      moment(curDate).format(DATE_FOMAT),
+                    ],
+                  },
+                ],
+              },
+              '$actualQuantity',
+              0,
+            ],
+          },
+          quantityImportedCurDate: {
+            $cond: [
+              {
+                $and: [
+                  {
+                    $eq: ['$actionType', ActionType.IMPORT],
+                  },
+                  {
+                    $eq: [
+                      {
+                        $dateToString: {
+                          date: '$transactionDate',
+                          format: '%Y-%m-%d',
+                        },
+                      },
+                      moment(curDate).format(DATE_FOMAT),
+                    ],
+                  },
+                ],
+              },
+              '$actualQuantity',
+              0,
+            ],
+          },
         },
       },
       {
@@ -192,6 +253,8 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           },
           quantityExported: { $sum: '$quantityExported' },
           quantityImported: { $sum: '$quantityImported' },
+          quantityExportedCurDate: { $sum: '$quantityExportedCurDate' },
+          quantityImportedCurDate: { $sum: '$quantityImportedCurDate' },
         },
       },
       {
@@ -209,6 +272,8 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           unit: '$_id.unit',
           quantityExported: 1,
           quantityImported: 1,
+          quantityExportedCurDate: 1,
+          quantityImportedCurDate: 1,
         },
       },
     ]);
