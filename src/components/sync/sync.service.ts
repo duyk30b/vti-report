@@ -259,7 +259,7 @@ export class SyncService {
 
       const reportOrder: ReportOrderInteface = {
         orderCode: request?.code,
-        orderCreatedAt: request?.createdAt,
+        orderCreatedAt: request?.receiptDate,
         warehouseCode: request?.sourceWarehouse?.code,
         warehouseName: request?.sourceWarehouse?.name,
         orderType: OrderType.TRANSFER,
@@ -480,7 +480,8 @@ export class SyncService {
           account: request?.source?.accountant,
           accountDebt: item?.debitAccount,
           accountHave: item?.creditAccount,
-          warehouseExportProposals: request?.warehouseExportProposal?.code,
+          warehouseExportProposals:
+            request?.warehouseExportProposal?.code || null,
           itemName: item?.item?.name,
           itemCode: item?.item?.code,
           planQuantity: item?.quantity,
@@ -596,7 +597,8 @@ export class SyncService {
           account: request?.source?.accountant,
           accountDebt: item?.debitAccount,
           accountHave: item?.creditAccount,
-          warehouseExportProposals: request?.warehouseExportProposals?.code,
+          warehouseExportProposals:
+            request?.warehouseExportProposals?.code || null,
           itemName: item.item?.name,
           itemCode: item?.item?.code,
           planQuantity: item?.quantity,

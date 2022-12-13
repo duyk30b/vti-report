@@ -10,6 +10,7 @@ export const DEFAULT_LANG = LANG.VI;
 
 export const DATE_FOMAT = 'YYYY-MM-DD';
 export const DATE_FOMAT_EXCELL = 'DD/MM/YYYY';
+export const DATE_FOMAT_EXCELL_MM_DD_YY = 'MM/DD/YYYY';
 export const DATE_FOMAT_EXCELL_FILE = 'DDMMYYYY';
 export const FONT_NAME = 'Times New Roman';
 export const COLOR = '000000';

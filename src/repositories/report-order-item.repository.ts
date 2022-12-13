@@ -151,9 +151,37 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
             $in: [
               WarehouseTransferStatusEnum.COMPLETED,
               WarehouseTransferStatusEnum.EXPORTED,
-              WarehouseTransferStatusEnum.INCOLLECTING,
+              WarehouseTransferStatusEnum.INPROGRESS,
             ],
           },
+        });
+        break;
+
+      case ReportType.ORDER_IMPORT_BY_REQUEST_FOR_ITEM:
+        condition['$and'].push({
+          status: {
+            $in: [OrderStatus.Stored],
+          },
+        });
+        condition['$and'].push({
+          warehouseExportProposals: { $exists: true, $ne: null },
+        });
+
+        break;
+
+      case ReportType.ORDER_EXPORT_BY_REQUEST_FOR_ITEM:
+        condition['$and'].push({
+          status: {
+            $in: [
+              OrderStatus.Confirmed,
+              OrderStatus.InCollecting,
+              OrderStatus.Collected,
+              OrderStatus.Completed,
+            ],
+          },
+        });
+        condition['$and'].push({
+          warehouseExportProposals: { $exists: true, $ne: null },
         });
         break;
 
@@ -163,7 +191,12 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
 
     return this.reportOrderItem
       .find(condition)
-      .sort({ warehouseCode: -1, orderCode: -1, itemCode: -1 })
+      .sort({
+        warehouseCode: -1,
+        orderCode: -1,
+        itemCode: -1,
+        warehouseExportProposals: -1,
+      })
       .lean();
   }
 }
