@@ -58,6 +58,8 @@ export class WarehouseTransferResponse {
 
   createdAt: Date;
 
+  receiptDate: Date;
+
   updatedAt: Date;
 
   approvedAt: Date;
