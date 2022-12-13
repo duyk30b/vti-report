@@ -36,9 +36,9 @@ export function getOrderImportIncompletedMapped(
         itemCode: cur.itemCode,
         itemName: cur.itemName,
         unit: cur.unit,
-        actualQuantity: cur.actualQuantity,
+        actualQuantity: cur.receivedQuantity,
         storageCost: cur.storageCost,
-        totalPrice: cur.storageCost * cur.planQuantity,
+        totalPrice: Math.round(cur.storageCost * cur.planQuantity),
         constructionName: cur.constructionName,
         deliverName: cur.performerName,
       };

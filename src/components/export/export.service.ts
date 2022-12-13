@@ -383,7 +383,6 @@ export class ExportService {
 
     const transactionItemInCurDate =
       await this.transactionItemRepository.groupByItemLot(request);
-
     let keyByDailyItem = keyBy(dailyLotLocatorStock, function (o) {
       return [o?.companyCode, o?.warehouseCode, o?.itemCode, o?.lotNumber].join(
         '_',
@@ -402,33 +401,46 @@ export class ExportService {
         if (keyByDailyItem[key]) {
           const dailyItem = keyByDailyItem[key];
           if (request?.dateFrom === curDate && request?.dateTo === curDate) {
-            dailyItem.stockEnd += transactionItem?.quantityImported || 0;
-            dailyItem.stockEnd -= transactionItem?.quantityExported || 0;
+            dailyItem.stockEnd += transactionItem?.quantityImportedCurDate || 0;
+            dailyItem.stockEnd -= transactionItem?.quantityExportedCurDate || 0;
             dailyItem.totalStockEnd =
               dailyItem.stockEnd * dailyItem.storageCost;
+
+            dailyItem.importIn = transactionItem?.quantityImportedCurDate || 0;
+            dailyItem.exportIn = transactionItem?.quantityExportedCurDate || 0;
+
+            dailyItem.totalImportIn =
+              dailyItem.storageCost *
+                transactionItem?.quantityImportedCurDate || 0;
+            dailyItem.totalExportIn =
+              dailyItem.storageCost *
+                transactionItem?.quantityExportedCurDate || 0;
           } else {
             if (request?.dateFrom === curDate) {
-              dailyItem.stockStart += transactionItem?.quantityImported || 0;
-              dailyItem.stockStart -= transactionItem?.quantityExported || 0;
+              dailyItem.stockStart +=
+                transactionItem?.quantityImportedCurDate || 0;
+              dailyItem.stockStart -=
+                transactionItem?.quantityExportedCurDate || 0;
               dailyItem.totalStockStart =
                 dailyItem.stockStart * dailyItem.storageCost;
             }
 
             if (request?.dateTo === curDate) {
-              dailyItem.stockEnd += transactionItem?.quantityImported || 0;
-              dailyItem.stockEnd -= transactionItem?.quantityExported || 0;
+              dailyItem.stockEnd +=
+                transactionItem?.quantityImportedCurDate || 0;
+              dailyItem.stockEnd -=
+                transactionItem?.quantityExportedCurDate || 0;
               dailyItem.totalStockEnd =
                 dailyItem.stockEnd * dailyItem.storageCost;
             }
+            dailyItem.importIn = transactionItem?.quantityImported || 0;
+            dailyItem.exportIn = transactionItem?.quantityExported || 0;
+
+            dailyItem.totalImportIn =
+              dailyItem.storageCost * transactionItem?.quantityImported || 0;
+            dailyItem.totalExportIn =
+              dailyItem.storageCost * transactionItem?.quantityExported || 0;
           }
-
-          dailyItem.importIn = transactionItem?.quantityImported || 0;
-          dailyItem.exportIn = transactionItem?.quantityExported || 0;
-
-          dailyItem.totalImportIn =
-            dailyItem.storageCost * transactionItem?.quantityImported || 0;
-          dailyItem.totalExportIn =
-            dailyItem.storageCost * transactionItem?.quantityExported || 0;
         } else if (!keyByDailyItem[key]) {
           if (request?.dateFrom === curDate && request?.dateTo === curDate) {
             transactionItem.stockEnd = 0;

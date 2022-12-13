@@ -30,10 +30,10 @@ export async function reportOrderImportIncompletedExcelMapping(
     itemCode: Alignment.LEFT,
     itemName: Alignment.LEFT,
     unit: Alignment.CENTER,
-    actualQuantity: Alignment.LEFT,
+    actualQuantity: Alignment.RIGHT,
     constructionName: Alignment.LEFT,
-    storageCost: Alignment.LEFT,
-    totalPrice: Alignment.LEFT,
+    storageCost: Alignment.RIGHT,
+    totalPrice: Alignment.RIGHT,
     deliverName: Alignment.LEFT,
   };
 
