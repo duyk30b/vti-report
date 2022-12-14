@@ -34,7 +34,7 @@ export function getOrderExportByRequestForItemMapped(
           ? moment(cur.orderCreatedAt).format(DATE_FOMAT_EXCELL_MM_DD_YY)
           : '',
         planQuantity: cur.planQuantity,
-        exportedQuantity: cur.exportedQuantity,
+        exportedQuantity: cur.actualQuantity,
       };
       prev[warehouseCode].push(data);
       return prev;

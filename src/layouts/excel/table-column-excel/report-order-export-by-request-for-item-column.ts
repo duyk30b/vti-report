@@ -18,7 +18,7 @@ export const REPORT_ORDER_EXPORT_BY_REQUEST_FOR_ITEM_MODEL: TableColumn[] = [
     width: 25,
   },
   {
-    name: 'ORDER_IMPORT_CODE',
+    name: 'ORDER_EXPORT_CODE',
     width: 25,
   },
   {
