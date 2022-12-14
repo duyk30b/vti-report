@@ -1,11 +1,10 @@
 import { ReportOrderExportByRequestForItemModel } from '@models/order-export-by-request-for-item.model';
-import { OrderTransferIncompleteModel } from '@models/order-transfer incomplete.model';
 import { TableData } from '@models/report.model';
 import { ReportOrderItem } from '@schemas/report-order-item.schema';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
 import * as moment from 'moment';
-import { DATE_FOMAT_EXCELL } from '@utils/constant';
+import { DATE_FOMAT_EXCELL_MM_DD_YY } from '@utils/constant';
 
 export function getOrderExportByRequestForItemMapped(
   data: ReportOrderItem[],
@@ -32,7 +31,7 @@ export function getOrderExportByRequestForItemMapped(
         warehouseExportProposals: cur.warehouseExportProposals,
         orderCode: cur.orderCode,
         orderCreatedAt: cur.orderCreatedAt
-          ? moment(cur.orderCreatedAt).format(DATE_FOMAT_EXCELL)
+          ? moment(cur.orderCreatedAt).format(DATE_FOMAT_EXCELL_MM_DD_YY)
           : '',
         planQuantity: cur.planQuantity,
         exportedQuantity: cur.exportedQuantity,

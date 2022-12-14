@@ -32,8 +32,8 @@ export function getOrderTransferIncompletedMapped(
         actualQuantity: cur.actualQuantity,
         constructionName: cur.constructionName,
         warehouseImport:
-          cur.warehouseTargetName && cur.warehouseTargetCode
-            ? [cur.warehouseTargetName, cur.warehouseTargetCode].join('_')
+          cur.warehouseTargetCode && cur.warehouseTargetName
+            ? [cur.warehouseTargetCode, cur.warehouseTargetName].join('_')
             : '',
       };
       prev[warehouseCode].push(data);
