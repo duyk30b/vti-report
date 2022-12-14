@@ -7,6 +7,7 @@
     "IMPORTING": "đang nhập kho",
     "INVENTORY_COLUMN": "Tồn kho",
     "NOT_YET_IMPORT": "chưa nhập kho",
+    "ORDER_EXPORT_CODE": "Phiếu xuất kho",
     "ORDER_IMPORT_CODE": "Phiếu nhập kho",
     "ORDER_REQUEST_EXPORT_ITEM": "Giấy đề nghị xuất VT",
     "ORDER_CODE": "Phiếu yêu cầu",
