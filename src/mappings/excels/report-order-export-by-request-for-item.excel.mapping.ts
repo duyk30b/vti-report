@@ -12,7 +12,6 @@ import {
 } from '@models/report.model';
 
 import { ReportRequest } from '@requests/report.request';
-import { ReportOrderItem } from '@schemas/report-order-item.schema';
 import { REPORT_INFO } from '@utils/constant';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 
