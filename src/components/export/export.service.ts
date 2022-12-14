@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ReportRequest } from '../../requests/report.request';
 import { ReportResponse } from '../../responses/report.response';
 import { ReportType } from '@enums/report-type.enum';
@@ -65,6 +65,7 @@ import { getTimezone } from '@utils/common';
 import { FORMAT_DATE } from '@utils/constant';
 @Injectable()
 export class ExportService {
+  private readonly logger = new Logger(ExportService.name);
   constructor(
     @Inject(DailyLotLocatorStockRepository.name)
     private dailyLotLocatorStockRepository: DailyLotLocatorStockRepository,
@@ -470,6 +471,7 @@ export class ExportService {
     const data = Object.values(keyByDailyItem);
     let isEmpty = await this.getInfoWarehouse(request, data);
     const dataMapping = getItemInventoryDataMapping(data, this.i18n, isEmpty);
+    this.logger.error('dataMapping', JSON.stringify(dataMapping));
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } = await reportItemInventoryExcelMapping(
