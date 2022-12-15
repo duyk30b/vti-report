@@ -13,6 +13,7 @@ import { DATE_FOMAT, FORMAT_DATE } from '@utils/constant';
 import { keyBy } from 'lodash';
 import { ActionType, ReportType } from '@enums/report-type.enum';
 import { WarehouseMovementTypeEnum } from '@enums/order-type.enum';
+import { DailyLotLocatorStock } from '@schemas/daily-lot-locator-stock.schema';
 @Injectable()
 export class TransactionItemRepository extends BaseAbstractRepository<TransactionItem> {
   constructor(
@@ -38,7 +39,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
 
   async updateQuantityItem(
     request: ReportRequest,
-    data: DailyWarehouseItemStock[],
+    data: DailyLotLocatorStock[] | DailyWarehouseItemStock[],
   ): Promise<any> {
     const curDate = getTimezone(undefined, FORMAT_DATE);
     if (curDate !== request.dateFrom || curDate !== request.dateTo) return data;
@@ -48,14 +49,26 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           const dataTransactionByCurDate = await this.groupByItemLotLocator(
             request,
           );
-          const keyByItem = keyBy(data, function (o) {
-            return [o.warehouseCode, o.itemCode, o.locatorCode].join('-');
-          });
+          const keyByItem = data.reduce((prev, cur) => {
+            const key = [
+              cur.warehouseCode,
+              cur.itemCode,
+              cur.lotNumber,
+              cur.locatorCode,
+            ].join('-');
+            if (!prev[key]) {
+              prev[key] = cur;
+            } else {
+              prev[key].stockQuantity += cur.stockQuantity;
+            }
+            return prev;
+          }, {} as any);
 
           dataTransactionByCurDate.forEach((item) => {
             let key = [
               item.warehouseCode,
               item.itemCode,
+              item.lotNumber,
               item.locatorCode,
             ].join('-');
 

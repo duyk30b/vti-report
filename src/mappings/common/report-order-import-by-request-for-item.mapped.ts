@@ -5,7 +5,7 @@ import { ReportOrderItem } from '@schemas/report-order-item.schema';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
 import * as moment from 'moment';
-import { DATE_FOMAT_EXCELL } from '@utils/constant';
+import { DATE_FOMAT_EXCELL, DATE_FOMAT_EXCELL_MM_DD_YY } from '@utils/constant';
 import { ReportOrderImportByRequestForItemModel } from '@models/order-import-by-request-for-item.model';
 import { minus } from '@utils/common';
 
@@ -47,7 +47,7 @@ export function getOrderImportByRequestForItemMapped(
         itemCode: cur.itemCode,
         itemName: cur.itemName,
         orderCreatedAt: cur.orderCreatedAt
-          ? moment(cur.orderCreatedAt).format(DATE_FOMAT_EXCELL)
+          ? moment(cur.orderCreatedAt).format(DATE_FOMAT_EXCELL_MM_DD_YY)
           : '',
         planQuantity: cur.planQuantity,
         actualQuantity: cur.actualQuantity,
