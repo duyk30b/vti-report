@@ -387,7 +387,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.stockEnd || '',
+                                  text: '50',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
