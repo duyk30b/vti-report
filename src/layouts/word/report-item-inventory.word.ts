@@ -198,6 +198,7 @@ export async function generateReportItemInventory(
               ...dataWord
                 .map((warehouse) => {
                   itemData = warehouse.data.map((item, index) => {
+                     console.log('==============================:', {item})
                     return new TableRow({
                       height: setHeight(WORD_FILE_CONFIG.TABLE_ROW_HEIGHT),
                       children: [

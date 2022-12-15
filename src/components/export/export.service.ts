@@ -473,7 +473,7 @@ export class ExportService {
     const data = Object.values(keyByDailyItem);
     let isEmpty = await this.getInfoWarehouse(request, data);
     const dataMapping = getItemInventoryDataMapping(data, this.i18n, isEmpty);
-    this.logger.error('dataMapping', JSON.stringify(dataMapping));
+    this.logger.error('dataMapping', dataMapping);
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } = await reportItemInventoryExcelMapping(
