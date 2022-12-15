@@ -4,7 +4,7 @@ export const ITEM_INVENTORY_IMPORTED_NO_QR_CODE_COLUMN = [
     width: 35,
   },
   {
-    name: 'ORDER_IMPORT_CODE',
+    name: 'ORDER_EXPORT_CODE',
     width: 20,
   },
   {
