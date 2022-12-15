@@ -447,6 +447,8 @@ export class ExportService {
             transactionItem.stockEnd = 0;
             transactionItem.stockEnd += transactionItem?.quantityImported || 0;
             transactionItem.stockEnd -= transactionItem?.quantityExported || 0;
+            transactionItem.totalStockEnd =
+              transactionItem.stockEnd * transactionItem.storageCost;
           } else {
             transactionItem.stockEnd = transactionItem?.quantityImported || 0;
             transactionItem.stockEnd -= transactionItem?.quantityExported || 0;
