@@ -622,7 +622,7 @@ export const ITEM_INVENTORY_IMPORTED_NO_QR_CODE_COLUMNS: TableColumn[] = [
     width: 0.8,
   },
   {
-    name: 'ORDER_IMPORT_CODE',
+    name: 'ORDER_EXPORT_CODE',
     width: 1.4,
   },
   {
