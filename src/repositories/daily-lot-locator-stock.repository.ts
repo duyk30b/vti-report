@@ -201,7 +201,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
             {
               $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
             },
-            moment(dateFromSubtractOne).format(DATE_FOMAT),
+            moment(prevDate).format(DATE_FOMAT),
           ],
         },
       });

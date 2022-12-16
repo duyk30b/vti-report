@@ -282,7 +282,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item?.storageCost?.toString()  || '',
+                                  text: item?.storageCost?.toString() || '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -297,7 +297,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item?.stockStart?.toString()  || '',
+                                  text: item?.stockStart?.toString() || '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -312,7 +312,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item?.totalStockStart?.toString()  || '',
+                                  text: item?.totalStockStart?.toString() || '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -327,7 +327,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item?.importIn?.toString()  || '',
+                                  text: item?.importIn?.toString() || '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -342,7 +342,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item?.totalImportIn?.toString()   || '', 
+                                  text: item?.totalImportIn?.toString() || '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -357,7 +357,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item?.exportIn?.toString()  || '',
+                                  text: item?.exportIn?.toString() || '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -372,7 +372,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item?.totalExportIn?.toString()  || '',
+                                  text: item?.totalExportIn?.toString() || '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -387,7 +387,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item?.stockEnd?.toString()  || '',
+                                  text: item?.stockEnd?.toString() || '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -402,7 +402,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item?.totalStockEnd?.toString()  || '',
+                                  text: item?.totalStockEnd?.toString() || '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -417,7 +417,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.LEFT,
                               children: [
                                 new TextRun({
-                                  text: item.note || '',
+                                  text: item?.note?.toString() || '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],

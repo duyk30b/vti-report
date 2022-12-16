@@ -1,3 +1,4 @@
+import { TableDataSituationTransfer } from '@models/situation-transfer.model';
 import { plus } from '@utils/common';
 import {
   FONT_NAME,
@@ -19,7 +20,7 @@ import {
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { setHeight, setWidth, wordFileStyle } from './word-common.styles';
 export async function generateReportSituationTransfer(
-  dataWord,
+  dataWord: TableDataSituationTransfer[],
   companyName,
   companyAddress,
   title,
@@ -261,7 +262,7 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: item.accountDebt,
+                                      text: item?.accountDebt?.toString() || '',
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -276,7 +277,7 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: item.accountHave,
+                                      text: item?.accountHave?.toString() || '',
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -305,7 +306,8 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: item.actualQuantity,
+                                      text:
+                                        item?.actualQuantity?.toString() || '',
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -335,7 +337,7 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: item.storageCost,
+                                      text: item?.storageCost?.toString() || '',
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -350,7 +352,7 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: item.totalPrice,
+                                      text: item?.totalPrice?.toString() || '',
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -402,7 +404,8 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.CENTER,
                                   children: [
                                     new TextRun({
-                                      text: order.orderCreatedAt,
+                                      text:
+                                        order?.orderCreatedAt?.toString() || '',
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -448,7 +451,7 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: order.totalPrice,
+                                      text: order?.totalPrice?.toString() || '',
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -489,7 +492,7 @@ export async function generateReportSituationTransfer(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: warehouse.totalPrice,
+                                  text: warehouse?.totalPrice?.toString() || '',
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
