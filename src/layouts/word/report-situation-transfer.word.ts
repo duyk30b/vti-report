@@ -306,8 +306,9 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text:
-                                        item?.actualQuantity?.toString() || '',
+                                      text: item?.actualQuantity
+                                        ? `${item?.actualQuantity}`
+                                        : '',
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
