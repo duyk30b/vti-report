@@ -383,12 +383,26 @@ export class ExportService {
 
     const transactionItemInCurDate =
       await this.transactionItemRepository.groupByItemLot(request);
-    let keyByDailyItem = keyBy(dailyLotLocatorStock, function (o) {
-      return [o?.companyCode, o?.warehouseCode, o?.itemCode, o?.lotNumber].join(
-        '_',
-      );
-    });
 
+    let keyByDailyItem = dailyLotLocatorStock.reduce((prev, cur) => {
+      const key = [
+        cur?.companyCode,
+        cur?.warehouseCode,
+        cur?.itemCode,
+        cur?.lotNumber,
+      ].join('_');
+      if (!prev[key]) {
+        prev[key] = cur;
+      } else {
+        const item = prev[key];
+        item.storageCost += cur.storageCost;
+        item.stockStart += cur.stockStart;
+        item.totalStockStart += cur.totalStockStart;
+        item.stockEnd += cur.stockEnd;
+        item.totalStockEnd += cur.totalStockEnd;
+      }
+      return prev;
+    }, {});
     //case item new in transaction
     if (transactionItemInCurDate.length) {
       for (const transactionItem of transactionItemInCurDate) {
@@ -470,6 +484,7 @@ export class ExportService {
     }
 
     const data = Object.values(keyByDailyItem);
+
     let isEmpty = await this.getInfoWarehouse(request, data);
     const dataMapping = getItemInventoryDataMapping(data, this.i18n, isEmpty);
     switch (request.exportType) {
