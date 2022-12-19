@@ -29,7 +29,7 @@ export function getOrderTransferIncompletedMapped(
         itemCode: cur.itemCode,
         itemName: cur.itemName,
         unit: cur.unit,
-        actualQuantity: cur.actualQuantity,
+        actualQuantity: cur.exportedQuantity,
         constructionName: cur.constructionName,
         warehouseImport:
           cur.warehouseTargetCode && cur.warehouseTargetName
