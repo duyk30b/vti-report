@@ -259,7 +259,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
             warehouseCode: '$warehouseCode',
             warehouseName: '$warehouseName',
             itemCode: '$itemCode',
-            itemName: '$itemCode',
+            itemName: '$itemName',
             lotNumber: '$lotNumber',
             storageCost: '$storageCost',
             unit: '$unit',
