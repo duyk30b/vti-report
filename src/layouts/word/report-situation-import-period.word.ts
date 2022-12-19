@@ -383,7 +383,10 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: item.totalPrice + '',
+                                          text:
+                                            Math.round(
+                                              item?.totalPrice,
+                                            )?.toString() || '0',
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -541,7 +544,10 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: order.totalPrice + '',
+                                          text:
+                                            Math.round(
+                                              order?.totalPrice,
+                                            )?.toString() || '0',
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -655,7 +661,10 @@ export async function generateReportSituationImportPeriod(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: warehouse.totalPrice + '',
+                                  text:
+                                    Math.round(
+                                      warehouse?.totalPrice,
+                                    )?.toString() || '0',
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
@@ -710,7 +719,7 @@ export async function generateReportSituationImportPeriod(
                         alignment: AlignmentType.RIGHT,
                         children: [
                           new TextRun({
-                            text: totalWarehouse.toString(),
+                            text: Math.round(totalWarehouse)?.toString() || '0',
                             ...wordFileStyle.text_style,
                           }),
                         ],

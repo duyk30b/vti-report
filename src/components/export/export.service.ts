@@ -773,7 +773,7 @@ export class ExportService {
         data.push({
           _id: {
             companyCode: company?.code,
-            companyName: company?.name,
+            companyName: company?.name?.toUpperCase() || '',
             companyAddress: company?.address,
             warehouseName: warehouse,
           },
@@ -781,7 +781,7 @@ export class ExportService {
       } else {
         data.push({
           companyCode: company?.code,
-          companyName: company?.name,
+          companyName: company?.name?.toUpperCase() || '',
           companyAddress: company?.address,
           warehouseName: warehouse,
         } as any);
