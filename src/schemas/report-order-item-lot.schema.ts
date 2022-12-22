@@ -1,3 +1,4 @@
+import { INVENTORY_ADJUSTMENT_TYPE } from '@constant/common';
 import { OrderStatus } from '@enums/order-status.enum';
 import { OrderType } from '@enums/order-type.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
