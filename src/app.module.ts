@@ -26,6 +26,7 @@ import { SyncModule } from '@components/sync/sync.module';
 import { ExportModule } from '@components/export/export.module';
 import { ClientProxyFactory } from '@nestjs/microservices';
 import { ConfigService } from '@core/config/config.service';
+import { DashboardModule } from '@components/dashboard/dashboard.module';
 
 dotenv.config();
 @Module({
@@ -65,6 +66,7 @@ dotenv.config();
     AuthModule,
     SyncModule,
     ExportModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [

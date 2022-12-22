@@ -32,18 +32,6 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
     Object.assign(document, data);
     await document.save();
   }
-  private sumItem(
-    reportOrderItemRequest: ReportOrderItemRequest,
-    field: string,
-  ): number {
-    let quantity = 0;
-    reportOrderItemRequest?.reportOrderItemLots.forEach(
-      (reportOrderItemLot) => {
-        quantity = plus(quantity, reportOrderItemLot[field] || 0);
-      },
-    );
-    return quantity;
-  }
 
   async getReports(
     request: ReportRequest,

@@ -1,4 +1,3 @@
-import { InventoryModel } from '@models/inventory.model';
 import { ReportInventoryBelowMinimumModel } from '@models/item-inventory-below-minimum.model';
 import { TableData } from '@models/report.model';
 import { DailyWarehouseItemStock } from '@schemas/daily-warehouse-item-stock.schema';

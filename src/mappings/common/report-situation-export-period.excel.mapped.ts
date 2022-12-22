@@ -7,7 +7,7 @@ export function getSituationExportPeriodMapped(
   i18n: I18nRequestScopeService,
 ): ReportInfo<TableDataSituationExportPeriod[]> {
   const dataMaping: ReportInfo<any> = {
-    companyName: data[0]?._id?.companyName || '',
+    companyName: data[0]?._id?.companyName?.toUpperCase() || '',
     companyAddress: data[0]?._id?.companyAddress || '',
     warehouseName: data[0]?._id?.warehouseName || '',
     dataMapped: null,
