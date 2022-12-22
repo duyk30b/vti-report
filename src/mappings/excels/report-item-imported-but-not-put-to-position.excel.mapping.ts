@@ -35,7 +35,7 @@ export async function reportItemImportedButNotPutToPositionExcelMapping(
     actualQuantity: Alignment.RIGHT,
     remainQuantity: Alignment.RIGHT,
     note: Alignment.LEFT,
-    performerName: Alignment.RIGHT,
+    performerName: Alignment.LEFT,
   };
 
   const model: ReportModel<any> = {

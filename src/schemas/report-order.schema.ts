@@ -1,3 +1,4 @@
+import { INVENTORY_ADJUSTMENT_TYPE } from '@constant/common';
 import { BaseEntity } from '@core/entity/base.entity';
 import { OrderStatus } from '@enums/order-status.enum';
 import { OrderType } from '@enums/order-type.enum';

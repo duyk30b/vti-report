@@ -13,6 +13,7 @@ import { SyncSaleOrderExportRequest } from '@requests/sync-sale-order-export.req
 import { SyncWarehouseTransferRequest } from '@requests/sync-warehouse-transfer-request';
 import { SyncDailyStockRequest } from '@requests/sync-daily.request';
 import { SyncInventory } from '@requests/sync-inventory-request';
+import { InventoryAdjustmentRequest } from '@requests/inventory-adjustments.request';
 
 @Controller('sync')
 export class SyncController {
@@ -83,6 +84,30 @@ export class SyncController {
       return responseError;
     }
     const res = await this.syncService.syncSaleOrderExport(request);
+
+    return res;
+  }
+
+  @Post('/orders/inventory-adjustments')
+  @ApiOperation({
+    tags: ['Sync'],
+    summary: 'Đồng bộ dữ liệu hàng ngày',
+    description: 'Đồng bộ dữ liệu order',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: SuccessResponse,
+  })
+  async inventoryAdjustments(
+    @Body() payload: InventoryAdjustmentRequest,
+  ): Promise<ResponsePayload<any>> {
+    const { request, responseError } = payload;
+
+    if (responseError && !isEmpty(responseError)) {
+      return responseError;
+    }
+    const res = await this.syncService.inventoryAdjustments(request);
 
     return res;
   }

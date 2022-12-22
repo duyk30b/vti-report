@@ -1,7 +1,5 @@
-import { InventoryModel } from '@models/inventory.model';
 import { ItemImportedButNotStoreToPositionModel } from '@models/Item-imported-but-not-put-to-position.model';
 import { TableData } from '@models/report.model';
-import { DailyLotLocatorStock } from '@schemas/daily-lot-locator-stock.schema';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
 
@@ -11,8 +9,8 @@ export function getItemImportedButNotPutToPositionMapped(
 ): ReportInfo<TableData<ItemImportedButNotStoreToPositionModel>[]> {
   const dataMaping: ReportInfo<any> = {
     companyCode: data[0]?._id?.companyCode || '',
-    companyName: data[0]?._id?.companyName || '',
-    companyAddress: data[0]?._id?.companyAddress || '',
+    companyName: data[0]?._id?.companyName?.toUpperCase() || '',
+    companyAddress: data[0]?._id?.companyAddress?.toUpperCase() || '',
     warehouseName: '',
     dataMapped: null,
   };
