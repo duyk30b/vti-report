@@ -42,3 +42,8 @@ export const ROLE = {
 export enum QUEUES_NAME_ENUM {
   SYNC_DATA_QUEUE = 'SYNC_DATA_QUEUE',
 }
+
+export enum INVENTORY_ADJUSTMENT_TYPE {
+  IMPORT = 0,
+  EXPORT = 1,
+}

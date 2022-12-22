@@ -48,38 +48,24 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
     }
   }
 
-  private sumWarehouse(
-    dailyWarehouseItemRequest: DailyWarehouseItemRequest,
-    field: string,
-  ) {
-    let quantity = 0;
-    dailyWarehouseItemRequest?.dailyItemLocatorStocks.forEach(
-      (dailyItemLocatorStock) => {
-        dailyItemLocatorStock?.dailyLotLocatorStocks.forEach(
-          (dailyLotLocatorStock) => {
-            quantity = plus(quantity || 0, dailyLotLocatorStock[field] || 0);
-          },
-        );
-      },
-    );
-    return quantity;
-  }
-
   async getReports(request: ReportRequest): Promise<DailyWarehouseItemStock[]> {
     const condition = {
+      $and: [],
+    };
+    const conditionQuantity = {
       $and: [],
     };
 
     switch (request?.reportType) {
       case ReportType.ITEM_INVENTORY_BELOW_SAFE:
-        condition['$and'].push({
+        conditionQuantity['$and'].push({
           $expr: {
             $lt: [`$stockQuantity`, `$inventoryLimit`],
           },
         });
         break;
       case ReportType.ITEM_INVENTORY_BELOW_MINIMUM:
-        condition['$and'].push({
+        conditionQuantity['$and'].push({
           $expr: {
             $lt: [`$stockQuantity`, `$minInventoryLimit`],
           },
@@ -120,10 +106,63 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
         },
       });
     }
+    console.log(JSON.stringify(condition));
 
-    return this.dailyWarehouseItemStock
-      .find(condition)
-      .sort({ warehouseCode: 1, itemCode: 1, stockQuantity: 1 })
-      .lean();
+    return this.dailyWarehouseItemStock.aggregate([
+      { $match: condition },
+      {
+        $lookup: {
+          from: 'inventory-quantity-norms',
+          let: {
+            companyCode: '$companyCode',
+            warehouseCode: '$warehouseCode',
+            itemCode: '$itemCode',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$companyCode', '$$companyCode'] },
+                    { $eq: ['$warehouseCode', '$$warehouseCode'] },
+                    { $eq: ['$itemCode', '$$itemCode'] },
+                  ],
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                companyCode: 1,
+                warehouseCode: 1,
+                itemCode: 1,
+                inventoryLimit: 1,
+                minInventoryLimit: 1,
+              },
+            },
+          ],
+          as: 'inventory-quantity-norms',
+        },
+      },
+      { $unwind: { path: '$inventory-quantity-norms' } },
+      {
+        $project: {
+          _id: 0,
+          itemName: 1,
+          itemCode: 1,
+          unit: 1,
+          warehouseName: 1,
+          warehouseCode: 1,
+          companyCode: 1,
+          companyName: 1,
+          reportDate: 1,
+          stockQuantity: 1,
+          inventoryLimit: '$inventory-quantity-norms.inventoryLimit',
+          minInventoryLimit: '$inventory-quantity-norms.minInventoryLimit',
+        },
+      },
+      { $match: conditionQuantity },
+      { $sort: { warehouseCode: 1, itemCode: 1, stockQuantity: 1 } },
+    ]);
   }
 }

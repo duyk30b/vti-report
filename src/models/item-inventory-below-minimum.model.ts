@@ -3,7 +3,6 @@ export interface ReportInventoryBelowMinimumModel {
   itemCode: string;
   itemName: string;
   unit: string;
-  lotNumber: string;
   stockQuantity: number;
   minInventoryLimit: number;
 }
