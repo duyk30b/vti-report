@@ -87,7 +87,8 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
         } else {
           return data;
         }
-      default:
+      case ReportType.ITEM_INVENTORY_BELOW_SAFE:
+      case ReportType.ITEM_INVENTORY_BELOW_MINIMUM:
         if (curDate === request.dateFrom || curDate === request.dateTo) {
           const dataTransactionByCurDate = await this.groupByItemLot(request);
 
@@ -103,11 +104,23 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
                 itemStock.stockQuantity +
                 item.quantityImported -
                 item.quantityExported;
-            } else {
-              item['stockQuantity'] = item.quantityImported;
-              keyByItem[key] = item;
             }
           });
+          Object.keys(keyByItem).forEach(key => {
+            const itemStock = keyByItem[key];
+            switch (request?.reportType) {
+              case ReportType.ITEM_INVENTORY_BELOW_SAFE:
+                if (itemStock?.stockQuantity > itemStock?.inventoryLimit) {
+                  delete keyByItem[key]
+                }
+                break;
+              case ReportType.ITEM_INVENTORY_BELOW_MINIMUM:
+                if (itemStock?.stockQuantity > itemStock?.minInventoryLimit) {
+                  delete keyByItem[key]
+                }
+                break;
+            }
+          })
           return Object.values(keyByItem);
         } else {
           return data;

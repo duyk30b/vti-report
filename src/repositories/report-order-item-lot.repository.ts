@@ -13,6 +13,7 @@ import { ReportOrderItemLot } from '@schemas/report-order-item-lot.schema';
 import { DATE_FOMAT } from '@utils/constant';
 import { Model } from 'mongoose';
 import * as moment from 'moment';
+import { INVENTORY_ADJUSTMENT_TYPE } from '@constant/common';
 
 @Injectable()
 export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportOrderItemLot> {
@@ -379,7 +380,16 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
 
     switch (type) {
       case OrderType.IMPORT:
+        condition['$and'].push({
+          orderType: { $in: [type, OrderType.INVENTORY_ADJUSTMENTS_IMPORT] },
+        });
+
       case OrderType.EXPORT:
+        condition['$and'].push({
+          orderType: { $in: [type, OrderType.INVENTORY_ADJUSTMENTS_EXPORT] },
+        });
+        break;
+
       case OrderType.TRANSFER:
       case OrderType.INVENTORY:
         condition['$and'].push({
@@ -391,17 +401,6 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
     }
 
     switch (request?.reportType) {
-      case ReportType.ITEM_IMPORTED_BUT_NOT_PUT_TO_POSITION:
-        condition['$and'].push({
-          locatorCode: { $eq: null },
-        });
-
-        condition['$and'].push({
-          status: {
-            $in: [OrderStatus.Stored, OrderStatus.Completed],
-          },
-        });
-        break;
       case ReportType.SITUATION_IMPORT_PERIOD:
         condition['$and'].push({
           status: {
@@ -454,12 +453,13 @@ function reportItemImportedButNotPutToPosition(
   condition: any,
 ) {
   return reportOrderItemLot.aggregate([
-    // { $match: condition },
+    { $match: condition },
     {
       $group: {
         _id: {
           companyAddress: '$companyAddress',
           companyName: '$companyName',
+          companyCode: '$companyCode',
           warehouseCode: '$warehouseCode',
           warehouseName: '$warehouseName',
           orderCode: '$orderCode',
@@ -485,6 +485,7 @@ function reportItemImportedButNotPutToPosition(
         _id: {
           companyAddress: '$_id.companyAddress',
           companyName: '$_id.companyName',
+          companyCode: '$_id.companyCode',
           warehouseCode: '$_id.warehouseCode',
           warehouseName: '$_id.warehouseName',
         },
@@ -521,6 +522,7 @@ function reportItemImportedButNotPutToPosition(
         _id: {
           companyAddress: '$_id.companyAddress',
           companyName: '$_id.companyName',
+          companyCode: '$_id.companyCode',
         },
         warehouses: {
           $push: {
@@ -706,6 +708,7 @@ function reportSituationImport(
       },
     },
   };
+
   return reportOrderItemLot.aggregate([
     { $match: condition },
     ...getCommonConditionSituation(OrderType.IMPORT),
@@ -733,7 +736,12 @@ function reportSituationImport(
         items: {
           $push: {
             $cond: {
-              if: OrderStatus.InProgress,
+              if: {
+                $and: [
+                  { $eq: ['$status', OrderStatus.InProgress] },
+                  { $eq: ['$type', OrderType.IMPORT] },
+                ],
+              },
               then: {
                 $cond: {
                   if: '$transactionItem',

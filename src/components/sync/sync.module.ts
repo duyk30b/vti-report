@@ -35,7 +35,8 @@ import {
   TransactionItemSchema,
 } from '@schemas/transaction-item.schema';
 import { UserModule } from '@components/user/user.module';
-
+import { InventoryQuantityNormsRepository } from '@repositories/inventory-quantity-norms.repository';
+import { InventoryQuantityNormModel, InventoryQuantityNormSchema } from '@schemas/inventory-quantity-norms.model';
 @Module({
   imports: [
     MongooseModule.forFeature([
@@ -49,6 +50,7 @@ import { UserModule } from '@components/user/user.module';
       { name: ReportOrderItem.name, schema: ReportOrderItemSchema },
       { name: ReportOrderItemLot.name, schema: ReportOrderItemLotSchema },
       { name: TransactionItem.name, schema: TransactionItemSchema },
+      { name: InventoryQuantityNormModel.name, schema: InventoryQuantityNormSchema },
     ]),
     UserModule,
   ],
@@ -84,6 +86,10 @@ import { UserModule } from '@components/user/user.module';
     {
       provide: 'TransactionItemRepository',
       useClass: TransactionItemRepository,
+    },
+    {
+      provide: 'InventoryQuantityNormsRepository',
+      useClass: InventoryQuantityNormsRepository,
     },
   ],
   controllers: [SyncController],
