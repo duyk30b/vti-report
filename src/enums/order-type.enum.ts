@@ -3,6 +3,8 @@ export enum OrderType {
   IMPORT = 1,
   INVENTORY = 2,
   TRANSFER = 3,
+  INVENTORY_ADJUSTMENTS_IMPORT = 4,
+  INVENTORY_ADJUSTMENTS_EXPORT = 5,
 }
 
 export enum OrderTypeEnum {
