@@ -1,12 +1,10 @@
+import { ReportItemStockHistoriesRequestDto } from '@components/dashboard/dto/request/report-item-stock-histories.request.dto';
 import { SyncDailyItemLotStockLocatorRequestDto } from '@components/sync/dto/request/sync-daily-item-stock-warehouse.request.dto';
 import { BaseAbstractRepository } from '@core/repository/base.abstract.repository';
-import { OrderType } from '@enums/order-type.enum';
-import { ActionType } from '@enums/report-type.enum';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ReportRequest } from '@requests/report.request';
 import { DailyWarehouseItemRequest } from '@requests/sync-daily.request';
-import { SyncItemStockLocatorByDate } from '@requests/sync-item-stock-locator-by-date';
 import { DailyLotLocatorStock } from '@schemas/daily-lot-locator-stock.schema';
 import { getTimezone } from '@utils/common';
 import { DATE_FOMAT, FORMAT_DATE, MONTHS, YEARS } from '@utils/constant';
@@ -576,6 +574,67 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
         },
       },
     ]);
+  }
+
+  async getItemStockHistories(
+    startDate,
+    endDate,
+    request: ReportItemStockHistoriesRequestDto,
+  ): Promise<any> {
+    const { warehouseCode, itemCode, companyCode } = request;
+    const conditions = {
+      $and: [
+        {
+          reportDate: {
+            $gte: startDate,
+            $lt: endDate,
+          },
+        },
+      ],
+    } as any;
+    if (warehouseCode) {
+      conditions['$and'].push({
+        warehouseCode: { $eq: warehouseCode },
+      });
+    }
+    if (itemCode) {
+      conditions['$and'].push({
+        itemCode: { $eq: itemCode },
+      });
+    }
+    if (companyCode) {
+      conditions['$and'].push({
+        companyCode: { $eq: companyCode },
+      });
+    }
+    const aggregateState = [
+      {
+        $match: conditions,
+      },
+      {
+        $group: {
+          _id: {
+            reportDate: '$reportDate',
+          },
+          quantity: { $sum: '$stockQuantity' },
+          amount: { $sum: '$storageCost' },
+        },
+      },
+      {
+        $project: {
+          reportDate: '$_id.reportDate',
+          quantity: 1,
+          amount: 1,
+        },
+      },
+      {
+        $sort: {
+          reportDate: 1,
+        },
+      },
+    ];
+
+    return await this.dailyLotLocatorStock.aggregate(aggregateState);
   }
 }
 

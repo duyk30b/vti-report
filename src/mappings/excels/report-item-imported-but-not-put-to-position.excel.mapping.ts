@@ -31,11 +31,11 @@ export async function reportItemImportedButNotPutToPositionExcelMapping(
     itemName: Alignment.LEFT,
     unit: Alignment.CENTER,
     lotNumber: Alignment.CENTER,
-    planQuantity: Alignment.RIGHT,
+    recievedQuantity: Alignment.RIGHT,
     actualQuantity: Alignment.RIGHT,
     remainQuantity: Alignment.RIGHT,
     note: Alignment.LEFT,
-    performerName: Alignment.RIGHT,
+    performerName: Alignment.LEFT,
   };
 
   const model: ReportModel<any> = {

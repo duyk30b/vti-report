@@ -11,11 +11,11 @@ import { ReportOrderItemRepository } from '@repositories/report-order-item.repos
 import { ReportOrderRepository } from '@repositories/report-order.repository';
 import { TransactionItemRepository } from '@repositories/transaction-item.repository';
 import { SyncDailyStockRequest } from '@requests/sync-daily.request';
-import { SyncItemStockLocatorByDate } from '@requests/sync-item-stock-locator-by-date';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { TransactionRequest } from '@requests/sync-transaction.request';
 import { ActionType } from '@enums/export-type.enum';
 import {
+  Company,
   PurchasedOrderImportRequestDto,
   SyncPurchasedOrderRequest,
 } from '@requests/sync-purchased-order-import.request';
@@ -35,6 +35,16 @@ import { UserService } from '@components/user/user.service';
 import { TransactionItemInterface } from '@schemas/interface/TransactionItem.Interface';
 import { isEmpty } from 'lodash';
 import { Inventory, SyncInventory } from '@requests/sync-inventory-request';
+import {
+  InventoryAdjustment,
+  InventoryAdjustmentRequest,
+} from '@requests/inventory-adjustments.request';
+import {
+  InventoryQuantityNorms,
+  InventoryQuantityNormsRequest,
+} from '@requests/inventory-quantity-norms.request';
+import { InventoryQuantityNormsInterface } from '@schemas/interface/inventory-quantity-norms';
+import { InventoryQuantityNormsRepository } from '@repositories/inventory-quantity-norms.repository';
 @Injectable()
 export class SyncService {
   constructor(
@@ -58,6 +68,9 @@ export class SyncService {
 
     @Inject('TransactionItemRepository')
     private readonly transactionItemRepository: TransactionItemRepository,
+
+    @Inject('InventoryQuantityNormsRepository')
+    private readonly inventoryQuantityNormsRepository: InventoryQuantityNormsRepository,
 
     private readonly i18n: I18nRequestScopeService,
 
@@ -147,6 +160,79 @@ export class SyncService {
       .build();
   }
 
+  async inventoryAdjustments(request: InventoryAdjustmentRequest) {
+    const company = await this.userService.getCompanies({
+      code: request?.data?.syncCode,
+    });
+
+    if (
+      company?.statusCode !== ResponseCodeEnum.SUCCESS ||
+      isEmpty(company.data)
+    ) {
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.BAD_REQUEST)
+        .withMessage(await this.i18n.translate('error.COMPANY_NOT_FOUND'))
+        .build();
+    }
+    request.data['company'] = company?.data?.pop();
+
+    switch (request.actionType) {
+      case ActionType.create:
+        return this.createInventoryAdjustments(request.data);
+      case ActionType.update:
+      case ActionType.confirm:
+      case ActionType.reject:
+      case ActionType.delete:
+        return this.createInventoryAdjustments(request.data, true);
+      default:
+        break;
+    }
+    return new ResponseBuilder()
+      .withCode(ResponseCodeEnum.BAD_REQUEST)
+      .withMessage(await this.i18n.translate('error.NOT_FOUND'))
+      .build();
+  }
+
+  async InventoryQuantityNorms(request: InventoryQuantityNormsRequest) {
+    const company = await this.userService.getCompanies({
+      code: request?.syncCode,
+    });
+
+    if (
+      company?.statusCode !== ResponseCodeEnum.SUCCESS ||
+      isEmpty(company.data)
+    ) {
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.BAD_REQUEST)
+        .withMessage(await this.i18n.translate('error.COMPANY_NOT_FOUND'))
+        .build();
+    }
+    const companyInfo = company?.data?.pop();
+    switch (request.actionType) {
+      case ActionType.create:
+        return this.createOrUpdateInventoryQuantityNorms(
+          request.data,
+          companyInfo,
+        );
+
+      case ActionType.update:
+        return this.createOrUpdateInventoryQuantityNorms(
+          request.data,
+          companyInfo,
+          true,
+        );
+
+      case ActionType.delete:
+        return this.deleteInventoryQuantityNorms(request.data, companyInfo);
+
+      default:
+        break;
+    }
+    return new ResponseBuilder()
+      .withCode(ResponseCodeEnum.BAD_REQUEST)
+      .withMessage(await this.i18n.translate('error.NOT_FOUND'))
+      .build();
+  }
   async syncWarehouseTransfer(request: SyncWarehouseTransferRequest) {
     const company = await this.userService.getCompanies({
       code: request?.data?.syncCode,
@@ -504,7 +590,7 @@ export class SyncService {
             note: request?.explanation,
             planQuantity: lot?.quantity,
             actualQuantity: lot?.actualQuantity,
-            receivedQuantity: 0,
+            receivedQuantity: item?.receivedQuantity,
             storedQuantity: 0,
             collectedQuantity: 0,
             exportedQuantity: 0,
@@ -664,6 +750,186 @@ export class SyncService {
     } catch (error) {
       console.log(error);
 
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.BAD_REQUEST)
+        .withMessage(await this.i18n.translate('error.BAD_REQUEST'))
+        .build();
+    }
+  }
+
+  async createInventoryAdjustments(
+    request: InventoryAdjustment,
+    isUpdate = false,
+  ) {
+    try {
+      const order: ReportOrderInteface[] = [];
+      const orderItem: ReportOrderItemInteface[] = [];
+      const orderItemLot: ReportOrderItemLotInteface[] = [];
+
+      const reportOrder: ReportOrderInteface = {
+        orderCode: request?.code,
+        orderCreatedAt: request?.receiptDate,
+        warehouseCode: request?.warehouse?.code,
+        warehouseName: request?.warehouse?.name,
+        orderType: request.OrderType,
+        planDate: request?.receiptDate,
+        status: request?.status,
+        completedAt: request?.receiptDate,
+        companyCode: request?.company?.code,
+        companyName: request?.company?.name,
+        companyAddress: request?.company?.address,
+        constructionCode: request?.construction?.code || null,
+        constructionName: request?.construction?.name || null,
+        description: request?.explanation,
+      } as any;
+
+      order.push(reportOrder);
+
+      for (const item of request.items) {
+        const reportOrderItem: ReportOrderItemInteface = {
+          ...reportOrder,
+          unit: item?.unit,
+          reason: request?.reason?.name,
+          departmentReceiptCode: request?.departmentReceipt?.code,
+          departmentReceiptName: request?.departmentReceipt?.name,
+          account: request?.source?.accountant,
+          accountDebt: item?.debitAccount,
+          accountHave: item?.creditAccount,
+          warehouseExportProposals:
+            request?.warehouseExportProposals?.code || null,
+          itemName: item?.name,
+          itemCode: item?.code,
+          planQuantity: item?.planQuantity,
+          actualQuantity: item?.actualQuantity,
+          storageCost: Number(item?.price || 0),
+          receiptNumber: null,
+        } as any;
+        orderItem.push(reportOrderItem);
+
+        for (const lot of item.lots) {
+          const reportOrderItemLot: ReportOrderItemLotInteface = {
+            ...reportOrderItem,
+            lotNumber: lot?.lotNumber?.toLowerCase(),
+            explain: request?.explanation,
+            note: request?.explanation,
+            planQuantity: lot?.planQuantity,
+            actualQuantity: lot?.actualQuantity,
+          } as any;
+
+          orderItemLot.push(reportOrderItemLot);
+        }
+      }
+      if (isUpdate) {
+        await Promise.all([
+          this.reportOrderRepository.deleteAllByCondition({
+            orderCode: request.code,
+            companyCode: request?.company?.code,
+            orderType: request.OrderType,
+          }),
+          this.reportOrderItemRepository.deleteAllByCondition({
+            orderCode: request.code,
+            companyCode: request?.company?.code,
+            orderType: request.OrderType,
+          }),
+          this.reportOrderItemLotRepository.deleteAllByCondition({
+            orderCode: request.code,
+            companyCode: request?.company?.code,
+            orderType: request.OrderType,
+          }),
+        ]);
+      }
+
+      await Promise.all([
+        this.reportOrderRepository.saveMany(order),
+        this.reportOrderItemRepository.saveMany(orderItem),
+        this.reportOrderItemLotRepository.saveMany(orderItemLot),
+      ]);
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.SUCCESS)
+        .withMessage(await this.i18n.translate('success.SUCCESS'))
+        .build();
+    } catch (error) {
+      console.log(error);
+
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.BAD_REQUEST)
+        .withMessage(await this.i18n.translate('error.BAD_REQUEST'))
+        .build();
+    }
+  }
+
+  async createOrUpdateInventoryQuantityNorms(
+    request: InventoryQuantityNorms[],
+    companyInfo: Company,
+    isUpdate = false,
+  ) {
+    try {
+      const inventoryQuantityNorms: InventoryQuantityNormsInterface[] = [];
+      const inventoryQuantityNormsTobeDelete: any[] = [];
+      for (const item of request) {
+        const itemInventoryQuantityNorm: InventoryQuantityNormsInterface = {
+          companyCode: companyInfo.code,
+          warehouseCode: item.warehouseCode,
+          itemCode: item.itemCode,
+          inventoryLimit: item?.inventoryLimit || 0,
+          minInventoryLimit: item?.minInventoryLimit || 0,
+        };
+        const itemTobeDelete = {
+          companyCode: companyInfo.code,
+          warehouseCode: item.warehouseCode,
+          itemCode: item.itemCode,
+        };
+        inventoryQuantityNorms.push(itemInventoryQuantityNorm);
+        inventoryQuantityNormsTobeDelete.push(itemTobeDelete);
+      }
+      const promiseAll = [];
+      if (isUpdate) {
+        for (const tiem of inventoryQuantityNormsTobeDelete) {
+          promiseAll.push(
+            this.inventoryQuantityNormsRepository.deleteAllByCondition(tiem),
+          );
+        }
+        await Promise.all(promiseAll);
+      }
+      await this.inventoryQuantityNormsRepository.createMany(
+        inventoryQuantityNorms,
+      );
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.SUCCESS)
+        .withMessage(await this.i18n.translate('success.SUCCESS'))
+        .build();
+    } catch (error) {
+      console.log(error);
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.BAD_REQUEST)
+        .withMessage(await this.i18n.translate('error.BAD_REQUEST'))
+        .build();
+    }
+  }
+
+  async deleteInventoryQuantityNorms(
+    request: InventoryQuantityNorms[],
+    company: Company,
+  ) {
+    try {
+      const promiseAll = [];
+      for (const item of request) {
+        const itemTobeDelete = {
+          companyCode: company.code,
+          warehouseCode: item.warehouseCode,
+          itemCode: item.itemCode,
+        };
+        promiseAll.push(
+          this.inventoryQuantityNormsRepository.deleteAllByCondition(itemTobeDelete),
+        );
+      }
+      await Promise.all(promiseAll);
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.SUCCESS)
+        .withMessage(await this.i18n.translate('success.SUCCESS'))
+        .build();
+    } catch (error) {
+      console.log(error);
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.BAD_REQUEST)
         .withMessage(await this.i18n.translate('error.BAD_REQUEST'))
