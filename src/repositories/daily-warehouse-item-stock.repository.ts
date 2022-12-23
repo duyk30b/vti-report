@@ -106,7 +106,6 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
         },
       });
     }
-    console.log(JSON.stringify(condition));
 
     return this.dailyWarehouseItemStock.aggregate([
       { $match: condition },

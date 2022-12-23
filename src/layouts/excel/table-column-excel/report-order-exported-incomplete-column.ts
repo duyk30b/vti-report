@@ -3,7 +3,7 @@ import { TableColumn } from '@models/report.model';
 export const REPORT_ORDER_EXPORT_INCOMPLETE_COLUMN: TableColumn[] = [
   {
     name: 'INDEX',
-    width: 35,
+    width: 10,
   },
   {
     name: 'ORDER_ID_WMSX',

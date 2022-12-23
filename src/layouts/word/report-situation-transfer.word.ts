@@ -1,3 +1,4 @@
+import { formatNumber } from '@constant/common';
 import { TableDataSituationTransfer } from '@models/situation-transfer.model';
 import { plus } from '@utils/common';
 import {
@@ -353,7 +354,7 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: item?.totalPrice?.toString() || '',
+                                      text: formatNumber(item?.totalPrice) || '',
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -452,7 +453,7 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: order?.totalPrice?.toString() || '',
+                                      text: formatNumber(order?.totalPrice),
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -493,7 +494,7 @@ export async function generateReportSituationTransfer(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: warehouse?.totalPrice?.toString() || '',
+                                  text: formatNumber(warehouse?.totalPrice),
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
@@ -533,7 +534,7 @@ export async function generateReportSituationTransfer(
                         alignment: AlignmentType.RIGHT,
                         children: [
                           new TextRun({
-                            text: totalPrice.toString(),
+                            text: formatNumber(totalPrice),
                             ...wordFileStyle.text_style_bold,
                           }),
                         ],

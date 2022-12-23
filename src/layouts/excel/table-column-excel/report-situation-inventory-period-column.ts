@@ -3,7 +3,7 @@ import { TableColumn } from '@models/report.model';
 export const SITUATION_INVENTORY_PERIOD_COLUMN: TableColumn[] = [
   {
     name: 'INDEX',
-    width: 25,
+    width: 10,
   },
   {
     name: 'ITEM_CODE',

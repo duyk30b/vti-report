@@ -3,7 +3,7 @@ import { TableColumn } from '@models/report.model';
 export const SITUATION_IMPORT_PERIOD_COLUMN: TableColumn[] = [
   {
     name: 'INDEX',
-    width: 35,
+    width: 10,
   },
   {
     name: 'POST',
