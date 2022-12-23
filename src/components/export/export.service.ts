@@ -263,8 +263,8 @@ export class ExportService {
         request,
         OrderType.INVENTORY,
       );
-    await this.getInfoWarehouse(request, data, true);
-    const dataMaped = getSituationInventoryPeriod(data, this.i18n);
+    let isEmpty = await this.getInfoWarehouse(request, data, true);
+    const dataMaped = getSituationInventoryPeriod(data, this.i18n, isEmpty);
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =

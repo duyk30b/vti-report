@@ -27,7 +27,7 @@ export function getItemImportedButNotPutToPositionMapped(
         itemName: item.itemName,
         unit: item.unit,
         lotNumber: item.lotNumber,
-        planQuantity: item.planQuantity,
+        recievedQuantity: item.recievedQuantity,
         actualQuantity: item.actualQuantity,
         remainQuantity: item.remainQuantity,
         note: item.note,
@@ -35,7 +35,7 @@ export function getItemImportedButNotPutToPositionMapped(
       };
       return dataReturn;
     });
-
+    dataMaping.warehouseName = wh?.warehouseName
     return {
       warehouseCode:
         i18n.translate('report.WAREHOUSE_GROUP_CODE') +

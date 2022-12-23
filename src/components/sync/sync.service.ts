@@ -590,7 +590,7 @@ export class SyncService {
             note: request?.explanation,
             planQuantity: lot?.quantity,
             actualQuantity: lot?.actualQuantity,
-            receivedQuantity: 0,
+            receivedQuantity: item?.receivedQuantity,
             storedQuantity: 0,
             collectedQuantity: 0,
             exportedQuantity: 0,
