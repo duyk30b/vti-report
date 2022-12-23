@@ -12,7 +12,7 @@ export function getOrderExportByRequestForItemMapped(
   isEmpty: boolean,
 ): ReportInfo<TableData<ReportOrderExportByRequestForItemModel>[]> {
   const dataMaping: ReportInfo<any> = {
-    companyName: data[0]?.companyName || '',
+    companyName: data[0]?.companyName?.toUpperCase() || '',
     companyAddress: data[0]?.companyAddress || '',
     warehouseName: data[0]?.warehouseName || '',
     dataMapped: null,

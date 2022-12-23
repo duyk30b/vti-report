@@ -29,6 +29,7 @@ export function reportSituationTransferTemplateData(
       translate: false,
       border: BORDER,
       heightRow: { index: curRowIdx, value: 25 },
+      merge:true
     });
     cells.push({
       nameCell: `O${curRowIdx}`,

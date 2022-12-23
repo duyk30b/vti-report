@@ -3,7 +3,7 @@ import { TableColumn } from '@models/report.model';
 export const ITEM_INVENTORY_BELOW_MINIMUM: TableColumn[] = [
   {
     name: 'INDEX',
-    width: 35.9,
+    width: 10,
   },
   {
     name: 'ITEM_CODE',

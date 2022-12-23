@@ -11,7 +11,7 @@ export function getSituationTransferMapped(
   i18n: I18nRequestScopeService,
 ): ReportInfo<TableAgeOfItems[]> {
   const dataMaping: ReportInfo<TableAgeOfItems[]> = {
-    companyName: data[0]?._id?.companyName || '',
+    companyName: data[0]?._id?.companyName?.toUpperCase() || '',
     companyAddress: data[0]?._id?.companyAddress || '',
     warehouseName: '',
     dataMapped: null,

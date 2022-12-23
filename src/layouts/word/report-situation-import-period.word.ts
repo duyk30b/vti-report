@@ -1,3 +1,4 @@
+import { formatNumber } from '@constant/common';
 import { TableDataSituationImportPeriod } from '@models/situation_import.model';
 import { plus } from '@utils/common';
 import {
@@ -383,10 +384,9 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text:
-                                            Math.round(
-                                              item?.totalPrice,
-                                            )?.toString() || '0',
+                                          text: formatNumber(
+                                            Math.round(item?.totalPrice),
+                                          ),
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -544,10 +544,9 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text:
-                                            Math.round(
-                                              order?.totalPrice,
-                                            )?.toString() || '0',
+                                          text: formatNumber(
+                                            Math.round(order?.totalPrice),
+                                          ),
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -661,10 +660,9 @@ export async function generateReportSituationImportPeriod(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text:
-                                    Math.round(
-                                      warehouse?.totalPrice,
-                                    )?.toString() || '0',
+                                  text: formatNumber(
+                                    Math.round(warehouse?.totalPrice),
+                                  ),
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
@@ -719,8 +717,8 @@ export async function generateReportSituationImportPeriod(
                         alignment: AlignmentType.RIGHT,
                         children: [
                           new TextRun({
-                            text: Math.round(totalWarehouse)?.toString() || '0',
-                            ...wordFileStyle.text_style,
+                            text: formatNumber(Math.round(totalWarehouse)),
+                            ...wordFileStyle.text_style_bold,
                           }),
                         ],
                       }),
