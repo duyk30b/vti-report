@@ -316,7 +316,7 @@ export async function generateReportItemImportedButNotPutToPosition(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.planQuantity + '',
+                                  text: item.recievedQuantity + '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],

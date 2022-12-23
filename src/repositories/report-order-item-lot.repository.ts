@@ -430,6 +430,8 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
           },
         });
         break;
+        case ReportType.SITUATION_INVENTORY_PERIOD:
+          break;
       default:
         break;
     }
@@ -473,7 +475,7 @@ function reportItemImportedButNotPutToPosition(
           note: '$note',
           performerName: '$performerName',
         },
-        totalPlanQuantity: { $sum: '$planQuantity' },
+        totalRecievedQuantity: { $sum: '$recievedQuantity' },
         totalActualQuantity: { $sum: '$actualQuantity' },
       },
     },
@@ -500,11 +502,11 @@ function reportItemImportedButNotPutToPosition(
             itemName: '$_id.itemName',
             unit: '$_id.unit',
             lotNumber: '$_id.lotNumber',
-            planQuantity: { $sum: '$totalPlanQuantity' },
+            recievedQuantity: { $sum: '$totalRecievedQuantity' },
             actualQuantity: { $sum: '$totalActualQuantity' },
             remainQuantity: {
               $subtract: [
-                { $sum: '$totalPlanQuantity' },
+                { $sum: '$totalRecievedQuantity' },
                 { $sum: '$totalActualQuantity' },
               ],
             },
