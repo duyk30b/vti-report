@@ -12,7 +12,7 @@ export function getOrderExportIncompletedMapped(
   const dataMaping: ReportInfo<any> = {
     companyCode: data[0]?.companyCode || '',
     companyName: data[0]?.companyName?.toUpperCase() || '',
-    companyAddress: data[0]?.companyAddress?.toUpperCase() || '',
+    companyAddress: data[0]?.companyAddress || '',
     warehouseName: data[0]?.warehouseName || '',
     dataMapped: null,
   };

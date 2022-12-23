@@ -1,3 +1,4 @@
+import { formatNumber } from '@constant/common';
 import { TableDataSituationExportPeriod } from '@models/situation_export.model';
 import { plus } from '@utils/common';
 import {
@@ -371,7 +372,7 @@ export async function generateReportSituationExportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: item.totalPrice + '',
+                                          text: formatNumber(item.totalPrice),
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -494,7 +495,7 @@ export async function generateReportSituationExportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: order.totalPrice + '',
+                                          text: formatNumber(order.totalPrice),
                                           ...wordFileStyle.text_style_bold,
                                         }),
                                       ],
@@ -541,7 +542,7 @@ export async function generateReportSituationExportPeriod(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: reason.totalPrice + '',
+                                      text: formatNumber(reason.totalPrice),
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -588,7 +589,7 @@ export async function generateReportSituationExportPeriod(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: warehouse.totalPrice + '',
+                                  text: formatNumber(warehouse.totalPrice),
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],

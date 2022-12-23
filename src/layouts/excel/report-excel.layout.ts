@@ -31,9 +31,11 @@ import {
   INDEX_REPORT_TITLE,
   LV1,
   LV3,
+  REPORT_INFO,
   ROW_WHEN_HAVE_HEADER,
   ROW_WHEN_NOT_HAVE_HEADER,
 } from '@utils/constant';
+import { ReportType } from '@enums/report-type.enum';
 export const generateTable = async (
   model: ReportModel<any>,
   generateDataTable: (
@@ -90,6 +92,11 @@ export const generateTable = async (
         font: FONT_BOLD_10,
         aligment: ALIGNMENT_LEFT,
         translate: true,
+        merge: true,
+        heightRow: {
+          index: 1,
+          value: 30,
+        },
       },
       {
         nameCell: CELL_CHILD_COMPANY,
@@ -97,6 +104,7 @@ export const generateTable = async (
         font: FONT_BOLD_10,
         aligment: ALIGNMENT_LEFT,
         translate: false,
+        merge: true,
       },
 
       {
@@ -105,17 +113,11 @@ export const generateTable = async (
         font: FONT_BOLD_10,
         aligment: ALIGNMENT_LEFT,
         translate: false,
+        merge: true,
         heightRow: {
           index: 3,
           value: 35,
         },
-      },
-      {
-        nameCell: CELL_REPORT_NUMBER,
-        value: 'REPORT_NUMBER',
-        font: FONT_NORMAL_9,
-        aligment: ALIGNMENT_LEFT,
-        translate: true,
       },
       {
         nameCell: CELL_TITLE_REPORT,
@@ -132,6 +134,26 @@ export const generateTable = async (
         translate: false,
       },
     ]);
+
+    if (
+      [
+        REPORT_INFO[ReportType[ReportType.SITUATION_IMPORT_PERIOD]].key,
+        REPORT_INFO[ReportType[ReportType.SITUATION_EXPORT_PERIOD]].key,
+        REPORT_INFO[ReportType[ReportType.SITUATION_TRANSFER]].key,
+      ].includes(model.key)
+    ) {
+      configCells(worksheet, i18n, [
+        {
+          nameCell: CELL_REPORT_NUMBER,
+          value: 'REPORT_NUMBER',
+          font: FONT_NORMAL_9,
+          aligment: ALIGNMENT_LEFT,
+          translate: true,
+          merge: true,
+        },
+      ]);
+    }
+    
   }
   let rowIndex = model.header ? ROW_WHEN_HAVE_HEADER : ROW_WHEN_NOT_HAVE_HEADER;
   rowIndex += generateColumnTable(worksheet, model.tableColumn, rowIndex, i18n);

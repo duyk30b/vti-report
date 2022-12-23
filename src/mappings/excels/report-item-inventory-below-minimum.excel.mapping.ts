@@ -13,7 +13,6 @@ import {
 } from '@models/report.model';
 
 import { ReportRequest } from '@requests/report.request';
-import { DailyWarehouseItemStock } from '@schemas/daily-warehouse-item-stock.schema';
 import { REPORT_INFO } from '@utils/constant';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 

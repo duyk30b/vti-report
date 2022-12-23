@@ -213,7 +213,7 @@ export async function generateReportItemImportedButNotPutToPosition(
                               alignment: AlignmentType.LEFT,
                               children: [
                                 new TextRun({
-                                  text: item.orderCode,
+                                  text: item.ebsNumber,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],

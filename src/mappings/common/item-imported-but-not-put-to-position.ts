@@ -10,7 +10,7 @@ export function getItemImportedButNotPutToPositionMapped(
   const dataMaping: ReportInfo<any> = {
     companyCode: data[0]?._id?.companyCode || '',
     companyName: data[0]?._id?.companyName?.toUpperCase() || '',
-    companyAddress: data[0]?._id?.companyAddress?.toUpperCase() || '',
+    companyAddress: data[0]?._id?.companyAddress || '',
     warehouseName: '',
     dataMapped: null,
   };
