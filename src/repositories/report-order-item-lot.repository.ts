@@ -274,7 +274,6 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
           status: {
             $in: [
               OrderStatus.Completed,
-              OrderStatus.Confirmed,
               OrderStatus.Stored,
             ],
           },
