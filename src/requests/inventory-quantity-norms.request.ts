@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { BaseDto } from '@core/dto/base.dto';
 import { ActionType } from '@enums/export-type.enum';
@@ -38,11 +38,13 @@ export class InventoryQuantityNorms {
 
   @ApiProperty()
   @IsOptional()
+  @Transform(({ value }) => Number(value))
   @IsNumber()
   inventoryLimit: number;
 
   @ApiProperty()
   @IsOptional()
+  @Transform(({ value }) => Number(value))
   @IsNumber()
   minInventoryLimit: number;
 }
