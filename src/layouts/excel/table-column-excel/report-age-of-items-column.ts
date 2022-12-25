@@ -3,7 +3,7 @@ import { TableColumn } from '@models/report.model';
 export const AGE_OF_ITEMS_COLUMN: TableColumn[] = [
   {
     name: 'ITEM_CODE',
-    width: 10,
+    width: 25,
   },
   {
     name: 'ITEM_NAME',

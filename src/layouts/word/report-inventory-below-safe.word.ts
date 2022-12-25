@@ -1,3 +1,4 @@
+import { formatNumber } from '@constant/common';
 import { ReportInventoryBelowSafeModel } from '@models/item-inventory-below-safe.model';
 import { TableData } from '@models/report.model';
 import {
@@ -243,7 +244,7 @@ export async function generatereportItemInventoryBelowSafe(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: (item.inventoryLimit || '') + '',
+                                  text: formatNumber(item.inventoryLimit),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -258,7 +259,7 @@ export async function generatereportItemInventoryBelowSafe(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: (item.stockQuantity || '') + '',
+                                  text: formatNumber(item.stockQuantity),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],

@@ -27,8 +27,8 @@ export async function reportOrderExportByRequestForItem(
     warehouseExportProposals: Alignment.LEFT,
     orderCode: Alignment.LEFT,
     orderCreatedAt: Alignment.CENTER,
-    planQuantity: Alignment.RIGHT,
-    exportedQuantity: Alignment.RIGHT,
+    planQuantity: { alignment: Alignment.RIGHT, numFmt: '### ### ### ###' },
+    exportedQuantity: { alignment: Alignment.RIGHT, numFmt: '### ### ### ###' },
   };
 
   const model: ReportModel<ReportOrderExportByRequestForItemModel> = {

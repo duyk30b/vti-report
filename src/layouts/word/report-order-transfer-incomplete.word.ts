@@ -1,3 +1,4 @@
+import { formatNumber } from '@constant/common';
 import { OrderTransferIncompleteModel } from '@models/order-transfer incomplete.model';
 import { TableData } from '@models/report.model';
 import {
@@ -255,7 +256,7 @@ export async function generatereportOrderTransferIncompleted(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.actualQuantity + '',
+                                  text: formatNumber(item.actualQuantity),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],

@@ -50,10 +50,11 @@ export enum INVENTORY_ADJUSTMENT_TYPE {
 
 export function formatNumber(number: any) {
   if (number && typeof number === 'number') {
-    let formated =  new Intl.NumberFormat().format(number).toString()
+    let formated = new Intl.NumberFormat().format(Math.round(number)).toString()
+    
     return formated.replace(/,/g, " ")
   }
   else {
-    return '0'
+    return ''
   }
 }

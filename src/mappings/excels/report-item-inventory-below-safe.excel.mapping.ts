@@ -26,8 +26,8 @@ export async function reportItemInventoryBelowSafeExcelMapping(
     itemCode: Alignment.LEFT,
     itemName: Alignment.LEFT,
     unit: Alignment.CENTER,
-    inventoryLimit: Alignment.RIGHT,
-    stockQuantity: Alignment.RIGHT,
+    inventoryLimit: { alignment: Alignment.RIGHT, numFmt: '### ### ### ###' },
+    stockQuantity: { alignment: Alignment.RIGHT, numFmt: '### ### ### ###' }
   };
 
   const model: ReportModel<ReportInventoryBelowSafeModel> = {

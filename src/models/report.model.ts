@@ -23,7 +23,7 @@ export enum Alignment {
 }
 
 export type FormatByKey<T> = {
-  [P in keyof T]?: Alignment;
+  [P in keyof T]?: Alignment | { alignment:Alignment ; numFmt: string };
 };
 
 export interface ReportModel<T> {

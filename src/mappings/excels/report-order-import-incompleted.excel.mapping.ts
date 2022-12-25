@@ -30,10 +30,10 @@ export async function reportOrderImportIncompletedExcelMapping(
     itemCode: Alignment.LEFT,
     itemName: Alignment.LEFT,
     unit: Alignment.CENTER,
-    actualQuantity: Alignment.RIGHT,
+    actualQuantity: { alignment: Alignment.RIGHT, numFmt: '### ### ### ###' },
     constructionName: Alignment.LEFT,
-    storageCost: Alignment.RIGHT,
-    totalPrice: Alignment.RIGHT,
+    storageCost: { alignment: Alignment.RIGHT, numFmt: '### ### ### ###' },
+    totalPrice: { alignment: Alignment.RIGHT, numFmt: '### ### ### ###' },
     deliverName: Alignment.LEFT,
   };
 
