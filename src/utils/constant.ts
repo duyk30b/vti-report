@@ -269,7 +269,7 @@ export const BORDER_T_B_R = {
 };
 
 export const CELL_PARENT_COMPANY = 'A1:B1';
-export const CELL_CHILD_COMPANY = 'A2:B2';
+export const CELL_CHILD_COMPANY = 'A2:C2';
 export const CELL_ADDRESS_CHILD_COMPANY = 'A3:B3';
 export const CELL_REPORT_NUMBER = 'A4:B4';
 export const CELL_TITLE_REPORT = 'A5';
