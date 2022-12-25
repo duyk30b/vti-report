@@ -27,7 +27,7 @@ export async function reportOrderExportIncompletedExcelMapping(
     itemCode: Alignment.LEFT,
     itemName: Alignment.LEFT,
     unit: Alignment.CENTER,
-    actualQuantity: Alignment.RIGHT,
+    actualQuantity: { alignment: Alignment.RIGHT, numFmt: '### ### ### ###' },
     constructionName: Alignment.LEFT,
     receiver: Alignment.LEFT,
   };

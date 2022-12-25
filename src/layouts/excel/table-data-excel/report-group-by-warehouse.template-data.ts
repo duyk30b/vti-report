@@ -50,37 +50,83 @@ export function reportGroupByWarehouseTemplateData(
         currenCell.border = BORDER as any;
 
         if (format)
-          switch (format[key]) {
-            case Alignment.CENTER:
-              currenCell.alignment = ALIGNMENT_CENTER as any;
-              break;
-
-            case Alignment.LEFT:
-              currenCell.alignment = ALIGNMENT_LEFT as any;
-              break;
-
-            case Alignment.RIGHT:
-              currenCell.alignment = ALIGNMENT_RIGHT as any;
-              break;
-
-            case Alignment.BOTTOM:
-              currenCell.alignment = ALIGNMENT_BOTTOM as any;
-              break;
-
-            case Alignment.CENTER_LEFT:
-              currenCell.alignment = ALIGNMENT_CENTER_LEFT as any;
-              break;
-
-            case Alignment.CENTER_RIGHT:
-              currenCell.alignment = ALIGNMENT_CENTER_RIGHT as any;
-              break;
-
-            default:
-              break;
+          if (typeof format[key] == 'number') {
+            switchAliment(format, key, currenCell);
+          } else {
+            switchAliment(format, key, currenCell,true);
           }
       });
       rowIdx++;
     });
   });
   return rowIdx;
+}
+
+function switchAliment(
+  format: FormatByKey<any>,
+  key: string,
+  currenCell: ExcelJS.Cell,
+  isObject: boolean = false,
+) {
+  if (!isObject) {
+    switch (format[key]) {
+      case Alignment.CENTER:
+        currenCell.alignment = ALIGNMENT_CENTER as any;
+        break;
+
+      case Alignment.LEFT:
+        currenCell.alignment = ALIGNMENT_LEFT as any;
+        break;
+
+      case Alignment.RIGHT:
+        currenCell.alignment = ALIGNMENT_RIGHT as any;
+        break;
+
+      case Alignment.BOTTOM:
+        currenCell.alignment = ALIGNMENT_BOTTOM as any;
+        break;
+
+      case Alignment.CENTER_LEFT:
+        currenCell.alignment = ALIGNMENT_CENTER_LEFT as any;
+        break;
+
+      case Alignment.CENTER_RIGHT:
+        currenCell.alignment = ALIGNMENT_CENTER_RIGHT as any;
+        break;
+
+      default:
+        break;
+    }
+  }
+  else {
+    switch (format[key]['alignment']) {
+      case Alignment.CENTER:
+        currenCell.alignment = ALIGNMENT_CENTER as any;
+        break;
+
+      case Alignment.LEFT:
+        currenCell.alignment = ALIGNMENT_LEFT as any;
+        break;
+
+      case Alignment.RIGHT:
+        currenCell.alignment = ALIGNMENT_RIGHT as any;
+        break;
+
+      case Alignment.BOTTOM:
+        currenCell.alignment = ALIGNMENT_BOTTOM as any;
+        break;
+
+      case Alignment.CENTER_LEFT:
+        currenCell.alignment = ALIGNMENT_CENTER_LEFT as any;
+        break;
+
+      case Alignment.CENTER_RIGHT:
+        currenCell.alignment = ALIGNMENT_CENTER_RIGHT as any;
+        break;
+
+      default:
+        break;
+    }
+    currenCell.numFmt = format[key]['numFmt']
+  }
 }

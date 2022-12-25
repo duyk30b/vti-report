@@ -307,9 +307,7 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: item?.actualQuantity
-                                        ? `${item?.actualQuantity}`
-                                        : '',
+                                      text: formatNumber(item?.actualQuantity),
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -339,7 +337,7 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: item?.storageCost?.toString() || '',
+                                      text: formatNumber(item?.storageCost),
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],

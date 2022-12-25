@@ -1,3 +1,4 @@
+import { formatNumber } from '@constant/common';
 import { ReportInventoryBelowMinimumModel } from '@models/item-inventory-below-minimum.model';
 import { TableData } from '@models/report.model';
 import {
@@ -244,7 +245,7 @@ export async function generateReportItemInventoryBelowMinimum(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: (item.minInventoryLimit || '') + '',
+                                  text: formatNumber(item.minInventoryLimit),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -259,7 +260,7 @@ export async function generateReportItemInventoryBelowMinimum(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.stockQuantity + '',
+                                  text: formatNumber(item.stockQuantity),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],

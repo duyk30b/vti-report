@@ -7,11 +7,9 @@ import { OrderType } from '@enums/order-type.enum';
 import { ReportType } from '@enums/report-type.enum';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { ReportOrderItemRequest } from '@requests/report-order-items.request';
 import { ReportRequest } from '@requests/report.request';
 import { ReportOrderItemInteface } from '@schemas/interface/report-order-item.interface';
 import { ReportOrderItem } from '@schemas/report-order-item.schema';
-import { plus } from '@utils/common';
 import { Model } from 'mongoose';
 import * as moment from 'moment';
 import { DATE_FOMAT } from '@utils/constant';
@@ -112,6 +110,13 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
       case ReportType.ORDER_EXPORT_INCOMPLETED:
         condition['$and'].push({
           ebsNumber: { $eq: null },
+        });
+        condition['$and'].push({
+          status: {
+            $in: [
+              OrderStatus.Completed,
+            ],
+          },
         });
 
         break;

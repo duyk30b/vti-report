@@ -29,9 +29,9 @@ export async function reportItemInventoryImportedNoQRCodeExcelMapping(
     unit: Alignment.CENTER,
     lotNumber: Alignment.CENTER,
     locatorCode: Alignment.LEFT,
-    actualQuantity: Alignment.RIGHT,
-    storageCost: Alignment.RIGHT,
-    totalPrice: Alignment.RIGHT,
+    actualQuantity: { alignment: Alignment.RIGHT, numFmt: '### ### ### ###' },
+    storageCost: { alignment: Alignment.RIGHT, numFmt: '### ### ### ###' },
+    totalPrice: { alignment: Alignment.RIGHT, numFmt: '### ### ### ###' },
   };
 
   const model: ReportModel<ItemInventoryImportedNoQRCodeModel> = {

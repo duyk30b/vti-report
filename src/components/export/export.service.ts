@@ -59,7 +59,6 @@ import { getSituationExportPeriodMapped } from '@mapping/common/report-situation
 import { getSituationTransferMapped } from '@mapping/common/age-of-item-mapped';
 import { TransactionItemRepository } from '@repositories/transaction-item.repository';
 import { UserService } from '@components/user/user.service';
-import { keyBy } from 'lodash';
 import { WarehouseServiceInterface } from '@components/warehouse/interface/warehouse.service.interface';
 import { getTimezone } from '@utils/common';
 import { FORMAT_DATE } from '@utils/constant';

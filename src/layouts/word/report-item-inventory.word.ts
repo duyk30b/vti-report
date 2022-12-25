@@ -1,3 +1,4 @@
+import { formatNumber } from '@constant/common';
 import { plus } from '@utils/common';
 import {
   FONT_NAME,
@@ -281,7 +282,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item?.storageCost?.toString() || '',
+                                  text: formatNumber(item?.storageCost),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -296,7 +297,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item?.stockStart?.toString() || '',
+                                  text: formatNumber(item?.stockStart),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -311,7 +312,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item?.totalStockStart?.toString() || '',
+                                  text: formatNumber(item?.totalStockStart),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -326,7 +327,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item?.importIn?.toString() || '',
+                                  text: formatNumber(item?.importIn),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -341,7 +342,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item?.totalImportIn?.toString() || '',
+                                  text: formatNumber(item?.totalImportIn),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -356,7 +357,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item?.exportIn?.toString() || '',
+                                  text: formatNumber(item?.exportIn),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -371,7 +372,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item?.totalExportIn?.toString() || '',
+                                  text: formatNumber(item?.totalExportIn),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -386,7 +387,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item?.stockEnd?.toString() || '',
+                                  text: formatNumber(item?.stockEnd),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -401,7 +402,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item?.totalStockEnd?.toString() || '',
+                                  text: formatNumber(item?.totalStockEnd),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
