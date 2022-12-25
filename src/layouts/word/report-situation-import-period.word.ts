@@ -324,7 +324,7 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: item.actualQuantity + '',
+                                          text: formatNumber(item.actualQuantity),
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -354,7 +354,7 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: item.storageCost + '',
+                                          text: formatNumber(item.storageCost),
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],

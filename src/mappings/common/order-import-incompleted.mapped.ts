@@ -38,7 +38,7 @@ export function getOrderImportIncompletedMapped(
         unit: cur.unit,
         actualQuantity: cur.receivedQuantity,
         storageCost: cur.storageCost,
-        totalPrice: Math.round(cur.storageCost * cur.planQuantity),
+        totalPrice: cur.storageCost * cur.planQuantity,
         constructionName: cur.constructionName,
         deliverName: cur.performerName,
       };

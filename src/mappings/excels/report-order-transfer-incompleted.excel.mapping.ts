@@ -13,7 +13,6 @@ import {
 } from '@models/report.model';
 
 import { ReportRequest } from '@requests/report.request';
-import { ReportOrderItem } from '@schemas/report-order-item.schema';
 import { REPORT_INFO } from '@utils/constant';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 
@@ -28,7 +27,7 @@ export async function reportOrderTransferIncompletedExcelMapping(
     itemCode: Alignment.LEFT,
     itemName: Alignment.LEFT,
     unit: Alignment.CENTER,
-    actualQuantity: Alignment.RIGHT,
+    actualQuantity: { alignment: Alignment.RIGHT, numFmt: '### ### ### ###' },
     constructionName: Alignment.LEFT,
     warehouseImport: Alignment.LEFT,
   };
