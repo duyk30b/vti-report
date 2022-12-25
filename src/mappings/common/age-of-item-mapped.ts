@@ -1,8 +1,4 @@
 import { TableAgeOfItems } from '@models/age-of-items.model';
-import { InventoryModel } from '@models/inventory.model';
-import { ItemInventoryModel } from '@models/item-inventory.model';
-import { TableData } from '@models/report.model';
-import { TableDataSituationTransfer } from '@models/situation-transfer.model';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
 
