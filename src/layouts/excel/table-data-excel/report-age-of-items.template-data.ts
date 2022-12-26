@@ -276,6 +276,7 @@ export function reportAgeOfItemsTemplateData(
               font: FONT_NORMAL_9,
               border: BORDER,
               aligment: ALIGNMENT_RIGHT,
+              numFmt: '### ### ### ###',
             },
             {
               nameCell: `J${curRowIdx}`,
@@ -283,6 +284,7 @@ export function reportAgeOfItemsTemplateData(
               font: FONT_NORMAL_9,
               border: BORDER,
               aligment: ALIGNMENT_RIGHT,
+              numFmt: '### ### ### ###',
             },
             {
               nameCell: `K${curRowIdx}`,

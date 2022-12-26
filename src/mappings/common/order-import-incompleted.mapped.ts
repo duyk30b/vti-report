@@ -15,7 +15,7 @@ export function getOrderImportIncompletedMapped(
 ): ReportInfo<TableData<OrderImportIncompleteModel>[]> {
   const dataMaping: ReportInfo<any> = {
     companyCode: data[0]?.companyCode || '',
-    companyName: data[0]?.companyName || '',
+    companyName: data[0]?.companyName?.toUpperCase() || '',
     companyAddress: data[0]?.companyAddress || '',
     warehouseName: data[0]?.warehouseName || '',
     dataMapped: null,
@@ -38,7 +38,7 @@ export function getOrderImportIncompletedMapped(
         unit: cur.unit,
         actualQuantity: cur.receivedQuantity,
         storageCost: cur.storageCost,
-        totalPrice: Math.round(cur.storageCost * cur.planQuantity),
+        totalPrice: cur.storageCost * cur.planQuantity,
         constructionName: cur.constructionName,
         deliverName: cur.performerName,
       };

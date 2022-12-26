@@ -127,9 +127,10 @@ export function reportSituationExportPeriodTemplateData(
             },
             {
               nameCell: `N${curRowIdx}`,
-              value: order.totalPrice || '0',
+              value: order.totalPrice || 0,
               font: FONT_BOLD_9,
               aligment: ALIGNMENT_LEFT,
+              numFmt: '### ### ### ### ',
             },
             {
               nameCell: `N${curRowIdx}:Q${curRowIdx}`,
@@ -185,7 +186,6 @@ export function reportSituationExportPeriodTemplateData(
                 font: FONT_NORMAL_9,
                 aligment: ALIGNMENT_BOTTOM_LEFT,
                 border: BORDER,
-                numFmt: '### ### ### ### ',
               },
               {
                 nameCell: `K${curRowIdx}`,
@@ -193,7 +193,6 @@ export function reportSituationExportPeriodTemplateData(
                 font: FONT_NORMAL_9,
                 aligment: ALIGNMENT_BOTTOM_LEFT,
                 border: BORDER,
-                numFmt: '### ### ### ### ',
               },
               {
                 nameCell: `L${curRowIdx}`,
@@ -208,7 +207,7 @@ export function reportSituationExportPeriodTemplateData(
                 font: FONT_NORMAL_9,
                 aligment: ALIGNMENT_BOTTOM_RIGHT,
                 border: BORDER,
-                numFmt: '###,###,###,### ',
+                numFmt: '### ### ### ### ',
               },
               {
                 nameCell: `N${curRowIdx}`,
@@ -216,7 +215,7 @@ export function reportSituationExportPeriodTemplateData(
                 font: FONT_NORMAL_9,
                 aligment: ALIGNMENT_BOTTOM_RIGHT,
                 border: BORDER,
-                numFmt: '###,###,###,## ',
+                numFmt: '### ### ### ###',
               },
               {
                 nameCell: `O${curRowIdx}`,
@@ -231,13 +230,15 @@ export function reportSituationExportPeriodTemplateData(
                 font: FONT_NORMAL_9,
                 aligment: ALIGNMENT_BOTTOM_RIGHT,
                 border: BORDER,
+                numFmt: '### ### ### ###',
               },
               {
                 nameCell: `Q${curRowIdx}`,
-                value: item.totalPrice || '0',
+                value: item.totalPrice || 0,
                 font: FONT_NORMAL_9,
                 aligment: ALIGNMENT_BOTTOM_RIGHT,
                 border: BORDER,
+                numFmt: '### ### ### ###',
               },
             ],
           );

@@ -4,7 +4,7 @@ export const REPORT_ITEM_IMPORT_BUT_NOT_PUT_TO_POSITION_COLUMN: TableColumn[] =
   [
     {
       name: 'INDEX',
-      width: 35,
+      width: 10,
     },
     {
       name: 'ORDER_ID_IMPORT_WMSX',

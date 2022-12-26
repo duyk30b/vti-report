@@ -1,8 +1,5 @@
-import { InventoryModel } from '@models/inventory.model';
-import { ReportInventoryBelowMinimumModel } from '@models/item-inventory-below-minimum.model';
 import { OrderExportIncompleteModel } from '@models/order-exported-incomplete.model';
 import { TableData } from '@models/report.model';
-import { DailyWarehouseItemStock } from '@schemas/daily-warehouse-item-stock.schema';
 import { ReportOrderItem } from '@schemas/report-order-item.schema';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
@@ -14,7 +11,7 @@ export function getOrderExportIncompletedMapped(
 ): ReportInfo<TableData<OrderExportIncompleteModel>[]> {
   const dataMaping: ReportInfo<any> = {
     companyCode: data[0]?.companyCode || '',
-    companyName: data[0]?.companyName || '',
+    companyName: data[0]?.companyName?.toUpperCase() || '',
     companyAddress: data[0]?.companyAddress || '',
     warehouseName: data[0]?.warehouseName || '',
     dataMapped: null,

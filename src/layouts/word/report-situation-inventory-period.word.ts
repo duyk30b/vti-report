@@ -1,3 +1,4 @@
+import { formatNumber } from '@constant/common';
 import { TableDataSituationInventoryPeriod } from '@models/statistic-inventory.model';
 import { minus, plus } from '@utils/common';
 import {
@@ -313,7 +314,7 @@ export async function generateReportSituationInventoryPeriod(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.totalPlanQuantity + '',
+                                  text: formatNumber(item.totalPlanQuantity),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -328,7 +329,7 @@ export async function generateReportSituationInventoryPeriod(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.storageCost + '',
+                                  text: formatNumber(item.storageCost),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -343,7 +344,7 @@ export async function generateReportSituationInventoryPeriod(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.totalPricePlan + '',
+                                  text: formatNumber(item.totalPricePlan),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -358,7 +359,7 @@ export async function generateReportSituationInventoryPeriod(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.totalActualQuantity + '',
+                                  text: formatNumber(item.totalActualQuantity),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -373,7 +374,7 @@ export async function generateReportSituationInventoryPeriod(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.storageCost + '',
+                                  text: formatNumber(item.storageCost),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -388,7 +389,7 @@ export async function generateReportSituationInventoryPeriod(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.totalPriceActual + '',
+                                  text: formatNumber(item.totalPriceActual),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -403,10 +404,12 @@ export async function generateReportSituationInventoryPeriod(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: minus(
-                                    item.totalActualQuantity,
-                                    item.totalPlanQuantity,
-                                  ).toString(),
+                                  text: formatNumber(
+                                    minus(
+                                      item.totalActualQuantity,
+                                      item.totalPlanQuantity,
+                                    ),
+                                  ),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],

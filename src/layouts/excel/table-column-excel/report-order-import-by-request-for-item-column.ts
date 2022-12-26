@@ -3,7 +3,7 @@ import { TableColumn } from '@models/report.model';
 export const REPORT_ORDER_IMPORT_BY_REQUEST_FOR_ITEM_MODEL: TableColumn[] = [
   {
     name: 'INDEX',
-    width: 30,
+    width: 10,
   },
   {
     name: 'ORDER_CODE',

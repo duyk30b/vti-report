@@ -273,9 +273,8 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
         condition['$and'].push({
           status: {
             $in: [
-              OrderStatus.Completed,
-              OrderStatus.Confirmed,
-              OrderStatus.Stored,
+              OrderStatus.Received,
+              OrderStatus.InProgress,
             ],
           },
         });
@@ -294,12 +293,6 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
             ],
           },
         });
-        break;
-      case ReportType.SITUATION_IMPORT_PERIOD:
-        break;
-      case ReportType.SITUATION_EXPORT_PERIOD:
-        break;
-      case ReportType.SITUATION_TRANSFER:
         break;
     }
 
@@ -430,6 +423,8 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
           },
         });
         break;
+        case ReportType.SITUATION_INVENTORY_PERIOD:
+          break;
       default:
         break;
     }
@@ -473,7 +468,7 @@ function reportItemImportedButNotPutToPosition(
           note: '$note',
           performerName: '$performerName',
         },
-        totalPlanQuantity: { $sum: '$planQuantity' },
+        totalRecievedQuantity: { $sum: '$recievedQuantity' },
         totalActualQuantity: { $sum: '$actualQuantity' },
       },
     },
@@ -500,11 +495,11 @@ function reportItemImportedButNotPutToPosition(
             itemName: '$_id.itemName',
             unit: '$_id.unit',
             lotNumber: '$_id.lotNumber',
-            planQuantity: { $sum: '$totalPlanQuantity' },
+            recievedQuantity: { $sum: '$totalRecievedQuantity' },
             actualQuantity: { $sum: '$totalActualQuantity' },
             remainQuantity: {
               $subtract: [
-                { $sum: '$totalPlanQuantity' },
+                { $sum: '$totalRecievedQuantity' },
                 { $sum: '$totalActualQuantity' },
               ],
             },

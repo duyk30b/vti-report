@@ -13,7 +13,6 @@ import {
 } from '@models/report.model';
 
 import { ReportRequest } from '@requests/report.request';
-import { DailyWarehouseItemStock } from '@schemas/daily-warehouse-item-stock.schema';
 import { REPORT_INFO } from '@utils/constant';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 
@@ -27,8 +26,8 @@ export async function reportItemInventoryBelowMinimumExcelMapping(
     itemCode: Alignment.LEFT,
     itemName: Alignment.LEFT,
     unit: Alignment.CENTER,
-    stockQuantity: Alignment.RIGHT,
-    minInventoryLimit: Alignment.RIGHT,
+    stockQuantity: { alignment: Alignment.RIGHT, numFmt: '### ### ### ###' },
+    minInventoryLimit: { alignment: Alignment.RIGHT, numFmt: '### ### ### ###' },
   };
 
   const model: ReportModel<ReportInventoryBelowMinimumModel> = {

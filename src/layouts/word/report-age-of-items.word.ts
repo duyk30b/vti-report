@@ -1,3 +1,4 @@
+import { formatNumber } from '@constant/common';
 import { TableAgeOfItems } from '@models/age-of-items.model';
 import { plus } from '@utils/common';
 import {
@@ -325,7 +326,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: record.stockQuantity + '',
+                                      text: formatNumber(record.stockQuantity),
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -340,7 +341,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: record.storageCost + '',
+                                      text: formatNumber(record.storageCost),
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -355,7 +356,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: record.totalPrice,
+                                      text: formatNumber(record.totalPrice),
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -370,7 +371,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: record.sixMonthAgo,
+                                      text: formatNumber(record.sixMonthAgo),
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -385,7 +386,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: record.oneYearAgo + '',
+                                      text: formatNumber(record.oneYearAgo),
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -400,7 +401,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: record.twoYearAgo + '',
+                                      text: formatNumber(record.twoYearAgo),
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -415,7 +416,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: record.threeYearAgo + '',
+                                      text: formatNumber(record.threeYearAgo),
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -430,7 +431,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: record.fourYearAgo + '',
+                                      text: formatNumber(record.fourYearAgo),
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -445,7 +446,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: record.fiveYearAgo + '',
+                                      text: formatNumber(record.fiveYearAgo),
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -460,7 +461,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: record.greaterfiveYear + '',
+                                      text: formatNumber(record.greaterfiveYear),
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -513,7 +514,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: item.totalQuantity + '',
+                                      text: formatNumber(item.totalQuantity),
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -543,7 +544,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: item.totalPrice + '',
+                                      text: formatNumber(item.totalPrice),
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -558,7 +559,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: item.sixMonthAgo + '',
+                                      text: formatNumber(item.sixMonthAgo),
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -573,7 +574,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: item.oneYearAgo + '',
+                                      text: formatNumber(item.oneYearAgo),
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -588,7 +589,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: item.twoYearAgo + '',
+                                      text: formatNumber(item.twoYearAgo),
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -603,7 +604,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: item.threeYearAgo + '',
+                                      text: formatNumber(item.threeYearAgo),
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -618,7 +619,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: item.fourYearAgo + '',
+                                      text: formatNumber(item.fourYearAgo),
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -633,7 +634,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: item.fiveYearAgo + '',
+                                      text: formatNumber(item.fiveYearAgo),
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -648,7 +649,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: item.greaterfiveYear + '',
+                                      text: formatNumber(item.greaterfiveYear),
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -689,7 +690,7 @@ export async function generateReportAgeOfItemStock(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: warehouse.totalPrice + '',
+                                  text: formatNumber(warehouse.totalPrice),
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
@@ -704,7 +705,7 @@ export async function generateReportAgeOfItemStock(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: warehouse.sixMonth + '',
+                                  text: formatNumber(warehouse.sixMonth),
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
@@ -719,7 +720,7 @@ export async function generateReportAgeOfItemStock(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: warehouse.oneYearAgo + '',
+                                  text: formatNumber(warehouse.oneYearAgo),
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
@@ -734,7 +735,7 @@ export async function generateReportAgeOfItemStock(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: warehouse.twoYearAgo + '',
+                                  text: formatNumber(warehouse.twoYearAgo),
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
@@ -749,7 +750,7 @@ export async function generateReportAgeOfItemStock(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: warehouse.threeYearAgo + '',
+                                  text: formatNumber(warehouse.threeYearAgo),
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
@@ -764,7 +765,7 @@ export async function generateReportAgeOfItemStock(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: warehouse.fourYearAgo + '',
+                                  text: formatNumber(warehouse.fourYearAgo),
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
@@ -779,7 +780,7 @@ export async function generateReportAgeOfItemStock(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: warehouse.fiveYearAgo + '',
+                                  text: formatNumber(warehouse.fiveYearAgo),
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
@@ -794,7 +795,7 @@ export async function generateReportAgeOfItemStock(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: warehouse.greaterfiveYear + '',
+                                  text: formatNumber(warehouse.greaterfiveYear),
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
@@ -835,7 +836,7 @@ export async function generateReportAgeOfItemStock(
                         alignment: AlignmentType.RIGHT,
                         children: [
                           new TextRun({
-                            text: warehouseTotalPrice.toString(),
+                            text: formatNumber(warehouseTotalPrice),
                             ...wordFileStyle.text_style_bold,
                           }),
                         ],
@@ -850,7 +851,7 @@ export async function generateReportAgeOfItemStock(
                         alignment: AlignmentType.RIGHT,
                         children: [
                           new TextRun({
-                            text: sixMonth.toString(),
+                            text: formatNumber(sixMonth),
                             ...wordFileStyle.text_style_bold,
                           }),
                         ],
@@ -865,7 +866,7 @@ export async function generateReportAgeOfItemStock(
                         alignment: AlignmentType.RIGHT,
                         children: [
                           new TextRun({
-                            text: oneYearAgo.toString(),
+                            text: formatNumber(oneYearAgo),
                             ...wordFileStyle.text_style_bold,
                           }),
                         ],
@@ -880,7 +881,7 @@ export async function generateReportAgeOfItemStock(
                         alignment: AlignmentType.RIGHT,
                         children: [
                           new TextRun({
-                            text: twoYearAgo.toString(),
+                            text: formatNumber(twoYearAgo),
                             ...wordFileStyle.text_style_bold,
                           }),
                         ],
@@ -895,7 +896,7 @@ export async function generateReportAgeOfItemStock(
                         alignment: AlignmentType.RIGHT,
                         children: [
                           new TextRun({
-                            text: threeYearAgo.toString(),
+                            text: formatNumber(threeYearAgo),
                             ...wordFileStyle.text_style_bold,
                           }),
                         ],
@@ -910,7 +911,7 @@ export async function generateReportAgeOfItemStock(
                         alignment: AlignmentType.RIGHT,
                         children: [
                           new TextRun({
-                            text: fourYearAgo.toString(),
+                            text: formatNumber(fourYearAgo),
                             ...wordFileStyle.text_style_bold,
                           }),
                         ],
@@ -925,7 +926,7 @@ export async function generateReportAgeOfItemStock(
                         alignment: AlignmentType.RIGHT,
                         children: [
                           new TextRun({
-                            text: fiveYearAgo.toString(),
+                            text: formatNumber(fiveYearAgo),
                             ...wordFileStyle.text_style_bold,
                           }),
                         ],
@@ -940,7 +941,7 @@ export async function generateReportAgeOfItemStock(
                         alignment: AlignmentType.RIGHT,
                         children: [
                           new TextRun({
-                            text: greaterfiveYear.toString(),
+                            text: formatNumber(greaterfiveYear),
                             ...wordFileStyle.text_style_bold,
                           }),
                         ],
