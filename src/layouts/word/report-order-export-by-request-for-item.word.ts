@@ -1,3 +1,4 @@
+import { formatNumber } from '@constant/common';
 import { ReportOrderExportByRequestForItemModel } from '@models/order-export-by-request-for-item.model';
 import { TableData } from '@models/report.model';
 import {
@@ -176,7 +177,7 @@ export async function generateReportOrderExportByRequestForItem(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.planQuantity + '',
+                                  text: formatNumber(item.planQuantity),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -192,7 +193,7 @@ export async function generateReportOrderExportByRequestForItem(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.exportedQuantity + '',
+                                  text: formatNumber(item.exportedQuantity),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],

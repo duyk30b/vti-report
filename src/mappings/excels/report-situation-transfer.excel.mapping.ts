@@ -4,8 +4,6 @@ import { SITUATION_TRANSFER_COLUMN } from '@layout/excel/table-column-excel/repo
 import { reportSituationTransferTemplateData } from '@layout/excel/table-data-excel/report-situation-transfer.template-data';
 import { ReportInfo } from '@mapping/common/Item-inventory-mapped';
 import { ReportModel } from '@models/report.model';
-import { TableDataSituationTransfer } from '@models/situation-transfer.model';
-
 import { ReportRequest } from '@requests/report.request';
 import { REPORT_INFO } from '@utils/constant';
 import { I18nRequestScopeService } from 'nestjs-i18n';

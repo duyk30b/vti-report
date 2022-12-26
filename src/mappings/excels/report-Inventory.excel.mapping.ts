@@ -26,10 +26,10 @@ export async function reportInventoryExcelMapping(
     itemName: Alignment.LEFT,
     unit: Alignment.CENTER,
     lotNumber: Alignment.CENTER,
-    stockQuantity: Alignment.RIGHT,
+    stockQuantity: { alignment: Alignment.RIGHT, numFmt: '### ### ### ###' },
     locatorCode: Alignment.LEFT,
-    storageCost: Alignment.RIGHT,
-    totalPrice: Alignment.RIGHT,
+    storageCost: { alignment: Alignment.RIGHT, numFmt: '### ### ### ###' },
+    totalPrice: { alignment: Alignment.RIGHT, numFmt: '### ### ### ###' },
   };
 
   const model: ReportModel<any> = {

@@ -3,11 +3,11 @@ import { TableColumn } from '@models/report.model';
 export const SITUATION_TRANSFER_COLUMN: TableColumn[] = [
   {
     name: 'INDEX',
-    width: 35,
+    width: 10,
   },
   {
     name: 'POST',
-    width: 25,
+    width: 15,
   },
   {
     name: 'DATE',
@@ -23,7 +23,7 @@ export const SITUATION_TRANSFER_COLUMN: TableColumn[] = [
   },
   {
     name: 'ITEM_CODE',
-    width: 25,
+    width: 15,
   },
   {
     name: 'ITEM_NAME',
@@ -56,14 +56,14 @@ export const SITUATION_TRANSFER_COLUMN: TableColumn[] = [
   },
   {
     name: 'LOCATION',
-    width: 20,
+    width: 15,
   },
   {
     name: 'UNIT_PRICE',
-    width: 25,
+    width: 10,
   },
   {
     name: 'TOTAL_PRICE',
-    width: 25,
+    width: 10,
   },
 ];

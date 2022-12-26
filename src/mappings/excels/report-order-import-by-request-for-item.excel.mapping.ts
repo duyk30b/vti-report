@@ -29,8 +29,8 @@ export async function reportOrderImportByRequestForItemExcelMapping(
     itemCode: Alignment.LEFT,
     itemName: Alignment.LEFT,
     orderCreatedAt: Alignment.CENTER,
-    planQuantity: Alignment.RIGHT,
-    actualQuantity: Alignment.RIGHT,
+    planQuantity: { alignment: Alignment.RIGHT, numFmt: '### ### ### ###' },
+    actualQuantity: { alignment: Alignment.RIGHT, numFmt: '### ### ### ###' },
     status: Alignment.LEFT,
   };
 

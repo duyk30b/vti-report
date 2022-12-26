@@ -1,3 +1,4 @@
+import { formatNumber } from '@constant/common';
 import { ItemImportedButNotStoreToPositionModel } from '@models/Item-imported-but-not-put-to-position.model';
 import { TableData } from '@models/report.model';
 import {
@@ -213,7 +214,7 @@ export async function generateReportItemImportedButNotPutToPosition(
                               alignment: AlignmentType.LEFT,
                               children: [
                                 new TextRun({
-                                  text: item.orderCode,
+                                  text: item.ebsNumber,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -316,7 +317,7 @@ export async function generateReportItemImportedButNotPutToPosition(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.planQuantity + '',
+                                  text: formatNumber(item.recievedQuantity),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -331,7 +332,7 @@ export async function generateReportItemImportedButNotPutToPosition(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.actualQuantity + '',
+                                  text: formatNumber(item.actualQuantity),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -346,7 +347,7 @@ export async function generateReportItemImportedButNotPutToPosition(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.remainQuantity + '',
+                                  text: formatNumber(item.remainQuantity),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],

@@ -1,7 +1,7 @@
 export const INVENTORY_BELOW_SAFE = [
   {
     name: 'INDEX',
-    width: 35.9,
+    width: 10,
   },
   {
     name: 'ITEM_CODE',

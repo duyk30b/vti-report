@@ -502,7 +502,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
           },
           groupByStorageDate: {
             $push: {
-              storageDate: '$storageDate',
+              storageDate: { $dateToString: { format: "%m/%d/%Y", date: "$storageDate" } },
               origin: '$origin',
               account: '$account',
               lotNumber: '$lotNumber',

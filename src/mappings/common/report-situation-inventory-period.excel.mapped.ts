@@ -6,27 +6,31 @@ import { ReportInfo } from './Item-inventory-mapped';
 export function getSituationInventoryPeriod(
   data: any[],
   i18n: I18nRequestScopeService,
+  isEmpty: boolean,
 ): ReportInfo<TableDataSituationInventoryPeriod[]> {
   const dataMaping: ReportInfo<any> = {
-    companyName: data[0]?._id?.companyName || '',
+    companyName: data[0]?._id?.companyName?.toUpperCase() || '',
     companyAddress: data[0]?._id?.companyAddress || '',
     warehouseName: data[0]?._id?.warehouseName || '',
     dataMapped: null,
   };
-
-  let dataExcell: TableDataSituationInventoryPeriod[] = data.map(
-    (item: any) => {
-      return {
-        warehouseCode:
-          i18n.translate('report.WAREHOUSE_GROUP_CODE') +
-          [item._id.warehouseCode, item._id.warehouseName].join('_'),
-        totalPlanQuantity: item.totalPlanQuantity,
-        totalActualQuantity: item.totalActualQuantity,
-        items: item.items,
-      };
-    },
-  );
-  dataMaping.dataMapped = dataExcell || [];
+  if (!isEmpty) {
+    let dataExcell: TableDataSituationInventoryPeriod[] = data.map(
+      (item: any) => {
+        return {
+          warehouseCode:
+            i18n.translate('report.WAREHOUSE_GROUP_CODE') +
+            [item._id.warehouseCode, item._id.warehouseName].join('_'),
+          totalPlanQuantity: item.totalPlanQuantity,
+          totalActualQuantity: item.totalActualQuantity,
+          items: item.items || [],
+        };
+      },
+    );
+    dataMaping.dataMapped = dataExcell;
+  } else {
+    dataMaping.dataMapped = [];
+  }
 
   return dataMaping;
 }

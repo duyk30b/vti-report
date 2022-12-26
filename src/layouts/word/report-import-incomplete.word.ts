@@ -1,3 +1,4 @@
+import { formatNumber } from '@constant/common';
 import { OrderImportIncompleteModel } from '@models/order-import-incomplete.model';
 import { TableData } from '@models/report.model';
 import { mul } from '@utils/common';
@@ -285,7 +286,7 @@ export async function generateReportOrderImportIncompleted(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.actualQuantity + '',
+                                  text: formatNumber(item.actualQuantity),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -300,7 +301,7 @@ export async function generateReportOrderImportIncompleted(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: item.storageCost + '',
+                                  text: formatNumber(item.storageCost),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -315,10 +316,9 @@ export async function generateReportOrderImportIncompleted(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: mul(
-                                    item.storageCost,
-                                    item.actualQuantity,
-                                  ).toString(),
+                                  text: formatNumber(
+                                    item.totalPrice
+                                  ),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],

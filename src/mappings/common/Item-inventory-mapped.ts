@@ -15,7 +15,7 @@ export function getItemInventoryDataMapping(
   isEmpty: boolean,
 ): ReportInfo<ItemInventoryModel> {
   const dataMaping: ReportInfo<any> = {
-    companyName: data[0]?.companyName || '',
+    companyName: data[0]?.companyName?.toUpperCase() || '',
     companyAddress: data[0]?.companyAddress || '',
     warehouseName: data[0]?.warehouseName || '',
     companyCode: data[0]?.companyCode,
