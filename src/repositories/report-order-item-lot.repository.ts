@@ -468,7 +468,7 @@ function reportItemImportedButNotPutToPosition(
           note: '$note',
           performerName: '$performerName',
         },
-        totalRecievedQuantity: { $sum: '$recievedQuantity' },
+        totalRecievedQuantity: { $sum: '$receivedQuantity' },
         totalActualQuantity: { $sum: '$actualQuantity' },
       },
     },
@@ -733,8 +733,7 @@ function reportSituationImport(
             $cond: {
               if: {
                 $and: [
-                  { $eq: ['$status', OrderStatus.InProgress] },
-                  { $eq: ['$type', OrderType.IMPORT] },
+                  { $eq: ['$status', OrderStatus.InProgress] }
                 ],
               },
               then: {
