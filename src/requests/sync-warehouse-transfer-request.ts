@@ -165,6 +165,15 @@ class WarehouseTransferDetail {
 
   @ApiProperty()
   @IsOptional()
+  debitAccount: any;
+
+  @ApiProperty()
+  @IsOptional()
+  creditAccount: string;
+
+
+  @ApiProperty()
+  @IsOptional()
   item: ItemResponse;
 
   @ApiProperty()
