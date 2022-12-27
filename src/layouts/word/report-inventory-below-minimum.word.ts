@@ -245,7 +245,7 @@ export async function generateReportItemInventoryBelowMinimum(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(item.minInventoryLimit),
+                                  text: `${item?.minInventoryLimit || ''}` ,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -260,7 +260,7 @@ export async function generateReportItemInventoryBelowMinimum(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(item.stockQuantity),
+                                  text: `${item?.stockQuantity || ''}` ,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],

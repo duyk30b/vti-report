@@ -272,10 +272,7 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
       case ReportType.ITEM_IMPORTED_BUT_NOT_PUT_TO_POSITION:
         condition['$and'].push({
           status: {
-            $in: [
-              OrderStatus.Received,
-              OrderStatus.InProgress,
-            ],
+            $in: [OrderStatus.Received, OrderStatus.InProgress],
           },
         });
 
@@ -423,8 +420,8 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
           },
         });
         break;
-        case ReportType.SITUATION_INVENTORY_PERIOD:
-          break;
+      case ReportType.SITUATION_INVENTORY_PERIOD:
+        break;
       default:
         break;
     }
@@ -486,25 +483,41 @@ function reportItemImportedButNotPutToPosition(
         },
         items: {
           $push: {
-            index: '',
-            orderCode: '$_id.orderCode',
-            ebsNumber: '$_id.ebsNumber',
-            reason: '$_id.reason',
-            explain: '$_id.explain',
-            itemCode: '$_id.itemCode',
-            itemName: '$_id.itemName',
-            unit: '$_id.unit',
-            lotNumber: '$_id.lotNumber',
-            recievedQuantity: { $sum: '$totalRecievedQuantity' },
-            actualQuantity: { $sum: '$totalActualQuantity' },
-            remainQuantity: {
-              $subtract: [
-                { $sum: '$totalRecievedQuantity' },
-                { $sum: '$totalActualQuantity' },
-              ],
+            $cond: {
+              if: {
+                $gt: [
+                  {
+                    $subtract: [
+                      { $sum: '$totalRecievedQuantity' },
+                      { $sum: '$totalActualQuantity' },
+                    ],
+                  },
+                  0,
+                ],
+              },
+              then: {
+                index: '',
+                orderCode: '$_id.orderCode',
+                ebsNumber: '$_id.ebsNumber',
+                reason: '$_id.reason',
+                explain: '$_id.explain',
+                itemCode: '$_id.itemCode',
+                itemName: '$_id.itemName',
+                unit: '$_id.unit',
+                lotNumber: '$_id.lotNumber',
+                recievedQuantity: { $sum: '$totalRecievedQuantity' },
+                actualQuantity: { $sum: '$totalActualQuantity' },
+                remainQuantity: {
+                  $subtract: [
+                    { $sum: '$totalRecievedQuantity' },
+                    { $sum: '$totalActualQuantity' },
+                  ],
+                },
+                note: '$_id.note',
+                performerName: '$_id.performerName',
+              },
+              else: '$$REMOVE',
             },
-            note: '$_id.note',
-            performerName: '$_id.performerName',
           },
         },
       },
@@ -521,15 +534,28 @@ function reportItemImportedButNotPutToPosition(
         },
         warehouses: {
           $push: {
-            warehouseCode: '$_id.warehouseCode',
-            warehouseName: '$_id.warehouseName',
-            items: '$items',
+            $cond: {
+              if: { $gt: [{ $size: '$items' }, 0] },
+              then: {
+                warehouseCode: '$_id.warehouseCode',
+                warehouseName: '$_id.warehouseName',
+                items: '$items',
+              },
+              else: '$$REMOVE',
+            },
           },
         },
       },
     },
     {
       $sort: { '_id.companyName': -1 },
+    },
+    {
+      $match: {
+        $expr: {
+          $gt: [{ $size: '$warehouses' }, 0],
+        }
+      },
     },
   ]);
 }
@@ -732,9 +758,7 @@ function reportSituationImport(
           $push: {
             $cond: {
               if: {
-                $and: [
-                  { $eq: ['$status', OrderStatus.InProgress] }
-                ],
+                $and: [{ $eq: ['$status', OrderStatus.InProgress] }],
               },
               then: {
                 $cond: {

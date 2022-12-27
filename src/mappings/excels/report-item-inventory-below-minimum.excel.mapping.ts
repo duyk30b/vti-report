@@ -26,8 +26,8 @@ export async function reportItemInventoryBelowMinimumExcelMapping(
     itemCode: Alignment.LEFT,
     itemName: Alignment.LEFT,
     unit: Alignment.CENTER,
-    stockQuantity: { alignment: Alignment.RIGHT, numFmt: '### ### ### ###' },
-    minInventoryLimit: { alignment: Alignment.RIGHT, numFmt: '### ### ### ###' },
+    stockQuantity: Alignment.RIGHT,
+    minInventoryLimit: Alignment.RIGHT,
   };
 
   const model: ReportModel<ReportInventoryBelowMinimumModel> = {
