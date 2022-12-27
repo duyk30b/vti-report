@@ -10,7 +10,7 @@ import { I18nRequestScopeService } from 'nestjs-i18n';
 
 export async function reportItemInventoryMapping(
   request: ReportRequest,
-  data: ReportInfo<ItemInventoryModel>,
+  data: ReportInfo<any>,
   i18n: I18nRequestScopeService,
 ): Promise<ExportResponse> {
   const { nameFile, title, sheetName, reportTime } = getReportInfo(

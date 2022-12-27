@@ -125,7 +125,7 @@ export async function generateReportItemInventoryBelowMinimum(
             children: [
               new TextRun({
                 text: title.slice(title.indexOf('\n')),
-                size: WORD_FILE_CONFIG.WORD_FONT_SIZE_12,
+                size: WORD_FILE_CONFIG.WORD_FONT_SIZE_14,
                 font: FONT_NAME,
                 bold: WORD_FILE_CONFIG.WORD_BOLD,
               }),
@@ -137,7 +137,7 @@ export async function generateReportItemInventoryBelowMinimum(
             children: [
               new TextRun({
                 text: reportTime,
-                size: WORD_FILE_CONFIG.WORD_FONT_SIZE_10,
+                size: WORD_FILE_CONFIG.WORD_FONT_SIZE_11,
                 font: FONT_NAME,
                 bold: WORD_FILE_CONFIG.WORD_BOLD,
               }),
@@ -245,7 +245,7 @@ export async function generateReportItemInventoryBelowMinimum(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(item.minInventoryLimit),
+                                  text: `${item?.minInventoryLimit || ''}` ,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -260,7 +260,7 @@ export async function generateReportItemInventoryBelowMinimum(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(item.stockQuantity),
+                                  text: `${item?.stockQuantity || ''}` ,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -281,7 +281,9 @@ export async function generateReportItemInventoryBelowMinimum(
                               children: [
                                 new TextRun({
                                   text: warehouse?.warehouseCode,
-                                  ...wordFileStyle.table_header_style,
+                                  bold: WORD_FILE_CONFIG.WORD_BOLD,
+                                  font: FONT_NAME,
+                                  size: WORD_FILE_CONFIG.WORD_FONT_SIZE_12,
                                 }),
                               ],
                             }),

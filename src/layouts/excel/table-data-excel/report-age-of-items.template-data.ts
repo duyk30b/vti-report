@@ -5,6 +5,7 @@ import {
   ALIGNMENT_RIGHT,
   BORDER,
   FONT_BOLD_8,
+  FONT_BOLD_9,
   FONT_NORMAL_9,
 } from '@utils/constant';
 import * as ExcelJS from 'exceljs';
@@ -40,7 +41,7 @@ export function reportAgeOfItemsTemplateData(
         {
           nameCell: `A${curRowIdx}:J${curRowIdx}`,
           value: warehouse.warehouseCode,
-          font: FONT_BOLD_8,
+          font: FONT_BOLD_9,
           aligment: ALIGNMENT_LEFT,
           border: BORDER,
           merge: true,
