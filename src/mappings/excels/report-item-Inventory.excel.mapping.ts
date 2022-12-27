@@ -42,7 +42,7 @@ export async function reportItemInventoryExcelMapping(
   const model: ReportModel<any> = {
     companyCode: data.companyCode,
     childCompany: data?.companyName?.toUpperCase(),
-    addressChildCompany: data?.companyAddress?.toUpperCase(),
+    addressChildCompany: data?.companyAddress,
     tableColumn: ITEM_INVENTORY_COLUMN,
     tableData: data.dataMapped,
     header: true,
