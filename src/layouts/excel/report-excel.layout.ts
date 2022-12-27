@@ -23,6 +23,7 @@ import {
   DATE_FOMAT_EXCELL_FILE,
   EXCEL_COLUMN,
   FONT_BOLD_10,
+  FONT_BOLD_11,
   FONT_BOLD_14,
   FONT_BOLD_9,
   FONT_NORMAL_9,
@@ -129,7 +130,7 @@ export const generateTable = async (
       {
         nameCell: CEll_REPORT_TIME,
         value: reportTime,
-        font: FONT_BOLD_10,
+        font: FONT_BOLD_11,
         aligment: ALIGNMENT_CENTER,
         translate: false,
       },

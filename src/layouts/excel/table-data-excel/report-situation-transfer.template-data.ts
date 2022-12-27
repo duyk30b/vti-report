@@ -5,6 +5,7 @@ import {
   ALIGNMENT_RIGHT,
   BORDER,
   FONT_BOLD_8,
+  FONT_BOLD_9,
   FONT_NORMAL_9,
 } from '@utils/constant';
 import * as ExcelJS from 'exceljs';
@@ -24,7 +25,7 @@ export function reportSituationTransferTemplateData(
     cells.push({
       nameCell: `A${curRowIdx}:N${curRowIdx}`,
       value: item.warehouseCode,
-      font: FONT_BOLD_8,
+      font: FONT_BOLD_9,
       aligment: ALIGNMENT_LEFT,
       translate: false,
       border: BORDER,
