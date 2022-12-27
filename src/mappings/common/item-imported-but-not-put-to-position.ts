@@ -11,7 +11,7 @@ export function getItemImportedButNotPutToPositionMapped(
     companyCode: data[0]?._id?.companyCode || '',
     companyName: data[0]?._id?.companyName?.toUpperCase() || '',
     companyAddress: data[0]?._id?.companyAddress || '',
-    warehouseName: '',
+    warehouseName: data[0]?._id?.warehouseName,
     dataMapped: null,
   };
 
