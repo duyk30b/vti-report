@@ -23,6 +23,7 @@
     "LOCATION_IMPORT": "Vị trí nhập",
     "LOCATION_EXPORT": "Vị trí xuất",
     "LOCATION": "Vị trí",
+    "LOCATION_GET": "Vị trí lấy",
     "QUANTITY": "Số lượng",
     "QUANTITY_MINIMUM": "SL tối thiểu",
     "QUANTITY_STOCK": "SL Tồn",
