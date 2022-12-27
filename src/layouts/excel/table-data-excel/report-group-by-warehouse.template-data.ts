@@ -7,12 +7,8 @@ import {
   ALIGNMENT_LEFT,
   ALIGNMENT_RIGHT,
   BORDER,
-  BORDER_R,
-  BORDER_T_L_B,
   CELL_A,
-  COLUMN_COLOR,
   EXCEL_COLUMN,
-  FONT_BOLD_8,
   FONT_BOLD_9,
   FONT_NORMAL_9,
 } from '@utils/constant';
