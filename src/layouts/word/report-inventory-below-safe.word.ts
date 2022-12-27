@@ -280,7 +280,9 @@ export async function generatereportItemInventoryBelowSafe(
                               children: [
                                 new TextRun({
                                   text: warehouse?.warehouseCode,
-                                  ...wordFileStyle.table_header_style,
+                                  bold: WORD_FILE_CONFIG.WORD_BOLD,
+                                  font: FONT_NAME,
+                                  size: WORD_FILE_CONFIG.WORD_FONT_SIZE_12,
                                 }),
                               ],
                             }),

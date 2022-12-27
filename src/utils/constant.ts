@@ -48,6 +48,13 @@ export const FONT_BOLD_10 = {
   size: 10,
 };
 
+export const FONT_BOLD_11 = {
+  name: FONT_NAME,
+  color: { argb: COLOR },
+  bold: true,
+  size: 11,
+};
+
 export const FONT_BOLD_14 = {
   name: FONT_NAME,
   color: { argb: COLOR },
@@ -860,7 +867,7 @@ export const SITUATION_TRANSFER_COLUMNS: TableColumn[] = [
     rowSpan: 2,
   },
   {
-    name: 'LOCATION',
+    name: 'LOCATION_GET',
     width: 1.6,
     rowSpan: 2,
   },

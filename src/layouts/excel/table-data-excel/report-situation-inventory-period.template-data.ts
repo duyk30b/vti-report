@@ -6,6 +6,7 @@ import {
   BORDER,
   FONT_BOLD_10,
   FONT_BOLD_8,
+  FONT_BOLD_9,
   FONT_ITALIC_10,
   FONT_NORMAL_9,
 } from '@utils/constant';
@@ -34,7 +35,7 @@ export function reportSituationInventoryPeriodTemplateData(
     cells.push({
       nameCell: `A${curRowIndex}:P${curRowIndex}`,
       value: data.warehouseCode,
-      font: FONT_BOLD_8,
+      font: FONT_BOLD_9,
       aligment: ALIGNMENT_LEFT,
       translate: false,
       border: BORDER,
