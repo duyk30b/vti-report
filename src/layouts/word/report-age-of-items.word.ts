@@ -484,9 +484,9 @@ export async function generateReportAgeOfItemStock(
                                   children: [
                                     new TextRun({
                                       text: item.itemCode,
+                                      bold: WORD_FILE_CONFIG.WORD_BOLD,
                                       font: FONT_NAME,
                                       size: WORD_FILE_CONFIG.WORD_FONT_SIZE_9,
-                                      bold: WORD_FILE_CONFIG.WORD_BOLD,
                                     }),
                                   ],
                                 }),
@@ -502,9 +502,9 @@ export async function generateReportAgeOfItemStock(
                                   children: [
                                     new TextRun({
                                       text: item.itemName,
+                                      bold: WORD_FILE_CONFIG.WORD_BOLD,
                                       font: FONT_NAME,
                                       size: WORD_FILE_CONFIG.WORD_FONT_SIZE_9,
-                                      bold: WORD_FILE_CONFIG.WORD_BOLD,
                                     }),
                                   ],
                                 }),
@@ -680,9 +680,9 @@ export async function generateReportAgeOfItemStock(
                               children: [
                                 new TextRun({
                                   text: warehouse.warehouseCode,
+                                  bold: WORD_FILE_CONFIG.WORD_BOLD,
                                   font: FONT_NAME,
                                   size: WORD_FILE_CONFIG.WORD_FONT_SIZE_9,
-                                  bold: WORD_FILE_CONFIG.WORD_BOLD,
                                 }),
                               ],
                             }),
