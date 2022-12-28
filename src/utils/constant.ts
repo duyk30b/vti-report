@@ -76,6 +76,13 @@ export const FONT_BOLD_9 = {
   size: 9,
 };
 
+export const FONT_BOLD_12 = {
+  name: FONT_NAME,
+  color: { argb: COLOR },
+  bold: true,
+  size: 9,
+};
+
 export const FONT_NORMAL_10 = {
   name: FONT_NAME,
   color: { argb: COLOR },
