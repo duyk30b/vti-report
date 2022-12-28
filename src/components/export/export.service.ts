@@ -62,6 +62,7 @@ import { UserService } from '@components/user/user.service';
 import { WarehouseServiceInterface } from '@components/warehouse/interface/warehouse.service.interface';
 import { getTimezone } from '@utils/common';
 import { FORMAT_DATE } from '@utils/constant';
+import { readDecimal } from '@constant/common';
 @Injectable()
 export class ExportService {
   constructor(
@@ -481,7 +482,13 @@ export class ExportService {
         }
       }
     }
-
+      for(const key in keyByDailyItem) {              
+        keyByDailyItem[key].storageCost = readDecimal(keyByDailyItem[key]?.storageCost);
+        keyByDailyItem[key].stockStart = readDecimal(keyByDailyItem[key]?.stockStart, true);
+        keyByDailyItem[key].totalStockStart = readDecimal(keyByDailyItem[key]?.totalStockStart);
+        keyByDailyItem[key].stockEnd = readDecimal(keyByDailyItem[key]?.stockEnd, true);
+        keyByDailyItem[key].totalStockEnd = readDecimal(keyByDailyItem[key]?.totalStockEnd);
+      }
     const data = Object.values(keyByDailyItem);
 
     let isEmpty = await this.getInfoWarehouse(request, data);
