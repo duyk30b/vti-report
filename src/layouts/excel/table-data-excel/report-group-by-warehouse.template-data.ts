@@ -9,7 +9,7 @@ import {
   BORDER,
   CELL_A,
   EXCEL_COLUMN,
-  FONT_BOLD_9,
+  FONT_BOLD_12,
   FONT_NORMAL_9,
 } from '@utils/constant';
 import * as ExcelJS from 'exceljs';
@@ -29,7 +29,7 @@ export function reportGroupByWarehouseTemplateData(
     );
     worksheet.mergeCells(`${CELL_A}${rowIdx}:${endColumn}`);
     cellGroupByWarehouse.value = warehouseData.warehouseCode;
-    cellGroupByWarehouse.font = FONT_BOLD_9;
+    cellGroupByWarehouse.font = FONT_BOLD_12;
     cellGroupByWarehouse.alignment = ALIGNMENT_LEFT as any;
     cellGroupByWarehouse.border = BORDER as any;
     rowIdx++;
