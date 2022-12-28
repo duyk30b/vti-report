@@ -758,7 +758,9 @@ function reportSituationImport(
           $push: {
             $cond: {
               if: {
-                $and: [{ $eq: ['$status', OrderStatus.InProgress] }],
+                $and: [
+                  { $eq: ['$status', OrderStatus.InProgress] }
+                ],
               },
               then: {
                 $cond: {
