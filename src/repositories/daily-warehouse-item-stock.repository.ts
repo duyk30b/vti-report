@@ -85,8 +85,8 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
         warehouseCode: { $eq: request?.warehouseCode },
       });
 
-    if (request?.dateFrom == getTimezone(undefined, FORMAT_DATE)) {
-      const prevDate = new Date(request?.dateFrom);
+    if (request?.dateTo == getTimezone(undefined, FORMAT_DATE)) {
+      const prevDate = new Date(request?.dateTo);
       prevDate.setDate(prevDate.getDate() - 1);
       condition['$and'].push({
         $expr: {
@@ -101,12 +101,11 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
         $expr: {
           $eq: [
             { $dateToString: { date: '$reportDate', format: '%Y-%m-%d' } },
-            moment(request?.dateFrom).format(DATE_FOMAT),
+            moment(request?.dateTo).format(DATE_FOMAT),
           ],
         },
       });
     }
-    console.log(JSON.stringify(condition));
 
     return this.dailyWarehouseItemStock.aggregate([
       { $match: condition },
