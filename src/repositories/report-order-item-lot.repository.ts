@@ -395,7 +395,7 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
         condition['$and'].push({
           status: {
             $in: [
-              // OrderStatus.Received,
+              OrderStatus.Received,
               OrderStatus.InProgress,
               OrderStatus.Completed,
             ],
@@ -554,7 +554,7 @@ function reportItemImportedButNotPutToPosition(
       $match: {
         $expr: {
           $gt: [{ $size: '$warehouses' }, 0],
-        }
+        },
       },
     },
   ]);
@@ -757,6 +757,7 @@ function reportSituationImport(
         items: {
           $push: {
             $cond: {
+              //case InProgress
               if: {
                 $and: [{ $eq: ['$status', OrderStatus.InProgress] }],
               },
@@ -767,7 +768,22 @@ function reportSituationImport(
                   else: '$$REMOVE',
                 },
               },
-              else: itemGroup,
+              else: {
+                $cond: {
+                  //case Received
+                  if: {
+                    $and: [{ $eq: ['$status', OrderStatus.Received] }],
+                  },
+                  then: {
+                    $cond: {
+                      if: { $gt: ['$actualQuantity', 0] },
+                      then: itemGroup,
+                      else: '$$REMOVE',
+                    },
+                  },
+                  else: itemGroup,
+                },
+              },
             },
           },
         },
