@@ -63,9 +63,14 @@ export function readDecimal(number: any, isFormat?: boolean): string {
   if(isFormat && number === 0) return '0';
   if (!number) return ''
   const num = number.toString();
-  if (num.split('.')[1]) {
-    return num.split('.')[0] + ',' + num.split('.')[1];
-  } else return num.split('.')[0];
+  let x = 3;
+  let n = 2;
+  let numPri = parseFloat(num).toFixed(2);
+  let re = '(\\d)(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
+  let numReturn = numPri.replace(new RegExp(re, 'g'), '$1 ');
+  if (numReturn.split('.')[1] === '00') {
+    return numReturn.split('.')[0];    
+  } else return numReturn.split('.')[0] + ',' + numReturn.split('.')[1];
 }
 
 export function formatMoney(number: any, isFormat?: boolean) {

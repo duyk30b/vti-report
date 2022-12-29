@@ -1,3 +1,4 @@
+import { readDecimal } from '@constant/common';
 import { TableDataSituationExportPeriod } from '@models/situation_export.model';
 import {
   ALIGNMENT_CENTER,
@@ -147,102 +148,104 @@ export function reportSituationExportPeriodTemplateData(
         curRowIdx++;
 
         order.items.forEach((item) => {
-          cells.push(
-            ...[
-              {
-                nameCell: `A${curRowIdx}:E${curRowIdx}`,
-                border: BORDER,
-                merge: true,
-                heightRow: {
-                  index: curRowIdx,
-                  value: 30,
+          if (item.actualQuantity) {
+            cells.push(
+              ...[
+                {
+                  nameCell: `A${curRowIdx}:E${curRowIdx}`,
+                  border: BORDER,
+                  merge: true,
+                  heightRow: {
+                    index: curRowIdx,
+                    value: 30,
+                  },
                 },
-              },
-              {
-                nameCell: `F${curRowIdx}:G${curRowIdx}`,
-                value: item.itemCode,
-                font: FONT_BOLD_9,
-                aligment: ALIGNMENT_BOTTOM_LEFT,
-                border: BORDER,
-                merge: true,
-              },
-              {
-                nameCell: `H${curRowIdx}`,
-                value: item.itemName,
-                font: FONT_NORMAL_9,
-                aligment: ALIGNMENT_BOTTOM_LEFT,
-                border: BORDER,
-              },
-              {
-                nameCell: `I${curRowIdx}`,
-                value: item.lotNumber,
-                font: FONT_NORMAL_9,
-                aligment: ALIGNMENT_CENTER,
-                border: BORDER,
-              },
-              {
-                nameCell: `J${curRowIdx}`,
-                value: item.accountDebt,
-                font: FONT_NORMAL_9,
-                aligment: ALIGNMENT_BOTTOM_LEFT,
-                border: BORDER,
-              },
-              {
-                nameCell: `K${curRowIdx}`,
-                value: item.accountHave,
-                font: FONT_NORMAL_9,
-                aligment: ALIGNMENT_BOTTOM_LEFT,
-                border: BORDER,
-              },
-              {
-                nameCell: `L${curRowIdx}`,
-                value: item.unit,
-                font: FONT_NORMAL_9,
-                aligment: ALIGNMENT_CENTER_BOTTOM,
-                border: BORDER,
-              },
-              {
-                nameCell: `M${curRowIdx}`,
-                value: item.planQuantity,
-                font: FONT_NORMAL_9,
-                aligment: ALIGNMENT_BOTTOM_RIGHT,
-                border: BORDER,
-                numFmt: '### ### ### ### ',
-              },
-              {
-                nameCell: `N${curRowIdx}`,
-                value: item.actualQuantity,
-                font: FONT_NORMAL_9,
-                aligment: ALIGNMENT_BOTTOM_RIGHT,
-                border: BORDER,
-                numFmt: '### ### ### ###',
-              },
-              {
-                nameCell: `O${curRowIdx}`,
-                value: item.locatorCode,
-                font: FONT_NORMAL_9,
-                aligment: ALIGNMENT_BOTTOM_RIGHT,
-                border: BORDER,
-              },
-              {
-                nameCell: `P${curRowIdx}`,
-                value: item.storageCost || 0,
-                font: FONT_NORMAL_9,
-                aligment: ALIGNMENT_BOTTOM_RIGHT,
-                border: BORDER,
-                numFmt: '### ### ### ###',
-              },
-              {
-                nameCell: `Q${curRowIdx}`,
-                value: item.totalPrice || 0,
-                font: FONT_NORMAL_9,
-                aligment: ALIGNMENT_BOTTOM_RIGHT,
-                border: BORDER,
-                numFmt: '### ### ### ###',
-              },
-            ],
-          );
-          curRowIdx++;
+                {
+                  nameCell: `F${curRowIdx}:G${curRowIdx}`,
+                  value: item.itemCode,
+                  font: FONT_BOLD_9,
+                  aligment: ALIGNMENT_BOTTOM_LEFT,
+                  border: BORDER,
+                  merge: true,
+                },
+                {
+                  nameCell: `H${curRowIdx}`,
+                  value: item.itemName,
+                  font: FONT_NORMAL_9,
+                  aligment: ALIGNMENT_BOTTOM_LEFT,
+                  border: BORDER,
+                },
+                {
+                  nameCell: `I${curRowIdx}`,
+                  value: item.lotNumber,
+                  font: FONT_NORMAL_9,
+                  aligment: ALIGNMENT_CENTER,
+                  border: BORDER,
+                },
+                {
+                  nameCell: `J${curRowIdx}`,
+                  value: item.accountDebt,
+                  font: FONT_NORMAL_9,
+                  aligment: ALIGNMENT_BOTTOM_LEFT,
+                  border: BORDER,
+                },
+                {
+                  nameCell: `K${curRowIdx}`,
+                  value: item.accountHave,
+                  font: FONT_NORMAL_9,
+                  aligment: ALIGNMENT_BOTTOM_LEFT,
+                  border: BORDER,
+                },
+                {
+                  nameCell: `L${curRowIdx}`,
+                  value: item.unit,
+                  font: FONT_NORMAL_9,
+                  aligment: ALIGNMENT_CENTER_BOTTOM,
+                  border: BORDER,
+                },
+                {
+                  nameCell: `M${curRowIdx}`,
+                  value: readDecimal(item.planQuantity, true),
+                  font: FONT_NORMAL_9,
+                  aligment: ALIGNMENT_BOTTOM_RIGHT,
+                  border: BORDER,
+                  numFmt: '### ### ### ### ',
+                },
+                {
+                  nameCell: `N${curRowIdx}`,
+                  value: readDecimal(item.actualQuantity, true),
+                  font: FONT_NORMAL_9,
+                  aligment: ALIGNMENT_BOTTOM_RIGHT,
+                  border: BORDER,
+                  numFmt: '### ### ### ###',
+                },
+                {
+                  nameCell: `O${curRowIdx}`,
+                  value: item.locatorCode,
+                  font: FONT_NORMAL_9,
+                  aligment: ALIGNMENT_BOTTOM_RIGHT,
+                  border: BORDER,
+                },
+                {
+                  nameCell: `P${curRowIdx}`,
+                  value: item.storageCost || 0,
+                  font: FONT_NORMAL_9,
+                  aligment: ALIGNMENT_BOTTOM_RIGHT,
+                  border: BORDER,
+                  numFmt: '### ### ### ###',
+                },
+                {
+                  nameCell: `Q${curRowIdx}`,
+                  value: item.totalPrice || 0,
+                  font: FONT_NORMAL_9,
+                  aligment: ALIGNMENT_BOTTOM_RIGHT,
+                  border: BORDER,
+                  numFmt: '### ### ### ###',
+                },
+              ],
+            );
+            curRowIdx++;
+          }
         });
       });
     });
@@ -261,7 +264,7 @@ export function reportSituationExportPeriodTemplateData(
       },
       {
         nameCell: `L${curRowIdx}:Q${curRowIdx}`,
-        value: totalPriceAll,
+        value: readDecimal(totalPriceAll, true),
         font: FONT_BOLD_9,
         aligment: ALIGNMENT_RIGHT,
         border: BORDER,

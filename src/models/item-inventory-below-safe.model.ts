@@ -3,6 +3,6 @@ export interface ReportInventoryBelowSafeModel {
   itemCode: string;
   itemName: string;
   unit: string;
-  inventoryLimit: number;
-  stockQuantity: number;
+  inventoryLimit: number | string;
+  stockQuantity: number | string;
 }
