@@ -256,7 +256,7 @@ export async function generateReportOrderExportIncompleted(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(item.actualQuantity),
+                                  text: (item.actualQuantity).toString(),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],

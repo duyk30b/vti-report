@@ -1,3 +1,4 @@
+import { readDecimal } from '@constant/common';
 import { OrderExportIncompleteModel } from '@models/order-exported-incomplete.model';
 import { TableData } from '@models/report.model';
 import { ReportOrderItem } from '@schemas/report-order-item.schema';
@@ -29,7 +30,7 @@ export function getOrderExportIncompletedMapped(
           itemCode: cur.itemCode,
           itemName: cur.itemName,
           unit: cur.unit,
-          actualQuantity: cur.actualQuantity,
+          actualQuantity: readDecimal(cur.actualQuantity, true),
           constructionName: cur.constructionName,
           receiver: cur.performerName,
         };

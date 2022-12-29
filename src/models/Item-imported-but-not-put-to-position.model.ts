@@ -8,9 +8,9 @@ export interface ItemImportedButNotStoreToPositionModel {
   itemName: string;
   unit: string;
   lotNumber: string;
-  recievedQuantity: number;
-  actualQuantity: number;
-  remainQuantity: number;
+  recievedQuantity: number | string;
+  actualQuantity: number | string;
+  remainQuantity: number | string;
   note: string;
   performerName: string;
 }

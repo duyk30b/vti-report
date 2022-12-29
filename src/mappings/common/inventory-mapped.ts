@@ -1,6 +1,8 @@
+import { readDecimal } from '@constant/common';
 import { InventoryModel } from '@models/inventory.model';
 import { TableData } from '@models/report.model';
 import { DailyLotLocatorStock } from '@schemas/daily-lot-locator-stock.schema';
+import { mul } from '@utils/common';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
 
@@ -26,10 +28,10 @@ export function getInventoryDataMapping(
       itemName: cur.itemName,
       unit: cur.unit,
       lotNumber: cur.lotNumber,
-      stockQuantity: cur.stockQuantity,
+      stockQuantity: readDecimal(cur.stockQuantity, true),
       locatorCode: cur.locatorCode,
-      storageCost: cur.storageCost,
-      totalPrice: cur.storageCost * cur.stockQuantity,
+      storageCost: readDecimal(cur.storageCost),
+      totalPrice: readDecimal(mul(cur.storageCost, cur.stockQuantity)),
     };
     prev[warehouseCode].push(data);
     return prev;

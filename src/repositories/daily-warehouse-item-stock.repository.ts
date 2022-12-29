@@ -153,6 +153,7 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
           unit: 1,
           warehouseName: 1,
           warehouseCode: 1,
+          companyAddress: 1,
           companyCode: 1,
           companyName: 1,
           reportDate: 1,

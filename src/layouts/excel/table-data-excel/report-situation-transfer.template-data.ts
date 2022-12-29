@@ -1,3 +1,4 @@
+import { readDecimal } from '@constant/common';
 import { TableDataSituationTransfer } from '@models/situation-transfer.model';
 import {
   ALIGNMENT_CENTER,
@@ -157,7 +158,7 @@ export function reportSituationTransferTemplateData(
             },
             {
               nameCell: `L${curRowIdx}`,
-              value: row3.actualQuantity,
+              value: readDecimal(row3.actualQuantity, true),
               font: FONT_NORMAL_9,
               aligment: ALIGNMENT_RIGHT,
               border: BORDER,
@@ -172,7 +173,7 @@ export function reportSituationTransferTemplateData(
             },
             {
               nameCell: `N${curRowIdx}`,
-              value: row3.storageCost,
+              value: readDecimal(row3.storageCost),
               font: FONT_NORMAL_9,
               aligment: ALIGNMENT_RIGHT,
               border: BORDER,
@@ -180,7 +181,7 @@ export function reportSituationTransferTemplateData(
             },
             {
               nameCell: `O${curRowIdx}`,
-              value: row3.totalPrice || '0',
+              value: readDecimal(row3.totalPrice) || '0',
               font: FONT_NORMAL_9,
               aligment: ALIGNMENT_RIGHT,
               border: BORDER,
@@ -205,7 +206,7 @@ export function reportSituationTransferTemplateData(
       },
       {
         nameCell: `O${curRowIdx}`,
-        value: totalQuantity,
+        value: readDecimal(totalQuantity),
         font: FONT_BOLD_8,
         aligment: ALIGNMENT_RIGHT,
         border: BORDER,

@@ -286,7 +286,7 @@ export async function generateReportOrderImportIncompleted(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(item.actualQuantity),
+                                  text: (item.actualQuantity).toString(),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -301,7 +301,7 @@ export async function generateReportOrderImportIncompleted(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(item.storageCost),
+                                  text: (item.storageCost).toString(),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -316,9 +316,9 @@ export async function generateReportOrderImportIncompleted(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(
+                                  text: (
                                     item.totalPrice
-                                  ),
+                                  ).toString(),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],

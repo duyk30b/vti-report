@@ -1,3 +1,4 @@
+import { formatMoney, readDecimal } from '@constant/common';
 import { InventoryModel } from '@models/inventory.model';
 import { ReportInventoryBelowMinimumModel } from '@models/item-inventory-below-minimum.model';
 import { OrderExportIncompleteModel } from '@models/order-exported-incomplete.model';
@@ -36,9 +37,9 @@ export function getOrderImportIncompletedMapped(
         itemCode: cur.itemCode,
         itemName: cur.itemName,
         unit: cur.unit,
-        actualQuantity: cur.receivedQuantity,
-        storageCost: cur.storageCost,
-        totalPrice: cur.storageCost * cur.planQuantity,
+        actualQuantity: readDecimal(cur.receivedQuantity, true),
+        storageCost: formatMoney(cur.storageCost, true),
+        totalPrice: formatMoney(cur.storageCost * cur.planQuantity, true),
         constructionName: cur.constructionName,
         deliverName: cur.performerName,
       };

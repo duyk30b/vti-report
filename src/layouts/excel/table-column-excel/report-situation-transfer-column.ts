@@ -55,7 +55,7 @@ export const SITUATION_TRANSFER_COLUMN: TableColumn[] = [
     width: 10,
   },
   {
-    name: 'LOCATION',
+    name: 'LOCATION_GET',
     width: 15,
   },
   {
