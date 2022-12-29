@@ -79,7 +79,8 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
                 item.quantityImported -
                 item.quantityExported;
             } else {
-              item['stockQuantity'] = item.quantityImported;
+              item['stockQuantity'] =
+                item.quantityImported - item.quantityExported;
               if (item.quantityImported) keyByItem[key] = item;
             }
           });
@@ -106,21 +107,21 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
                 item.quantityExported;
             }
           });
-          Object.keys(keyByItem).forEach(key => {
+          Object.keys(keyByItem).forEach((key) => {
             const itemStock = keyByItem[key];
             switch (request?.reportType) {
               case ReportType.ITEM_INVENTORY_BELOW_SAFE:
                 if (itemStock?.stockQuantity > itemStock?.inventoryLimit) {
-                  delete keyByItem[key]
+                  delete keyByItem[key];
                 }
                 break;
               case ReportType.ITEM_INVENTORY_BELOW_MINIMUM:
                 if (itemStock?.stockQuantity > itemStock?.minInventoryLimit) {
-                  delete keyByItem[key]
+                  delete keyByItem[key];
                 }
                 break;
             }
-          })
+          });
           return Object.values(keyByItem);
         } else {
           return data;
