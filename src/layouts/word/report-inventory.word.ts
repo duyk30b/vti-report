@@ -1,4 +1,4 @@
-import { formatNumber } from '@constant/common';
+import { formatNumber, readDecimal } from '@constant/common';
 import { InventoryModel } from '@models/inventory.model';
 import { TableData } from '@models/report.model';
 import { mul } from '@utils/common';
@@ -159,7 +159,7 @@ export async function generateReportInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(item.stockQuantity),
+                                  text: (item.stockQuantity).toString(),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -188,7 +188,7 @@ export async function generateReportInventory(
                               alignment: AlignmentType.CENTER,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(item.storageCost),
+                                  text: (item.storageCost).toString(),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -203,7 +203,7 @@ export async function generateReportInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(item?.totalPrice),
+                                  text: (item?.totalPrice).toString(),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],

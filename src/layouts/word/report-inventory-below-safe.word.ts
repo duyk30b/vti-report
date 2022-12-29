@@ -244,7 +244,7 @@ export async function generatereportItemInventoryBelowSafe(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(item.inventoryLimit),
+                                  text: (item.inventoryLimit).toString(),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -259,7 +259,7 @@ export async function generatereportItemInventoryBelowSafe(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(item.stockQuantity),
+                                  text: (item.stockQuantity).toString(),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],

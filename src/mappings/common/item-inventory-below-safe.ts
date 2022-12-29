@@ -1,3 +1,4 @@
+import { readDecimal } from '@constant/common';
 import { ReportInventoryBelowSafeModel } from '@models/item-inventory-below-safe.model';
 import { TableData } from '@models/report.model';
 import { DailyWarehouseItemStock } from '@schemas/daily-warehouse-item-stock.schema';
@@ -28,8 +29,8 @@ export function getItemInventoryBelowSafe(
         itemCode: cur.itemCode,
         itemName: cur.itemName,
         unit: cur.unit,
-        inventoryLimit: cur.inventoryLimit,
-        stockQuantity: cur.stockQuantity,
+        inventoryLimit: readDecimal(cur.inventoryLimit, true),
+        stockQuantity: readDecimal(cur.stockQuantity, true),
       });
       return prev;
     }, {});
