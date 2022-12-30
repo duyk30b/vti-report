@@ -17,7 +17,8 @@ export function getInventoryDataMapping(
     dataMapped: null,
   };
 
-  const groupByWarehouseCode = data.reduce((prev, cur) => {
+  const groupByWarehouseCode = data.filter((item) => item?.stockQuantity
+    ).reduce((prev, cur) => {
     const warehouseCode = cur.warehouseCode + '_' + cur.warehouseName;
     if (!prev[warehouseCode]) {
       prev[warehouseCode] = [];
