@@ -209,7 +209,7 @@ export function reportSituationImportPeriodTemplateData(
                 },
                 {
                   nameCell: `O${curRowIdx}`,
-                  value: item.actualQuantity,
+                  value: readDecimal(item.actualQuantity, true),
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_CENTER,
                   border: BORDER,
