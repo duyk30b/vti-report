@@ -34,12 +34,14 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
   async getReports(
     request: ReportRequest,
     type: OrderType,
+    isConstruction?: boolean,
+    isDepartmentReceipt?: boolean,
   ): Promise<ReportOrderItem[]> {
     const condition = {
       $and: [],
     };
 
-    if (request?.departmentReceiptCode)
+    if (isDepartmentReceipt && request?.departmentReceiptCode)
       condition['$and'].push({
         departmentReceiptCode: { $eq: request?.departmentReceiptCode },
       });
@@ -52,7 +54,7 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
       condition['$and'].push({
         warehouseCode: { $eq: request?.warehouseCode },
       });
-    if (request?.constructionCode)
+    if (isConstruction && request?.constructionCode)
       condition['$and'].push({
         constructionCode: { $eq: request?.constructionCode },
       });
