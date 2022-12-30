@@ -1,3 +1,4 @@
+import { readDecimal } from '@constant/common';
 import { TableAgeOfItems } from '@models/age-of-items.model';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
@@ -16,6 +17,9 @@ export function getSituationTransferMapped(
   let dataExcell: TableAgeOfItems[] = [];
   if (data.length > 0) {
     dataExcell = data[0]?.warehouses?.map((item: any) => {
+      item?.items?.forEach((item) => {
+        item.totalQuantity = readDecimal(item.totalQuantity, true);        
+      });      
       dataMaping.warehouseName = item.warehouseName;
       return {
         warehouseCode:

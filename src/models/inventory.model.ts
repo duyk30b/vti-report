@@ -4,8 +4,8 @@ export interface InventoryModel {
   itemName: string;
   unit: string;
   lotNumber: string;
-  stockQuantity: number;
+  stockQuantity: number | string;
   locatorCode: string;
-  storageCost: number;
-  totalPrice: number;
+  storageCost: number | string;
+  totalPrice: number | string;
 }

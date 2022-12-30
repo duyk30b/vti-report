@@ -1,3 +1,4 @@
+import { readDecimal } from '@constant/common';
 import { ItemImportedButNotStoreToPositionModel } from '@models/Item-imported-but-not-put-to-position.model';
 import { TableData } from '@models/report.model';
 import { I18nRequestScopeService } from 'nestjs-i18n';
@@ -27,9 +28,9 @@ export function getItemImportedButNotPutToPositionMapped(
         itemName: item.itemName,
         unit: item.unit,
         lotNumber: item.lotNumber,
-        recievedQuantity: item.recievedQuantity,
-        actualQuantity: item.actualQuantity,
-        remainQuantity: item.remainQuantity,
+        recievedQuantity: readDecimal(item.recievedQuantity, true),
+        actualQuantity: readDecimal(item.actualQuantity, true),
+        remainQuantity: readDecimal(item.remainQuantity, true),
         note: item.note,
         performerName: item.performerName,
       };

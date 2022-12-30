@@ -80,7 +80,7 @@ export const FONT_BOLD_12 = {
   name: FONT_NAME,
   color: { argb: COLOR },
   bold: true,
-  size: 9,
+  size: 12,
 };
 
 export const FONT_NORMAL_10 = {
