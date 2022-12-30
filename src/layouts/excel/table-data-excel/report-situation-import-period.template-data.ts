@@ -1,3 +1,4 @@
+import { readDecimal } from '@constant/common';
 import { TableDataSituationImportPeriod } from '@models/situation_import.model';
 import {
   ALIGNMENT_CENTER,
@@ -223,7 +224,7 @@ export function reportSituationImportPeriodTemplateData(
                 },
                 {
                   nameCell: `Q${curRowIdx}`,
-                  value: item.storageCost,
+                  value: readDecimal(item.storageCost, true),
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_RIGHT,
                   border: BORDER,
