@@ -62,7 +62,8 @@ export function formatNumber(number: any) {
 export function readDecimal(number: any, isFormat?: boolean): string {
   if(isFormat && number === 0) return '0';
   if (!number) return ''
-  const num = number.toString();
+  let num = number.toString();
+  if(num.includes(',')) num = num.split(',')[0] + '.' + num.split(',')[1];
   let x = 3;
   let n = 2;
   let numPri = parseFloat(num).toFixed(2);
@@ -75,7 +76,8 @@ export function readDecimal(number: any, isFormat?: boolean): string {
 
 export function formatMoney(number: any, isFormat?: boolean) {
   if (!number) return '';
-  const num = number.toString();
+  let num = number.toString();
+  if(num.includes(',')) num = num.split(',')[0] + '.' + num.split(',')[1];
   let x = 3;
   let n = 2;
   let numPri = parseFloat(num).toFixed(2);

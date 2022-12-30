@@ -16,10 +16,7 @@ export function getSituationTransferMapped(
 
   let dataExcell: TableAgeOfItems[] = [];
   if (data.length > 0) {
-    dataExcell = data[0]?.warehouses?.map((item: any) => {
-      item?.items?.forEach((item) => {
-        item.totalQuantity = readDecimal(item.totalQuantity, true);        
-      });      
+    dataExcell = data[0]?.warehouses?.map((item: any) => {  
       dataMaping.warehouseName = item.warehouseName;
       return {
         warehouseCode:
