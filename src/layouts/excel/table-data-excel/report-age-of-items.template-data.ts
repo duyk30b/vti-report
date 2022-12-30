@@ -1,3 +1,4 @@
+import { readDecimal } from '@constant/common';
 import { TableAgeOfItems } from '@models/age-of-items.model';
 import {
   ALIGNMENT_CENTER,
@@ -133,7 +134,7 @@ export function reportAgeOfItemsTemplateData(
           },
           {
             nameCell: `I${curRowIdx}`,
-            value: item.totalQuantity,
+            value: readDecimal(item.totalQuantity),
             font: FONT_BOLD_8,
             aligment: ALIGNMENT_RIGHT,
             border: BORDER,
@@ -219,141 +220,143 @@ export function reportAgeOfItemsTemplateData(
       );
       curRowIdx++;
       item.groupByStorageDate.forEach((order, index) => {
-        cells.push(
-          ...[
-            {
-              nameCell: `A${curRowIdx}`,
-              border: BORDER,
-            },
-            {
-              nameCell: `B${curRowIdx}`,
-              border: BORDER,
-            },
-            {
-              nameCell: `C${curRowIdx}`,
-              value: order.storageDate,
-              font: FONT_NORMAL_9,
-              aligment: ALIGNMENT_CENTER,
-              border: BORDER,
-            },
-            {
-              nameCell: `D${curRowIdx}`,
-              value: order.origin,
-              font: FONT_NORMAL_9,
-              aligment: ALIGNMENT_LEFT,
-              border: BORDER,
-            },
-            {
-              nameCell: `E${curRowIdx}`,
-              value: order.account,
-              font: FONT_NORMAL_9,
-              aligment: ALIGNMENT_LEFT,
-              border: BORDER,
-            },
-            {
-              nameCell: `F${curRowIdx}`,
-              value: order.lotNumber,
-              font: FONT_NORMAL_9,
-              aligment: ALIGNMENT_CENTER,
-              border: BORDER,
-            },
-            {
-              nameCell: `G${curRowIdx}`,
-              value: order.locatorCode,
-              font: FONT_NORMAL_9,
-              border: BORDER,
-              aligment: ALIGNMENT_LEFT,
-            },
-            {
-              nameCell: `H${curRowIdx}`,
-              value: order.unit,
-              font: FONT_NORMAL_9,
-              border: BORDER,
-              aligment: ALIGNMENT_RIGHT,
-            },
-            {
-              nameCell: `I${curRowIdx}`,
-              value: order.stockQuantity,
-              font: FONT_NORMAL_9,
-              border: BORDER,
-              aligment: ALIGNMENT_RIGHT,
-              numFmt: '### ### ### ###',
-            },
-            {
-              nameCell: `J${curRowIdx}`,
-              value: order.storageCost,
-              font: FONT_NORMAL_9,
-              border: BORDER,
-              aligment: ALIGNMENT_RIGHT,
-              numFmt: '### ### ### ###',
-            },
-            {
-              nameCell: `K${curRowIdx}`,
-              value: order.totalPrice,
-              font: FONT_NORMAL_9,
-              aligment: ALIGNMENT_RIGHT,
-              numFmt: '### ### ### ###',
-              border: BORDER,
-            },
-            {
-              nameCell: `L${curRowIdx}`,
-              value: order.sixMonthAgo,
-              font: FONT_BOLD_8,
-              aligment: ALIGNMENT_RIGHT,
-              border: BORDER,
-              numFmt: '### ### ### ###',
-            },
-            {
-              nameCell: `M${curRowIdx}`,
-              value: order.oneYearAgo,
-              font: FONT_BOLD_8,
-              aligment: ALIGNMENT_RIGHT,
-              border: BORDER,
-              numFmt: '### ### ### ###',
-            },
-            {
-              nameCell: `N${curRowIdx}`,
-              value: order.twoYearAgo,
-              font: FONT_BOLD_8,
-              aligment: ALIGNMENT_RIGHT,
-              border: BORDER,
-              numFmt: '### ### ### ###',
-            },
-            {
-              nameCell: `O${curRowIdx}`,
-              value: order.threeYearAgo,
-              font: FONT_BOLD_8,
-              aligment: ALIGNMENT_RIGHT,
-              border: BORDER,
-              numFmt: '### ### ### ###',
-            },
-            {
-              nameCell: `P${curRowIdx}`,
-              value: order.fourYearAgo,
-              font: FONT_BOLD_8,
-              aligment: ALIGNMENT_RIGHT,
-              border: BORDER,
-              numFmt: '### ### ### ###',
-            },
-            {
-              nameCell: `Q${curRowIdx}`,
-              value: order.fiveYearAgo,
-              font: FONT_BOLD_8,
-              aligment: ALIGNMENT_RIGHT,
-              border: BORDER,
-              numFmt: '### ### ### ###',
-            },
-            {
-              nameCell: `R${curRowIdx}`,
-              value: order.greaterfiveYear,
-              font: FONT_BOLD_8,
-              aligment: ALIGNMENT_RIGHT,
-              border: BORDER,
-              numFmt: '### ### ### ###',
-            },
-          ],
-        );
-        curRowIdx++;
+        if (order?.stockQuantity) {
+          cells.push(
+            ...[
+              {
+                nameCell: `A${curRowIdx}`,
+                border: BORDER,
+              },
+              {
+                nameCell: `B${curRowIdx}`,
+                border: BORDER,
+              },
+              {
+                nameCell: `C${curRowIdx}`,
+                value: order.storageDate,
+                font: FONT_NORMAL_9,
+                aligment: ALIGNMENT_CENTER,
+                border: BORDER,
+              },
+              {
+                nameCell: `D${curRowIdx}`,
+                value: order.origin,
+                font: FONT_NORMAL_9,
+                aligment: ALIGNMENT_LEFT,
+                border: BORDER,
+              },
+              {
+                nameCell: `E${curRowIdx}`,
+                value: order.account,
+                font: FONT_NORMAL_9,
+                aligment: ALIGNMENT_LEFT,
+                border: BORDER,
+              },
+              {
+                nameCell: `F${curRowIdx}`,
+                value: order.lotNumber,
+                font: FONT_NORMAL_9,
+                aligment: ALIGNMENT_CENTER,
+                border: BORDER,
+              },
+              {
+                nameCell: `G${curRowIdx}`,
+                value: order.locatorCode,
+                font: FONT_NORMAL_9,
+                border: BORDER,
+                aligment: ALIGNMENT_LEFT,
+              },
+              {
+                nameCell: `H${curRowIdx}`,
+                value: order.unit,
+                font: FONT_NORMAL_9,
+                border: BORDER,
+                aligment: ALIGNMENT_RIGHT,
+              },
+              {
+                nameCell: `I${curRowIdx}`,
+                value: readDecimal(order.stockQuantity),
+                font: FONT_NORMAL_9,
+                border: BORDER,
+                aligment: ALIGNMENT_RIGHT,
+                numFmt: '### ### ### ###',
+              },
+              {
+                nameCell: `J${curRowIdx}`,
+                value: readDecimal(order.storageCost),
+                font: FONT_NORMAL_9,
+                border: BORDER,
+                aligment: ALIGNMENT_RIGHT,
+                numFmt: '### ### ### ###',
+              },
+              {
+                nameCell: `K${curRowIdx}`,
+                value: readDecimal(order.totalPrice),
+                font: FONT_NORMAL_9,
+                aligment: ALIGNMENT_RIGHT,
+                numFmt: '### ### ### ###',
+                border: BORDER,
+              },
+              {
+                nameCell: `L${curRowIdx}`,
+                value: order.sixMonthAgo,
+                font: FONT_BOLD_8,
+                aligment: ALIGNMENT_RIGHT,
+                border: BORDER,
+                numFmt: '### ### ### ###',
+              },
+              {
+                nameCell: `M${curRowIdx}`,
+                value: order.oneYearAgo,
+                font: FONT_BOLD_8,
+                aligment: ALIGNMENT_RIGHT,
+                border: BORDER,
+                numFmt: '### ### ### ###',
+              },
+              {
+                nameCell: `N${curRowIdx}`,
+                value: order.twoYearAgo,
+                font: FONT_BOLD_8,
+                aligment: ALIGNMENT_RIGHT,
+                border: BORDER,
+                numFmt: '### ### ### ###',
+              },
+              {
+                nameCell: `O${curRowIdx}`,
+                value: order.threeYearAgo,
+                font: FONT_BOLD_8,
+                aligment: ALIGNMENT_RIGHT,
+                border: BORDER,
+                numFmt: '### ### ### ###',
+              },
+              {
+                nameCell: `P${curRowIdx}`,
+                value: order.fourYearAgo,
+                font: FONT_BOLD_8,
+                aligment: ALIGNMENT_RIGHT,
+                border: BORDER,
+                numFmt: '### ### ### ###',
+              },
+              {
+                nameCell: `Q${curRowIdx}`,
+                value: order.fiveYearAgo,
+                font: FONT_BOLD_8,
+                aligment: ALIGNMENT_RIGHT,
+                border: BORDER,
+                numFmt: '### ### ### ###',
+              },
+              {
+                nameCell: `R${curRowIdx}`,
+                value: order.greaterfiveYear,
+                font: FONT_BOLD_8,
+                aligment: ALIGNMENT_RIGHT,
+                border: BORDER,
+                numFmt: '### ### ### ###',
+              },
+            ],
+          );
+          curRowIdx++;
+        }
       });
     });
   });
@@ -370,7 +373,7 @@ export function reportAgeOfItemsTemplateData(
       },
       {
         nameCell: `K${curRowIdx}`,
-        value: totalPriceAll,
+        value: readDecimal(totalPriceAll),
         font: FONT_NORMAL_9,
         aligment: ALIGNMENT_RIGHT,
         numFmt: '### ### ### ###',
