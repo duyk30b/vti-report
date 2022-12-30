@@ -201,6 +201,7 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
   async getReports(
     request: ReportRequest,
     type: OrderType,
+    isConstruction?: boolean
   ): Promise<ReportOrderItemLot[]> {
     const condition = {
       $and: [],
@@ -214,7 +215,7 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
       condition['$and'].push({
         warehouseCode: { $eq: request?.warehouseCode },
       });
-    if (request?.constructionCode)
+    if (isConstruction && request?.constructionCode)
       condition['$and'].push({
         constructionCode: { $eq: request?.constructionCode },
       });
@@ -310,12 +311,14 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
   async getReportsGroupByWarehouse(
     request: ReportRequest,
     type: OrderType,
+    isConstruction?: boolean,
+    isDepartmentReceipt?: boolean,
   ): Promise<ReportOrderItemLot[]> {
     const condition = {
       $and: [],
     };
 
-    if (request?.departmentReceiptCode)
+    if (isDepartmentReceipt && request?.departmentReceiptCode)
       condition['$and'].push({
         departmentReceiptCode: { $eq: request?.departmentReceiptCode },
       });
@@ -327,7 +330,7 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
       condition['$and'].push({
         warehouseCode: { $eq: request?.warehouseCode },
       });
-    if (request?.constructionCode)
+    if (isConstruction && request?.constructionCode)
       condition['$and'].push({
         constructionCode: { $eq: request?.constructionCode },
       });

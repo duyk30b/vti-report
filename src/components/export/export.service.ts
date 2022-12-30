@@ -201,6 +201,8 @@ export class ExportService {
       await this.reportOrderItemLotRepository.getReportsGroupByWarehouse(
         request,
         OrderType.EXPORT,
+        true,
+        true,
       );
     await this.getInfoWarehouse(request, data, true);
     const dataMapped = getSituationExportPeriodMapped(data, this.i18n);
@@ -231,6 +233,7 @@ export class ExportService {
       await this.reportOrderItemLotRepository.getReportsGroupByWarehouse(
         request,
         OrderType.IMPORT,
+        true,
       );
     await this.getInfoWarehouse(request, data, true);
 
@@ -603,6 +606,7 @@ export class ExportService {
     const data = await this.reportOrderItemRepository.getReports(
       request,
       OrderType.IMPORT,
+      true,
     );
     let isEmpty = await this.getInfoWarehouse(request, data);
 
@@ -638,6 +642,7 @@ export class ExportService {
     const data = await this.reportOrderItemRepository.getReports(
       request,
       OrderType.EXPORT,
+      true,
     );
     let isEmpty = await this.getInfoWarehouse(request, data);
     const dataMapped = getOrderExportIncompletedMapped(
