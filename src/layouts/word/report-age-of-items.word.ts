@@ -1,4 +1,4 @@
-import { formatNumber } from '@constant/common';
+import { formatNumber, readDecimal } from '@constant/common';
 import { TableAgeOfItems } from '@models/age-of-items.model';
 import { plus } from '@utils/common';
 import {
@@ -221,7 +221,8 @@ export async function generateReportAgeOfItemStock(
                   );
                   itemData = warehouse.items
                     .map((item) => {
-                      recordData = item.groupByStorageDate.map((record) => {
+                      recordData = item.groupByStorageDate.filter((itemReport) => itemReport.stockQuantity
+                      ).map((record) => {
                         return new TableRow({
                           height: setHeight(WORD_FILE_CONFIG.TABLE_ROW_HEIGHT),
                           children: [
@@ -326,7 +327,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: formatNumber(record.stockQuantity),
+                                      text: readDecimal(record.stockQuantity),
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -518,7 +519,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: (item.totalQuantity).toString(),
+                                      text: readDecimal(item.totalQuantity),
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -548,7 +549,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: formatNumber(item.totalPrice),
+                                      text: readDecimal(item.totalPrice),
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
