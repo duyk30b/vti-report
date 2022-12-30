@@ -1000,6 +1000,7 @@ function getCommonConditionSituation(orderType: OrderType) {
       { $eq: ['$lotNumber', '$$lotNumber'] },
     ],
   };
+
   switch (orderType) {
     case OrderType.TRANSFER:
       condition['$and'].push({
@@ -1009,7 +1010,7 @@ function getCommonConditionSituation(orderType: OrderType) {
 
     case OrderType.IMPORT:
       condition['$and'].push({
-        $eq: ['$actionType', ActionType.IMPORT as any],
+        $eq: ['$movementType', WarehouseMovementTypeEnum.PO_IMPORT as any],
       });
       break;
 
@@ -1046,7 +1047,6 @@ function getCommonConditionSituation(orderType: OrderType) {
               locatorName: 1,
               planQuantity: 1,
               actualQuantity: 1,
-              movementType: 1,
               _id: 0,
             },
           },
@@ -1057,8 +1057,8 @@ function getCommonConditionSituation(orderType: OrderType) {
                 lotNumber: '$lotNumber',
                 locatorCode: '$locatorCode',
                 locatorName: '$locatorName',
+                planQuantity: '$planQuantity',
               },
-              planQuantity: { $sum: '$planQuantity' },
               actualQuantity: { $sum: '$actualQuantity' },
             },
           },
@@ -1068,7 +1068,7 @@ function getCommonConditionSituation(orderType: OrderType) {
               lotNumber: '$_id.lotNumber',
               locatorCode: '$_id.locatorCode',
               locatorName: '$_id.locatorName',
-              planQuantity: 1,
+              planQuantity: '$_id.planQuantity',
               actualQuantity: 1,
               _id: 0,
             },
