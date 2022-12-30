@@ -19,7 +19,7 @@ export interface SituationTransferItem {
 export interface Items {
   itemCode: string;
   itemName: string;
-  totalQuantity: number | string;
+  totalQuantity: number;
   totalPrice: number;
   sixMonthAgo: number;
   oneYearAgo: number;

@@ -533,7 +533,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
                         {
                           $subtract: [
                             '$actualQuantity',
-                            { $multiply: ['$actualQuantity', 2] },
+                            { $multiply: ['$actualQuantity', 1] },
                           ],
                         },
                         0,

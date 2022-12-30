@@ -256,7 +256,7 @@ export async function generatereportOrderTransferIncompleted(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: (item.actualQuantity).toString(),
+                                  text: item.planQuantity.toString(),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
