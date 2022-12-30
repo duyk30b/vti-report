@@ -1,4 +1,4 @@
-import { formatNumber } from '@constant/common';
+import { formatNumber, readDecimal } from '@constant/common';
 import { TableDataSituationImportPeriod } from '@models/situation_import.model';
 import { plus } from '@utils/common';
 import {
@@ -354,7 +354,7 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: formatNumber(item.storageCost),
+                                          text: readDecimal(item.storageCost, true),
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],

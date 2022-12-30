@@ -482,12 +482,16 @@ export class ExportService {
         }
       }
     }
-      for(const key in keyByDailyItem) {              
+      for(const key in keyByDailyItem) {                      
+        keyByDailyItem[key].importIn = readDecimal(keyByDailyItem[key]?.importIn);
+        keyByDailyItem[key].exportIn = readDecimal(keyByDailyItem[key]?.exportIn);
         keyByDailyItem[key].storageCost = readDecimal(keyByDailyItem[key]?.storageCost);
         keyByDailyItem[key].stockStart = readDecimal(keyByDailyItem[key]?.stockStart, true);
         keyByDailyItem[key].totalStockStart = readDecimal(keyByDailyItem[key]?.totalStockStart);
         keyByDailyItem[key].stockEnd = readDecimal(keyByDailyItem[key]?.stockEnd, true);
         keyByDailyItem[key].totalStockEnd = readDecimal(keyByDailyItem[key]?.totalStockEnd);
+        keyByDailyItem[key].totalExportIn = readDecimal(keyByDailyItem[key]?.totalExportIn);
+        keyByDailyItem[key].totalImportIn = readDecimal(keyByDailyItem[key]?.totalImportIn);
       }
     const data = Object.values(keyByDailyItem);
 
