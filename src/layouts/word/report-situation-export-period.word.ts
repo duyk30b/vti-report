@@ -1,4 +1,4 @@
-import { formatNumber } from '@constant/common';
+import { formatNumber, readDecimal } from '@constant/common';
 import { TableDataSituationExportPeriod } from '@models/situation_export.model';
 import { plus } from '@utils/common';
 import {
@@ -205,7 +205,9 @@ export async function generateReportSituationExportPeriod(
                     .map((reason) => {
                       orderData = reason.orders
                         .map((order, index) => {
-                          itemData = order.items.map((item) => {
+                          itemData = order.items.filter((item) => {
+                            if (item.actualQuantity) return item;
+                          }).map((item) => {
                             return new TableRow({
                               height: setHeight(
                                 WORD_FILE_CONFIG.TABLE_ROW_HEIGHT,
@@ -312,7 +314,7 @@ export async function generateReportSituationExportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: formatNumber(item.planQuantity),
+                                          text: readDecimal(item.planQuantity, true),
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -327,7 +329,7 @@ export async function generateReportSituationExportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: formatNumber(item.actualQuantity),
+                                          text: readDecimal(item.actualQuantity, true),
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -495,7 +497,7 @@ export async function generateReportSituationExportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: formatNumber(order.totalPrice),
+                                          text: readDecimal(order.totalPrice, true),
                                           ...wordFileStyle.text_style_bold,
                                         }),
                                       ],
@@ -542,7 +544,7 @@ export async function generateReportSituationExportPeriod(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: formatNumber(reason.totalPrice),
+                                      text: readDecimal(reason.totalPrice),
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],

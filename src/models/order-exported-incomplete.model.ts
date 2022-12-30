@@ -4,7 +4,7 @@ export interface OrderExportIncompleteModel {
   itemCode: string;
   itemName: string;
   unit: string;
-  actualQuantity: number;
+  actualQuantity:number |  string;
   constructionName: string;
   receiver: string;
 }

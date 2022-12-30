@@ -1,4 +1,4 @@
-import { formatNumber } from '@constant/common';
+import { formatNumber, readDecimal } from '@constant/common';
 import { TableDataSituationTransfer } from '@models/situation-transfer.model';
 import { plus } from '@utils/common';
 import {
@@ -307,7 +307,7 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: formatNumber(item?.actualQuantity),
+                                      text: readDecimal(item?.actualQuantity, true),
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -337,7 +337,7 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: formatNumber(item?.storageCost),
+                                      text: readDecimal(item?.storageCost),
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -352,7 +352,7 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: formatNumber(item?.totalPrice) || '',
+                                      text: readDecimal(item?.totalPrice) || '',
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],

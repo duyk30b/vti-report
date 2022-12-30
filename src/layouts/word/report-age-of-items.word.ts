@@ -518,7 +518,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: formatNumber(item.totalQuantity),
+                                      text: (item.totalQuantity).toString(),
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],

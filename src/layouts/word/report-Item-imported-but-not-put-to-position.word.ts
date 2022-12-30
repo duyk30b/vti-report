@@ -317,7 +317,7 @@ export async function generateReportItemImportedButNotPutToPosition(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(item.recievedQuantity),
+                                  text: (item.recievedQuantity).toString(),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -332,7 +332,7 @@ export async function generateReportItemImportedButNotPutToPosition(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(item.actualQuantity),
+                                  text: (item.actualQuantity).toString(),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -347,7 +347,7 @@ export async function generateReportItemImportedButNotPutToPosition(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(item.remainQuantity),
+                                  text: (item.remainQuantity).toString(),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
