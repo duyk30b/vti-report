@@ -324,7 +324,7 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: formatNumber(item.actualQuantity),
+                                          text: readDecimal(item.actualQuantity, true),
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
