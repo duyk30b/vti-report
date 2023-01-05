@@ -40,23 +40,6 @@ export class DailyItemLocatorStockRepository extends BaseAbstractRepository<Dail
     return document;
   }
 
-  async createMany(
-    dailyWarehouseItemRequests: DailyWarehouseItemRequest[],
-  ): Promise<void> {
-    for (const dailyWarehouseItemRequest of dailyWarehouseItemRequests) {
-      for (const dailyItemLocatorStock of dailyWarehouseItemRequest.dailyItemLocatorStocks) {
-        const document = new this.dailyItemLocatorStock();
-        Object.assign(
-          document,
-          dailyWarehouseItemRequest,
-          dailyItemLocatorStock,
-        );
-
-        await document.save();
-      }
-    }
-  }
-
   private sumItem(
     dailyItemLocatorStockRequest: DailyItemLocatorStockRequest,
     field: string,
