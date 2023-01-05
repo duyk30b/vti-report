@@ -1,14 +1,22 @@
 import { TableDataSituationTransfer } from '@models/situation-transfer.model';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
+import { UserServiceInterface } from '@components/user/interface/user.service.interface';
 
-export function getSituationTransfer(
+export async function getSituationTransfer(
   data: any[],
   i18n: I18nRequestScopeService,
-): ReportInfo<any> {
+  userService?: UserServiceInterface,
+): Promise<ReportInfo<any>> {
+
+  const codeCompany = data[0]?._id?.companyCode;
+  const codes: string[] = [];
+  codes.push(codeCompany);
+  const company = await userService.getListCompanyByCodes(codes);
+
   const dataMaping: ReportInfo<any> = {
-    companyName: data[0]?._id?.companyName?.toUpperCase() || '',
-    companyAddress: data[0]?._id?.companyAddress || '',
+    companyName: company[0]?.name?.toUpperCase() || '',
+    companyAddress: company[0]?.address ?? '',
     warehouseName: '',
     dataMapped: null,
   };

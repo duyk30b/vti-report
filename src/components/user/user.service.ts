@@ -100,6 +100,29 @@ export class UserService implements UserServiceInterface {
       .toPromise();
   }
 
+  async getListCompanyByCodes(
+    codes: string[],
+    serilize?: boolean,
+  ): Promise<any> {
+    const response = await this.userServiceClient
+      .send('get_list_company_by_codes', { codes: codes })
+      .toPromise();
+
+    if (response.statusCode !== ResponseCodeEnum.SUCCESS) {
+      return [];
+    }
+
+    const serilizeCompanies = {};
+    if (serilize) {
+      response.data.forEach((company) => {
+        serilizeCompanies[company.id] = company;
+      });
+
+      return serilizeCompanies;
+    }
+    return response.data;
+  }
+
   async getUsersByUsernameOrFullName(filterByUser, onlyId?): Promise<any> {
     if (isEmpty(filterByUser)) {
       return [];

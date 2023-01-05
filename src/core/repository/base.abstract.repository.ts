@@ -130,4 +130,8 @@ export abstract class BaseAbstractRepository<T>
       { upsert: true, new: true, runValidators: true },
     );
   }
+
+  public async bulkWrite(bulkOps: any): Promise<any> {
+    return await this.model.bulkWrite(bulkOps);
+  }
 }
