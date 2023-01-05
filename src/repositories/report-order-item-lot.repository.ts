@@ -912,6 +912,7 @@ function reportSituationTransfer(
           warehouseName: '$warehouseName',
           companyName: '$companyName',
           companyAddress: '$companyAddress',
+          companyCode: '$companyCode',
           orderCode: '$orderCode',
           orderCreatedAt: {
             $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' },
@@ -965,6 +966,7 @@ function reportSituationTransfer(
           warehouseName: '$_id.warehouseName',
           companyName: '$_id.companyName',
           companyAddress: '$_id.companyAddress',
+          companyCode: '$_id.companyCode',
         },
         orders: {
           $push: {
@@ -990,8 +992,7 @@ function reportSituationTransfer(
     {
       $group: {
         _id: {
-          companyName: '$_id.companyName',
-          companyAddress: '$_id.companyAddress',
+          companyCode: '$_id.companyCode',
         },
         warehouses: {
           $push: {
