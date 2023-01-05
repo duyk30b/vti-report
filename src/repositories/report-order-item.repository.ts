@@ -115,9 +115,7 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
         });
         condition['$and'].push({
           status: {
-            $in: [
-              OrderStatus.Completed,
-            ],
+            $in: [OrderStatus.Completed],
           },
         });
 
@@ -193,5 +191,24 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
         warehouseExportProposals: -1,
       })
       .lean();
+  }
+
+  public async bulkWriteOrderReportItem(
+    bulkOps: ReportOrderItemInteface[],
+  ): Promise<any> {
+    return await this.model.bulkWrite(
+      bulkOps.map((doc) => ({
+        updateOne: {
+          filter: {
+            orderCode: doc.orderCode,
+            orderType: doc.orderType,
+            companyCode: doc.companyCode,
+            itemCode: doc.itemCode,
+          },
+          update: doc,
+          upsert: true,
+        },
+      })),
+    );
   }
 }
