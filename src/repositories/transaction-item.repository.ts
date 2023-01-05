@@ -393,6 +393,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
             unit: '$unit',
             lotNumber: '$lotNumber',
             storageCost: '$storageCost',
+            transactionDate: '$transactionDate',
           },
           quantityExported: { $sum: '$quantityExported' },
           quantityImported: { $sum: '$quantityImported' },
@@ -414,6 +415,125 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           storageCost: '$_id.storageCost',
           quantityExported: 1,
           quantityImported: 1,
+          transactionDate: {
+            $dateToString: { date: '$_id.transactionDate', format: '%m/%d/%Y' },
+          },
+        },
+      },
+    ]);
+  }
+
+  async getTransactionByDate(request: ReportRequest) {
+    const condition = {
+      $and: [],
+    };
+
+    condition['$and'].push({
+      companyCode: { $eq: request?.companyCode },
+    });
+
+    if (request?.warehouseCode)
+      condition['$and'].push({
+        warehouseCode: { $eq: request?.warehouseCode },
+      });
+
+    if (request?.dateFrom) {
+      condition['$and'].push({
+        $expr: {
+          $gte: [
+            {
+              $dateToString: { date: '$transactionDate', format: '%Y-%m-%d' },
+            },
+            moment(request?.dateFrom).format(DATE_FOMAT),
+          ],
+        },
+      });
+    }
+
+    return this.transactionItem.aggregate([
+      { $match: condition },
+      {
+        $project: {
+          _id: 0,
+          companyCode: 1,
+          companyName: 1,
+          companyAddress: 1,
+          warehouseCode: 1,
+          warehouseName: 1,
+          itemCode: 1,
+          itemName: 1,
+          locatorCode: 1,
+          unit: 1,
+          lotNumber: 1,
+          storageCost: 1,
+          transactionDate: 1,
+          quantityExported: {
+            $cond: [
+              {
+                $eq: ['$actionType', ActionType.EXPORT],
+              },
+              '$actualQuantity',
+              0,
+            ],
+          },
+          quantityImported: {
+            $cond: [
+              {
+                $and: [
+                  { $eq: ['$actionType', ActionType.IMPORT] },
+                  {
+                    $ne: [
+                      '$movementType',
+                      WarehouseMovementTypeEnum.PO_IMPORT_RECEIVE,
+                    ],
+                  },
+                ],
+              },
+              '$actualQuantity',
+              0,
+            ],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            companyCode: '$companyCode',
+            companyName: '$companyName',
+            companyAddress: '$companyAddress',
+            warehouseCode: '$warehouseCode',
+            warehouseName: '$warehouseName',
+            itemCode: '$itemCode',
+            itemName: '$itemName',
+            locatorCode: '$locatorCode',
+            unit: '$unit',
+            lotNumber: '$lotNumber',
+            storageCost: '$storageCost',
+            transactionDate: '$transactionDate',
+          },
+          quantityExported: { $sum: '$quantityExported' },
+          quantityImported: { $sum: '$quantityImported' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          companyCode: '$_id.companyCode',
+          companyName: '$_id.companyName',
+          companyAddress: '$_id.companyAddress',
+          warehouseCode: '$_id.warehouseCode',
+          warehouseName: '$_id.warehouseName',
+          itemCode: '$_id.itemCode',
+          itemName: '$_id.itemName',
+          locatorCode: '$_id.locatorCode',
+          unit: '$_id.unit',
+          lotNumber: '$_id.lotNumber',
+          storageCost: '$_id.storageCost',
+          quantityExported: 1,
+          quantityImported: 1,
+          transactionDate: {
+            $dateToString: { date: '$_id.transactionDate', format: '%m/%d/%Y' },
+          },
         },
       },
     ]);
