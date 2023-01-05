@@ -42,25 +42,6 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
     return document;
   }
 
-  async createMany(
-    dailyWarehouseItemRequests: DailyWarehouseItemRequest[],
-  ): Promise<void> {
-    for (const dailyWarehouseItemRequest of dailyWarehouseItemRequests) {
-      for (const dailyItemLocatorStock of dailyWarehouseItemRequest.dailyItemLocatorStocks) {
-        for (const dailyLotLocatorStock of dailyItemLocatorStock.dailyLotLocatorStocks) {
-          const document = new this.dailyLotLocatorStock();
-          Object.assign(
-            document,
-            dailyWarehouseItemRequest,
-            dailyItemLocatorStock,
-            dailyLotLocatorStock,
-          );
-          await document.save();
-        }
-      }
-    }
-  }
-
   async getReports(request: ReportRequest): Promise<DailyLotLocatorStock[]> {
     const condition = {
       $and: [],

@@ -28,4 +28,6 @@ export interface BaseInterfaceRepository<T> {
   updateManyByCondition(condition: any, dataUpdate: any): Promise<any>;
 
   createOrUpdate(dataUpdate: any): Promise<any>;
+
+  bulkWrite(bulkOps: any[]): Promise<any>;
 }

@@ -2,7 +2,7 @@ import { SyncDailyStockRequestDto } from './dto/request/sync-daily-item-stock-wa
 import { ResponseCodeEnum } from '@core/response-code.enum';
 import { ResponseBuilder } from '@core/utils/response-builder';
 import { ResponsePayload } from '@core/utils/response-payload';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { DailyItemLocatorStockRepository } from '@repositories/daily-item-locator-stock.repository';
 import { DailyLotLocatorStockRepository } from '@repositories/daily-lot-locator-stock.repository';
 import { DailyWarehouseItemStockRepository } from '@repositories/daily-warehouse-item-stock.repository';
@@ -33,7 +33,7 @@ import {
 } from '@requests/sync-warehouse-transfer-request';
 import { UserService } from '@components/user/user.service';
 import { TransactionItemInterface } from '@schemas/interface/TransactionItem.Interface';
-import { isEmpty } from 'lodash';
+import { isEmpty, keyBy, has, map } from 'lodash';
 import { Inventory, SyncInventory } from '@requests/sync-inventory-request';
 import {
   InventoryAdjustment,
@@ -47,6 +47,8 @@ import { InventoryQuantityNormsInterface } from '@schemas/interface/inventory-qu
 import { InventoryQuantityNormsRepository } from '@repositories/inventory-quantity-norms.repository';
 @Injectable()
 export class SyncService {
+  private readonly logger = new Logger(SyncService.name);
+
   constructor(
     @Inject('DailyWarehouseItemStockRepository')
     private readonly dailyWarehouseItemStockRepository: DailyWarehouseItemStockRepository,
@@ -78,55 +80,6 @@ export class SyncService {
     private readonly userService: UserService,
   ) {}
 
-  async syncDailyStock(
-    request: SyncDailyStockRequest,
-  ): Promise<ResponsePayload<any>> {
-    try {
-      const company = await this.userService.getCompanies({
-        code: request?.dailyWarehouseItems[0]?.syncCode,
-      });
-
-      if (
-        company?.statusCode !== ResponseCodeEnum.SUCCESS ||
-        isEmpty(company.data)
-      ) {
-        return new ResponseBuilder()
-          .withCode(ResponseCodeEnum.BAD_REQUEST)
-          .withMessage(await this.i18n.translate('error.COMPANY_NOT_FOUND'))
-          .build();
-      }
-
-      const temp = company?.data?.pop();
-      for (const item of request?.dailyWarehouseItems) {
-        item.companyName = temp.name;
-        item.companyCode = temp.code;
-        item.companyAddress = temp.address;
-      }
-
-      await Promise.all([
-        this.dailyWarehouseItemStockRepository.createMany(
-          request?.dailyWarehouseItems,
-        ),
-        this.dailyItemLocatorStockRepository.createMany(
-          request?.dailyWarehouseItems,
-        ),
-        this.dailyLotLocatorStockRepository.createMany(
-          request?.dailyWarehouseItems,
-        ),
-      ]);
-      return new ResponseBuilder()
-        .withCode(ResponseCodeEnum.SUCCESS)
-        .withMessage(await this.i18n.translate('success.SUCCESS'))
-        .build();
-    } catch (e) {
-      console.log(e);
-      return new ResponseBuilder()
-        .withCode(ResponseCodeEnum.BAD_REQUEST)
-        .withMessage(await this.i18n.translate('error.BAD_REQUEST'))
-        .build();
-    }
-  }
-
   async syncSaleOrderExport(request: SyncSaleOrderExportRequest) {
     const company = await this.userService.getCompanies({
       code: request?.data?.syncCode,
@@ -145,12 +98,10 @@ export class SyncService {
 
     switch (request.actionType) {
       case ActionType.create:
-        return this.createSaleOrderExportFromDetail(request.data);
       case ActionType.update:
       case ActionType.confirm:
       case ActionType.reject:
-      case ActionType.delete:
-        return this.createSaleOrderExportFromDetail(request.data, true);
+        return this.createSaleOrderExportFromDetail(request.data);
       default:
         break;
     }
@@ -178,12 +129,11 @@ export class SyncService {
 
     switch (request.actionType) {
       case ActionType.create:
-        return this.createInventoryAdjustments(request.data);
       case ActionType.update:
       case ActionType.confirm:
       case ActionType.reject:
       case ActionType.delete:
-        return this.createInventoryAdjustments(request.data, true);
+        return this.createInventoryAdjustments(request.data);
       default:
         break;
     }
@@ -233,6 +183,7 @@ export class SyncService {
       .withMessage(await this.i18n.translate('error.NOT_FOUND'))
       .build();
   }
+
   async syncWarehouseTransfer(request: SyncWarehouseTransferRequest) {
     const company = await this.userService.getCompanies({
       code: request?.data?.syncCode,
@@ -252,20 +203,17 @@ export class SyncService {
 
     switch (request.actionType) {
       case ActionType.create:
-        return this.createOrderFromWarehouseTransferDetailDetail(request.data);
       case ActionType.update:
       case ActionType.confirm:
       case ActionType.reject:
       case ActionType.delete:
-        return this.createOrderFromWarehouseTransferDetailDetail(
-          request.data,
-          true,
-        );
+        return this.createOrderFromWarehouseTransferDetailDetail(request.data);
       default:
         break;
     }
   }
 
+  // TODO: đồng bộ kiểm kê chưa chạy được
   async syncInventory(request: SyncInventory) {
     const company = await this.userService.getCompanies({
       code: request?.data?.syncCode,
@@ -285,12 +233,11 @@ export class SyncService {
 
     switch (request.actionType) {
       case ActionType.create:
-        return this.createItemInventory(request.data);
       case ActionType.update:
       case ActionType.confirm:
       case ActionType.reject:
       case ActionType.delete:
-        return this.createItemInventory(request.data, true);
+        return this.createItemInventory(request.data);
       default:
         break;
     }
@@ -315,15 +262,10 @@ export class SyncService {
     request.data['company'] = company?.data?.pop();
     switch (request.actionType) {
       case ActionType.create:
-        return this.createOrderFromPurchasedOrderImportDetail(request.data);
       case ActionType.update:
       case ActionType.confirm:
       case ActionType.reject:
-      case ActionType.delete:
-        return this.createOrderFromPurchasedOrderImportDetail(
-          request.data,
-          true,
-        );
+        return this.createOrderFromPurchasedOrderImportDetail(request.data);
       default:
         break;
     }
@@ -336,32 +278,32 @@ export class SyncService {
 
   async createOrderFromWarehouseTransferDetailDetail(
     request: WarehouseTransferResponseDto,
-    isUpdate = false,
   ) {
+    const { company } = request;
+    const orderType = OrderType.TRANSFER;
+    const orders: ReportOrderInteface[] = [];
+    const orderItems: ReportOrderItemInteface[] = [];
+    const orderItemLots: ReportOrderItemLotInteface[] = [];
     try {
-      const order: ReportOrderInteface[] = [];
-      const orderItem: ReportOrderItemInteface[] = [];
-      const orderItemLot: ReportOrderItemLotInteface[] = [];
-
       const reportOrder: ReportOrderInteface = {
         orderCode: request?.code,
         orderCreatedAt: request?.receiptDate,
         warehouseCode: request?.sourceWarehouse?.code,
         warehouseName: request?.sourceWarehouse?.name,
-        orderType: OrderType.TRANSFER,
+        orderType: orderType,
         planDate: request?.createdAt,
         status: request?.status,
         completedAt: request?.createdAt,
         ebsNumber: request?.ebsNumber,
-        companyCode: request?.company?.code,
-        companyName: request?.company?.name,
-        companyAddress: request?.company?.address,
+        companyCode: company?.code,
+        companyName: company?.name,
+        companyAddress: company?.address,
         constructionCode: request?.construction?.code || null,
         constructionName: request?.construction?.name || null,
         description: request?.explanation,
       };
+      orders.push(reportOrder);
 
-      order.push(reportOrder);
       for (const item of request.warehouseTransferDetails) {
         const reportOrderItem: ReportOrderItemInteface = {
           unit: item?.item?.itemUnit?.name,
@@ -391,12 +333,12 @@ export class SyncService {
           ...reportOrder,
           receiptNumber: '',
         };
-        orderItem.push(reportOrderItem);
+        orderItems.push(reportOrderItem);
 
         for (const lot of item.lots) {
           const reportOrderItemLot: ReportOrderItemLotInteface = {
             ...reportOrderItem,
-            lotNumber: lot?.lotNumber?.toLowerCase(),
+            lotNumber: lot?.lotNumber?.toUpperCase(),
             explain: request?.explanation,
             note: request?.explanation,
             planQuantity: lot?.planQuantity,
@@ -409,33 +351,15 @@ export class SyncService {
             locatorCode: null,
           };
 
-          orderItemLot.push(reportOrderItemLot);
+          orderItemLots.push(reportOrderItemLot);
         }
       }
-
-      if (isUpdate) {
-        await Promise.all([
-          this.reportOrderRepository.deleteAllByCondition({
-            orderCode: request.code,
-            companyCode: request?.company?.code,
-            orderType: OrderType.TRANSFER,
-          }),
-          this.reportOrderItemRepository.deleteAllByCondition({
-            orderCode: request.code,
-            companyCode: request?.company?.code,
-            orderType: OrderType.TRANSFER,
-          }),
-          this.reportOrderItemLotRepository.deleteAllByCondition({
-            orderCode: request.code,
-            companyCode: request?.company?.code,
-            orderType: OrderType.TRANSFER,
-          }),
-        ]);
-      }
       await Promise.all([
-        this.reportOrderRepository.saveMany(order),
-        this.reportOrderItemRepository.saveMany(orderItem),
-        this.reportOrderItemLotRepository.saveMany(orderItemLot),
+        this.reportOrderRepository.bulkWriteOrderReport(orders),
+        this.reportOrderItemRepository.bulkWriteOrderReportItem(orderItems),
+        this.reportOrderItemLotRepository.bulkWriteOrderReportItemLot(
+          orderItemLots,
+        ),
       ]);
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.SUCCESS)
@@ -451,11 +375,11 @@ export class SyncService {
     }
   }
 
-  async createItemInventory(request: Inventory, isUpdate = false) {
+  async createItemInventory(request: Inventory) {
     try {
-      const order: ReportOrderInteface[] = [];
-      const orderItem: ReportOrderItemInteface[] = [];
-      const orderItemLot: ReportOrderItemLotInteface[] = [];
+      const orders: ReportOrderInteface[] = [];
+      const orderItems: ReportOrderItemInteface[] = [];
+      const orderItemLots: ReportOrderItemLotInteface[] = [];
 
       for (const item of request.itemInventory) {
         const reportOrderItem: ReportOrderItemInteface = {
@@ -474,39 +398,26 @@ export class SyncService {
           actualQuantity: item?.actualQuantity,
           storageCost: item.price ? Number(item.price) : 0,
         } as any;
-        orderItem.push(reportOrderItem);
+        orderItems.push(reportOrderItem);
 
         for (const lot of item.lots) {
           const reportOrderItemLot: ReportOrderItemLotInteface = {
             ...reportOrderItem,
-            lotNumber: lot?.lotNumber?.toLowerCase(),
+            lotNumber: lot?.lotNumber?.toUpperCase(),
             note: request?.note,
             planQuantity: lot?.planQuantity,
             actualQuantity: lot?.actualQuantity,
           } as any;
 
-          orderItemLot.push(reportOrderItemLot);
+          orderItemLots.push(reportOrderItemLot);
         }
       }
-
-      if (isUpdate) {
-        await Promise.all([
-          this.reportOrderItemRepository.deleteAllByCondition({
-            orderCode: request.code,
-            companyCode: request?.company?.code,
-            orderType: OrderType.INVENTORY,
-          }),
-          this.reportOrderItemLotRepository.deleteAllByCondition({
-            orderCode: request.code,
-            companyCode: request?.company?.code,
-            orderType: OrderType.INVENTORY,
-          }),
-        ]);
-      }
       await Promise.all([
-        this.reportOrderRepository.saveMany(order),
-        this.reportOrderItemRepository.saveMany(orderItem),
-        this.reportOrderItemLotRepository.saveMany(orderItemLot),
+        this.reportOrderRepository.bulkWriteOrderReport(orders),
+        this.reportOrderItemRepository.bulkWriteOrderReportItem(orderItems),
+        this.reportOrderItemLotRepository.bulkWriteOrderReportItemLot(
+          orderItemLots,
+        ),
       ]);
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.SUCCESS)
@@ -524,18 +435,19 @@ export class SyncService {
 
   async createOrderFromPurchasedOrderImportDetail(
     request: PurchasedOrderImportRequestDto,
-    isUpdate = false,
   ) {
+    const { company, code } = request;
+    const orderType = OrderType.IMPORT;
     try {
-      const order: ReportOrderInteface[] = [];
-      const orderItem: ReportOrderItemInteface[] = [];
-      const orderItemLot: ReportOrderItemLotInteface[] = [];
+      const orders: ReportOrderInteface[] = [];
+      const orderItems: ReportOrderItemInteface[] = [];
+      const orderItemLots: ReportOrderItemLotInteface[] = [];
       const reportOrder: ReportOrderInteface = {
         orderCode: request?.code,
         orderCreatedAt: request?.receiptDate,
         warehouseCode: request?.warehouse?.code,
         warehouseName: request?.warehouse?.name,
-        orderType: OrderType.IMPORT,
+        orderType: orderType,
         planDate: request?.receiptDate,
         status: request?.status,
         completedAt: request?.receiptDate,
@@ -548,7 +460,7 @@ export class SyncService {
         description: request?.explanation,
       };
 
-      order.push(reportOrder);
+      orders.push(reportOrder);
 
       for (const item of request?.purchasedOrderImportDetails || []) {
         const reportOrderItem: ReportOrderItemInteface = {
@@ -580,12 +492,12 @@ export class SyncService {
           ...reportOrder,
           receiptNumber: request.receiptNumber,
         };
-        orderItem.push(reportOrderItem);
+        orderItems.push(reportOrderItem);
 
         for (const lot of item?.lots || []) {
           const reportOrderItemLot: ReportOrderItemLotInteface = {
             ...reportOrderItem,
-            lotNumber: lot?.lotNumber?.toLowerCase(),
+            lotNumber: lot?.lotNumber?.toUpperCase(),
             explain: request?.explanation,
             note: request?.explanation,
             planQuantity: lot?.quantity,
@@ -597,33 +509,38 @@ export class SyncService {
             locatorName: null,
             locatorCode: null,
           };
-          orderItemLot.push(reportOrderItemLot);
+          orderItemLots.push(reportOrderItemLot);
         }
       }
-      if (isUpdate) {
-        await Promise.all([
-          this.reportOrderRepository.deleteAllByCondition({
-            orderCode: request.code,
-            companyCode: request?.company?.code,
-            orderType: OrderType.IMPORT,
-          }),
-          this.reportOrderItemRepository.deleteAllByCondition({
-            orderCode: request.code,
-            companyCode: request?.company?.code,
-            orderType: OrderType.IMPORT,
-          }),
-          this.reportOrderItemLotRepository.deleteAllByCondition({
-            orderCode: request.code,
-            companyCode: request?.company?.code,
-            orderType: OrderType.IMPORT,
-          }),
-        ]);
-      }
+      const serializeItemLotRequest = keyBy(orderItemLots, (lot) =>
+        [lot.itemCode, lot?.lotNumber?.toUpperCase() || ''].join('-'),
+      );
 
+      const reportOrderItemLots =
+        await this.reportOrderItemLotRepository.findAllByCondition({
+          companyCode: { $eq: company.code },
+          orderCode: { $eq: code },
+          orderType: { $eq: orderType },
+        });
+      const removeReportOrderItemLots = reportOrderItemLots.filter(
+        (lot) =>
+          !has(
+            serializeItemLotRequest,
+            [lot.itemCode, lot?.lotNumber?.toUpperCase() || ''].join('-'),
+          ),
+      );
+
+      if (!isEmpty(removeReportOrderItemLots)) {
+        await this.reportOrderItemLotRepository.deleteAllByCondition({
+          _id: { $in: map(removeReportOrderItemLots, '_id') },
+        });
+      }
       await Promise.all([
-        this.reportOrderRepository.saveMany(order),
-        this.reportOrderItemRepository.saveMany(orderItem),
-        this.reportOrderItemLotRepository.saveMany(orderItemLot),
+        this.reportOrderRepository.bulkWriteOrderReport(orders),
+        this.reportOrderItemRepository.bulkWriteOrderReportItem(orderItems),
+        this.reportOrderItemLotRepository.bulkWriteOrderReportItemLot(
+          orderItemLots,
+        ),
       ]);
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.SUCCESS)
@@ -631,6 +548,9 @@ export class SyncService {
         .build();
     } catch (error) {
       console.log(error);
+      this.logger.error(
+        `ERROR SYNC PO IMPORT: ORDER_CODE (${request.code}), COMPANY (${company.code})`,
+      );
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.BAD_REQUEST)
         .withMessage(await this.i18n.translate('error.BAD_REQUEST'))
@@ -638,34 +558,33 @@ export class SyncService {
     }
   }
 
-  async createSaleOrderExportFromDetail(
-    request: SaleOrderExportResponseDto,
-    isUpdate = false,
-  ) {
+  async createSaleOrderExportFromDetail(request: SaleOrderExportResponseDto) {
+    const { company } = request;
     try {
-      const order: ReportOrderInteface[] = [];
-      const orderItem: ReportOrderItemInteface[] = [];
-      const orderItemLot: ReportOrderItemLotInteface[] = [];
+      const orderType = OrderType.EXPORT;
+      const orders: ReportOrderInteface[] = [];
+      const orderItems: ReportOrderItemInteface[] = [];
+      const orderItemLots: ReportOrderItemLotInteface[] = [];
 
       const reportOrder: ReportOrderInteface = {
         orderCode: request?.code,
         orderCreatedAt: request?.receiptDate,
         warehouseCode: request?.warehouse?.code,
         warehouseName: request?.warehouse?.name,
-        orderType: OrderType.EXPORT,
+        orderType: orderType,
         planDate: request?.receiptDate,
         status: request?.status,
         completedAt: request?.receiptDate,
         ebsNumber: request?.ebsNumber,
-        companyCode: request?.company?.code,
-        companyName: request?.company?.name,
-        companyAddress: request?.company?.address,
+        companyCode: company?.code,
+        companyName: company?.name,
+        companyAddress: company?.address,
         constructionCode: request?.construction?.code || null,
         constructionName: request?.construction?.name || null,
         description: request?.explanation,
       };
 
-      order.push(reportOrder);
+      orders.push(reportOrder);
 
       for (const item of request.saleOrderExportDetails) {
         const reportOrderItem: ReportOrderItemInteface = {
@@ -697,12 +616,12 @@ export class SyncService {
           ...reportOrder,
           receiptNumber: request.receiptNumber,
         };
-        orderItem.push(reportOrderItem);
+        orderItems.push(reportOrderItem);
 
         for (const lot of item.lots) {
           const reportOrderItemLot: ReportOrderItemLotInteface = {
             ...reportOrderItem,
-            lotNumber: lot?.lotNumber?.toLowerCase(),
+            lotNumber: lot?.lotNumber?.toUpperCase(),
             explain: request?.explanation,
             note: request?.explanation,
             planQuantity: lot?.planQuantity,
@@ -714,34 +633,16 @@ export class SyncService {
             locatorName: null,
             locatorCode: null,
           };
-
-          orderItemLot.push(reportOrderItemLot);
+          orderItemLots.push(reportOrderItemLot);
         }
-      }
-      if (isUpdate) {
-        await Promise.all([
-          this.reportOrderRepository.deleteAllByCondition({
-            orderCode: request.code,
-            companyCode: request?.company?.code,
-            orderType: OrderType.EXPORT,
-          }),
-          this.reportOrderItemRepository.deleteAllByCondition({
-            orderCode: request.code,
-            companyCode: request?.company?.code,
-            orderType: OrderType.EXPORT,
-          }),
-          this.reportOrderItemLotRepository.deleteAllByCondition({
-            orderCode: request.code,
-            companyCode: request?.company?.code,
-            orderType: OrderType.EXPORT,
-          }),
-        ]);
       }
 
       await Promise.all([
-        this.reportOrderRepository.saveMany(order),
-        this.reportOrderItemRepository.saveMany(orderItem),
-        this.reportOrderItemLotRepository.saveMany(orderItemLot),
+        this.reportOrderRepository.bulkWriteOrderReport(orders),
+        this.reportOrderItemRepository.bulkWriteOrderReportItem(orderItems),
+        this.reportOrderItemLotRepository.bulkWriteOrderReportItemLot(
+          orderItemLots,
+        ),
       ]);
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.SUCCESS)
@@ -757,14 +658,11 @@ export class SyncService {
     }
   }
 
-  async createInventoryAdjustments(
-    request: InventoryAdjustment,
-    isUpdate = false,
-  ) {
+  async createInventoryAdjustments(request: InventoryAdjustment) {
     try {
-      const order: ReportOrderInteface[] = [];
-      const orderItem: ReportOrderItemInteface[] = [];
-      const orderItemLot: ReportOrderItemLotInteface[] = [];
+      const orders: ReportOrderInteface[] = [];
+      const orderItems: ReportOrderItemInteface[] = [];
+      const orderItemLots: ReportOrderItemLotInteface[] = [];
 
       const reportOrder: ReportOrderInteface = {
         orderCode: request?.code,
@@ -783,7 +681,7 @@ export class SyncService {
         description: request?.explanation,
       } as any;
 
-      order.push(reportOrder);
+      orders.push(reportOrder);
 
       for (const item of request.items) {
         const reportOrderItem: ReportOrderItemInteface = {
@@ -804,45 +702,28 @@ export class SyncService {
           storageCost: Number(item?.price || 0),
           receiptNumber: null,
         } as any;
-        orderItem.push(reportOrderItem);
+        orderItems.push(reportOrderItem);
 
         for (const lot of item.lots) {
           const reportOrderItemLot: ReportOrderItemLotInteface = {
             ...reportOrderItem,
-            lotNumber: lot?.lotNumber?.toLowerCase(),
+            lotNumber: lot?.lotNumber?.toUpperCase(),
             explain: request?.explanation,
             note: request?.explanation,
             planQuantity: lot?.planQuantity,
             actualQuantity: lot?.actualQuantity,
           } as any;
 
-          orderItemLot.push(reportOrderItemLot);
+          orderItemLots.push(reportOrderItemLot);
         }
-      }
-      if (isUpdate) {
-        await Promise.all([
-          this.reportOrderRepository.deleteAllByCondition({
-            orderCode: request.code,
-            companyCode: request?.company?.code,
-            orderType: request.OrderType,
-          }),
-          this.reportOrderItemRepository.deleteAllByCondition({
-            orderCode: request.code,
-            companyCode: request?.company?.code,
-            orderType: request.OrderType,
-          }),
-          this.reportOrderItemLotRepository.deleteAllByCondition({
-            orderCode: request.code,
-            companyCode: request?.company?.code,
-            orderType: request.OrderType,
-          }),
-        ]);
       }
 
       await Promise.all([
-        this.reportOrderRepository.saveMany(order),
-        this.reportOrderItemRepository.saveMany(orderItem),
-        this.reportOrderItemLotRepository.saveMany(orderItemLot),
+        this.reportOrderRepository.bulkWriteOrderReport(orders),
+        this.reportOrderItemRepository.bulkWriteOrderReportItem(orderItems),
+        this.reportOrderItemLotRepository.bulkWriteOrderReportItemLot(
+          orderItemLots,
+        ),
       ]);
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.SUCCESS)
@@ -884,9 +765,9 @@ export class SyncService {
       }
       const promiseAll = [];
       if (isUpdate) {
-        for (const tiem of inventoryQuantityNormsTobeDelete) {
+        for (const item of inventoryQuantityNormsTobeDelete) {
           promiseAll.push(
-            this.inventoryQuantityNormsRepository.deleteAllByCondition(tiem),
+            this.inventoryQuantityNormsRepository.deleteAllByCondition(item),
           );
         }
         await Promise.all(promiseAll);
@@ -920,7 +801,9 @@ export class SyncService {
           itemCode: item.itemCode,
         };
         promiseAll.push(
-          this.inventoryQuantityNormsRepository.deleteAllByCondition(itemTobeDelete),
+          this.inventoryQuantityNormsRepository.deleteAllByCondition(
+            itemTobeDelete,
+          ),
         );
       }
       await Promise.all(promiseAll);
@@ -963,7 +846,7 @@ export class SyncService {
           movementType: item.movementType,
           orderDetailId: item.orderDetailId,
           actionType: item.actionType,
-          lotNumber: item?.lotNumber?.toLowerCase(),
+          lotNumber: item?.lotNumber?.toUpperCase(),
           locatorName: item?.locator?.name,
           locatorCode: item?.locator?.code,
           itemName: item.itemName,
@@ -981,7 +864,7 @@ export class SyncService {
         } as any;
         transactionitems.push(temp);
       }
-      await this.transactionItemRepository.create(transactionitems);
+      await this.transactionItemRepository.createMany(transactionitems);
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.SUCCESS)
         .withMessage(await this.i18n.translate('success.SUCCESS'))
