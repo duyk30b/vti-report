@@ -21,4 +21,5 @@ export interface UserServiceInterface {
   getDepartmentReceiptByIds(ids: number[]): Promise<any>;
   getDepartmentSettingByIds(ids: number[], serilize?: boolean): Promise<any>;
   getListCompanyByIds(ids: number[], serilize?: boolean): Promise<any>;
+  getListCompanyByCodes(codes: string[], serilize?: boolean): Promise<any>;
 }
