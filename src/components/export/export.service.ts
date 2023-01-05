@@ -306,7 +306,7 @@ export class ExportService {
       );
     await this.getInfoWarehouse(request, data, true);
 
-    const dataMapped = getSituationTransfer(data, this.i18n);
+    const dataMapped = await getSituationTransfer(data, this.i18n, this.userService);
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
