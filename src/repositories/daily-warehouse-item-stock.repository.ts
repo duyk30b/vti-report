@@ -37,17 +37,6 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
     return document;
   }
 
-  async createMany(
-    dailyWarehouseItemRequests: DailyWarehouseItemRequest[],
-  ): Promise<void> {
-    for (const dailyWarehouseItemRequest of dailyWarehouseItemRequests) {
-      const document = new this.dailyWarehouseItemStock();
-      Object.assign(document, dailyWarehouseItemRequest);
-
-      await document.save();
-    }
-  }
-
   async getReports(request: ReportRequest): Promise<DailyWarehouseItemStock[]> {
     const condition = {
       $and: [],

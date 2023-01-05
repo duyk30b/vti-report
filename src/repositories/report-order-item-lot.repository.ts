@@ -31,9 +31,25 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
     await document.save();
   }
 
-  saveMany(data: ReportOrderItemLotInteface[]) {
-    return this.reportOrderItemLot.create(data);
+  public async bulkWriteOrderReportItemLot(
+    bulkOps: ReportOrderItemLotInteface[],
+  ): Promise<any> {
+    return await this.model.bulkWrite(
+      bulkOps.map((doc) => ({
+        updateOne: {
+          filter: {
+            companyCode: doc.companyCode,
+            orderCode: doc.orderCode,
+            orderType: doc.orderType,
+            itemCode: doc.itemCode,
+          },
+          update: doc,
+          upsert: true,
+        },
+      })),
+    );
   }
+
   async getReportItemInventory(request: ReportRequest): Promise<any[]> {
     const condition = {
       $and: [],
@@ -201,7 +217,7 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
   async getReports(
     request: ReportRequest,
     type: OrderType,
-    isConstruction?: boolean
+    isConstruction?: boolean,
   ): Promise<ReportOrderItemLot[]> {
     const condition = {
       $and: [],
