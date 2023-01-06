@@ -365,12 +365,6 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
               {
                 $and: [
                   { $eq: ['$actionType', ActionType.IMPORT] },
-                  {
-                    $ne: [
-                      '$movementType',
-                      WarehouseMovementTypeEnum.PO_IMPORT_RECEIVE,
-                    ],
-                  },
                 ],
               },
               '$actualQuantity',
