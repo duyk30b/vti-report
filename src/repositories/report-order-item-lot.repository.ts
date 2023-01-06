@@ -435,6 +435,7 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
               WarehouseTransferStatusEnum.COMPLETED,
               WarehouseTransferStatusEnum.EXPORTED,
               WarehouseTransferStatusEnum.RECEIVED,
+              WarehouseTransferStatusEnum.INPROGRESS,
             ],
           },
         });
