@@ -30,4 +30,5 @@ export interface TableDataSituationExportPeriod {
   warehouseCode: string;
   totalPrice: number;
   reasons: Array<DataSituationExportReason>;
+  reportType?: number;
 }

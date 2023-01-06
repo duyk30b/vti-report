@@ -35,6 +35,11 @@ export const wordFileStyle = {
     font: FONT_NAME,
     size: WORD_FILE_CONFIG.WORD_FONT_SIZE_12,
   },
+  table_header_style_w002: {
+    bold: WORD_FILE_CONFIG.WORD_BOLD,
+    font: FONT_NAME,
+    size: WORD_FILE_CONFIG.WORD_FONT_SIZE_9,
+  },
   table_header_bg_color: {
     fill: 'd6d6d6',
   },
