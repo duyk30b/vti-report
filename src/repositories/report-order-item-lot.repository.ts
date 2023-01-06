@@ -596,6 +596,7 @@ function reportSituationExport(
           warehouseName: '$warehouseName',
           companyName: '$companyName',
           companyAddress: '$companyAddress',
+          companyCode: '$companyCode',
           reason: '$reason',
           orderCode: '$orderCode',
           orderCreatedAt: {
@@ -657,6 +658,7 @@ function reportSituationExport(
           warehouseName: '$_id.warehouseName',
           companyName: '$_id.companyName',
           companyAddress: '$_id.companyAddress',
+          companyCode: '$_id.companyCode',
           reason: '$_id.reason',
         },
         orders: {
@@ -684,6 +686,7 @@ function reportSituationExport(
           warehouseName: '$_id.warehouseName',
           companyName: '$_id.companyName',
           companyAddress: '$_id.companyAddress',
+          companyCode: '$_id.companyCode',
         },
         reasons: {
           $push: {
@@ -702,6 +705,7 @@ function reportSituationExport(
         _id: {
           companyName: '$_id.companyName',
           companyAddress: '$_id.companyAddress',
+          companyCode: '$_id.companyCode',
         },
         warehouses: {
           $push: {
@@ -762,6 +766,7 @@ function reportSituationImport(
           warehouseName: '$warehouseName',
           companyName: '$companyName',
           companyAddress: '$companyAddress',
+          companyCode: '$companyCode',
           reason: '$reason',
           orderCode: '$orderCode',
           orderCreatedAt: {
@@ -818,6 +823,7 @@ function reportSituationImport(
           warehouseName: '$_id.warehouseName',
           companyName: '$_id.companyName',
           companyAddress: '$_id.companyAddress',
+          companyCode: '$_id.companyCode',
           reason: '$_id.reason',
         },
         orders: {
@@ -851,6 +857,7 @@ function reportSituationImport(
           warehouseName: '$_id.warehouseName',
           companyName: '$_id.companyName',
           companyAddress: '$_id.companyAddress',
+          companyCode: '$_id.companyCode',
         },
         reasons: {
           $push: {
@@ -875,6 +882,7 @@ function reportSituationImport(
         _id: {
           companyName: '$_id.companyName',
           companyAddress: '$_id.companyAddress',
+          companyCode: '$_id.companyCode',
         },
         warehouses: {
           $push: {
