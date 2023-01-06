@@ -7,6 +7,7 @@ import { ReportInfo } from './Item-inventory-mapped';
 export function getItemImportedButNotPutToPositionMapped(
   data: any[],
   i18n: I18nRequestScopeService,
+  reportType?: number,
 ): ReportInfo<TableData<ItemImportedButNotStoreToPositionModel>[]> {
   const dataMaping: ReportInfo<any> = {
     companyCode: data[0]?._id?.companyCode || '',
@@ -42,6 +43,7 @@ export function getItemImportedButNotPutToPositionMapped(
         i18n.translate('report.WAREHOUSE_GROUP_CODE') +
         [wh?.warehouseCode, wh?.warehouseName]?.join('_'),
       data: wh?.items,
+      reportType: reportType || 0,
     };
   });
   dataMaping.dataMapped = dataExcell || [];

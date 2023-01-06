@@ -13,6 +13,7 @@ export function getOrderImportIncompletedMapped(
   data: ReportOrderItem[],
   i18n: I18nRequestScopeService,
   isEmpty: boolean,
+  reportType?: number,
 ): ReportInfo<TableData<OrderImportIncompleteModel>[]> {
   const dataMaping: ReportInfo<any> = {
     companyCode: data[0]?.companyCode || '',
@@ -52,6 +53,7 @@ export function getOrderImportIncompletedMapped(
       dataExcell.push({
         warehouseCode: i18n.translate('report.WAREHOUSE_GROUP_CODE') + key,
         data: groupByWarehouseCode[key],
+        reportType: reportType || 0,
       });
     }
 
