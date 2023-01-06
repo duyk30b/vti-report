@@ -9,6 +9,7 @@ export function getOrderTransferIncompletedMapped(
   data: ReportOrderItem[],
   i18n: I18nRequestScopeService,
   isEmpty: boolean,
+  reportType?: number,
 ): ReportInfo<TableData<OrderTransferIncompleteModel>[]> {
   const dataMaping: ReportInfo<any> = {
     companyName: data[0]?.companyName?.toUpperCase() || '',
@@ -46,6 +47,7 @@ export function getOrderTransferIncompletedMapped(
       dataExcell.push({
         warehouseCode: i18n.translate('report.WAREHOUSE_GROUP_CODE') + key,
         data: groupByWarehouseCode[key],
+        reportType: reportType,
       });
     }
 
