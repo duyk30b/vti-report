@@ -23,7 +23,7 @@ export function reportGroupByWarehouseTemplateData(
   format?: FormatByKey<any>,
 ) {
 
-  const reportType = data[0].reportType;
+  const reportType = data[0]?.reportType || 0;
   let fontSize = FONT_BOLD_12;
   if (ARR_REPORT_TYPE_CHANGE_FONT_SIZE.includes(reportType)) fontSize = FONT_BOLD_9;
   data.forEach((warehouseData: any) => {
