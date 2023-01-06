@@ -5,10 +5,12 @@ import { ReportInfo } from './Item-inventory-mapped';
 export function getSituationImportPeriod(
   data: any[],
   i18n: I18nRequestScopeService,
+  reportType?: number,
 ): ReportInfo<TableDataSituationImportPeriod[]> {
   const dataMaping: ReportInfo<any> = {
     companyName: data[0]?._id?.companyName?.toUpperCase() || '',
     companyAddress: data[0]?._id?.companyAddress || '',
+    companyCode: data[0]?._id?.companyCode || '',
     warehouseName: data[0]?._id?.warehouseName || '',
     dataMapped: null,
   };
@@ -23,6 +25,7 @@ export function getSituationImportPeriod(
           [item.warehouseCode, item.warehouseName].join('_'),
         totalPrice: item.totalPrice,
         reasons: item.reasons,
+        reportType: reportType || 0,
       };
       return tempt;
     });
