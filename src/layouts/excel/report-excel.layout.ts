@@ -36,7 +36,7 @@ import {
   ROW_WHEN_HAVE_HEADER,
   ROW_WHEN_NOT_HAVE_HEADER,
 } from '@utils/constant';
-import { ReportType } from '@enums/report-type.enum';
+import { ARR_REPORT_TYPE_CHANGE_FONT_SIZE, ReportType } from '@enums/report-type.enum';
 export const generateTable = async (
   model: ReportModel<any>,
   generateDataTable: (
@@ -55,6 +55,10 @@ export const generateTable = async (
     model.dateFrom,
     model.dateTo,
   );
+
+  let fontSize = FONT_BOLD_11;
+  const reportType = model.tableData[0]?.reportType || 0;
+  if (ARR_REPORT_TYPE_CHANGE_FONT_SIZE.includes(reportType)) fontSize = FONT_BOLD_10;
 
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet(sheetName, {
@@ -130,7 +134,7 @@ export const generateTable = async (
       {
         nameCell: CEll_REPORT_TIME,
         value: reportTime,
-        font: FONT_BOLD_11,
+        font: fontSize,
         aligment: ALIGNMENT_CENTER,
         translate: false,
       },

@@ -211,7 +211,12 @@ export class ExportService {
         true,
       );
     await this.getInfoWarehouse(request, data, true);
-    const dataMapped = getSituationExportPeriodMapped(data, this.i18n);
+    const dataMapped = getSituationExportPeriodMapped(data, this.i18n, request?.reportType);
+    if (dataMapped.companyCode) {
+      const dataCompany = await this.getCompany(dataMapped.companyCode);
+      dataMapped.companyName = dataCompany[0].name || dataMapped.companyName;
+      dataMapped.companyAddress = dataCompany[0].address || dataMapped.companyAddress;
+    }
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -243,7 +248,12 @@ export class ExportService {
       );
     await this.getInfoWarehouse(request, data, true);
 
-    const dataMapped = getSituationImportPeriod(data, this.i18n);
+    const dataMapped = getSituationImportPeriod(data, this.i18n, request.reportType);
+    if (dataMapped.companyCode) {
+      const dataCompany = await this.getCompany(dataMapped.companyCode);
+      dataMapped.companyName = dataCompany[0].name || dataMapped.companyName;
+      dataMapped.companyAddress = dataCompany[0].address || dataMapped.companyAddress;
+    }
 
     switch (request.exportType) {
       case ExportType.EXCEL:
@@ -584,7 +594,13 @@ export class ExportService {
     const dataMapped = getItemImportedButNotPutToPositionMapped(
       data,
       this.i18n,
+      request?.reportType,
     );
+    if (dataMapped.companyCode) {
+      const dataCompany = await this.getCompany(dataMapped.companyCode);
+      dataMapped.companyName = dataCompany[0].name || dataMapped.companyName;
+      dataMapped.companyAddress = dataCompany[0].address || dataMapped.companyAddress;
+    }
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -619,7 +635,13 @@ export class ExportService {
       data,
       this.i18n,
       isEmpty,
+      request.reportType,
     );
+    if (dataMapped.companyCode) {
+      const dataCompany = await this.getCompany(dataMapped.companyCode);
+      dataMapped.companyName = dataCompany[0].name || dataMapped.companyName;
+      dataMapped.companyAddress = dataCompany[0].address || dataMapped.companyAddress;
+    }
 
     switch (request.exportType) {
       case ExportType.EXCEL:
@@ -809,5 +831,13 @@ export class ExportService {
       isEmpty = true;
     }
     return isEmpty;
+  }
+
+  private async getCompany(companyCode: string) {
+    const codeCompany = companyCode;
+    const codes: string[] = [];
+    codes.push(codeCompany);
+    const company = await this.userService.getListCompanyByCodes(codes);
+    return company;
   }
 }
