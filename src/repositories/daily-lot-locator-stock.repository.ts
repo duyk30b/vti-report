@@ -39,6 +39,8 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
     document.lotNumber = dailyItemStockLocator?.lotNumber;
     document.storageDate = dailyItemStockLocator?.storageDate;
     document.stockQuantity = dailyItemStockLocator?.stockQuantity;
+    document.account = dailyItemStockLocator?.account;
+    document.origin = dailyItemStockLocator?.origin;
     return document;
   }
 

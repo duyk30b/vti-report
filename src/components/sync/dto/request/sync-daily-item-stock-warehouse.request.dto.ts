@@ -13,6 +13,8 @@ export class SyncDailyItemLotStockLocatorRequestDto {
 
   stockQuantity: number;
 
+  account: string;
+
   companyCode: string;
 
   storageCost: string;
