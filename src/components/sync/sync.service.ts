@@ -899,9 +899,15 @@ export class SyncService {
         ),
     );
 
-    this.dailyItemLocatorStockRepository.create(itemStockLocatorEntities);
-    this.dailyLotLocatorStockRepository.create(itemLotStockLocatorEntities);
-    this.dailyWarehouseItemStockRepository.create(itemStockWarehouseEntities);
+    await Promise.all([
+      this.dailyItemLocatorStockRepository.createMany(itemStockLocatorEntities),
+      this.dailyLotLocatorStockRepository.createMany(
+        itemLotStockLocatorEntities,
+      ),
+      this.dailyWarehouseItemStockRepository.createMany(
+        itemStockWarehouseEntities,
+      ),
+    ]);
     return new ResponseBuilder()
       .withCode(ResponseCodeEnum.SUCCESS)
       .withMessage(await this.i18n.translate('success.SUCCESS'))
