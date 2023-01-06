@@ -9,7 +9,7 @@ export async function getSituationTransfer(
   userService?: UserServiceInterface,
 ): Promise<ReportInfo<any>> {
 
-  const codeCompany = data[0]?._id?.companyCode;
+  const codeCompany = data[0]?._id?.companyCode || '';
   const codes: string[] = [];
   codes.push(codeCompany);
   const company = await userService.getListCompanyByCodes(codes);

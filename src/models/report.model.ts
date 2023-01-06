@@ -11,6 +11,7 @@ export interface TableColumn {
 export interface TableData<T> {
   warehouseCode: string;
   data: T[];
+  reportType?: number,
 }
 
 export enum Alignment {

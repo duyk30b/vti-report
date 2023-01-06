@@ -1,3 +1,4 @@
+import { ARR_REPORT_TYPE_CHANGE_FONT_SIZE } from '@enums/report-type.enum';
 import { Alignment, FormatByKey, TableData } from '@models/report.model';
 import {
   ALIGNMENT_BOTTOM,
@@ -10,6 +11,7 @@ import {
   CELL_A,
   EXCEL_COLUMN,
   FONT_BOLD_12,
+  FONT_BOLD_9,
   FONT_NORMAL_9,
 } from '@utils/constant';
 import * as ExcelJS from 'exceljs';
@@ -20,6 +22,10 @@ export function reportGroupByWarehouseTemplateData(
   data: TableData<any>[],
   format?: FormatByKey<any>,
 ) {
+
+  const reportType = data[0].reportType;
+  let fontSize = FONT_BOLD_12;
+  if (ARR_REPORT_TYPE_CHANGE_FONT_SIZE.includes(reportType)) fontSize = FONT_BOLD_9;
   data.forEach((warehouseData: any) => {
     const endColumn = `${
       EXCEL_COLUMN[worksheet['columnNumber_'] - 2]
@@ -29,7 +35,7 @@ export function reportGroupByWarehouseTemplateData(
     );
     worksheet.mergeCells(`${CELL_A}${rowIdx}:${endColumn}`);
     cellGroupByWarehouse.value = warehouseData.warehouseCode;
-    cellGroupByWarehouse.font = FONT_BOLD_12;
+    cellGroupByWarehouse.font = fontSize;
     cellGroupByWarehouse.alignment = ALIGNMENT_LEFT as any;
     cellGroupByWarehouse.border = BORDER as any;
     rowIdx++;
