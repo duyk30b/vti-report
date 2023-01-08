@@ -1,8 +1,8 @@
-import { TableAgeOfItems } from '@models/age-of-items.model';
-import { minus, plus } from '@utils/common';
+import { TableAgeOfItems, Items } from '@models/age-of-items.model';
+import { minus, mul, plus } from '@utils/common';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
-import { compact } from 'lodash';
+import { compact, keyBy, isEmpty } from 'lodash';
 
 export function getSituationTransferMapped(
   data: any[],
@@ -59,10 +59,12 @@ export function getSituationTransferMapped(
           }
         })
       })
-      const itemFormat = formatData(transactionNow, item.warehouseCode);
-      itemFormat.map((i) => {
-        item.items.push(i)
-      })
+
+      const { arrformated, objectTransaction } = pushItemOld(transactionNow, item.items, item.warehouseCode);
+      if (!isEmpty(arrformated)) {
+        item.items = arrformated;
+        transactionNow = objectTransaction;
+      }
       return {
         warehouseCode:
           i18n.translate('report.WAREHOUSE_GROUP_CODE') +
@@ -79,8 +81,35 @@ export function getSituationTransferMapped(
       };
     });
   }
-  dataMaping.dataMapped = dataExcell || [];
 
+  let dataExcell2: TableAgeOfItems[] = [];
+  if (!isEmpty(transactionNow)) {
+    if (!isEmpty(data[0].warehouses) || !data[0].warehouses) {
+      const warehouseCode = data[0]?._id?.warehouseCode || '';
+      const warehouseName = data[0]?._id?.warehouseName || '';
+      dataMaping.warehouseName = warehouseName;
+      const { arrformated, objectTransaction } = pushItemOld(transactionNow, [], warehouseCode);
+      if (!isEmpty(dataExcell) || !dataExcell) {
+        let arr = {
+          warehouseCode:
+            i18n.translate('report.WAREHOUSE_GROUP_CODE') +
+            [warehouseCode, warehouseName].join('_'),
+          sixMonth: 0,
+          oneYearAgo: 0,
+          twoYearAgo: 0,
+          threeYearAgo: 0,
+          fourYearAgo: 0,
+          fiveYearAgo: 0,
+          greaterfiveYear: 0,
+          totalPrice: 0,
+          items: arrformated,
+        };
+        dataExcell2.push(arr);
+      }
+    }
+  }
+  dataMaping.dataMapped = dataExcell || dataExcell2;
+  dataMaping.dataMapped = dataMaping.dataMapped || [];
   return dataMaping;
 }
 
@@ -125,4 +154,74 @@ function formatData(arr: any, warehouseCode: string) {
     }
   }
   return arrformated;
+}
+
+function pushItemOld(objectTransaction: any, arrItem: any[], warehouseCode?: string) {
+  let keyByArrItem = keyBy(arrItem, 'itemCode');
+  const arrformated: any[] = [];
+  for (const key in objectTransaction) {
+    const item = objectTransaction[key];
+    if (item && keyByArrItem[item?.itemCode] && item?.quantityImported && item.warehouseCode == warehouseCode) {
+      objectTransaction[key] = null;
+      keyByArrItem[item?.itemCode].totalQuantity = plus(keyByArrItem[item?.itemCode]?.totalQuantity, item?.quantityImported) || 0;
+      keyByArrItem[item.itemCode]?.groupByStorageDate?.push({
+        storageDate: item.transactionDate,
+        origin: item?.origin || null,
+        account: item?.account || null,
+        lotNumber: item.lotNumber,
+        locatorCode: item.locatorCode,
+        unit: item.unit,
+        stockQuantity: item.quantityImported,
+        storageCost: item.storageCost || 0,
+        totalPrice: mul(item.storageCost, item.quantityImported),
+        sixMonthAgo: item.sixMonthAgo || 0,
+        oneYearAgo: item.oneYearAgo || 0,
+        twoYearAgo: item.twoYearAgo || 0,
+        threeYearAgo: item.threeYearAgo || 0,
+        fourYearAgo: item.fourYearAgo || 0,
+        fiveYearAgo: item.fiveYearAgo || 0,
+        greaterfiveYear: item.greaterfiveYear || 0,
+      })
+    } else if (item && item?.quantityImported && item.warehouseCode == warehouseCode) {
+      objectTransaction[key] = null;
+      keyByArrItem[item?.itemCode] = {
+        itemCode: item.itemCode,
+        itemName: item.itemName,
+        totalQuantity: item.quantityImported,
+        totalPrice: item?.storageCost || 0,
+        sixMonthAgo: item?.sixMonthAgo || 0,
+        oneYearAgo: item?.oneYearAgo || 0,
+        twoYearAgo: item?.twoYearAgo || 0,
+        threeYearAgo: item?.threeYearAgo || 0,
+        fourYearAgo: item?.fourYearAgo || 0,
+        fiveYearAgo: item?.fiveYearAgo || 0,
+        greaterfiveYear: item?.greaterfiveYear || 0,
+        groupByStorageDate: [
+          {
+            storageDate: item.transactionDate,
+            lotNumber: item.lotNumber,
+            locatorCode: item.locatorCode,
+            unit: item.unit,
+            stockQuantity: item.quantityImported,
+            storageCost: item?.storageCost || 0,
+            totalPrice: item?.totalPrice || 0,
+            sixMonthAgo: item.sixMonthAgo,
+            oneYearAgo: item?.oneYearAgo || 0,
+            twoYearAgo: item?.twoYearAgo || 0,
+            threeYearAgo: item?.threeYearAgo || 0,
+            fourYearAgo: item?.fourYearAgo || 0,
+            fiveYearAgo: item?.fiveYearAgo || 0,
+            greaterfiveYear: item?.greaterfiveYear || 0,
+          }
+        ]
+      }
+    }
+  }
+  for (const key in keyByArrItem) {
+    arrformated.push(keyByArrItem[key]);
+  }
+  return {
+    arrformated: arrformated as Array<Items>,
+    objectTransaction: objectTransaction,
+  };
 }
