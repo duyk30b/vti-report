@@ -132,7 +132,7 @@ export class DashboardService implements DashboardServiceInterface {
       if (from.isSameOrAfter(startUnit)) {
         startUnit = from.format('YYYYMMDD');
       }
-      let endUnit = date;
+      let endUnit = date.clone().endOf(unit);
       if (to.isSameOrBefore(endUnit)) {
         endUnit = to;
       }
