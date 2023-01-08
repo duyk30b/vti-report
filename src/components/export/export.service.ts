@@ -805,12 +805,16 @@ export class ExportService {
       });
 
       let warehouse = '';
+      let warehouseCode = '';
       if (request.warehouseCode) {
         const warehouseHq =
           await this.warehouseServiceInterface.getWarehouseByCode(
             request.warehouseCode,
           );
-        if (warehouseHq) warehouse = warehouseHq?.name || '';
+        if (warehouseHq) {
+          warehouse = warehouseHq?.name || '';
+          warehouseCode = request.warehouseCode || '';
+        }
       }
 
       company = company?.data?.pop();
@@ -821,6 +825,7 @@ export class ExportService {
             companyName: company?.name?.toUpperCase() || '',
             companyAddress: company?.address,
             warehouseName: warehouse,
+            warehouseCode: warehouseCode,
           },
         } as any);
       } else {
