@@ -625,7 +625,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
         {
           reportDate: {
             $gte: startDate,
-            $lt: endDate,
+            $lte: endDate,
           },
         },
       ],
