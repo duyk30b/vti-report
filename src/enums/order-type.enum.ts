@@ -47,3 +47,10 @@ export const MOVEMENT_TYPE_IMPORT = [
   WarehouseMovementTypeEnum.PO_IMPORT,
   WarehouseMovementTypeEnum.TRANFER_IMPORT,
 ];
+
+export const TRANSACTION_MOVEMENT_TYPE_IMPORT_EXPORT = [
+  WarehouseMovementTypeEnum.PO_IMPORT_RECEIVE,
+  WarehouseMovementTypeEnum.TRANFER_IMPORT,
+  WarehouseMovementTypeEnum.TRANFER_EXPORT,
+  WarehouseMovementTypeEnum.SO_EXPORT,
+];
