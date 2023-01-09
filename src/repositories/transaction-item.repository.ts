@@ -12,7 +12,10 @@ import { getTimezone } from '@utils/common';
 import { DATE_FOMAT, FORMAT_DATE } from '@utils/constant';
 import { keyBy } from 'lodash';
 import { ActionType, ReportType } from '@enums/report-type.enum';
-import { WarehouseMovementTypeEnum } from '@enums/order-type.enum';
+import {
+  TRANSACTION_MOVEMENT_TYPE_IMPORT_EXPORT,
+  WarehouseMovementTypeEnum,
+} from '@enums/order-type.enum';
 import { DailyLotLocatorStock } from '@schemas/daily-lot-locator-stock.schema';
 @Injectable()
 export class TransactionItemRepository extends BaseAbstractRepository<TransactionItem> {
@@ -130,10 +133,16 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
   }
 
   async groupByItemLot(request: ReportRequest) {
+    const { reportType } = request;
     const condition = {
       $and: [],
       $or: [],
     };
+    if (reportType === ReportType.ITEM_INVENTORY) {
+      condition['$and'].push({
+        movementType: { $in: TRANSACTION_MOVEMENT_TYPE_IMPORT_EXPORT },
+      });
+    }
     const curDate = getTimezone(undefined, FORMAT_DATE);
 
     condition['$and'].push({
@@ -363,9 +372,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           quantityImported: {
             $cond: [
               {
-                $and: [
-                  { $eq: ['$actionType', ActionType.IMPORT] },
-                ],
+                $and: [{ $eq: ['$actionType', ActionType.IMPORT] }],
               },
               '$actualQuantity',
               0,
