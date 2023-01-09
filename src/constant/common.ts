@@ -60,7 +60,7 @@ export function formatNumber(number: any) {
   }
 }
 export function readDecimal(number: any, isFormat?: boolean): string {
-  if(isFormat && number === 0) return '0';
+  if(isFormat && !number ) return '0';
   if (!number) return ''
   let num = number.toString();
   if(num.includes(',')) num = num.split(',')[0] + '.' + num.split(',')[1];
