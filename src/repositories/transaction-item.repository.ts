@@ -9,7 +9,7 @@ import { TransactionItem } from '@schemas/transaction-item.schema';
 import { Model } from 'mongoose';
 import * as moment from 'moment';
 import { getTimezone } from '@utils/common';
-import { DATE_FOMAT, FORMAT_DATE } from '@utils/constant';
+import { DATE_FOMAT, FORMAT_DATE, TIMEZONE_HCM_CITY } from '@utils/constant';
 import { keyBy } from 'lodash';
 import { ActionType, ReportType } from '@enums/report-type.enum';
 import {
@@ -159,7 +159,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
         $expr: {
           $gte: [
             {
-              $dateToString: { date: '$transactionDate', format: '%Y-%m-%d' },
+              $dateToString: { date: '$transactionDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
             },
             moment(request?.dateFrom).format(DATE_FOMAT),
           ],
@@ -172,7 +172,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
         $expr: {
           $lte: [
             {
-              $dateToString: { date: '$transactionDate', format: '%Y-%m-%d' },
+              $dateToString: { date: '$transactionDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
             },
             moment(request?.dateTo).format(DATE_FOMAT),
           ],
@@ -184,7 +184,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
       $expr: {
         $lte: [
           {
-            $dateToString: { date: '$transactionDate', format: '%Y-%m-%d' },
+            $dateToString: { date: '$transactionDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
           },
           moment(curDate).format(DATE_FOMAT),
         ],
@@ -236,6 +236,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
                         $dateToString: {
                           date: '$transactionDate',
                           format: '%Y-%m-%d',
+                          timezone: TIMEZONE_HCM_CITY,
                         },
                       },
                       moment(curDate).format(DATE_FOMAT),
@@ -260,6 +261,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
                         $dateToString: {
                           date: '$transactionDate',
                           format: '%Y-%m-%d',
+                          timezone: TIMEZONE_HCM_CITY,
                         },
                       },
                       moment(curDate).format(DATE_FOMAT),
@@ -336,7 +338,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
         $expr: {
           $gte: [
             {
-              $dateToString: { date: '$transactionDate', format: '%Y-%m-%d' },
+              $dateToString: { date: '$transactionDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
             },
             moment(curDate).format(DATE_FOMAT),
           ],
@@ -417,7 +419,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           quantityExported: 1,
           quantityImported: 1,
           transactionDate: {
-            $dateToString: { date: '$_id.transactionDate', format: '%m/%d/%Y' },
+            $dateToString: { date: '$_id.transactionDate', format: '%m/%d/%Y', timezone: TIMEZONE_HCM_CITY },
           },
         },
       },
@@ -443,7 +445,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
         $expr: {
           $gte: [
             {
-              $dateToString: { date: '$transactionDate', format: '%Y-%m-%d' },
+              $dateToString: { date: '$transactionDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
             },
             moment(request?.dateFrom).format(DATE_FOMAT),
           ],
@@ -533,7 +535,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           quantityExported: 1,
           quantityImported: 1,
           transactionDate: {
-            $dateToString: { date: '$_id.transactionDate', format: '%m/%d/%Y' },
+            $dateToString: { date: '$_id.transactionDate', format: '%m/%d/%Y', timezone: TIMEZONE_HCM_CITY },
           },
         },
       },
