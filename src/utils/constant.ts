@@ -8,6 +8,7 @@ export const LANG = {
 
 export const DEFAULT_LANG = LANG.VI;
 
+export const TIMEZONE_HCM_CITY = 'Asia/Ho_Chi_Minh';
 export const DATE_FOMAT = 'YYYY-MM-DD';
 export const DATE_FOMAT_EXCELL = 'DD/MM/YYYY';
 export const DATE_FOMAT_EXCELL_MM_DD_YY = 'MM/DD/YYYY';
