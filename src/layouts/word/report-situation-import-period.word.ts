@@ -162,7 +162,7 @@ export async function generateReportSituationImportPeriod(
                         children: [
                           new TextRun({
                             text: i18n.translate(`report.${item.name}`),
-                            ...wordFileStyle.table_header_style,
+                            ...wordFileStyle.table_header_style_w002,
                           }),
                         ],
                       }),

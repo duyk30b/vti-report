@@ -162,7 +162,7 @@ export async function generateReportSituationExportPeriod(
                         children: [
                           new TextRun({
                             text: i18n.translate(`report.${item.name}`),
-                            ...wordFileStyle.table_header_style,
+                            ...wordFileStyle.table_header_style_w002,
                           }),
                         ],
                       }),
@@ -524,7 +524,7 @@ export async function generateReportSituationExportPeriod(
                                   alignment: AlignmentType.LEFT,
                                   children: [
                                     new TextRun({
-                                      text: `${ i18n.translate(`report.REASON`)} ${reason?.value}`,
+                                      text: `${i18n.translate(`report.REASON`)} ${reason?.value}`,
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
