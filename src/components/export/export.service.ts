@@ -345,6 +345,7 @@ export class ExportService {
       data,
       this.i18n,
       isEmpty,
+      request.reportType,
     );
     switch (request.exportType) {
       case ExportType.EXCEL:
