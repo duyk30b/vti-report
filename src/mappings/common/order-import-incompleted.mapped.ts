@@ -6,6 +6,7 @@ import { OrderImportIncompleteModel } from '@models/order-import-incomplete.mode
 import { TableData } from '@models/report.model';
 import { DailyWarehouseItemStock } from '@schemas/daily-warehouse-item-stock.schema';
 import { ReportOrderItem } from '@schemas/report-order-item.schema';
+import * as moment from 'moment';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
 
@@ -26,14 +27,14 @@ export function getOrderImportIncompletedMapped(
   if (!isEmpty) {
     const groupByWarehouseCode = data.reduce((prev, cur) => {
       const warehouseCode = cur.warehouseCode + ' - ' + cur.warehouseName;
-
+      const date = moment(cur.orderCreatedAt).format('DD/MM/YYYY') || '';
       if (!prev[warehouseCode]) {
         prev[warehouseCode] = [];
       }
       const data: OrderImportIncompleteModel = {
         index: 0,
         orderCode: cur.orderCode,
-        orderCreatedAt: cur.orderCreatedAt,
+        orderCreatedAt: date,
         departmentReceiptName: cur.departmentReceiptName,
         itemCode: cur.itemCode,
         itemName: cur.itemName,

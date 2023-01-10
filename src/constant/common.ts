@@ -1,3 +1,5 @@
+import * as moment from "moment";
+
 export enum APIPrefix {
   Version = 'api/v1',
 }
@@ -88,3 +90,9 @@ export function formatMoney(number: any, isFormat?: boolean) {
   }
   return numReturn.split('.')[0];
 };
+
+export function formatDate(date: any) {
+  if (!date) return '';
+  const dateFormated = moment(date).format('DD/MM/YYYY') || '';
+  return dateFormated;
+}
