@@ -1,7 +1,7 @@
 export interface OrderImportIncompleteModel {
   index: number;
   orderCode: string;
-  orderCreatedAt: Date;
+  orderCreatedAt: Date | string;
   departmentReceiptName: string;
   itemCode: string;
   itemName: string;
