@@ -1,4 +1,4 @@
-import { formatNumber, readDecimal } from '@constant/common';
+import { formatDate, formatNumber, readDecimal } from '@constant/common';
 import { TableDataSituationExportPeriod } from '@models/situation_export.model';
 import { plus } from '@utils/common';
 import {
@@ -426,7 +426,7 @@ export async function generateReportSituationExportPeriod(
                                       alignment: AlignmentType.CENTER,
                                       children: [
                                         new TextRun({
-                                          text: order.orderCreatedAt,
+                                          text: formatDate(order.orderCreatedAt) || '',
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],

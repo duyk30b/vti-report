@@ -63,7 +63,7 @@ import { WarehouseServiceInterface } from '@components/warehouse/interface/wareh
 import { getTimezone } from '@utils/common';
 import { FORMAT_DATE } from '@utils/constant';
 import { readDecimal } from '@constant/common';
-import { keyBy } from 'lodash';
+import { keyBy, compact } from 'lodash';
 @Injectable()
 export class ExportService {
   private readonly logger = new Logger(ExportService.name);
@@ -180,12 +180,18 @@ export class ExportService {
       );
     await this.getInfoWarehouse(request, data, true);
     const transactionDateNow = await this.transactionItemRepository.getTransactionByDate(request);
-    const transactionArr = keyBy(transactionDateNow.map((item) => ({
-      ...item,
-      key: `${item.warehouseCode}-${item.locatorCode}-${item.itemCode}`
-    })), 'key');
+    let transactionArr = transactionDateNow.map((item) => {
+      if (item.quantityExported != 0 || item.quantityImported != 0) {
+        return {
+          ...item,
+          key: `${item.warehouseCode}-${item.locatorCode}-${item.itemCode}-${item.companyCode}`,
+        }
+      }
+    })
+    transactionArr = compact(transactionArr);
+    const transactionInput = keyBy(transactionArr, 'key')
 
-    const dataMapped = getSituationTransferMapped(data, this.i18n, transactionArr);
+    const dataMapped = getSituationTransferMapped(data, this.i18n, transactionInput);
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } = await reportAgeOfItemsExcelMapping(
@@ -346,6 +352,7 @@ export class ExportService {
       data,
       this.i18n,
       isEmpty,
+      request.reportType,
     );
     switch (request.exportType) {
       case ExportType.EXCEL:

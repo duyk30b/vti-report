@@ -1,4 +1,4 @@
-import { readDecimal } from '@constant/common';
+import { formatDate, readDecimal } from '@constant/common';
 import { TableAgeOfItems } from '@models/age-of-items.model';
 import {
   ALIGNMENT_CENTER,
@@ -233,7 +233,7 @@ export function reportAgeOfItemsTemplateData(
               },
               {
                 nameCell: `C${curRowIdx}`,
-                value: order.storageDate,
+                value: formatDate(order.storageDate) || '',
                 font: FONT_NORMAL_9,
                 aligment: ALIGNMENT_CENTER,
                 border: BORDER,
