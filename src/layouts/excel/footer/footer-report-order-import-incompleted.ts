@@ -14,7 +14,7 @@ export function footerReportOrderImportIncompleted(
   cells.push(
     ...[
       {
-        nameCell: `E${curRowIdx}:G${curRowIdx}`,
+        nameCell: `K${curRowIdx}:L${curRowIdx}`,
         value: `${companyCode}_REPORT_FOOTER_DATE`,
         font: FONT_ITALIC_9,
         aligment: ALIGNMENT_CENTER,
@@ -27,14 +27,14 @@ export function footerReportOrderImportIncompleted(
   cells.push(
     ...[
       {
-        nameCell: `C${curRowIdx}`,
+        nameCell: `C${curRowIdx + 1}`,
         value: 'REPORT_FOOTER_SCHEDULER',
         font: FONT_BOLD_9,
         aligment: ALIGNMENT_CENTER,
         translate: true,
       },
       {
-        nameCell: `K${curRowIdx}`,
+        nameCell: `K${curRowIdx + 1}`,
         value: 'REPORT_FOOTER_STOCKER',
         font: FONT_BOLD_9,
         aligment: ALIGNMENT_CENTER,
