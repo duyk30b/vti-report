@@ -5,11 +5,12 @@ import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
 import * as moment from 'moment';
 import { DATE_FOMAT_EXCELL, DATE_FOMAT_EXCELL_MM_DD_YY } from '@utils/constant';
+import { isEmpty } from 'lodash';
 
 export function getOrderExportByRequestForItemMapped(
   data: ReportOrderItem[],
   i18n: I18nRequestScopeService,
-  isEmpty: boolean,
+  isEmptyInput: boolean,
   reportType?: number,
 ): ReportInfo<TableData<ReportOrderExportByRequestForItemModel>[]> {
   const dataMaping: ReportInfo<any> = {
@@ -19,13 +20,13 @@ export function getOrderExportByRequestForItemMapped(
     dataMapped: null,
   };
 
-  if (!isEmpty) {
+  if (!isEmptyInput) {
     const groupByWarehouseCode = data.reduce((prev, cur) => {
       const warehouseCode = cur.warehouseCode + ' - ' + cur.warehouseName;
       if (!prev[warehouseCode]) {
         prev[warehouseCode] = [];
       }
-      if(cur.actualQuantity) {        
+      if (cur.actualQuantity) {
         const data: ReportOrderExportByRequestForItemModel = {
           index: 0,
           itemCode: cur.itemCode,
@@ -45,11 +46,13 @@ export function getOrderExportByRequestForItemMapped(
     const dataExcell: TableData<ReportOrderExportByRequestForItemModel>[] = [];
 
     for (const key in groupByWarehouseCode) {
-      dataExcell.push({
-        warehouseCode: i18n.translate('report.WAREHOUSE_GROUP_CODE') + key,
-        data: groupByWarehouseCode[key],
-        reportType: reportType || 0,
-      });
+      if (!isEmpty(groupByWarehouseCode[key])) {
+        dataExcell.push({
+          warehouseCode: i18n.translate('report.WAREHOUSE_GROUP_CODE') + key,
+          data: groupByWarehouseCode[key],
+          reportType: reportType || 0,
+        });
+      }
     }
 
     dataMaping.dataMapped = dataExcell || [];
