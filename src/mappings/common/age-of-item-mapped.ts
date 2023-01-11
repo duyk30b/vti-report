@@ -46,12 +46,13 @@ export function getSituationTransferMapped(
                 fiveYearAgo: infoStock?.fiveYearAgo,
                 greaterfiveYear: infoStock?.greaterfiveYear,
               })
-              transactionNow[`${item.warehouseCode}-${infoStock.locatorCode}-${i.itemCode}-${companyCode}`] = null;
-            } else if (transaction?.quantityExported) {
+              transactionNow[`${item.warehouseCode}-${infoStock.locatorCode}-${i.itemCode}-${companyCode}`].quantityImported = 0;
+            }
+            if (transaction?.quantityExported) {
               i.totalQuantity = minus(i.totalQuantity, transaction?.quantityExported);
               const numberCheck = minus(infoStock.stockQuantity, transaction?.quantityExported);
               if (numberCheck >= 0) {
-                transactionNow[`${item.warehouseCode}-${infoStock.locatorCode}-${i.itemCode}-${companyCode}`] = null;
+                transactionNow[`${item.warehouseCode}-${infoStock.locatorCode}-${i.itemCode}-${companyCode}`].quantityExported = 0;
                 infoStock.stockQuantity = numberCheck;
               } else {
                 const quantity = minus(transaction?.quantityExported, infoStock.stockQuantity);
@@ -202,60 +203,17 @@ function pushItemOld(objectTransaction: any, arrItem: any[], warehouseCode?: str
   const arrformated: any[] = [];
   for (const key in objectTransaction) {
     const item = objectTransaction[key];
-    if (item && keyByArrItem[item?.itemCode] && item?.quantityImported && item.warehouseCode == warehouseCode) {
+    if (item && keyByArrItem[item?.itemCode] && item.warehouseCode == warehouseCode) {
       objectTransaction[key] = null;
-      keyByArrItem[item?.itemCode].totalQuantity = plus(keyByArrItem[item?.itemCode]?.totalQuantity, item?.quantityImported) || 0;
-      keyByArrItem[item.itemCode]?.groupByStorageDate?.push({
-        storageDate: item.transactionDate,
-        origin: item?.origin || null,
-        account: item?.account || null,
-        lotNumber: item.lotNumber,
-        locatorCode: item.locatorCode,
-        unit: item.unit,
-        stockQuantity: item.quantityImported,
-        storageCost: item.storageCost || 0,
-        totalPrice: mul(item.storageCost, item.quantityImported),
-        sixMonthAgo: item.sixMonthAgo || 0,
-        oneYearAgo: item.oneYearAgo || 0,
-        twoYearAgo: item.twoYearAgo || 0,
-        threeYearAgo: item.threeYearAgo || 0,
-        fourYearAgo: item.fourYearAgo || 0,
-        fiveYearAgo: item.fiveYearAgo || 0,
-        greaterfiveYear: item.greaterfiveYear || 0,
-      })
-    } else if (item && item?.quantityImported && item.warehouseCode == warehouseCode) {
+      const quantity = minus(item?.quantityImported, item?.quantityExported);
+      const stockQuantityOld = keyByArrItem[item?.itemCode]?.totalQuantity;
+      keyByArrItem[item?.itemCode].totalQuantity = plus(stockQuantityOld, quantity) || stockQuantityOld;
+      keyByArrItem[item.itemCode]?.groupByStorageDate?.push(formatGroupByStorageDate(item, quantity));
+    } else if (item && item.warehouseCode == warehouseCode) {
       objectTransaction[key] = null;
-      keyByArrItem[item?.itemCode] = {
-        itemCode: item.itemCode,
-        itemName: item.itemName,
-        totalQuantity: item.quantityImported,
-        totalPrice: item?.storageCost || 0,
-        sixMonthAgo: item?.sixMonthAgo || 0,
-        oneYearAgo: item?.oneYearAgo || 0,
-        twoYearAgo: item?.twoYearAgo || 0,
-        threeYearAgo: item?.threeYearAgo || 0,
-        fourYearAgo: item?.fourYearAgo || 0,
-        fiveYearAgo: item?.fiveYearAgo || 0,
-        greaterfiveYear: item?.greaterfiveYear || 0,
-        groupByStorageDate: [
-          {
-            storageDate: item.transactionDate,
-            lotNumber: item.lotNumber,
-            locatorCode: item.locatorCode,
-            unit: item.unit,
-            stockQuantity: item.quantityImported,
-            storageCost: item?.storageCost || 0,
-            totalPrice: item?.totalPrice || 0,
-            sixMonthAgo: item.sixMonthAgo,
-            oneYearAgo: item?.oneYearAgo || 0,
-            twoYearAgo: item?.twoYearAgo || 0,
-            threeYearAgo: item?.threeYearAgo || 0,
-            fourYearAgo: item?.fourYearAgo || 0,
-            fiveYearAgo: item?.fiveYearAgo || 0,
-            greaterfiveYear: item?.greaterfiveYear || 0,
-          }
-        ]
-      }
+      const quantity = minus(item?.quantityImported, item?.quantityExported)
+      const stockQuantity = Math.abs(quantity);
+      keyByArrItem[item?.itemCode] = formatItem(item, stockQuantity);
     }
   }
   for (const key in keyByArrItem) {
@@ -265,4 +223,59 @@ function pushItemOld(objectTransaction: any, arrItem: any[], warehouseCode?: str
     arrformated: arrformated as Array<Items>,
     objectTransaction: objectTransaction,
   };
+}
+
+function formatItem(item: any, quantity?: number) {
+  return {
+    itemCode: item.itemCode,
+    itemName: item.itemName,
+    totalQuantity: quantity || 0,
+    totalPrice: item?.storageCost || 0,
+    sixMonthAgo: item?.sixMonthAgo || 0,
+    oneYearAgo: item?.oneYearAgo || 0,
+    twoYearAgo: item?.twoYearAgo || 0,
+    threeYearAgo: item?.threeYearAgo || 0,
+    fourYearAgo: item?.fourYearAgo || 0,
+    fiveYearAgo: item?.fiveYearAgo || 0,
+    greaterfiveYear: item?.greaterfiveYear || 0,
+    groupByStorageDate: [
+      {
+        storageDate: item.transactionDate,
+        lotNumber: item.lotNumber,
+        locatorCode: item.locatorCode,
+        unit: item.unit,
+        stockQuantity: quantity || 0,
+        storageCost: item?.storageCost || 0,
+        totalPrice: item?.totalPrice || 0,
+        sixMonthAgo: item.sixMonthAgo,
+        oneYearAgo: item?.oneYearAgo || 0,
+        twoYearAgo: item?.twoYearAgo || 0,
+        threeYearAgo: item?.threeYearAgo || 0,
+        fourYearAgo: item?.fourYearAgo || 0,
+        fiveYearAgo: item?.fiveYearAgo || 0,
+        greaterfiveYear: item?.greaterfiveYear || 0,
+      }
+    ]
+  }
+}
+
+function formatGroupByStorageDate(item: any, quantity?: number) {
+  return {
+    storageDate: item.transactionDate,
+    origin: item?.origin || null,
+    account: item?.account || null,
+    lotNumber: item.lotNumber,
+    locatorCode: item.locatorCode,
+    unit: item.unit,
+    stockQuantity: quantity || 0,
+    storageCost: item.storageCost || 0,
+    totalPrice: mul(item.storageCost, item.quantityImported),
+    sixMonthAgo: item.sixMonthAgo || 0,
+    oneYearAgo: item.oneYearAgo || 0,
+    twoYearAgo: item.twoYearAgo || 0,
+    threeYearAgo: item.threeYearAgo || 0,
+    fourYearAgo: item.fourYearAgo || 0,
+    fiveYearAgo: item.fiveYearAgo || 0,
+    greaterfiveYear: item.greaterfiveYear || 0,
+  }
 }
