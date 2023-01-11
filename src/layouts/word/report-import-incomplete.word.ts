@@ -392,20 +392,30 @@ export async function generateReportOrderImportIncompleted(
             rows: [
               new TableRow({
                 height: setHeight(WORD_FILE_CONFIG.TABLE_HEADER_HEIGHT),
+                children: [
+                  new TableCell({
+                    columnSpan: 11,
+                    borders: wordFileStyle.border_none,
+                    children: [],
+                  })
+                ],
+              }),
+              new TableRow({
+                height: setHeight(WORD_FILE_CONFIG.TABLE_HEADER_HEIGHT),
                 children: ORDER_IMPORT_INCOMPLETED_COLUMNS.map((item, index) => {
                   let text = '';
                   let columnSpan = null;
                   let italics = {};
-                  if (index == 4) {
+                  if (index == 10) {
                     text = i18n.translate(
                       `report.${companyCode}_REPORT_FOOTER_DATE`,
                     );
-                    columnSpan = 3;
+                    columnSpan = 5;
                     italics = {
                       italics: true,
                     }
                   }
-                  if (index < 5) {
+                  if (index < 11) {
                     return new TableCell({
                       width: setWidth(item.width),
                       verticalAlign: VerticalAlign.CENTER,
@@ -426,6 +436,16 @@ export async function generateReportOrderImportIncompleted(
                     });
                   }
                 }),
+              }),
+              new TableRow({
+                height: setHeight(WORD_FILE_CONFIG.TABLE_HEADER_HEIGHT),
+                children: [
+                  new TableCell({
+                    columnSpan: 11,
+                    borders: wordFileStyle.border_none,
+                    children: [],
+                  })
+                ],
               }),
               new TableRow({
                 height: setHeight(WORD_FILE_CONFIG.TABLE_HEADER_HEIGHT),

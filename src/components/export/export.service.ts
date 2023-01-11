@@ -62,7 +62,7 @@ import { UserService } from '@components/user/user.service';
 import { WarehouseServiceInterface } from '@components/warehouse/interface/warehouse.service.interface';
 import { getTimezone } from '@utils/common';
 import { FORMAT_DATE } from '@utils/constant';
-import { readDecimal } from '@constant/common';
+import { formatDate, readDecimal } from '@constant/common';
 import { keyBy, compact } from 'lodash';
 @Injectable()
 export class ExportService {
@@ -181,9 +181,10 @@ export class ExportService {
     await this.getInfoWarehouse(request, data, true);
     const transactionDateNow = await this.transactionItemRepository.getTransactionByDate(request);
     let transactionArr = transactionDateNow.map((item) => {
-      if (item.quantityExported != 0 || item.quantityImported != 0) {
+      if ((item.quantityExported != 0 || item.quantityImported != 0) && item.quantityExported != item.quantityImported) {
         return {
           ...item,
+          transactionDate: formatDate(request?.dateFrom) || '',
           key: `${item.warehouseCode}-${item.locatorCode}-${item.itemCode}-${item.companyCode}`,
         }
       }
