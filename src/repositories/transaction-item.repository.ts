@@ -460,6 +460,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           _id: 0,
           companyCode: 1,
           warehouseCode: 1,
+          warehouseName: 1,
           itemCode: 1,
           itemName: 1,
           locatorCode: 1,
@@ -493,6 +494,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           _id: {
             companyCode: '$companyCode',
             warehouseCode: '$warehouseCode',
+            warehouseName: '$warehouseName',
             itemCode: '$itemCode',
             itemName: '$itemName',
             locatorCode: '$locatorCode',
@@ -509,6 +511,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           _id: 0,
           companyCode: '$_id.companyCode',
           warehouseCode: '$_id.warehouseCode',
+          warehouseName: '$_id.warehouseName',
           itemCode: '$_id.itemCode',
           itemName: '$_id.itemName',
           locatorCode: '$_id.locatorCode',
