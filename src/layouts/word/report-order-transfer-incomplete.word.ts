@@ -360,6 +360,7 @@ export async function generatereportOrderTransferIncompleted(
                               `report.${companyCode}_REPORT_FOOTER_DATE`,
                             ),
                             ...wordFileStyle.text_style,
+                            italics: true,
                           }),
                         ],
                         alignment: AlignmentType.CENTER,
