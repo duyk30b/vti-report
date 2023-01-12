@@ -1,4 +1,4 @@
-import { formatNumber, readDecimal } from '@constant/common';
+import { formatDate, formatNumber, readDecimal } from '@constant/common';
 import { TableAgeOfItems } from '@models/age-of-items.model';
 import { plus } from '@utils/common';
 import {
@@ -239,7 +239,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.CENTER,
                                   children: [
                                     new TextRun({
-                                      text: record.storageDate,
+                                      text: formatDate(record.storageDate) || '',
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],

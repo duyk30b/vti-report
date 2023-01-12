@@ -7,7 +7,7 @@ import { ReportRequest } from '@requests/report.request';
 import { DailyWarehouseItemRequest } from '@requests/sync-daily.request';
 import { DailyWarehouseItemStock } from '@schemas/daily-warehouse-item-stock.schema';
 import { getTimezone, plus } from '@utils/common';
-import { DATE_FOMAT, FORMAT_DATE } from '@utils/constant';
+import { DATE_FOMAT, FORMAT_DATE, TIMEZONE_HCM_CITY } from '@utils/constant';
 import * as moment from 'moment';
 import { Model } from 'mongoose';
 
@@ -80,7 +80,7 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
       condition['$and'].push({
         $expr: {
           $eq: [
-            { $dateToString: { date: '$reportDate', format: '%Y-%m-%d' } },
+            { $dateToString: { date: '$reportDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY } },
             moment(prevDate).format(DATE_FOMAT),
           ],
         },
@@ -89,7 +89,7 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
       condition['$and'].push({
         $expr: {
           $eq: [
-            { $dateToString: { date: '$reportDate', format: '%Y-%m-%d' } },
+            { $dateToString: { date: '$reportDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY } },
             moment(request?.dateTo).format(DATE_FOMAT),
           ],
         },

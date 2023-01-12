@@ -386,104 +386,81 @@ export async function generateReportOrderImportIncompleted(
                 .flat(),
             ],
           }),
-          new Paragraph({}),
           new Table({
-            width: {
-              size: 100,
-              type: WidthType.PERCENTAGE,
-            },
+            width: setWidth(WORD_FILE_CONFIG.TABLE_WIDTH_PAGE_A3),
             borders: wordFileStyle.border_none,
             rows: [
               new TableRow({
-                children: [
-                  new TableCell({
-                    borders: wordFileStyle.border_none,
-                    children: [],
-                    width: {
-                      size: 100 / 3,
-                      type: WidthType.PERCENTAGE,
-                    },
-                  }),
-                  new TableCell({
-                    borders: wordFileStyle.border_none,
-                    children: [],
-                    width: {
-                      size: 100 / 3,
-                      type: WidthType.PERCENTAGE,
-                    },
-                  }),
-                  new TableCell({
+                height: setHeight(WORD_FILE_CONFIG.TABLE_HEADER_HEIGHT),
+                children: ORDER_IMPORT_INCOMPLETED_COLUMNS.map((item, index) => {
+                  let text = '';
+                  let columnSpan = null;
+                  let italics = {};
+                  if (index == 4) {
+                    text = i18n.translate(
+                      `report.${companyCode}_REPORT_FOOTER_DATE`,
+                    );
+                    columnSpan = 3;
+                    italics = {
+                      italics: true,
+                    }
+                  }
+                  if (index < 5) {
+                    return new TableCell({
+                      width: setWidth(item.width),
+                      verticalAlign: VerticalAlign.CENTER,
+                      columnSpan: columnSpan,
+                      borders: wordFileStyle.border_none,
+                      children: [
+                        new Paragraph({
+                          alignment: AlignmentType.CENTER,
+                          children: [
+                            new TextRun({
+                              text: text,
+                              ...wordFileStyle.text_style,
+                              ...italics,
+                            }),
+                          ],
+                        }),
+                      ],
+                    });
+                  }
+                }),
+              }),
+              new TableRow({
+                height: setHeight(WORD_FILE_CONFIG.TABLE_HEADER_HEIGHT),
+                children: ORDER_IMPORT_INCOMPLETED_COLUMNS.map((item, index) => {
+                  let text = '';
+                  let columnSpan = null;
+                  if (index == 2) {
+                    text = i18n.translate(
+                      'report.REPORT_FOOTER_SCHEDULER',
+                    );
+                  } else if (index == 10) {
+                    text = i18n.translate(
+                      'report.REPORT_FOOTER_STOCKER',
+                    );
+                  }
+                  return new TableCell({
+                    width: setWidth(item.width),
+                    verticalAlign: VerticalAlign.CENTER,
+                    columnSpan: columnSpan,
                     borders: wordFileStyle.border_none,
                     children: [
                       new Paragraph({
-                        children: [
-                          new TextRun({
-                            text: i18n.translate(
-                              `report.${companyCode}_REPORT_FOOTER_DATE`,
-                            ),
-                            ...wordFileStyle.text_style,
-                          }),
-                        ],
                         alignment: AlignmentType.CENTER,
-                      }),
-                    ],
-                    width: {
-                      size: 100 / 3,
-                      type: WidthType.PERCENTAGE,
-                    },
-                  }),
-                ],
-              }),
-              new TableRow({
-                children: [
-                  new TableCell({
-                    children: [],
-                    columnSpan: 3,
-                    borders: wordFileStyle.border_none,
-                  }),
-                ],
-              }),
-              new TableRow({
-                children: [
-                  new TableCell({
-                    borders: wordFileStyle.border_none,
-                    children: [],
-                  }),
-                  new TableCell({
-                    borders: wordFileStyle.border_none,
-                    children: [
-                      new Paragraph({
                         children: [
                           new TextRun({
-                            text: i18n.translate(
-                              'report.REPORT_FOOTER_SCHEDULER',
-                            ),
+                            text: text,
                             ...wordFileStyle.text_style_bold,
                           }),
                         ],
-                        alignment: AlignmentType.CENTER,
                       }),
                     ],
-                  }),
-                  new TableCell({
-                    borders: wordFileStyle.border_none,
-                    children: [
-                      new Paragraph({
-                        children: [
-                          new TextRun({
-                            text: i18n.translate(
-                              'report.REPORT_FOOTER_STOCKER',
-                            ),
-                            ...wordFileStyle.text_style_bold,
-                          }),
-                        ],
-                        alignment: AlignmentType.CENTER,
-                      }),
-                    ],
-                  }),
-                ],
+                  });
+                }),
               }),
-            ],
+            ]
           }),
         ],
       },

@@ -10,7 +10,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { ReportRequest } from '@requests/report.request';
 import { ReportOrderItemLotInteface } from '@schemas/interface/report-order-item-lot.interface';
 import { ReportOrderItemLot } from '@schemas/report-order-item-lot.schema';
-import { DATE_FOMAT } from '@utils/constant';
+import { DATE_FOMAT, TIMEZONE_HCM_CITY } from '@utils/constant';
 import { Model } from 'mongoose';
 import * as moment from 'moment';
 import { INVENTORY_ADJUSTMENT_TYPE } from '@constant/common';
@@ -61,7 +61,7 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
       condition['$and'].push({
         $expr: {
           $eq: [
-            { $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' } },
+            { $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY } },
             moment(request?.dateFrom).format(DATE_FOMAT),
           ],
         },
@@ -72,7 +72,7 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
           $expr: {
             $gte: [
               {
-                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' },
+                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
               },
               moment(request?.dateFrom).format(DATE_FOMAT),
             ],
@@ -85,7 +85,7 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
           $expr: {
             $lte: [
               {
-                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' },
+                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
               },
               moment(request?.dateTo).format(DATE_FOMAT),
             ],
@@ -156,7 +156,7 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
             lotNumber: '$lotNumber',
             storageCost: '$storageCost',
             reportDate: {
-              $dateToString: { date: '$reportDate', format: '%Y-%m-%d' },
+              $dateToString: { date: '$reportDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
             },
             note: '$note',
           },
@@ -240,7 +240,7 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
       condition['$and'].push({
         $expr: {
           $eq: [
-            { $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' } },
+            { $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY } },
             moment(request?.dateFrom).format(DATE_FOMAT),
           ],
         },
@@ -251,7 +251,7 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
           $expr: {
             $gte: [
               {
-                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' },
+                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
               },
               moment(request?.dateFrom).format(DATE_FOMAT),
             ],
@@ -263,7 +263,7 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
           $expr: {
             $lte: [
               {
-                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' },
+                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
               },
               moment(request?.dateTo).format(DATE_FOMAT),
             ],
@@ -355,7 +355,7 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
       condition['$and'].push({
         $expr: {
           $eq: [
-            { $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' } },
+            { $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY } },
             moment(request?.dateFrom).format(DATE_FOMAT),
           ],
         },
@@ -366,7 +366,7 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
           $expr: {
             $gte: [
               {
-                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' },
+                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
               },
               moment(request?.dateFrom).format(DATE_FOMAT),
             ],
@@ -378,7 +378,7 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
           $expr: {
             $lte: [
               {
-                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' },
+                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
               },
               moment(request?.dateTo).format(DATE_FOMAT),
             ],
@@ -601,7 +601,7 @@ function reportSituationExport(
           reason: '$reason',
           orderCode: '$orderCode',
           orderCreatedAt: {
-            $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' },
+            $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
           },
           constructionName: '$constructionName',
           departmentReceiptName: '$departmentReceiptName',
@@ -771,7 +771,7 @@ function reportSituationImport(
           reason: '$reason',
           orderCode: '$orderCode',
           orderCreatedAt: {
-            $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' },
+            $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
           },
           contract: '$contract',
           constructionName: '$constructionName',
@@ -924,7 +924,7 @@ function reportSituationTransfer(
           companyCode: '$companyCode',
           orderCode: '$orderCode',
           orderCreatedAt: {
-            $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' },
+            $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
           },
           warehouseTargetName: '$warehouseTargetName',
           warehouseTargetCode: '$warehouseTargetCode',
