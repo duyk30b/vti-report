@@ -18,6 +18,7 @@ import {
   TextRun,
   VerticalAlign,
 } from 'docx';
+import * as moment from 'moment';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { setHeight, setWidth, wordFileStyle } from './word-common.styles';
 export async function generateReportSituationImportPeriod(
@@ -438,7 +439,7 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.CENTER,
                                       children: [
                                         new TextRun({
-                                          text: order.orderCreatedAt + '',
+                                          text: moment(order.orderCreatedAt).format('DD/MM/YYYY') || '',
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],

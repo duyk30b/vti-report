@@ -2,7 +2,7 @@ import { TableAgeOfItems, Items } from '@models/age-of-items.model';
 import { minus, mul, plus } from '@utils/common';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
-import { compact, keyBy, isEmpty } from 'lodash';
+import { compact, keyBy, isEmpty, uniq } from 'lodash';
 
 export function getSituationTransferMapped(
   data: any[],
@@ -16,14 +16,17 @@ export function getSituationTransferMapped(
     dataMapped: null,
   };
 
+  const companyCode = data[0]?._id?.companyCode || '';
+  let arrWarehouseCode = [];
   let dataExcell: TableAgeOfItems[] = [];
   if (data.length > 0) {
     dataExcell = data[0]?.warehouses?.map((item: any) => {
+      arrWarehouseCode.push(item.warehouseCode);
       dataMaping.warehouseName = item.warehouseName;
       item.items?.map((i) => {
         i?.groupByStorageDate.map((infoStock) => {
-          if (transactionNow[`${item.warehouseCode}-${infoStock.locatorCode}-${i.itemCode}`]) {
-            let transaction = transactionNow[`${item.warehouseCode}-${infoStock.locatorCode}-${i.itemCode}`];
+          if (transactionNow[`${item.warehouseCode}-${infoStock.locatorCode}-${i.itemCode}-${companyCode}`]) {
+            let transaction = transactionNow[`${item.warehouseCode}-${infoStock.locatorCode}-${i.itemCode}-${companyCode}`];
             let info = infoStock;
             if (transaction?.quantityImported) {
               i.totalQuantity = plus(i.totalQuantity, transaction?.quantityImported);
@@ -43,12 +46,12 @@ export function getSituationTransferMapped(
                 fiveYearAgo: infoStock?.fiveYearAgo,
                 greaterfiveYear: infoStock?.greaterfiveYear,
               })
-              transactionNow[`${item.warehouseCode}-${infoStock.locatorCode}-${i.itemCode}`] = null;
+              transactionNow[`${item.warehouseCode}-${infoStock.locatorCode}-${i.itemCode}-${companyCode}`] = null;
             } else if (transaction?.quantityExported) {
               i.totalQuantity = minus(i.totalQuantity, transaction?.quantityExported);
               const numberCheck = minus(infoStock.stockQuantity, transaction?.quantityExported);
               if (numberCheck >= 0) {
-                transactionNow[`${item.warehouseCode}-${infoStock.locatorCode}-${i.itemCode}`] = null;
+                transactionNow[`${item.warehouseCode}-${infoStock.locatorCode}-${i.itemCode}-${companyCode}`] = null;
                 infoStock.stockQuantity = numberCheck;
               } else {
                 const quantity = minus(transaction?.quantityExported, infoStock.stockQuantity);
@@ -84,11 +87,12 @@ export function getSituationTransferMapped(
 
   let dataExcell2: TableAgeOfItems[] = [];
   if (!isEmpty(transactionNow)) {
-    if (!isEmpty(data[0].warehouses) || !data[0].warehouses) {
+    if (isEmpty(data[0].warehouses)) {
       const warehouseCode = data[0]?._id?.warehouseCode || '';
       const warehouseName = data[0]?._id?.warehouseName || '';
       dataMaping.warehouseName = warehouseName;
       const { arrformated, objectTransaction } = pushItemOld(transactionNow, [], warehouseCode);
+      transactionNow = objectTransaction;
       if (!isEmpty(dataExcell) || !dataExcell) {
         let arr = {
           warehouseCode:
@@ -106,6 +110,43 @@ export function getSituationTransferMapped(
         };
         dataExcell2.push(arr);
       }
+    } else {
+      let warehouseCodeTransaction = [];
+      for (const key in transactionNow) {
+        if (transactionNow[key]) {
+          const code = transactionNow[key]?.warehouseCode || '';
+          const name = transactionNow[key]?.warehouseName || '';
+          warehouseCodeTransaction.push({
+            name: name,
+            code: code,
+          });
+        }
+      }
+      warehouseCodeTransaction = uniq(warehouseCodeTransaction);
+      arrWarehouseCode = uniq(arrWarehouseCode);
+      warehouseCodeTransaction.map((warehouse) => {
+        if (!arrWarehouseCode.includes(warehouse.code)) {
+          const { arrformated, objectTransaction } = pushItemOld(transactionNow, [], warehouse.code);
+          transactionNow = objectTransaction;
+          if (!isEmpty(arrformated)) {
+            const arr = {
+              warehouseCode:
+                i18n.translate('report.WAREHOUSE_GROUP_CODE') +
+                [warehouse.code, warehouse.name].join('_'),
+              sixMonth: 0,
+              oneYearAgo: 0,
+              twoYearAgo: 0,
+              threeYearAgo: 0,
+              fourYearAgo: 0,
+              fiveYearAgo: 0,
+              greaterfiveYear: 0,
+              totalPrice: 0,
+              items: arrformated,
+            };
+            dataExcell.push(arr);
+          }
+        }
+      })
     }
   }
   dataMaping.dataMapped = dataExcell || dataExcell2;

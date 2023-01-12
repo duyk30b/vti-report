@@ -52,6 +52,6 @@ export async function reportItemInventoryBelowMinimumExcelMapping(
 
   return {
     nameFile,
-    dataBase64,
+    result: dataBase64,
   };
 }

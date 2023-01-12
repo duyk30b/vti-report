@@ -12,7 +12,7 @@ import { ReportOrderItemInteface } from '@schemas/interface/report-order-item.in
 import { ReportOrderItem } from '@schemas/report-order-item.schema';
 import { Model } from 'mongoose';
 import * as moment from 'moment';
-import { DATE_FOMAT } from '@utils/constant';
+import { DATE_FOMAT, TIMEZONE_HCM_CITY } from '@utils/constant';
 @Injectable()
 export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrderItem> {
   constructor(
@@ -63,7 +63,7 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
       condition['$and'].push({
         $expr: {
           $eq: [
-            { $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' } },
+            { $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY } },
             moment(request?.dateFrom).format(DATE_FOMAT),
           ],
         },
@@ -74,7 +74,7 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
           $expr: {
             $gte: [
               {
-                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' },
+                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
               },
               moment(request?.dateFrom).format(DATE_FOMAT),
             ],
@@ -86,7 +86,7 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
           $expr: {
             $lte: [
               {
-                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d' },
+                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
               },
               moment(request?.dateTo).format(DATE_FOMAT),
             ],

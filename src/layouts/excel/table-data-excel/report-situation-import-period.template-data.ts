@@ -9,6 +9,7 @@ import {
   FONT_NORMAL_9,
 } from '@utils/constant';
 import * as ExcelJS from 'exceljs';
+import * as moment from 'moment';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { configCells, ConfigCells } from '../report-excel.layout';
 export function reportSituationImportPeriodTemplateData(
@@ -98,7 +99,7 @@ export function reportSituationImportPeriodTemplateData(
               },
               {
                 nameCell: `C${curRowIdx}`,
-                value: order.orderCreatedAt,
+                value: moment(order.orderCreatedAt).format('DD/MM/YYYY') || '',
                 border: BORDER,
                 font: FONT_NORMAL_9,
                 aligment: ALIGNMENT_CENTER,
