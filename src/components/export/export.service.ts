@@ -178,13 +178,21 @@ export class ExportService {
         request,
       );
     await this.getInfoWarehouse(request, data, true);
-    const transactionDateNow = await this.transactionItemRepository.getTransactionByDate(request);
-    const transactionArr = keyBy(transactionDateNow.map((item) => ({
-      ...item,
-      key: `${item.warehouseCode}-${item.locatorCode}-${item.itemCode}`
-    })), 'key');
+    const transactionDateNow =
+      await this.transactionItemRepository.getTransactionByDate(request);
+    const transactionArr = keyBy(
+      transactionDateNow.map((item) => ({
+        ...item,
+        key: `${item.warehouseCode}-${item.locatorCode}-${item.itemCode}`,
+      })),
+      'key',
+    );
 
-    const dataMapped = getSituationTransferMapped(data, this.i18n, transactionArr);
+    const dataMapped = getSituationTransferMapped(
+      data,
+      this.i18n,
+      transactionArr,
+    );
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } = await reportAgeOfItemsExcelMapping(
@@ -211,11 +219,16 @@ export class ExportService {
         true,
       );
     await this.getInfoWarehouse(request, data, true);
-    const dataMapped = getSituationExportPeriodMapped(data, this.i18n, request?.reportType);
+    const dataMapped = getSituationExportPeriodMapped(
+      data,
+      this.i18n,
+      request?.reportType,
+    );
     if (dataMapped.companyCode) {
       const dataCompany = await this.getCompany(dataMapped.companyCode);
       dataMapped.companyName = dataCompany[0].name || dataMapped.companyName;
-      dataMapped.companyAddress = dataCompany[0].address || dataMapped.companyAddress;
+      dataMapped.companyAddress =
+        dataCompany[0].address || dataMapped.companyAddress;
     }
     switch (request.exportType) {
       case ExportType.EXCEL:
@@ -248,11 +261,16 @@ export class ExportService {
       );
     await this.getInfoWarehouse(request, data, true);
 
-    const dataMapped = getSituationImportPeriod(data, this.i18n, request.reportType);
+    const dataMapped = getSituationImportPeriod(
+      data,
+      this.i18n,
+      request.reportType,
+    );
     if (dataMapped.companyCode) {
       const dataCompany = await this.getCompany(dataMapped.companyCode);
       dataMapped.companyName = dataCompany[0].name || dataMapped.companyName;
-      dataMapped.companyAddress = dataCompany[0].address || dataMapped.companyAddress;
+      dataMapped.companyAddress =
+        dataCompany[0].address || dataMapped.companyAddress;
     }
 
     switch (request.exportType) {
@@ -315,7 +333,11 @@ export class ExportService {
       );
     await this.getInfoWarehouse(request, data, true);
 
-    const dataMapped = await getSituationTransfer(data, this.i18n, this.userService);
+    const dataMapped = await getSituationTransfer(
+      data,
+      this.i18n,
+      this.userService,
+    );
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -502,17 +524,33 @@ export class ExportService {
         }
       }
     }
-      for(const key in keyByDailyItem) {                      
-        keyByDailyItem[key].importIn = readDecimal(keyByDailyItem[key]?.importIn);
-        keyByDailyItem[key].exportIn = readDecimal(keyByDailyItem[key]?.exportIn);
-        keyByDailyItem[key].storageCost = readDecimal(keyByDailyItem[key]?.storageCost);
-        keyByDailyItem[key].stockStart = readDecimal(keyByDailyItem[key]?.stockStart, true);
-        keyByDailyItem[key].totalStockStart = readDecimal(keyByDailyItem[key]?.totalStockStart);
-        keyByDailyItem[key].stockEnd = readDecimal(keyByDailyItem[key]?.stockEnd, true);
-        keyByDailyItem[key].totalStockEnd = readDecimal(keyByDailyItem[key]?.totalStockEnd);
-        keyByDailyItem[key].totalExportIn = readDecimal(keyByDailyItem[key]?.totalExportIn);
-        keyByDailyItem[key].totalImportIn = readDecimal(keyByDailyItem[key]?.totalImportIn);
-      }
+    for (const key in keyByDailyItem) {
+      keyByDailyItem[key].importIn = readDecimal(keyByDailyItem[key]?.importIn);
+      keyByDailyItem[key].exportIn = readDecimal(keyByDailyItem[key]?.exportIn);
+      keyByDailyItem[key].storageCost = readDecimal(
+        keyByDailyItem[key]?.storageCost,
+      );
+      keyByDailyItem[key].stockStart = readDecimal(
+        keyByDailyItem[key]?.stockStart,
+        true,
+      );
+      keyByDailyItem[key].totalStockStart = readDecimal(
+        keyByDailyItem[key]?.totalStockStart,
+      );
+      keyByDailyItem[key].stockEnd = readDecimal(
+        keyByDailyItem[key]?.stockEnd,
+        true,
+      );
+      keyByDailyItem[key].totalStockEnd = readDecimal(
+        keyByDailyItem[key]?.totalStockEnd,
+      );
+      keyByDailyItem[key].totalExportIn = readDecimal(
+        keyByDailyItem[key]?.totalExportIn,
+      );
+      keyByDailyItem[key].totalImportIn = readDecimal(
+        keyByDailyItem[key]?.totalImportIn,
+      );
+    }
     const data = Object.values(keyByDailyItem);
 
     let isEmpty = await this.getInfoWarehouse(request, data);
@@ -599,7 +637,8 @@ export class ExportService {
     if (dataMapped.companyCode) {
       const dataCompany = await this.getCompany(dataMapped.companyCode);
       dataMapped.companyName = dataCompany[0].name || dataMapped.companyName;
-      dataMapped.companyAddress = dataCompany[0].address || dataMapped.companyAddress;
+      dataMapped.companyAddress =
+        dataCompany[0].address || dataMapped.companyAddress;
     }
     switch (request.exportType) {
       case ExportType.EXCEL:
@@ -640,7 +679,8 @@ export class ExportService {
     if (dataMapped.companyCode) {
       const dataCompany = await this.getCompany(dataMapped.companyCode);
       dataMapped.companyName = dataCompany[0].name || dataMapped.companyName;
-      dataMapped.companyAddress = dataCompany[0].address || dataMapped.companyAddress;
+      dataMapped.companyAddress =
+        dataCompany[0].address || dataMapped.companyAddress;
     }
 
     switch (request.exportType) {
@@ -734,23 +774,20 @@ export class ExportService {
   async reportItemInventoryBelowMinimum(
     request: ReportRequest,
   ): Promise<ReportResponse> {
-    let data = await this.dailyWarehouseItemStockRepository.getReports(request);
-    data = await this.transactionItemRepository.updateQuantityItem(
-      request,
-      data,
-    );
-    let isEmpty = await this.getInfoWarehouse(request, data);
+    const data =
+      await this.dailyWarehouseItemStockRepository.getReportInventoryBelowSafe(
+        request,
+      );
+    const isEmpty = await this.getInfoWarehouse(request, data);
 
     const dataMapped = getItemInventoryBelowMinimum(data, this.i18n, isEmpty);
     switch (request.exportType) {
       case ExportType.EXCEL:
-        const { nameFile, dataBase64 } =
-          await reportItemInventoryBelowMinimumExcelMapping(
-            request,
-            dataMapped,
-            this.i18n,
-          );
-        return { result: dataBase64, nameFile };
+        return await reportItemInventoryBelowMinimumExcelMapping(
+          request,
+          dataMapped,
+          this.i18n,
+        );
 
       case ExportType.WORD:
         return reportItemInventoryBelowMinimumWordMapping(
@@ -764,22 +801,19 @@ export class ExportService {
   async reportItemInventoryBelowSafe(
     request: ReportRequest,
   ): Promise<ReportResponse> {
-    let data = await this.dailyWarehouseItemStockRepository.getReports(request);
-    data = await this.transactionItemRepository.updateQuantityItem(
-      request,
-      data,
-    );
-    let isEmpty = await this.getInfoWarehouse(request, data);
+    const data =
+      await this.dailyWarehouseItemStockRepository.getReportInventoryBelowSafe(
+        request,
+      );
+    const isEmpty = await this.getInfoWarehouse(request, data);
     const dataMaped = getItemInventoryBelowSafe(data, this.i18n, isEmpty);
     switch (request.exportType) {
       case ExportType.EXCEL:
-        const { nameFile, dataBase64 } =
-          await reportItemInventoryBelowSafeExcelMapping(
-            request,
-            dataMaped,
-            this.i18n,
-          );
-        return { result: dataBase64, nameFile };
+        return await reportItemInventoryBelowSafeExcelMapping(
+          request,
+          dataMaped,
+          this.i18n,
+        );
       case ExportType.WORD:
         return reportItemInventoryBelowSafeWordMapping(
           request,

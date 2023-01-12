@@ -154,4 +154,234 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
       { $sort: { warehouseCode: 1, itemCode: 1, stockQuantity: 1 } },
     ]);
   }
+
+  async getReportInventoryBelowSafe(request: ReportRequest): Promise<any> {
+    const { companyCode, reportType, warehouseCode } = request;
+
+    const currentDate = getTimezone(undefined, FORMAT_DATE);
+    const condition = {
+      $and: [
+        {
+          $expr: {
+            $eq: [
+              {
+                $dateToString: {
+                  date: '$reportDate',
+                  format: '%Y-%m-%d',
+                  timezone: 'Asia/Ho_Chi_Minh',
+                },
+              },
+              moment(currentDate, FORMAT_DATE)
+                .subtract(1, 'day')
+                .format(FORMAT_DATE),
+            ],
+          },
+        },
+      ],
+    } as any;
+
+    const conditionTransactionItem = {
+      $and: [
+        {
+          $expr: {
+            $eq: [
+              {
+                $dateToString: {
+                  date: '$transactionDate',
+                  format: '%Y-%m-%d',
+                  timezone: 'Asia/Ho_Chi_Minh',
+                },
+              },
+              currentDate,
+            ],
+          },
+        },
+      ],
+    } as any;
+    const conditionQuantity = {
+      $and: [],
+    };
+
+    switch (reportType) {
+      case ReportType.ITEM_INVENTORY_BELOW_SAFE:
+        conditionQuantity['$and'].push({
+          $expr: {
+            $lt: [`$stockQuantity`, `$inventoryLimit`],
+          },
+        });
+        break;
+      case ReportType.ITEM_INVENTORY_BELOW_MINIMUM:
+        conditionQuantity['$and'].push({
+          $expr: {
+            $lt: [`$stockQuantity`, `$minInventoryLimit`],
+          },
+        });
+        break;
+      default:
+        break;
+    }
+
+    if (companyCode) {
+      condition['$and'].push({
+        companyCode: { $eq: companyCode },
+      });
+      conditionTransactionItem['$and'].push({
+        companyCode: { $eq: companyCode },
+      });
+    }
+
+    if (warehouseCode) {
+      condition['$and'].push({
+        warehouseCode: { $eq: warehouseCode },
+      });
+      conditionTransactionItem['$and'].push({
+        warehouseCode: { $eq: warehouseCode },
+      });
+    }
+
+    return this.dailyWarehouseItemStock.aggregate([
+      {
+        $match: condition,
+      },
+      {
+        $unionWith: {
+          coll: 'transaction-item',
+          pipeline: [
+            {
+              $match: conditionTransactionItem,
+            },
+            {
+              $group: {
+                _id: {
+                  companyCode: '$companyCode',
+                  itemCode: '$itemCode',
+                  warehouseCode: '$warehouseCode',
+                  warehouseName: '$warehouseName',
+                  itemName: '$itemName',
+                  unit: '$unit',
+                },
+                stockQuantity: {
+                  $sum: {
+                    $cond: [
+                      {
+                        $eq: ['$actionType', 0],
+                      },
+                      '$actualQuantity',
+                      {
+                        $multiply: ['$actualQuantity', -1],
+                      },
+                    ],
+                  },
+                },
+              },
+            },
+            {
+              $project: {
+                companyCode: '$_id.companyCode',
+                itemCode: '$_id.itemCode',
+                warehouseCode: '$_id.warehouseCode',
+                stockQuantity: '$stockQuantity',
+                warehouseName: '$_id.warehouseName',
+                itemName: '$_id.itemName',
+                unit: '$_id.unit',
+              },
+            },
+          ],
+        },
+      },
+      {
+        $sort: {
+          companyCode: 1,
+          warehouseCode: 1,
+          itemCode: 1,
+          stockQuantity: 1,
+        },
+      },
+      {
+        $group: {
+          _id: {
+            companyCode: '$companyCode',
+            itemCode: '$itemCode',
+            warehouseCode: '$warehouseCode',
+            warehouseName: '$warehouseName',
+            itemName: '$itemName',
+            unit: '$unit',
+          },
+          stockQuantity: {
+            $sum: '$stockQuantity',
+          },
+        },
+      },
+      {
+        $project: {
+          companyCode: '$_id.companyCode',
+          itemCode: '$_id.itemCode',
+          warehouseCode: '$_id.warehouseCode',
+          warehouseName: '$_id.warehouseName',
+          itemName: '$_id.itemName',
+          unit: '$_id.unit',
+          stockQuantity: 1,
+        },
+      },
+      {
+        $lookup: {
+          from: 'inventory-quantity-norms',
+          let: {
+            companyCode: '$companyCode',
+            warehouseCode: '$warehouseCode',
+            itemCode: '$itemCode',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    {
+                      $eq: ['$warehouseCode', '$$warehouseCode'],
+                    },
+                    {
+                      $eq: ['$itemCode', '$$itemCode'],
+                    },
+                  ],
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                companyCode: 1,
+                warehouseCode: 1,
+                itemCode: 1,
+                inventoryLimit: 1,
+                minInventoryLimit: 1,
+              },
+            },
+          ],
+          as: 'inventory-quantity-norms',
+        },
+      },
+      {
+        $unwind: {
+          path: '$inventory-quantity-norms',
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          companyCode: 1,
+          itemCode: 1,
+          itemName: 1,
+          warehouseCode: 1,
+          warehouseName: 1,
+          stockQuantity: 1,
+          unit: 1,
+          inventoryLimit: '$inventory-quantity-norms.inventoryLimit',
+          minInventoryLimit: '$inventory-quantity-norms.minInventoryLimit',
+        },
+      },
+      {
+        $match: conditionQuantity,
+      },
+    ]);
+  }
 }
