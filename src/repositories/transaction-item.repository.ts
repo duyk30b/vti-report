@@ -459,8 +459,6 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
         $project: {
           _id: 0,
           companyCode: 1,
-          companyName: 1,
-          companyAddress: 1,
           warehouseCode: 1,
           warehouseName: 1,
           itemCode: 1,
@@ -469,7 +467,6 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           unit: 1,
           lotNumber: 1,
           storageCost: 1,
-          transactionDate: 1,
           quantityExported: {
             $cond: [
               {
@@ -496,8 +493,6 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
         $group: {
           _id: {
             companyCode: '$companyCode',
-            companyName: '$companyName',
-            companyAddress: '$companyAddress',
             warehouseCode: '$warehouseCode',
             warehouseName: '$warehouseName',
             itemCode: '$itemCode',
@@ -506,7 +501,6 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
             unit: '$unit',
             lotNumber: '$lotNumber',
             storageCost: '$storageCost',
-            transactionDate: '$transactionDate',
           },
           quantityExported: { $sum: '$quantityExported' },
           quantityImported: { $sum: '$quantityImported' },
@@ -516,8 +510,6 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
         $project: {
           _id: 0,
           companyCode: '$_id.companyCode',
-          companyName: '$_id.companyName',
-          companyAddress: '$_id.companyAddress',
           warehouseCode: '$_id.warehouseCode',
           warehouseName: '$_id.warehouseName',
           itemCode: '$_id.itemCode',
@@ -528,9 +520,6 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           storageCost: '$_id.storageCost',
           quantityExported: 1,
           quantityImported: 1,
-          transactionDate: {
-            $dateToString: { date: '$_id.transactionDate', format: '%m/%d/%Y', timezone: TIMEZONE_HCM_CITY },
-          },
         },
       },
     ]);
