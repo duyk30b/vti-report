@@ -3,6 +3,7 @@ import { minus, mul, plus } from '@utils/common';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
 import { compact, keyBy, isEmpty, uniq } from 'lodash';
+import { formatDate } from '@constant/common';
 
 export function getSituationTransferMapped(
   data: any[],
@@ -31,7 +32,7 @@ export function getSituationTransferMapped(
             if (transaction?.quantityImported) {
               i.totalQuantity = plus(i.totalQuantity, transaction?.quantityImported);
               i?.groupByStorageDate.push({
-                storageDate: transaction?.transactionDate,
+                storageDate: formatDate(transaction?.transactionDate),
                 lotNumber: infoStock?.lotNumber,
                 locatorCode: infoStock?.locatorCode,
                 unit: infoStock?.unit,
@@ -240,7 +241,7 @@ function formatItem(item: any, quantity?: number) {
     greaterfiveYear: item?.greaterfiveYear || 0,
     groupByStorageDate: [
       {
-        storageDate: item.transactionDate,
+        storageDate: formatDate(item.transactionDate),
         lotNumber: item.lotNumber,
         locatorCode: item.locatorCode,
         unit: item.unit,
@@ -261,7 +262,7 @@ function formatItem(item: any, quantity?: number) {
 
 function formatGroupByStorageDate(item: any, quantity?: number) {
   return {
-    storageDate: item.transactionDate,
+    storageDate: formatDate(item.transactionDate),
     origin: item?.origin || null,
     account: item?.account || null,
     lotNumber: item.lotNumber,
