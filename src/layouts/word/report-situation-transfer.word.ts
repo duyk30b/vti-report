@@ -1,4 +1,4 @@
-import { formatNumber, readDecimal } from '@constant/common';
+import { formatDate, formatNumber, readDecimal } from '@constant/common';
 import { TableDataSituationTransfer } from '@models/situation-transfer.model';
 import { plus } from '@utils/common';
 import {
@@ -406,7 +406,7 @@ export async function generateReportSituationTransfer(
                                   children: [
                                     new TextRun({
                                       text:
-                                        order?.orderCreatedAt?.toString() || '',
+                                        formatDate(order?.orderCreatedAt) || '',
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],

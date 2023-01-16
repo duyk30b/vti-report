@@ -177,7 +177,7 @@ export async function generateReportOrderExportByRequestForItem(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(item.planQuantity),
+                                  text: item.planQuantity.toString(),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -193,7 +193,7 @@ export async function generateReportOrderExportByRequestForItem(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(item.exportedQuantity),
+                                  text: item.exportedQuantity.toString(),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
