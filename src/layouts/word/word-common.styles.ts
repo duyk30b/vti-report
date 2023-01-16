@@ -124,7 +124,7 @@ export function renderChildrenRows(
               children: [
                 new TextRun({
                   text: i18n.translate(`report.${child.name ?? ''}`),
-                  ...wordFileStyle.table_header_style,
+                  ...wordFileStyle.table_header_style_w002,
                 }),
               ],
             }),

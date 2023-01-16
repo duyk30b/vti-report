@@ -173,6 +173,9 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
             ],
           },
         });
+        condition['$and'].push({
+          warehouseExportProposals: { $exists: true, $ne: null },
+        });
         break;
 
       default:

@@ -18,12 +18,14 @@ import {
   CELL_REPORT_NUMBER,
   CEll_REPORT_TIME,
   CELL_TITLE_REPORT,
+  CELL_TITLE_REPORT_WAREHOUSE,
   COLUMN_COLOR,
   DATE_FOMAT_EXCELL,
   DATE_FOMAT_EXCELL_FILE,
   EXCEL_COLUMN,
   FONT_BOLD_10,
   FONT_BOLD_11,
+  FONT_BOLD_12,
   FONT_BOLD_14,
   FONT_BOLD_9,
   FONT_NORMAL_9,
@@ -97,7 +99,7 @@ export const generateTable = async (
         font: FONT_BOLD_10,
         aligment: ALIGNMENT_LEFT,
         translate: true,
-        merge: true,
+        merge: false,
         heightRow: {
           index: 1,
           value: 30,
@@ -109,7 +111,7 @@ export const generateTable = async (
         font: FONT_BOLD_10,
         aligment: ALIGNMENT_LEFT,
         translate: false,
-        merge: true,
+        merge: false,
       },
 
       {
@@ -118,7 +120,7 @@ export const generateTable = async (
         font: FONT_BOLD_10,
         aligment: ALIGNMENT_LEFT,
         translate: false,
-        merge: true,
+        merge: false,
         heightRow: {
           index: 3,
           value: 35,
@@ -126,8 +128,15 @@ export const generateTable = async (
       },
       {
         nameCell: CELL_TITLE_REPORT,
-        value: title,
+        value: title.split('\n')[0],
         font: FONT_BOLD_14,
+        aligment: ALIGNMENT_CENTER,
+        translate: false,
+      },
+      {
+        nameCell: CELL_TITLE_REPORT_WAREHOUSE,
+        value: title.split('\n')[1],
+        font: FONT_BOLD_12,
         aligment: ALIGNMENT_CENTER,
         translate: false,
       },
@@ -154,7 +163,7 @@ export const generateTable = async (
           font: FONT_NORMAL_9,
           aligment: ALIGNMENT_LEFT,
           translate: true,
-          merge: true,
+          merge: false,
         },
       ]);
     }
@@ -174,6 +183,7 @@ export const generateTable = async (
   if (typeof model.footer == 'function') {
     model.footer(rowIndex, worksheet, i18n, model?.companyCode);
   }
+  worksheet.columns[0].width = 30;  
   const buffer = await workbook.xlsx.writeBuffer();
   // workbook.xlsx.writeFile(`demo${Math.floor(Math.random() * 1000)}.xlsx`);
 
