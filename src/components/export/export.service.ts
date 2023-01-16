@@ -302,6 +302,12 @@ export class ExportService {
       );
     let isEmpty = await this.getInfoWarehouse(request, data, true);
     const dataMaped = getSituationInventoryPeriod(data, this.i18n, isEmpty);
+    if (dataMaped.companyCode) {
+      const dataCompany = await this.getCompany(dataMaped.companyCode);
+      dataMaped.companyName = dataCompany[0].name || dataMaped.companyName;
+      dataMaped.companyAddress =
+        dataCompany[0].address || dataMaped.companyAddress;
+    }
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =

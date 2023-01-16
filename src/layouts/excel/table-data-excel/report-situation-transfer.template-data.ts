@@ -1,4 +1,4 @@
-import { readDecimal } from '@constant/common';
+import { formatDate, readDecimal } from '@constant/common';
 import { TableDataSituationTransfer } from '@models/situation-transfer.model';
 import {
   ALIGNMENT_CENTER,
@@ -66,7 +66,7 @@ export function reportSituationTransferTemplateData(
           },
           {
             nameCell: `C${curRowIdx}`,
-            value: order.orderCreatedAt,
+            value: formatDate(order.orderCreatedAt),
             font: FONT_NORMAL_9,
             aligment: ALIGNMENT_CENTER,
             border: BORDER,
