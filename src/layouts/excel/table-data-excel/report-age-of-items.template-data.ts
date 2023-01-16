@@ -120,14 +120,14 @@ export function reportAgeOfItemsTemplateData(
           {
             nameCell: `A${curRowIdx}`,
             value: item.itemCode,
-            font: FONT_BOLD_8,
+            font: FONT_BOLD_9,
             aligment: ALIGNMENT_LEFT,
             border: BORDER,
           },
           {
             nameCell: `B${curRowIdx}:H${curRowIdx}`,
             value: item.itemName,
-            font: FONT_BOLD_8,
+            font: FONT_BOLD_9,
             aligment: ALIGNMENT_LEFT,
             border: BORDER,
             merge: true,
@@ -135,7 +135,7 @@ export function reportAgeOfItemsTemplateData(
           {
             nameCell: `I${curRowIdx}`,
             value: readDecimal(item.totalQuantity),
-            font: FONT_BOLD_8,
+            font: FONT_BOLD_9,
             aligment: ALIGNMENT_RIGHT,
             border: BORDER,
             numFmt: '### ### ### ###',
@@ -147,7 +147,7 @@ export function reportAgeOfItemsTemplateData(
           {
             nameCell: `K${curRowIdx}`,
             value: item.totalPrice,
-            font: FONT_BOLD_8,
+            font: FONT_BOLD_9,
             aligment: ALIGNMENT_RIGHT,
             border: BORDER,
             numFmt: '### ### ### ###',
@@ -155,7 +155,7 @@ export function reportAgeOfItemsTemplateData(
           {
             nameCell: `K${curRowIdx}`,
             value: item.totalPrice,
-            font: FONT_BOLD_8,
+            font: FONT_BOLD_9,
             aligment: ALIGNMENT_RIGHT,
             border: BORDER,
             numFmt: '### ### ### ###',
@@ -163,7 +163,7 @@ export function reportAgeOfItemsTemplateData(
           {
             nameCell: `L${curRowIdx}`,
             value: item.sixMonthAgo,
-            font: FONT_BOLD_8,
+            font: FONT_BOLD_9,
             aligment: ALIGNMENT_RIGHT,
             border: BORDER,
             numFmt: '### ### ### ###',
@@ -171,7 +171,7 @@ export function reportAgeOfItemsTemplateData(
           {
             nameCell: `M${curRowIdx}`,
             value: item.oneYearAgo,
-            font: FONT_BOLD_8,
+            font: FONT_BOLD_9,
             aligment: ALIGNMENT_RIGHT,
             border: BORDER,
             numFmt: '### ### ### ###',
@@ -179,7 +179,7 @@ export function reportAgeOfItemsTemplateData(
           {
             nameCell: `N${curRowIdx}`,
             value: item.twoYearAgo,
-            font: FONT_BOLD_8,
+            font: FONT_BOLD_9,
             aligment: ALIGNMENT_RIGHT,
             border: BORDER,
             numFmt: '### ### ### ###',
@@ -187,7 +187,7 @@ export function reportAgeOfItemsTemplateData(
           {
             nameCell: `O${curRowIdx}`,
             value: item.threeYearAgo,
-            font: FONT_BOLD_8,
+            font: FONT_BOLD_9,
             aligment: ALIGNMENT_RIGHT,
             border: BORDER,
             numFmt: '### ### ### ###',
@@ -195,7 +195,7 @@ export function reportAgeOfItemsTemplateData(
           {
             nameCell: `P${curRowIdx}`,
             value: item.fourYearAgo,
-            font: FONT_BOLD_8,
+            font: FONT_BOLD_9,
             aligment: ALIGNMENT_RIGHT,
             border: BORDER,
             numFmt: '### ### ### ###',
@@ -203,7 +203,7 @@ export function reportAgeOfItemsTemplateData(
           {
             nameCell: `Q${curRowIdx}`,
             value: item.fiveYearAgo,
-            font: FONT_BOLD_8,
+            font: FONT_BOLD_9,
             aligment: ALIGNMENT_RIGHT,
             border: BORDER,
             numFmt: '### ### ### ###',
@@ -211,7 +211,7 @@ export function reportAgeOfItemsTemplateData(
           {
             nameCell: `R${curRowIdx}`,
             value: item.greaterfiveYear,
-            font: FONT_BOLD_8,
+            font: FONT_BOLD_9,
             aligment: ALIGNMENT_RIGHT,
             border: BORDER,
             numFmt: '### ### ### ###',
@@ -300,7 +300,7 @@ export function reportAgeOfItemsTemplateData(
               {
                 nameCell: `L${curRowIdx}`,
                 value: order.sixMonthAgo,
-                font: FONT_BOLD_8,
+                font: FONT_BOLD_9,
                 aligment: ALIGNMENT_RIGHT,
                 border: BORDER,
                 numFmt: '### ### ### ###',
@@ -308,7 +308,7 @@ export function reportAgeOfItemsTemplateData(
               {
                 nameCell: `M${curRowIdx}`,
                 value: order.oneYearAgo,
-                font: FONT_BOLD_8,
+                font: FONT_BOLD_9,
                 aligment: ALIGNMENT_RIGHT,
                 border: BORDER,
                 numFmt: '### ### ### ###',
@@ -316,7 +316,7 @@ export function reportAgeOfItemsTemplateData(
               {
                 nameCell: `N${curRowIdx}`,
                 value: order.twoYearAgo,
-                font: FONT_BOLD_8,
+                font: FONT_BOLD_9,
                 aligment: ALIGNMENT_RIGHT,
                 border: BORDER,
                 numFmt: '### ### ### ###',
@@ -324,7 +324,7 @@ export function reportAgeOfItemsTemplateData(
               {
                 nameCell: `O${curRowIdx}`,
                 value: order.threeYearAgo,
-                font: FONT_BOLD_8,
+                font: FONT_BOLD_9,
                 aligment: ALIGNMENT_RIGHT,
                 border: BORDER,
                 numFmt: '### ### ### ###',
@@ -332,7 +332,7 @@ export function reportAgeOfItemsTemplateData(
               {
                 nameCell: `P${curRowIdx}`,
                 value: order.fourYearAgo,
-                font: FONT_BOLD_8,
+                font: FONT_BOLD_9,
                 aligment: ALIGNMENT_RIGHT,
                 border: BORDER,
                 numFmt: '### ### ### ###',
@@ -340,7 +340,7 @@ export function reportAgeOfItemsTemplateData(
               {
                 nameCell: `Q${curRowIdx}`,
                 value: order.fiveYearAgo,
-                font: FONT_BOLD_8,
+                font: FONT_BOLD_9,
                 aligment: ALIGNMENT_RIGHT,
                 border: BORDER,
                 numFmt: '### ### ### ###',
@@ -348,7 +348,7 @@ export function reportAgeOfItemsTemplateData(
               {
                 nameCell: `R${curRowIdx}`,
                 value: order.greaterfiveYear,
-                font: FONT_BOLD_8,
+                font: FONT_BOLD_9,
                 aligment: ALIGNMENT_RIGHT,
                 border: BORDER,
                 numFmt: '### ### ### ###',
@@ -365,7 +365,7 @@ export function reportAgeOfItemsTemplateData(
       {
         nameCell: `A${curRowIdx}:J${curRowIdx}`,
         value: 'TOTAL',
-        font: FONT_BOLD_8,
+        font: FONT_BOLD_9,
         aligment: ALIGNMENT_RIGHT,
         border: BORDER,
         merge: true,
@@ -382,7 +382,7 @@ export function reportAgeOfItemsTemplateData(
       {
         nameCell: `L${curRowIdx}`,
         value: totalSixMonthAll,
-        font: FONT_BOLD_8,
+        font: FONT_BOLD_9,
         aligment: ALIGNMENT_RIGHT,
         border: BORDER,
         numFmt: '### ### ### ###',
@@ -390,7 +390,7 @@ export function reportAgeOfItemsTemplateData(
       {
         nameCell: `M${curRowIdx}`,
         value: totalOneYearAll,
-        font: FONT_BOLD_8,
+        font: FONT_BOLD_9,
         aligment: ALIGNMENT_RIGHT,
         border: BORDER,
         numFmt: '### ### ### ###',
@@ -398,7 +398,7 @@ export function reportAgeOfItemsTemplateData(
       {
         nameCell: `N${curRowIdx}`,
         value: totalTwoYearAll,
-        font: FONT_BOLD_8,
+        font: FONT_BOLD_9,
         aligment: ALIGNMENT_RIGHT,
         border: BORDER,
         numFmt: '### ### ### ###',
@@ -406,7 +406,7 @@ export function reportAgeOfItemsTemplateData(
       {
         nameCell: `O${curRowIdx}`,
         value: totalThreeYearAll,
-        font: FONT_BOLD_8,
+        font: FONT_BOLD_9,
         aligment: ALIGNMENT_RIGHT,
         border: BORDER,
         numFmt: '### ### ### ###',
@@ -414,7 +414,7 @@ export function reportAgeOfItemsTemplateData(
       {
         nameCell: `P${curRowIdx}`,
         value: totalFourYearAll,
-        font: FONT_BOLD_8,
+        font: FONT_BOLD_9,
         aligment: ALIGNMENT_RIGHT,
         border: BORDER,
         numFmt: '### ### ### ###',
@@ -422,7 +422,7 @@ export function reportAgeOfItemsTemplateData(
       {
         nameCell: `Q${curRowIdx}`,
         value: totalFiveYearAll,
-        font: FONT_BOLD_8,
+        font: FONT_BOLD_9,
         aligment: ALIGNMENT_RIGHT,
         border: BORDER,
         numFmt: '### ### ### ###',
@@ -430,7 +430,7 @@ export function reportAgeOfItemsTemplateData(
       {
         nameCell: `R${curRowIdx}`,
         value: totalGreaterFiveYearAll,
-        font: FONT_BOLD_8,
+        font: FONT_BOLD_9,
         aligment: ALIGNMENT_RIGHT,
         border: BORDER,
         numFmt: '### ### ### ###',
