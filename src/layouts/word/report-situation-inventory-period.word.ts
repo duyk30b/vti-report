@@ -167,7 +167,7 @@ export async function generateReportSituationInventoryPeriod(
                             text: i18n.translate(
                               item.name ? `report.${item.name}` : '',
                             ),
-                            ...wordFileStyle.table_header_style,
+                            ...wordFileStyle.table_header_style_w002,
                           }),
                         ],
                       }),
@@ -200,7 +200,7 @@ export async function generateReportSituationInventoryPeriod(
                             children: [
                               new TextRun({
                                 text: i18n.translate(`report.${child.name}`),
-                                ...wordFileStyle.table_header_style,
+                                ...wordFileStyle.table_header_style_w002,
                               }),
                             ],
                           }),
