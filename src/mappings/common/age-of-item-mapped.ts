@@ -32,7 +32,7 @@ export function getSituationTransferMapped(
             if (transaction?.quantityImported) {
               i.totalQuantity = plus(i.totalQuantity, transaction?.quantityImported);
               i?.groupByStorageDate.push({
-                storageDate: formatDate(transaction?.transactionDate),
+                storageDate: transaction?.transactionDate,
                 lotNumber: infoStock?.lotNumber,
                 locatorCode: infoStock?.locatorCode,
                 unit: infoStock?.unit,
@@ -241,7 +241,7 @@ function formatItem(item: any, quantity?: number) {
     greaterfiveYear: item?.greaterfiveYear || 0,
     groupByStorageDate: [
       {
-        storageDate: formatDate(item.transactionDate),
+        storageDate: item.transactionDate,
         lotNumber: item.lotNumber,
         locatorCode: item.locatorCode,
         unit: item.unit,
@@ -262,7 +262,7 @@ function formatItem(item: any, quantity?: number) {
 
 function formatGroupByStorageDate(item: any, quantity?: number) {
   return {
-    storageDate: formatDate(item.transactionDate),
+    storageDate: item.transactionDate,
     origin: item?.origin || null,
     account: item?.account || null,
     lotNumber: item.lotNumber,
