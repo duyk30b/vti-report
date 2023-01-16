@@ -781,6 +781,12 @@ export class ExportService {
     const isEmpty = await this.getInfoWarehouse(request, data);
 
     const dataMapped = getItemInventoryBelowMinimum(data, this.i18n, isEmpty);
+    if (dataMapped.companyCode) {
+      const dataCompany = await this.getCompany(dataMapped.companyCode);
+      dataMapped.companyName = dataCompany[0].name || dataMapped.companyName;
+      dataMapped.companyAddress =
+        dataCompany[0].address || dataMapped.companyAddress;
+    }
     switch (request.exportType) {
       case ExportType.EXCEL:
         return await reportItemInventoryBelowMinimumExcelMapping(
@@ -806,7 +812,13 @@ export class ExportService {
         request,
       );
     const isEmpty = await this.getInfoWarehouse(request, data);
-    const dataMaped = getItemInventoryBelowSafe(data, this.i18n, isEmpty);
+    const dataMaped = getItemInventoryBelowSafe(data, this.i18n, isEmpty, request?.reportType);
+    if (dataMaped.companyCode) {
+      const dataCompany = await this.getCompany(dataMaped.companyCode);
+      dataMaped.companyName = dataCompany[0].name || dataMaped.companyName;
+      dataMaped.companyAddress =
+        dataCompany[0].address || dataMaped.companyAddress;
+    }
     switch (request.exportType) {
       case ExportType.EXCEL:
         return await reportItemInventoryBelowSafeExcelMapping(

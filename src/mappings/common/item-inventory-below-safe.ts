@@ -9,6 +9,7 @@ export function getItemInventoryBelowSafe(
   data: DailyWarehouseItemStock[],
   i18n: I18nRequestScopeService,
   isEmpty: boolean,
+  reportType?: number,
 ): ReportInfo<TableData<ReportInventoryBelowSafeModel>[]> {
   const dataMaping: ReportInfo<any> = {
     companyName: data[0]?.companyName?.toUpperCase() || '',
@@ -40,6 +41,7 @@ export function getItemInventoryBelowSafe(
       dataExcell.push({
         warehouseCode: i18n.translate('report.WAREHOUSE_GROUP_CODE') + key,
         data: groupByWarehouseCode[key],
+        reportType: reportType || 0,
       });
     }
 
