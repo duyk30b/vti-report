@@ -239,7 +239,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.CENTER,
                                   children: [
                                     new TextRun({
-                                      text: formatDate(record.storageDate) || '',
+                                      text: record.storageDate || '',
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],

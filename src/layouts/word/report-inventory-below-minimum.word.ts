@@ -125,7 +125,7 @@ export async function generateReportItemInventoryBelowMinimum(
             children: [
               new TextRun({
                 text: title.slice(title.indexOf('\n')),
-                size: WORD_FILE_CONFIG.WORD_FONT_SIZE_14,
+                size: WORD_FILE_CONFIG.WORD_FONT_SIZE_12,
                 font: FONT_NAME,
                 bold: WORD_FILE_CONFIG.WORD_BOLD,
               }),
@@ -137,7 +137,7 @@ export async function generateReportItemInventoryBelowMinimum(
             children: [
               new TextRun({
                 text: reportTime,
-                size: WORD_FILE_CONFIG.WORD_FONT_SIZE_11,
+                size: WORD_FILE_CONFIG.WORD_FONT_SIZE_10,
                 font: FONT_NAME,
                 bold: WORD_FILE_CONFIG.WORD_BOLD,
               }),
@@ -164,7 +164,7 @@ export async function generateReportItemInventoryBelowMinimum(
                             children: [
                               new TextRun({
                                 text: i18n.translate(`report.${item.name}`),
-                                ...wordFileStyle.table_header_style,
+                                ...wordFileStyle.table_header_style_w002,
                               }),
                             ],
                           }),
@@ -245,7 +245,7 @@ export async function generateReportItemInventoryBelowMinimum(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: `${item?.minInventoryLimit || ''}` ,
+                                  text: `${item?.minInventoryLimit || ''}`,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -260,7 +260,7 @@ export async function generateReportItemInventoryBelowMinimum(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: `${item?.stockQuantity || ''}` ,
+                                  text: `${item?.stockQuantity || ''}`,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -283,7 +283,7 @@ export async function generateReportItemInventoryBelowMinimum(
                                   text: warehouse?.warehouseCode,
                                   bold: WORD_FILE_CONFIG.WORD_BOLD,
                                   font: FONT_NAME,
-                                  size: WORD_FILE_CONFIG.WORD_FONT_SIZE_12,
+                                  size: WORD_FILE_CONFIG.WORD_FONT_SIZE_9,
                                 }),
                               ],
                             }),

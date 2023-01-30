@@ -5,6 +5,6 @@ export interface ReportOrderExportByRequestForItemModel {
   warehouseExportProposals: string;
   orderCode: string;
   orderCreatedAt: string;
-  planQuantity: number;
-  exportedQuantity: number;
+  planQuantity: number | string;
+  exportedQuantity: number | string;
 }
