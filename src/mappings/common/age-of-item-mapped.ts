@@ -24,6 +24,7 @@ export function getSituationTransferMapped(
     dataExcell = data[0]?.warehouses?.map((item: any) => {
       arrWarehouseCode.push(item.warehouseCode);
       dataMaping.warehouseName = item.warehouseName;
+      let check = 0;
       item.items?.map((i) => {
         i?.groupByStorageDate.map((infoStock) => {
           if (transactionNow[`${item.warehouseCode}-${infoStock.locatorCode}-${i.itemCode}-${companyCode}`]) {
@@ -63,7 +64,9 @@ export function getSituationTransferMapped(
             }
           }
         })
+        check = plus(check, i?.totalQuantity) || check;
       })
+      if (!check) return null;
 
       const { arrformated, objectTransaction } = pushItemOld(transactionNow, item.items, item.warehouseCode);
       if (!isEmpty(arrformated)) {
@@ -86,6 +89,7 @@ export function getSituationTransferMapped(
       };
     });
   }
+  dataExcell = compact(dataExcell);
 
   let dataExcell2: TableAgeOfItems[] = [];
   if (!isEmpty(transactionNow)) {
@@ -241,7 +245,7 @@ function formatItem(item: any, quantity?: number) {
     greaterfiveYear: item?.greaterfiveYear || 0,
     groupByStorageDate: [
       {
-        storageDate: formatDate(item.transactionDate),
+        storageDate: item.transactionDate,
         lotNumber: item.lotNumber,
         locatorCode: item.locatorCode,
         unit: item.unit,
@@ -262,7 +266,7 @@ function formatItem(item: any, quantity?: number) {
 
 function formatGroupByStorageDate(item: any, quantity?: number) {
   return {
-    storageDate: formatDate(item.transactionDate),
+    storageDate: item.transactionDate,
     origin: item?.origin || null,
     account: item?.account || null,
     lotNumber: item.lotNumber,

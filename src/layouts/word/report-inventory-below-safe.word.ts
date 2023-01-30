@@ -124,7 +124,7 @@ export async function generatereportItemInventoryBelowSafe(
             children: [
               new TextRun({
                 text: title.slice(title.indexOf('\n')),
-                size: WORD_FILE_CONFIG.WORD_FONT_SIZE_14,
+                size: WORD_FILE_CONFIG.WORD_FONT_SIZE_12,
                 font: FONT_NAME,
                 bold: WORD_FILE_CONFIG.WORD_BOLD,
                 allCaps: true,
@@ -137,7 +137,7 @@ export async function generatereportItemInventoryBelowSafe(
             children: [
               new TextRun({
                 text: reportTime,
-                size: WORD_FILE_CONFIG.WORD_FONT_SIZE_11,
+                size: WORD_FILE_CONFIG.WORD_FONT_SIZE_10,
                 font: FONT_NAME,
                 bold: WORD_FILE_CONFIG.WORD_BOLD,
               }),
@@ -163,7 +163,7 @@ export async function generatereportItemInventoryBelowSafe(
                           children: [
                             new TextRun({
                               text: i18n.translate(`report.${item.name}`),
-                              ...wordFileStyle.table_header_style,
+                              ...wordFileStyle.table_header_style_w002,
                             }),
                           ],
                         }),
@@ -282,7 +282,7 @@ export async function generatereportItemInventoryBelowSafe(
                                   text: warehouse?.warehouseCode,
                                   bold: WORD_FILE_CONFIG.WORD_BOLD,
                                   font: FONT_NAME,
-                                  size: WORD_FILE_CONFIG.WORD_FONT_SIZE_12,
+                                  size: WORD_FILE_CONFIG.WORD_FONT_SIZE_9,
                                 }),
                               ],
                             }),
@@ -333,6 +333,7 @@ export async function generatereportItemInventoryBelowSafe(
                               `report.${companyCode}_REPORT_FOOTER_DATE`,
                             ),
                             ...wordFileStyle.text_style,
+                            italics: true,
                           }),
                         ],
                         alignment: AlignmentType.CENTER,

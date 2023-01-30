@@ -11,6 +11,7 @@ import {
   ALIGNMENT_CENTER,
   ALIGNMENT_CENTER_BOTTOM,
   ALIGNMENT_LEFT,
+  ARR_REPORT_TYPE_CHANGE_TITLE_EXCELL,
   BORDER,
   CELL_ADDRESS_CHILD_COMPANY,
   CELL_CHILD_COMPANY,
@@ -18,18 +19,22 @@ import {
   CELL_REPORT_NUMBER,
   CEll_REPORT_TIME,
   CELL_TITLE_REPORT,
+  CELL_TITLE_REPORT_WAREHOUSE,
   COLUMN_COLOR,
   DATE_FOMAT_EXCELL,
   DATE_FOMAT_EXCELL_FILE,
   EXCEL_COLUMN,
   FONT_BOLD_10,
   FONT_BOLD_11,
+  FONT_BOLD_12,
   FONT_BOLD_14,
   FONT_BOLD_9,
   FONT_NORMAL_9,
   HEIGHT_REPORT_TITLE,
   INDEX_REPORT_TIME,
   INDEX_REPORT_TITLE,
+  INDEX_REPORT_WAREHOUSE,
+  LOCATION_CELL_REPORT_TYPE_CHANGE_TITLE_EXCELL,
   LV1,
   LV3,
   REPORT_INFO,
@@ -57,6 +62,7 @@ export const generateTable = async (
   );
 
   let fontSize = FONT_BOLD_11;
+  let rowIndexChange = ROW_WHEN_HAVE_HEADER;
   const reportType = model.tableData[0]?.reportType || 0;
   if (ARR_REPORT_TYPE_CHANGE_FONT_SIZE.includes(reportType)) fontSize = FONT_BOLD_10;
 
@@ -82,13 +88,34 @@ export const generateTable = async (
   worksheet['columnNumber_'] = index;
   //header
   if (model.header) {
+    let cellTitle = CELL_TITLE_REPORT;
+    let indexReportTitle = INDEX_REPORT_TITLE;
+    let cellTitleWarehosue = CELL_TITLE_REPORT_WAREHOUSE;
+    let indexTitleWarehouse = INDEX_REPORT_WAREHOUSE;
+    let cellTitleTime = CEll_REPORT_TIME;
+    let indexReportTime = INDEX_REPORT_TIME;
+
+    if (ARR_REPORT_TYPE_CHANGE_TITLE_EXCELL.includes(model.reportType)) {
+      const locationCell = LOCATION_CELL_REPORT_TYPE_CHANGE_TITLE_EXCELL;
+      cellTitle = locationCell.CELL_TITLE_REPORT;
+      indexReportTitle = INDEX_REPORT_TITLE - 1;
+      cellTitleWarehosue = locationCell.CELL_TITLE_REPORT_WAREHOUSE;
+      indexTitleWarehouse = INDEX_REPORT_WAREHOUSE - 1;
+      cellTitleTime = locationCell.CEll_REPORT_TIME;
+      indexReportTime = INDEX_REPORT_TIME - 1;
+      rowIndexChange = ROW_WHEN_HAVE_HEADER - 1;
+    }
+
     worksheet.mergeCells(
-      `${CELL_TITLE_REPORT}:${EXCEL_COLUMN[index - 2]}${INDEX_REPORT_TITLE}`,
+      `${cellTitle}:${EXCEL_COLUMN[index - 2]}${indexReportTitle}`,
     );
     worksheet.mergeCells(
-      `${CEll_REPORT_TIME}:${EXCEL_COLUMN[index - 2]}${INDEX_REPORT_TIME}`,
+      `${cellTitleWarehosue}:${EXCEL_COLUMN[index - 2]}${indexTitleWarehouse}`,
     );
-    worksheet.getRow(INDEX_REPORT_TITLE).height = HEIGHT_REPORT_TITLE;
+    worksheet.mergeCells(
+      `${cellTitleTime}:${EXCEL_COLUMN[index - 2]}${indexReportTime}`,
+    );
+    worksheet.getRow(indexReportTitle).height = HEIGHT_REPORT_TITLE;
 
     configCells(worksheet, i18n, [
       {
@@ -97,7 +124,7 @@ export const generateTable = async (
         font: FONT_BOLD_10,
         aligment: ALIGNMENT_LEFT,
         translate: true,
-        merge: true,
+        merge: false,
         heightRow: {
           index: 1,
           value: 30,
@@ -109,7 +136,7 @@ export const generateTable = async (
         font: FONT_BOLD_10,
         aligment: ALIGNMENT_LEFT,
         translate: false,
-        merge: true,
+        merge: false,
       },
 
       {
@@ -118,21 +145,28 @@ export const generateTable = async (
         font: FONT_BOLD_10,
         aligment: ALIGNMENT_LEFT,
         translate: false,
-        merge: true,
+        merge: false,
         heightRow: {
           index: 3,
           value: 35,
         },
       },
       {
-        nameCell: CELL_TITLE_REPORT,
-        value: title,
+        nameCell: cellTitle,
+        value: title.split('\n')[0],
         font: FONT_BOLD_14,
         aligment: ALIGNMENT_CENTER,
         translate: false,
       },
       {
-        nameCell: CEll_REPORT_TIME,
+        nameCell: cellTitleWarehosue,
+        value: title.split('\n')[1],
+        font: FONT_BOLD_12,
+        aligment: ALIGNMENT_CENTER,
+        translate: false,
+      },
+      {
+        nameCell: cellTitleTime,
         value: reportTime,
         font: fontSize,
         aligment: ALIGNMENT_CENTER,
@@ -154,13 +188,12 @@ export const generateTable = async (
           font: FONT_NORMAL_9,
           aligment: ALIGNMENT_LEFT,
           translate: true,
-          merge: true,
+          merge: false,
         },
       ]);
     }
-    
   }
-  let rowIndex = model.header ? ROW_WHEN_HAVE_HEADER : ROW_WHEN_NOT_HAVE_HEADER;
+  let rowIndex = model.header ? rowIndexChange : ROW_WHEN_NOT_HAVE_HEADER;
   rowIndex += generateColumnTable(worksheet, model.tableColumn, rowIndex, i18n);
   if (typeof generateDataTable == 'function') {
     rowIndex = generateDataTable(
@@ -174,6 +207,7 @@ export const generateTable = async (
   if (typeof model.footer == 'function') {
     model.footer(rowIndex, worksheet, i18n, model?.companyCode);
   }
+  worksheet.columns[0].width = 30;  
   const buffer = await workbook.xlsx.writeBuffer();
   // workbook.xlsx.writeFile(`demo${Math.floor(Math.random() * 1000)}.xlsx`);
 

@@ -1,3 +1,4 @@
+import { readDecimal } from '@constant/common';
 import { ReportInventoryBelowMinimumModel } from '@models/item-inventory-below-minimum.model';
 import { TableData } from '@models/report.model';
 import { DailyWarehouseItemStock } from '@schemas/daily-warehouse-item-stock.schema';
@@ -8,6 +9,7 @@ export function getItemInventoryBelowMinimum(
   data: DailyWarehouseItemStock[],
   i18n: I18nRequestScopeService,
   isEmpty: boolean,
+  reportType?: number,
 ): ReportInfo<TableData<ReportInventoryBelowMinimumModel>[]> {
   const dataMaping: ReportInfo<any> = {
     companyName: data[0]?.companyName?.toUpperCase() || '',
@@ -28,8 +30,8 @@ export function getItemInventoryBelowMinimum(
         itemCode: cur.itemCode,
         itemName: cur.itemName,
         unit: cur.unit,
-        minInventoryLimit: cur.minInventoryLimit,
-        stockQuantity: cur.stockQuantity,
+        minInventoryLimit: readDecimal(cur.minInventoryLimit),
+        stockQuantity: readDecimal(cur.stockQuantity),
       });
       return prev;
     }, {});
@@ -39,6 +41,7 @@ export function getItemInventoryBelowMinimum(
       dataExcell.push({
         warehouseCode: i18n.translate('report.WAREHOUSE_GROUP_CODE') + key,
         data: groupByWarehouseCode[key],
+        reportType: reportType || 0,
       });
     }
     dataMaping.dataMapped = dataExcell || [];

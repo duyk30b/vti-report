@@ -8,7 +8,7 @@ import { ReportRequest } from '@requests/report.request';
 import { DailyWarehouseItemRequest } from '@requests/sync-daily.request';
 import { DailyLotLocatorStock } from '@schemas/daily-lot-locator-stock.schema';
 import { getTimezone } from '@utils/common';
-import { DATE_FOMAT, FORMAT_DATE, MONTHS, TIMEZONE_HCM_CITY, YEARS } from '@utils/constant';
+import { DATE_FOMAT, DATE_FOMAT_EXCELL, FORMAT_DATE, MONTHS, TIMEZONE_HCM_CITY, YEARS } from '@utils/constant';
 import * as moment from 'moment';
 import { Model } from 'mongoose';
 @Injectable()
@@ -443,8 +443,8 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       condition['$and'].push({
         $expr: {
           $eq: [
-            { $dateToString: { date: '$reportDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY } },
-            moment(prevDate).format(DATE_FOMAT),
+            { $dateToString: { date: '$reportDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY } },
+            moment(prevDate).format(DATE_FOMAT_EXCELL),
           ],
         },
       });
@@ -452,8 +452,8 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       condition['$and'].push({
         $expr: {
           $eq: [
-            { $dateToString: { date: '$reportDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY } },
-            moment(request?.dateFrom).format(DATE_FOMAT),
+            { $dateToString: { date: '$reportDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY } },
+            moment(request?.dateFrom).format(DATE_FOMAT_EXCELL),
           ],
         },
       });
@@ -535,7 +535,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
             groupByStorageDate: {
               $push: {
                 storageDate: {
-                  $dateToString: { format: '%m/%d/%Y', date: '$storageDate', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: { format: '%d/%m/%Y', date: '$storageDate', timezone: TIMEZONE_HCM_CITY },
                 },
                 origin: '$origin',
                 account: '$account',
@@ -689,7 +689,7 @@ function getQueryAgeOfItems(sum = false) {
         {
           $gt: [
             {
-              $dateToString: { date: '$storageDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+              $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
             },
             sixMonthAgo,
           ],
@@ -705,7 +705,7 @@ function getQueryAgeOfItems(sum = false) {
             {
               $lte: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
                 },
                 sixMonthAgo,
               ],
@@ -713,7 +713,7 @@ function getQueryAgeOfItems(sum = false) {
             {
               $gt: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
                 },
                 oneYearAgo,
               ],
@@ -731,7 +731,7 @@ function getQueryAgeOfItems(sum = false) {
             {
               $lte: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
                 },
                 oneYearAgo,
               ],
@@ -739,7 +739,7 @@ function getQueryAgeOfItems(sum = false) {
             {
               $gt: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
                 },
                 twoYearAgo,
               ],
@@ -757,7 +757,7 @@ function getQueryAgeOfItems(sum = false) {
             {
               $lte: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
                 },
                 twoYearAgo,
               ],
@@ -765,7 +765,7 @@ function getQueryAgeOfItems(sum = false) {
             {
               $gt: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
                 },
                 threeYearAgo,
               ],
@@ -783,7 +783,7 @@ function getQueryAgeOfItems(sum = false) {
             {
               $lte: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
                 },
                 threeYearAgo,
               ],
@@ -791,7 +791,7 @@ function getQueryAgeOfItems(sum = false) {
             {
               $gt: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
                 },
                 fourYearAgo,
               ],
@@ -809,7 +809,7 @@ function getQueryAgeOfItems(sum = false) {
             {
               $lte: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
                 },
                 fourYearAgo,
               ],
@@ -817,7 +817,7 @@ function getQueryAgeOfItems(sum = false) {
             {
               $gt: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
                 },
                 fiveYearAgo,
               ],
@@ -835,7 +835,7 @@ function getQueryAgeOfItems(sum = false) {
             {
               $lt: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
                 },
                 fiveYearAgo,
               ],

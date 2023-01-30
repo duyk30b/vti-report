@@ -288,7 +288,8 @@ export const CELL_CHILD_COMPANY = 'A2:C2';
 export const CELL_ADDRESS_CHILD_COMPANY = 'A3:B3';
 export const CELL_REPORT_NUMBER = 'A4:B4';
 export const CELL_TITLE_REPORT = 'A5';
-export const CEll_REPORT_TIME = 'A6';
+export const CELL_TITLE_REPORT_WAREHOUSE = 'A6';
+export const CEll_REPORT_TIME = 'A7';
 export const MONTHS = 'months';
 export const YEARS = 'years';
 export const COLUMN_COLOR = {
@@ -296,6 +297,16 @@ export const COLUMN_COLOR = {
   pattern: 'solid',
   fgColor: { argb: 'd6d6d6' },
 };
+
+export const ARR_REPORT_TYPE_CHANGE_TITLE_EXCELL = [
+  ReportType.ITEM_INVENTORY_BELOW_MINIMUM,
+]
+
+export const LOCATION_CELL_REPORT_TYPE_CHANGE_TITLE_EXCELL = {
+  CELL_TITLE_REPORT: 'A4',
+  CELL_TITLE_REPORT_WAREHOUSE: 'A5',
+  CEll_REPORT_TIME: 'A6',
+}
 
 export const WORD_FILE_CONFIG = {
   WORD_FONT_SIZE_9: 18,
@@ -306,6 +317,7 @@ export const WORD_FILE_CONFIG = {
   WORD_PARAGRAPH_SPACING: 20 * 72 * 0.05,
   WORD_BOLD: true,
   COLUMN_COMPANY_WIDTH: 4.3,
+  COLUMN_COMPANY_WIDTH_W006: 3,
   TABLE_HEADER_HEIGHT: 500,
   TABLE_ROW_HEIGHT: 300,
   PAGE_SIZE_A4_WIDTH: 11.69,
@@ -323,27 +335,27 @@ export const REPORT_ITEM_INVENTORY_BELOW_MINIMUM_CONFIG_COLUMNS: TableColumn[] =
   [
     {
       name: 'INDEX',
-      width: 0.7,
-    },
-    {
-      name: 'ITEM_CODE',
-      width: 2.4,
-    },
-    {
-      name: 'ITEM_NAME',
       width: 3,
     },
     {
+      name: 'ITEM_CODE',
+      width: 1.8,
+    },
+    {
+      name: 'ITEM_NAME',
+      width: 2.6,
+    },
+    {
       name: 'UNIT',
-      width: 1,
+      width: 0.5,
     },
     {
       name: 'QUANTITY_MINIMUM',
-      width: 1.2,
+      width: 0.8,
     },
     {
       name: 'QUANTITY_STOCK',
-      width: 1,
+      width: 0.6,
     },
   ];
 
@@ -1304,7 +1316,8 @@ export const SITUATION_INVENTORY_PERIOD_COLUMNS: TableColumn[] = [
 
 export const INDEX_REPORT_TITLE = 5;
 export const HEIGHT_REPORT_TITLE = 36.75;
-export const INDEX_REPORT_TIME = 6;
+export const INDEX_REPORT_TIME = 7;
+export const INDEX_REPORT_WAREHOUSE = 6;
 export const KEY_COLUMN = 'child';
 export const ROW_WHEN_HAVE_HEADER = 8;
 export const ROW_WHEN_NOT_HAVE_HEADER = 1;
