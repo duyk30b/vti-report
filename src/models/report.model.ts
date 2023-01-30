@@ -39,6 +39,7 @@ export interface ReportModel<T> {
   warehouse?: string;
   dateFrom: Date;
   dateTo?: Date;
+  reportType?: number,
   footer?: (
     curRowIdx: number,
     worksheet: ExcelJS.Worksheet,

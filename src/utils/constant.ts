@@ -298,6 +298,16 @@ export const COLUMN_COLOR = {
   fgColor: { argb: 'd6d6d6' },
 };
 
+export const ARR_REPORT_TYPE_CHANGE_TITLE_EXCELL = [
+  ReportType.ITEM_INVENTORY_BELOW_MINIMUM,
+]
+
+export const LOCATION_CELL_REPORT_TYPE_CHANGE_TITLE_EXCELL = {
+  CELL_TITLE_REPORT: 'A4',
+  CELL_TITLE_REPORT_WAREHOUSE: 'A5',
+  CEll_REPORT_TIME: 'A6',
+}
+
 export const WORD_FILE_CONFIG = {
   WORD_FONT_SIZE_9: 18,
   WORD_FONT_SIZE_10: 20,
@@ -1307,6 +1317,7 @@ export const SITUATION_INVENTORY_PERIOD_COLUMNS: TableColumn[] = [
 export const INDEX_REPORT_TITLE = 5;
 export const HEIGHT_REPORT_TITLE = 36.75;
 export const INDEX_REPORT_TIME = 7;
+export const INDEX_REPORT_WAREHOUSE = 6;
 export const KEY_COLUMN = 'child';
 export const ROW_WHEN_HAVE_HEADER = 8;
 export const ROW_WHEN_NOT_HAVE_HEADER = 1;
