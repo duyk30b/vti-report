@@ -41,6 +41,7 @@ export async function reportItemInventoryBelowMinimumExcelMapping(
     key: REPORT_INFO[ReportType[ReportType.ITEM_INVENTORY_BELOW_MINIMUM]].key,
     dateFrom: request.dateFrom,
     warehouse: request.warehouseCode ? data?.warehouseName : null,
+    reportType: request.reportType || 0,
     footer: footerItemBelowMinumum,
   };
 

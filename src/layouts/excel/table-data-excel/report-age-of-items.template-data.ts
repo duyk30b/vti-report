@@ -233,7 +233,7 @@ export function reportAgeOfItemsTemplateData(
               },
               {
                 nameCell: `C${curRowIdx}`,
-                value: formatDate(order.storageDate) || '',
+                value: order.storageDate || '',
                 font: FONT_NORMAL_9,
                 aligment: ALIGNMENT_CENTER,
                 border: BORDER,
