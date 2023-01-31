@@ -49,6 +49,7 @@ export async function reportOrderImportIncompletedExcelMapping(
     dateFrom: request.dateFrom,
     dateTo: request.dateTo,
     warehouse: request.warehouseCode ? data.warehouseName : null,
+    reportType: request?.reportType || 0,
     footer: footerReportOrderImportIncompleted,
   };
   const { dataBase64, nameFile } = await generateTable(
