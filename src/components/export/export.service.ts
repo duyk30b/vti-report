@@ -192,6 +192,12 @@ export class ExportService {
     const transactionInput = keyBy(transactionArr, 'key')
 
     const dataMapped = getSituationTransferMapped(data, this.i18n, transactionInput);
+    if (dataMapped.companyCode) {
+      const dataCompany = await this.getCompany(dataMapped.companyCode);      
+      dataMapped.companyName = dataCompany[0].name || dataMapped.companyName;
+      dataMapped.companyAddress =
+      dataCompany[0].address || dataMapped.companyAddress;
+    }
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } = await reportAgeOfItemsExcelMapping(
@@ -403,6 +409,12 @@ export class ExportService {
     );
 
     const dataMapped = getItemInventoryImportedNoQRCodeMapping(data, this.i18n);
+    if (dataMapped.companyCode) {
+      const dataCompany = await this.getCompany(dataMapped.companyCode);
+      dataMapped.companyName = dataCompany[0].name || dataMapped.companyName;
+      dataMapped.companyAddress =
+      dataCompany[0].address || dataMapped.companyAddress;
+    }  
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -561,6 +573,12 @@ export class ExportService {
 
     let isEmpty = await this.getInfoWarehouse(request, data);
     const dataMapping = getItemInventoryDataMapping(data, this.i18n, isEmpty);
+    if (dataMapping.companyCode) {
+      const dataCompany = await this.getCompany(dataMapping.companyCode);
+      dataMapping.companyName = dataCompany[0].name || dataMapping.companyName;
+      dataMapping.companyAddress =
+      dataCompany[0].address || dataMapping.companyAddress;
+    }    
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } = await reportItemInventoryExcelMapping(
@@ -757,6 +775,12 @@ export class ExportService {
       isEmpty,
       request?.reportType,
     );
+    if (dataMapped.companyCode) {
+      const dataCompany = await this.getCompany(dataMapped.companyCode);
+      dataMapped.companyName = dataCompany[0].name || dataMapped.companyName;
+      dataMapped.companyAddress =
+        dataCompany[0].address || dataMapped.companyAddress;
+    }
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =

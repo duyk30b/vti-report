@@ -9,6 +9,7 @@ export function getItemInventoryImportedNoQRCodeMapping(
   i18n: I18nRequestScopeService,
 ): ReportInfo<TableData<ItemInventoryImportedNoQRCodeModel>[]> {
   const dataMaping: ReportInfo<any> = {
+    companyCode: data[0]?.companyCode,
     companyName: data[0]?.companyName?.toUpperCase(),
     companyAddress: data[0]?.companyAddress,
     warehouseName: data[0]?.warehouseName,
