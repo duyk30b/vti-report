@@ -61,10 +61,7 @@ export const generateTable = async (
     model.dateTo,
   );
 
-  let fontSize = FONT_BOLD_11;
   let rowIndexChange = ROW_WHEN_HAVE_HEADER;
-  const reportType = model.tableData[0]?.reportType || 0;
-  if (ARR_REPORT_TYPE_CHANGE_FONT_SIZE.includes(reportType)) fontSize = FONT_BOLD_10;
 
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet(sheetName, {
@@ -115,7 +112,6 @@ export const generateTable = async (
     worksheet.mergeCells(
       `${cellTitleTime}:${EXCEL_COLUMN[index - 2]}${indexReportTime}`,
     );
-    worksheet.getRow(indexReportTitle).height = HEIGHT_REPORT_TITLE;
 
     configCells(worksheet, i18n, [
       {
@@ -168,7 +164,7 @@ export const generateTable = async (
       {
         nameCell: cellTitleTime,
         value: reportTime,
-        font: fontSize,
+        font: FONT_BOLD_10,
         aligment: ALIGNMENT_CENTER,
         translate: false,
       },
@@ -194,6 +190,15 @@ export const generateTable = async (
     }
   }
   let rowIndex = model.header ? rowIndexChange : ROW_WHEN_NOT_HAVE_HEADER;
+  if (
+    [
+      ReportType.SITUATION_EXPORT_PERIOD,
+      ReportType.SITUATION_INVENTORY_PERIOD,
+      ReportType.AGE_OF_ITEM_STOCK,
+    ].includes(model?.reportType)
+  ) {
+    rowIndex++;
+  }
   rowIndex += generateColumnTable(worksheet, model.tableColumn, rowIndex, i18n);
   if (typeof generateDataTable == 'function') {
     rowIndex = generateDataTable(
