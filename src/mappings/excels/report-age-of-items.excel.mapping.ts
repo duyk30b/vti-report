@@ -23,6 +23,7 @@ export async function reportAgeOfItemsExcelMapping(
     key: REPORT_INFO[ReportType[ReportType.AGE_OF_ITEM_STOCK]].key,
     dateFrom: request.dateFrom,
     warehouse: request.warehouseCode ? data.warehouseName : null,
+    reportType: request?.reportType || 0,
   };
 
   const { dataBase64, nameFile } = await generateTable(
