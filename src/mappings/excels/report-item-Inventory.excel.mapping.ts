@@ -51,6 +51,7 @@ export async function reportItemInventoryExcelMapping(
     dateFrom: request.dateFrom,
     dateTo: request.dateTo,
     warehouse: request.warehouseCode ? data?.warehouseName : null,
+    reportType: request?.reportType || 0,
     footer: footerItemInventory,
   };
 
