@@ -35,6 +35,11 @@ import {
 import { ExportController } from './export.controller';
 import { ExportService } from './export.service';
 import { WarehouseModule } from '@components/warehouse/warehouse.module';
+import { InventoryQuantityNormsRepository } from '@repositories/inventory-quantity-norms.repository';
+import {
+  InventoryQuantityNormModel,
+  InventoryQuantityNormSchema,
+} from '@schemas/inventory-quantity-norms.model';
 
 @Module({
   imports: [
@@ -62,6 +67,10 @@ import { WarehouseModule } from '@components/warehouse/warehouse.module';
       {
         name: TransactionItem.name,
         schema: TransactionItemSchema,
+      },
+      {
+        name: InventoryQuantityNormModel.name,
+        schema: InventoryQuantityNormSchema,
       },
     ]),
     UserModule,
@@ -103,6 +112,10 @@ import { WarehouseModule } from '@components/warehouse/warehouse.module';
     {
       provide: TransactionItemRepository.name,
       useClass: TransactionItemRepository,
+    },
+    {
+      provide: InventoryQuantityNormsRepository.name,
+      useClass: InventoryQuantityNormsRepository,
     },
   ],
 })

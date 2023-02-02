@@ -14,8 +14,17 @@ export class InventoryQuantityNormModel
   @Prop({ required: true })
   warehouseCode: string;
 
+  @Prop({ required: false })
+  warehouseName: string;
+
   @Prop({ required: true })
   itemCode: string;
+
+  @Prop({ required: false })
+  itemName: string;
+
+  @Prop({ required: false })
+  unit: string;
 
   @Prop({ required: false, default: 0 })
   inventoryLimit: number;
