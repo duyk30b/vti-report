@@ -8,4 +8,10 @@ export interface InventoryQuantityNormsInterface {
   inventoryLimit: number;
 
   minInventoryLimit: number;
+
+  itemName: string;
+
+  unit: string;
+
+  warehouseName: string;
 }

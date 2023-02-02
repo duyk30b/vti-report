@@ -64,6 +64,7 @@ import { getTimezone } from '@utils/common';
 import { FORMAT_DATE } from '@utils/constant';
 import { formatDate, readDecimal } from '@constant/common';
 import { keyBy, compact } from 'lodash';
+import { InventoryQuantityNormsRepository } from '@repositories/inventory-quantity-norms.repository';
 @Injectable()
 export class ExportService {
   private readonly logger = new Logger(ExportService.name);
@@ -82,6 +83,9 @@ export class ExportService {
 
     @Inject(TransactionItemRepository.name)
     private transactionItemRepository: TransactionItemRepository,
+
+    @Inject(InventoryQuantityNormsRepository.name)
+    private inventoryQuantityNormsRepository: InventoryQuantityNormsRepository,
 
     @Inject('UserServiceInterface')
     private readonly userService: UserService,
@@ -179,25 +183,33 @@ export class ExportService {
         request,
       );
     await this.getInfoWarehouse(request, data, true);
-    const transactionDateNow = await this.transactionItemRepository.getTransactionByDate(request);
+    const transactionDateNow =
+      await this.transactionItemRepository.getTransactionByDate(request);
     let transactionArr = transactionDateNow.map((item) => {
-      if ((item.quantityExported != 0 || item.quantityImported != 0) && item.quantityExported != item.quantityImported) {
+      if (
+        (item.quantityExported != 0 || item.quantityImported != 0) &&
+        item.quantityExported != item.quantityImported
+      ) {
         return {
           ...item,
           transactionDate: formatDate(request?.dateFrom) || '',
           key: `${item.warehouseCode}-${item.locatorCode}-${item.itemCode}-${item.companyCode}`,
-        }
+        };
       }
-    })
+    });
     transactionArr = compact(transactionArr);
-    const transactionInput = keyBy(transactionArr, 'key')
+    const transactionInput = keyBy(transactionArr, 'key');
 
-    const dataMapped = getSituationTransferMapped(data, this.i18n, transactionInput);
+    const dataMapped = getSituationTransferMapped(
+      data,
+      this.i18n,
+      transactionInput,
+    );
     if (dataMapped.companyCode) {
-      const dataCompany = await this.getCompany(dataMapped.companyCode);      
+      const dataCompany = await this.getCompany(dataMapped.companyCode);
       dataMapped.companyName = dataCompany[0].name || dataMapped.companyName;
       dataMapped.companyAddress =
-      dataCompany[0].address || dataMapped.companyAddress;
+        dataCompany[0].address || dataMapped.companyAddress;
     }
     switch (request.exportType) {
       case ExportType.EXCEL:
@@ -414,8 +426,8 @@ export class ExportService {
       const dataCompany = await this.getCompany(dataMapped.companyCode);
       dataMapped.companyName = dataCompany[0].name || dataMapped.companyName;
       dataMapped.companyAddress =
-      dataCompany[0].address || dataMapped.companyAddress;
-    }  
+        dataCompany[0].address || dataMapped.companyAddress;
+    }
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -578,8 +590,8 @@ export class ExportService {
       const dataCompany = await this.getCompany(dataMapping.companyCode);
       dataMapping.companyName = dataCompany[0].name || dataMapping.companyName;
       dataMapping.companyAddress =
-      dataCompany[0].address || dataMapping.companyAddress;
-    }    
+        dataCompany[0].address || dataMapping.companyAddress;
+    }
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } = await reportItemInventoryExcelMapping(
@@ -806,7 +818,7 @@ export class ExportService {
     request: ReportRequest,
   ): Promise<ReportResponse> {
     const data =
-      await this.dailyWarehouseItemStockRepository.getReportInventoryBelowSafe(
+      await this.inventoryQuantityNormsRepository.getReportInventoryBelowSafe(
         request,
       );
     const isEmpty = await this.getInfoWarehouse(request, data);
@@ -839,11 +851,16 @@ export class ExportService {
     request: ReportRequest,
   ): Promise<ReportResponse> {
     const data =
-      await this.dailyWarehouseItemStockRepository.getReportInventoryBelowSafe(
+      await this.inventoryQuantityNormsRepository.getReportInventoryBelowSafe(
         request,
       );
     const isEmpty = await this.getInfoWarehouse(request, data);
-    const dataMaped = getItemInventoryBelowSafe(data, this.i18n, isEmpty, request?.reportType);
+    const dataMaped = getItemInventoryBelowSafe(
+      data,
+      this.i18n,
+      isEmpty,
+      request?.reportType,
+    );
     if (dataMaped.companyCode) {
       const dataCompany = await this.getCompany(dataMaped.companyCode);
       dataMaped.companyName = dataCompany[0].name || dataMaped.companyName;
