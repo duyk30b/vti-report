@@ -63,7 +63,7 @@ import { WarehouseServiceInterface } from '@components/warehouse/interface/wareh
 import { getTimezone } from '@utils/common';
 import { FORMAT_DATE } from '@utils/constant';
 import { formatDate, readDecimal } from '@constant/common';
-import { keyBy, compact } from 'lodash';
+import { keyBy, compact, isEmpty } from 'lodash';
 import { InventoryQuantityNormsRepository } from '@repositories/inventory-quantity-norms.repository';
 @Injectable()
 export class ExportService {
@@ -393,6 +393,12 @@ export class ExportService {
       isEmpty,
       request.reportType,
     );
+    if (dataMapped.companyCode) {
+      const dataCompany = await this.getCompany(dataMapped.companyCode);
+      dataMapped.companyName = dataCompany[0].name || dataMapped.companyName;
+      dataMapped.companyAddress =
+        dataCompany[0].address || dataMapped.companyAddress;
+    }
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -754,6 +760,12 @@ export class ExportService {
       this.i18n,
       isEmpty,
     );
+    if (dataMapped.companyCode) {
+      const dataCompany = await this.getCompany(dataMapped.companyCode);
+      dataMapped.companyName = dataCompany[0].name || dataMapped.companyName;
+      dataMapped.companyAddress =
+        dataCompany[0].address || dataMapped.companyAddress;
+    }
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } =
@@ -938,6 +950,9 @@ export class ExportService {
     const codes: string[] = [];
     codes.push(codeCompany);
     const company = await this.userService.getListCompanyByCodes(codes);
+    if (!isEmpty(company[0])) {
+      company[0].name = company[0]?.name.toUpperCase();
+    }
     return company;
   }
 }
