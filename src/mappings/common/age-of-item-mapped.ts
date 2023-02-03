@@ -100,7 +100,6 @@ export function getSituationTransferMapped(
       dataMaping.warehouseName = warehouseName;
       const { arrformated, objectTransaction } = pushItemOld(transactionNow, [], warehouseCode);
       transactionNow = objectTransaction;
-      if (!isEmpty(dataExcell) || !dataExcell) {
         let arr = {
           warehouseCode:
             i18n.translate('report.WAREHOUSE_GROUP_CODE') +
@@ -116,7 +115,6 @@ export function getSituationTransferMapped(
           items: arrformated,
         };
         dataExcell2.push(arr);
-      }
     } else {
       let warehouseCodeTransaction = [];
       for (const key in transactionNow) {
@@ -156,7 +154,7 @@ export function getSituationTransferMapped(
       })
     }
   }
-  dataMaping.dataMapped = dataExcell || dataExcell2;
+  dataMaping.dataMapped = isEmpty(dataExcell) ? dataExcell2 : dataExcell;
   dataMaping.dataMapped = dataMaping.dataMapped || [];
   return dataMaping;
 }
