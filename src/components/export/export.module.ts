@@ -35,6 +35,13 @@ import {
 import { ExportController } from './export.controller';
 import { ExportService } from './export.service';
 import { WarehouseModule } from '@components/warehouse/warehouse.module';
+import { InventoryQuantityNormsRepository } from '@repositories/inventory-quantity-norms.repository';
+import {
+  InventoryQuantityNormModel,
+  InventoryQuantityNormSchema,
+} from '@schemas/inventory-quantity-norms.model';
+import { DailyItemLocatorStockPrice, DailyItemLocatorStockPriceSchema } from '@schemas/daily-item-locator-stock-price.schema';
+import { DailyItemLocatorStockPriceRepository } from '@repositories/daily-item-locator-stock-price.repository';
 
 @Module({
   imports: [
@@ -62,6 +69,14 @@ import { WarehouseModule } from '@components/warehouse/warehouse.module';
       {
         name: TransactionItem.name,
         schema: TransactionItemSchema,
+      },
+      {
+        name: InventoryQuantityNormModel.name,
+        schema: InventoryQuantityNormSchema,
+      },
+      {
+        name: DailyItemLocatorStockPrice.name,
+        schema: DailyItemLocatorStockPriceSchema,
       },
     ]),
     UserModule,
@@ -103,6 +118,14 @@ import { WarehouseModule } from '@components/warehouse/warehouse.module';
     {
       provide: TransactionItemRepository.name,
       useClass: TransactionItemRepository,
+    },
+    {
+      provide: InventoryQuantityNormsRepository.name,
+      useClass: InventoryQuantityNormsRepository,
+    },
+    {
+      provide: DailyItemLocatorStockPriceRepository.name,
+      useClass: DailyItemLocatorStockPriceRepository,
     },
   ],
 })

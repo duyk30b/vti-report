@@ -9,6 +9,7 @@ import { ReportOrderItem } from '@schemas/report-order-item.schema';
 import * as moment from 'moment';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
+import { getTimezone } from '@utils/common';
 
 export function getOrderImportIncompletedMapped(
   data: ReportOrderItem[],
@@ -27,7 +28,7 @@ export function getOrderImportIncompletedMapped(
   if (!isEmpty) {
     const groupByWarehouseCode = data.reduce((prev, cur) => {
       const warehouseCode = cur.warehouseCode + ' - ' + cur.warehouseName;
-      const date = moment(cur.orderCreatedAt).format('DD/MM/YYYY') || '';
+      const date = getTimezone(cur.orderCreatedAt, 'DD/MM/YYYY') || '';
       if (!prev[warehouseCode]) {
         prev[warehouseCode] = [];
       }
@@ -40,8 +41,8 @@ export function getOrderImportIncompletedMapped(
         itemName: cur.itemName,
         unit: cur.unit,
         actualQuantity: readDecimal(cur.receivedQuantity, true),
-        storageCost: formatMoney(cur.storageCost, true),
-        totalPrice: formatMoney(cur.storageCost * cur.planQuantity, true),
+        storageCost: readDecimal(cur.storageCost, true),
+        totalPrice: readDecimal(cur.storageCost * cur.planQuantity, true),
         constructionName: cur.constructionName,
         deliverName: cur.performerName,
       };

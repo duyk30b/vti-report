@@ -33,9 +33,10 @@ async function bootstrap() {
     fastifyAdapter,
     {
       logger:
-        process.env.NODE_ENV === 'development'
-          ? ['debug', 'error', 'log', 'verbose', 'warn']
-          : ['error'],
+        // process.env.NODE_ENV === 'development'
+          // ? 
+          ['debug', 'error', 'log', 'verbose', 'warn']
+          // : ['error'],
     },
   );
 

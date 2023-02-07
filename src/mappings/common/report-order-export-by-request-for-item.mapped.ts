@@ -15,6 +15,7 @@ export function getOrderExportByRequestForItemMapped(
   reportType?: number,
 ): ReportInfo<TableData<ReportOrderExportByRequestForItemModel>[]> {
   const dataMaping: ReportInfo<any> = {
+    companyCode: data[0]?.companyCode,
     companyName: data[0]?.companyName?.toUpperCase() || '',
     companyAddress: data[0]?.companyAddress || '',
     warehouseName: data[0]?.warehouseName || '',

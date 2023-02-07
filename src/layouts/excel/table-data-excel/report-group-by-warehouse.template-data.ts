@@ -35,7 +35,7 @@ export function reportGroupByWarehouseTemplateData(
     );
     worksheet.mergeCells(`${CELL_A}${rowIdx}:${endColumn}`);
     cellGroupByWarehouse.value = warehouseData.warehouseCode;
-    cellGroupByWarehouse.font = fontSize;
+    cellGroupByWarehouse.font = FONT_BOLD_9;
     cellGroupByWarehouse.alignment = ALIGNMENT_LEFT as any;
     cellGroupByWarehouse.border = BORDER as any;
     rowIdx++;

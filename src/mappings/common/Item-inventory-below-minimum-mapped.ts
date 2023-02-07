@@ -30,8 +30,8 @@ export function getItemInventoryBelowMinimum(
         itemCode: cur.itemCode,
         itemName: cur.itemName,
         unit: cur.unit,
-        minInventoryLimit: readDecimal(cur.minInventoryLimit),
-        stockQuantity: readDecimal(cur.stockQuantity),
+        minInventoryLimit: readDecimal(cur.minInventoryLimit, true),
+        stockQuantity: readDecimal(cur.stockQuantity, true),
       });
       return prev;
     }, {});
