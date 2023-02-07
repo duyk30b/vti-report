@@ -40,6 +40,8 @@ import {
   InventoryQuantityNormModel,
   InventoryQuantityNormSchema,
 } from '@schemas/inventory-quantity-norms.model';
+import { DailyItemLocatorStockPrice, DailyItemLocatorStockPriceSchema } from '@schemas/daily-item-locator-stock-price.schema';
+import { DailyItemLocatorStockPriceRepository } from '@repositories/daily-item-locator-stock-price.repository';
 
 @Module({
   imports: [
@@ -71,6 +73,10 @@ import {
       {
         name: InventoryQuantityNormModel.name,
         schema: InventoryQuantityNormSchema,
+      },
+      {
+        name: DailyItemLocatorStockPrice.name,
+        schema: DailyItemLocatorStockPriceSchema,
       },
     ]),
     UserModule,
@@ -116,6 +122,10 @@ import {
     {
       provide: InventoryQuantityNormsRepository.name,
       useClass: InventoryQuantityNormsRepository,
+    },
+    {
+      provide: DailyItemLocatorStockPriceRepository.name,
+      useClass: DailyItemLocatorStockPriceRepository,
     },
   ],
 })
