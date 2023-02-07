@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ReportRequest } from '../../requests/report.request';
 import { ReportResponse } from '../../responses/report.response';
 import { ReportType } from '@enums/report-type.enum';
@@ -68,6 +68,7 @@ import { InventoryQuantityNormsRepository } from '@repositories/inventory-quanti
 import { DailyItemLocatorStockPriceRepository } from '@repositories/daily-item-locator-stock-price.repository';
 @Injectable()
 export class ExportService {
+  private readonly logger = new Logger(ExportService.name);
   constructor(
     @Inject(DailyLotLocatorStockRepository.name)
     private dailyLotLocatorStockRepository: DailyLotLocatorStockRepository,

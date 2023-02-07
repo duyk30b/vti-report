@@ -10,14 +10,26 @@ import { ExceptionInterceptor } from '@core/interceptors/exception.interceptor';
 import fastifyMultipart from 'fastify-multipart';
 import {
   KafkaOptions,
-  MicroserviceOptions,
+  
   TcpOptions,
   Transport,
 } from '@nestjs/microservices';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { ClusterService } from '@core/cluster/cluster.service';
 import { APIPrefix } from '@core/common';
 import { ConfigService } from '@core/config/config.service';
+
+
+console.log( {
+  brokers: process.env.KAFKA_BROKERS.split(','),
+  ssl: true,
+  sasl: {
+    mechanism: 'plain',
+    username: process.env.KAFKA_SASL_USERNAME,
+    password: process.env.KAFKA_SASL_PASSWD,
+  },
+},);
+
+
 async function bootstrap() {
   const fastifyAdapter = new FastifyAdapter();
 
@@ -34,8 +46,7 @@ async function bootstrap() {
     {
       logger:
         // process.env.NODE_ENV === 'development'
-          // ? 
-          ['debug', 'error', 'log', 'verbose', 'warn']
+           ['debug', 'error', 'log', 'verbose', 'warn']
           // : ['error'],
     },
   );
@@ -54,7 +65,7 @@ async function bootstrap() {
           },
         },
         consumer: {
-          groupId: 'report_service',
+          groupId: 'hq_report_service',
           maxInFlightRequests: 1,
           maxPollRecords: 1,
         },
@@ -105,6 +116,6 @@ async function bootstrap() {
   await app.listen(new ConfigService().get('httpPort'), '0.0.0.0');
 }
 
-process.env.NODE_ENV === 'development'
-  ? bootstrap()
-  : ClusterService.clusterize(bootstrap);
+// process.env.NODE_ENV === 'development'
+  bootstrap()
+  // : ClusterService.clusterize(bootstrap);

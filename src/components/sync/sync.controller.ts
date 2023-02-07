@@ -187,7 +187,7 @@ export class SyncController {
     @Payload() body: SyncReportDailyRequestDto,
   ): Promise<ResponsePayload<any>> {
     const { request } = body;
-    console.log('===== DEBUG KAFKA');
+    console.log('=====', request);
     return await this.syncService.saveItemStockWarehouseLocatorByDate(
       request.value,
     );

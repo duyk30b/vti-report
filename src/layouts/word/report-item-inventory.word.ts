@@ -200,6 +200,7 @@ export async function generateReportItemInventory(
               ...dataWord
                 .map((warehouse) => {
                   itemData = warehouse.data.map((item, index) => {
+                     console.log('==============================:', {item})
                     return new TableRow({
                       height: setHeight(WORD_FILE_CONFIG.TABLE_ROW_HEIGHT),
                       children: [
@@ -225,7 +226,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.LEFT,
                               children: [
                                 new TextRun({
-                                  text: item.itemCode,
+                                  text: item.itemCode || '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -240,7 +241,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.LEFT,
                               children: [
                                 new TextRun({
-                                  text: item.itemName,
+                                  text: item.itemName  || '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -254,7 +255,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.CENTER,
                               children: [
                                 new TextRun({
-                                  text: item.unit,
+                                  text: item.unit  || '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -268,7 +269,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.CENTER,
                               children: [
                                 new TextRun({
-                                  text: item.lotNumber,
+                                  text: item.lotNumber  || '',
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -441,7 +442,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.LEFT,
                               children: [
                                 new TextRun({
-                                  text: warehouse.warehouseCode,
+                                  text: warehouse.warehouseCode || '',
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
