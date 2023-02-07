@@ -1,8 +1,7 @@
-import { formatMoney, readDecimal } from '@constant/common';
+import { formatMoney } from '@constant/common';
 import { InventoryModel } from '@models/inventory.model';
 import { TableData } from '@models/report.model';
 import { DailyLotLocatorStock } from '@schemas/daily-lot-locator-stock.schema';
-import { mul } from '@utils/common';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
 
@@ -31,7 +30,7 @@ export function getInventoryDataMapping(
       itemName: cur.itemName,
       unit: cur.unit,
       lotNumber: cur.lotNumber,
-      stockQuantity: formatMoney(inforListItem[keyMapItem]?.quantity || 0, 2),
+      stockQuantity: formatMoney(cur?.stockQuantity || 0, 2),
       locatorCode: cur.locatorCode,
       storageCost: formatMoney(inforListItem[keyMapItem]?.price || 0, 2),
       totalPrice: formatMoney(inforListItem[keyMapItem]?.amount || 0, 2).split(",")[0],
