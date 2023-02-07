@@ -61,14 +61,14 @@ build_staging:
     - docker build --tag $CONTAINER_STAGING_IMAGE .
     - docker push $CONTAINER_STAGING_IMAGE
   only:
-    - projects/avenue_wmsx_hq_stg
+    - projects/avenue_wmsx_staging
 
 deploy_staging:
   stage: deploy_staging
   variables:
     GIT_STRATEGY: none
   only:
-    - projects/avenue_wmsx_hq_stg
+    - projects/avenue_wmsx_staging
   script:
     - eval `ssh-agent -s`
 

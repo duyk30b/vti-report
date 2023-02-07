@@ -36,6 +36,8 @@ export class SyncController {
   async syncOrderImport(
     @Body() payload: SyncPurchasedOrderRequest,
   ): Promise<ResponsePayload<any>> {
+    console.log({payload});
+    
     const { request, responseError } = payload;
     if (responseError && !isEmpty(responseError)) {
       return responseError;
@@ -180,11 +182,12 @@ export class SyncController {
     return await this.syncService.syncTransaction(request);
   }
 
-  @MessagePattern(SYNC_REPORT_DAILY_TOPIC)
+  @MessagePattern('SYNC_REPORT_DAILY')
   async readMessage(
     @Payload() body: SyncReportDailyRequestDto,
   ): Promise<ResponsePayload<any>> {
     const { request } = body;
+    console.log('===== DEBUG KAFKA');
     return await this.syncService.saveItemStockWarehouseLocatorByDate(
       request.value,
     );

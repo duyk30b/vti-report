@@ -1,4 +1,4 @@
-import { readDecimal } from '@constant/common';
+import { formatMoney, readDecimal } from '@constant/common';
 import { InventoryModel } from '@models/inventory.model';
 import { TableData } from '@models/report.model';
 import { DailyLotLocatorStock } from '@schemas/daily-lot-locator-stock.schema';
@@ -9,6 +9,7 @@ import { ReportInfo } from './Item-inventory-mapped';
 export function getInventoryDataMapping(
   data: DailyLotLocatorStock[],
   i18n: I18nRequestScopeService,
+  inforListItem?: {},
 ): ReportInfo<any> {
   const dataMaping: ReportInfo<any> = {
     companyName: '',
@@ -23,16 +24,17 @@ export function getInventoryDataMapping(
     if (!prev[warehouseCode]) {
       prev[warehouseCode] = [];
     }
+    const keyMapItem = `${cur.warehouseCode}-${cur.lotNumber || 'null'}-${cur.itemCode}-${cur.companyCode}`;
     const data: InventoryModel = {
       index: 0,
       itemCode: cur.itemCode,
       itemName: cur.itemName,
       unit: cur.unit,
       lotNumber: cur.lotNumber,
-      stockQuantity: readDecimal(cur.stockQuantity, true),
+      stockQuantity: formatMoney(inforListItem[keyMapItem]?.quantity || 0, 2),
       locatorCode: cur.locatorCode,
-      storageCost: readDecimal(cur.storageCost),
-      totalPrice: readDecimal(mul(cur.storageCost, cur.stockQuantity)),
+      storageCost: formatMoney(inforListItem[keyMapItem]?.price || 0, 2),
+      totalPrice: formatMoney(inforListItem[keyMapItem]?.amount || 0, 2).split(",")[0],
     };
     prev[warehouseCode].push(data);
     return prev;
