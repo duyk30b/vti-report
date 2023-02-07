@@ -76,16 +76,16 @@ export function readDecimal(number: any, isFormat?: boolean): string {
   } else return numReturn.split('.')[0] + ',' + numReturn.split('.')[1];
 }
 
-export function formatMoney(number: any, isFormat?: boolean) {
-  if (!number) return '';
-  let num = number.toString();
-  if(num.includes(',')) num = num.split(',')[0] + '.' + num.split(',')[1];
-  let x = 3;
-  let n = 2;
-  let numPri = parseFloat(num).toFixed(2);
+export function formatMoney(number: any, isDecimal?: number) {
+  number = number || 0;
+  isDecimal = isDecimal || 0;
+  const num = number.toString();
+  const x = 3;
+  const n = 2;
+  let numPri= parseFloat(num).toFixed(isDecimal);
   let re = '(\\d)(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
-  let numReturn = numPri.replace(new RegExp(re, 'g'), '$1 ');
-  if (isFormat) {
+  let numReturn =numPri.replace(new RegExp(re, 'g'), '$1 ');
+  if (isDecimal) {
     return numReturn.split('.')[0] + ',' + numReturn.split('.')[1];
   }
   return numReturn.split('.')[0];

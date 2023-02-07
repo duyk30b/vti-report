@@ -41,8 +41,8 @@ export function getOrderImportIncompletedMapped(
         itemName: cur.itemName,
         unit: cur.unit,
         actualQuantity: readDecimal(cur.receivedQuantity, true),
-        storageCost: formatMoney(cur.storageCost, true),
-        totalPrice: formatMoney(cur.storageCost * cur.planQuantity, true),
+        storageCost: readDecimal(cur.storageCost, true),
+        totalPrice: readDecimal(cur.storageCost * cur.planQuantity, true),
         constructionName: cur.constructionName,
         deliverName: cur.performerName,
       };

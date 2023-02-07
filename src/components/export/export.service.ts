@@ -65,11 +65,15 @@ import { FORMAT_DATE } from '@utils/constant';
 import { formatDate, readDecimal } from '@constant/common';
 import { keyBy, compact, isEmpty } from 'lodash';
 import { InventoryQuantityNormsRepository } from '@repositories/inventory-quantity-norms.repository';
+import { DailyItemLocatorStockPriceRepository } from '@repositories/daily-item-locator-stock-price.repository';
 @Injectable()
 export class ExportService {
   constructor(
     @Inject(DailyLotLocatorStockRepository.name)
     private dailyLotLocatorStockRepository: DailyLotLocatorStockRepository,
+
+    @Inject(DailyItemLocatorStockPriceRepository.name)
+    private dailyItemLocatorStockPriceRepository: DailyItemLocatorStockPriceRepository,
 
     @Inject(DailyWarehouseItemStockRepository.name)
     private dailyWarehouseItemStockRepository: DailyWarehouseItemStockRepository,
@@ -648,7 +652,15 @@ export class ExportService {
       request,
       data,
     );
-    const dataMaped = getInventoryDataMapping(data, this.i18n);
+    const inforListItem = await this.dailyItemLocatorStockPriceRepository.getInforItemStock(request);
+    const inforListItemKey = inforListItem.map((item) => {
+      return {
+        ...item,
+        key: `${item.warehouseCode}-${item?.lotNumber || 'null'}-${item.itemCode}-${item.companyCode}`,
+      }
+    })
+    const inforListItemMap = keyBy(inforListItemKey, 'key')
+    const dataMaped = getInventoryDataMapping(data, this.i18n, inforListItemMap);
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } = await reportInventoryExcelMapping(
