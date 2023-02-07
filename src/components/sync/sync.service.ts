@@ -751,7 +751,10 @@ export class SyncService {
         const itemInventoryQuantityNorm: InventoryQuantityNormsInterface = {
           companyCode: companyInfo.code,
           warehouseCode: item.warehouseCode,
+          warehouseName: item.warehouseName,
           itemCode: item.itemCode,
+          itemName: item.itemName,
+          unit: item.itemUnit,
           inventoryLimit: item?.inventoryLimit || 0,
           minInventoryLimit: item?.minInventoryLimit || 0,
         };
@@ -770,7 +773,9 @@ export class SyncService {
             this.inventoryQuantityNormsRepository.deleteAllByCondition(item),
           );
         }
-        await Promise.all(promiseAll);
+        if (!isEmpty(promiseAll)) {
+          await Promise.all(promiseAll);
+        }
       }
       await this.inventoryQuantityNormsRepository.createMany(
         inventoryQuantityNorms,

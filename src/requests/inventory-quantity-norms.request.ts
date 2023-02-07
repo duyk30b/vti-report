@@ -34,7 +34,22 @@ export class InventoryQuantityNorms {
   @ApiProperty()
   @IsOptional()
   @IsNotEmpty()
+  warehouseName: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNotEmpty()
   itemCode: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNotEmpty()
+  itemName: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNotEmpty()
+  itemUnit: string;
 
   @ApiProperty()
   @IsOptional()
