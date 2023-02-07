@@ -35,7 +35,7 @@ export async function getSituationTransferMapped(
             if (transaction?.quantityImported) {
               i.totalQuantity = plus(i.totalQuantity, transaction?.quantityImported);
               i?.groupByStorageDate.push({
-                storageDate: formatDate(transaction?.transactionDate),
+                storageDate: transaction?.transactionDate ?? '',
                 lotNumber: infoStock?.lotNumber,
                 locatorCode: infoStock?.locatorCode,
                 unit: infoStock?.unit,
