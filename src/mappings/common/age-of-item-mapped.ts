@@ -158,49 +158,6 @@ export async function getSituationTransferMapped(
   return dataMaping;
 }
 
-function formatData(arr: any, warehouseCode: string) {
-  const arrformated: any[] = [];
-  for (const key in arr) {
-    if (arr[key]) {
-      const item = arr[key];
-      if (item.quantityImported && item.warehouseCode == warehouseCode) {
-        arrformated.push({
-          itemCode: item.itemCode,
-          itemName: item.itemName,
-          totalQuantity: item.quantityImported,
-          totalPrice: item?.storageCost || 0,
-          sixMonthAgo: item?.sixMonthAgo || 0,
-          oneYearAgo: item?.oneYearAgo || 0,
-          twoYearAgo: item?.twoYearAgo || 0,
-          threeYearAgo: item?.threeYearAgo || 0,
-          fourYearAgo: item?.fourYearAgo || 0,
-          fiveYearAgo: item?.fiveYearAgo || 0,
-          greaterfiveYear: item?.greaterfiveYear || 0,
-          groupByStorageDate: [
-            {
-              storageDate: item.transactionDate,
-              lotNumber: item.lotNumber,
-              locatorCode: item.locatorCode,
-              unit: item.unit,
-              stockQuantity: item.quantityImported,
-              storageCost: item?.storageCost || 0,
-              totalPrice: item?.totalPrice || 0,
-              sixMonthAgo: item.sixMonthAgo,
-              oneYearAgo: item?.oneYearAgo || 0,
-              twoYearAgo: item?.twoYearAgo || 0,
-              threeYearAgo: item?.threeYearAgo || 0,
-              fourYearAgo: item?.fourYearAgo || 0,
-              fiveYearAgo: item?.fiveYearAgo || 0,
-              greaterfiveYear: item?.greaterfiveYear || 0,
-            }
-          ]
-        })
-      }
-    }
-  }
-  return arrformated;
-}
-
 function pushItemOld(objectTransaction: any, arrItem: any[], warehouseCode?: string) {
   let keyByArrItem = keyBy(arrItem, 'itemCode');
   const arrformated: any[] = [];

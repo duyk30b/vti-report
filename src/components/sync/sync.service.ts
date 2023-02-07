@@ -843,7 +843,6 @@ export class SyncService {
           .build();
       }
       request['company'] = company?.data?.pop();
-
       const transactionitems: TransactionItemInterface[] = [];
       for (const item of request.data) {
         const temp: TransactionItemInterface = {

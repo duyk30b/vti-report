@@ -1055,6 +1055,7 @@ function getCommonConditionSituation(orderType: OrderType) {
           orderCode: '$orderCode',
           warehouseCode: '$warehouseCode',
           lotNumber: '$lotNumber',
+          status: '$status',
         },
         pipeline: [
           {
