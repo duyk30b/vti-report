@@ -20,4 +20,16 @@ export class WarehouseService implements WarehouseServiceInterface {
     }
     return response.data;
   }
+
+  async getWarehouseByCodes(codes: string[]): Promise<any> {
+    const response = await this.warehouseServiceClient
+      .send('get_warehouse_by_codes', { warehouseCodes: codes })
+      .toPromise();
+
+    if (response.statusCode !== ResponseCodeEnum.SUCCESS) {
+      return [];
+    }
+
+    return response.data;
+  }
 }

@@ -89,6 +89,7 @@ export class InventoryQuantityNormsRepository extends BaseAbstractRepository<Inv
           warehouseName: 1,
           warehouseCode: 1,
           minInventoryLimit: 1,
+          inventoryLimit: 1,
         },
       },
       {
@@ -183,6 +184,7 @@ export class InventoryQuantityNormsRepository extends BaseAbstractRepository<Inv
             },
           },
           minInventoryLimit: 1,
+          inventoryLimit: 1,
         },
       },
       {
@@ -268,6 +270,7 @@ export class InventoryQuantityNormsRepository extends BaseAbstractRepository<Inv
           warehouseName: 1,
           warehouseCode: 1,
           minInventoryLimit: 1,
+          inventoryLimit: 1,
           stockQuantity: {
             $add: [
               '$stockQuantity',

@@ -200,9 +200,10 @@ export class ExportService {
     transactionArr = compact(transactionArr);
     const transactionInput = keyBy(transactionArr, 'key');
 
-    const dataMapped = getSituationTransferMapped(
+    const dataMapped = await getSituationTransferMapped(
       data,
       this.i18n,
+      this.warehouseServiceInterface,
       transactionInput,
     );
     if (dataMapped.companyCode) {
