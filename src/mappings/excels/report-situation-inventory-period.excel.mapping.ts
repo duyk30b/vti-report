@@ -24,6 +24,7 @@ export async function reportSituationInventoryPeriodExcelMapping(
     dateFrom: request.dateFrom,
     dateTo: request.dateTo,
     tableColumn: SITUATION_INVENTORY_PERIOD_COLUMN,
+    reportType: request?.reportType || 0,
   };
 
   const { dataBase64, nameFile } = await generateTable(
