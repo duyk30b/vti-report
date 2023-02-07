@@ -3,13 +3,14 @@ import { minus, mul, plus } from '@utils/common';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
 import { compact, keyBy, isEmpty, uniq } from 'lodash';
-import { formatDate } from '@constant/common';
+import { WarehouseServiceInterface } from '@components/warehouse/interface/warehouse.service.interface';
 
-export function getSituationTransferMapped(
+export async function getSituationTransferMapped(
   data: any[],
   i18n: I18nRequestScopeService,
+  warehouseService?: WarehouseServiceInterface,
   transactionNow?: any,
-): ReportInfo<TableAgeOfItems[]> {
+): Promise<ReportInfo<TableAgeOfItems[]>> {
   const dataMaping: ReportInfo<TableAgeOfItems[]> = {
     companyCode: data[0]?._id?.companyCode || '',
     companyName: data[0]?._id?.companyName?.toUpperCase() || '',
@@ -120,24 +121,22 @@ export function getSituationTransferMapped(
       for (const key in transactionNow) {
         if (transactionNow[key]) {
           const code = transactionNow[key]?.warehouseCode || '';
-          const name = transactionNow[key]?.warehouseName || '';
-          warehouseCodeTransaction.push({
-            name: name,
-            code: code,
-          });
+          warehouseCodeTransaction.push(code);
         }
       }
       warehouseCodeTransaction = uniq(warehouseCodeTransaction);
+      const listWarehouses = await warehouseService.getWarehouseByCodes(warehouseCodeTransaction);
+      const listWarehousesMap = keyBy(listWarehouses, 'code');
       arrWarehouseCode = uniq(arrWarehouseCode);
-      warehouseCodeTransaction.map((warehouse) => {
-        if (!arrWarehouseCode.includes(warehouse.code)) {
-          const { arrformated, objectTransaction } = pushItemOld(transactionNow, [], warehouse.code);
+      warehouseCodeTransaction.map((warehouseCode) => {
+        if (!arrWarehouseCode.includes(warehouseCode)) {
+          const { arrformated, objectTransaction } = pushItemOld(transactionNow, [], warehouseCode);
           transactionNow = objectTransaction;
           if (!isEmpty(arrformated)) {
             const arr = {
               warehouseCode:
                 i18n.translate('report.WAREHOUSE_GROUP_CODE') +
-                [warehouse.code, warehouse.name].join('_'),
+                [warehouseCode, listWarehousesMap[warehouseCode]?.name].join('_'),
               sixMonth: 0,
               oneYearAgo: 0,
               twoYearAgo: 0,
