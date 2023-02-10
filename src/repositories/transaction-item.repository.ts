@@ -466,6 +466,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           unit: 1,
           lotNumber: 1,
           storageCost: 1,
+          orderCode: 1,
           quantityExported: {
             $cond: [
               {
@@ -499,6 +500,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
             unit: '$unit',
             lotNumber: '$lotNumber',
             storageCost: '$storageCost',
+            orderCode: '$orderCode',
           },
           quantityExported: { $sum: '$quantityExported' },
           quantityImported: { $sum: '$quantityImported' },
@@ -515,9 +517,46 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           unit: '$_id.unit',
           lotNumber: '$_id.lotNumber',
           storageCost: '$_id.storageCost',
+          orderCode: '$_id.orderCode',
           quantityExported: 1,
           quantityImported: 1,
         },
+      },
+      {
+        $lookup: {
+          from: 'report-order-item',
+          let: {
+            companyCodeMap: '$companyCode',
+            warehouseCodeMap: '$warehouseCode',
+            orderCodeMap: '$orderCode',
+            itemCodeMap: '$itemCode',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$companyCode', '$$companyCodeMap'] },
+                    { $eq: ['$warehouseCode', '$$warehouseCodeMap'] },
+                    { $eq: ['$orderCode', '$$orderCodeMap'] },
+                    { $eq: ['$itemCode', '$$itemCodeMap'] },
+                  ],
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                description: 1,
+                accountHave: 1,
+              },
+            },
+          ],
+          as: 'accountInfo',
+        },
+      },
+      {
+        $sort: { storageDate: 1 },
       },
     ]);
   }
