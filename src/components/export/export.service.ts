@@ -60,7 +60,7 @@ import { getSituationTransferMapped } from '@mapping/common/age-of-item-mapped';
 import { TransactionItemRepository } from '@repositories/transaction-item.repository';
 import { UserService } from '@components/user/user.service';
 import { WarehouseServiceInterface } from '@components/warehouse/interface/warehouse.service.interface';
-import { getTimezone } from '@utils/common';
+import { getTimezone, minus } from '@utils/common';
 import { FORMAT_DATE } from '@utils/constant';
 import { formatDate, readDecimal } from '@constant/common';
 import { keyBy, compact, isEmpty } from 'lodash';
@@ -193,10 +193,14 @@ export class ExportService {
         (item.quantityExported != 0 || item.quantityImported != 0) &&
         item.quantityExported != item.quantityImported
       ) {
+        const accountInfo = item.accountInfo[0] || '';
         return {
           ...item,
+          origin: accountInfo?.description || '',
+          account: accountInfo?.accountHave || '',
+          checkImport: minus(item?.quantityImported, item?.quantityExported),
           transactionDate: formatDate(request?.dateFrom) || '',
-          key: `${item.warehouseCode}-${item.locatorCode}-${item.itemCode}-${item.companyCode}`,
+          key: `${item.warehouseCode}-${item.locatorCode}-${item.itemCode}-${item.companyCode}-${item?.orderCode}`,
         };
       }
     });
