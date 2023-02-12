@@ -1,10 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { DailyItemLocatorStockPriceInterface } from './interface/daily-item-locator-stock-price.interface';
+import { DailyItemWarehouseStockPriceInterface } from './interface/daily-item-warehouse-stock-price.interface';
 
-export type DailyItemLocatorStockPriceDocument = DailyItemLocatorStockPrice & Document;
+export type DailyItemLocatorStockPriceDocument = DailyItemWarehouseStockPrice &
+  Document;
 
-@Schema({ collection: 'daily-item-locator-stock-price', timestamps: true })
-export class DailyItemLocatorStockPrice implements DailyItemLocatorStockPriceInterface {
+@Schema({ collection: 'daily-item-warehouse-stock-price', timestamps: true })
+export class DailyItemWarehouseStockPrice
+  implements DailyItemWarehouseStockPriceInterface
+{
   @Prop({ required: false })
   itemCode: string;
 
@@ -30,6 +33,6 @@ export class DailyItemLocatorStockPrice implements DailyItemLocatorStockPriceInt
   companyCode: string;
 }
 
-export const DailyItemLocatorStockPriceSchema = SchemaFactory.createForClass(
-  DailyItemLocatorStockPrice,
+export const DailyItemWarehouseStockPriceSchema = SchemaFactory.createForClass(
+  DailyItemWarehouseStockPrice,
 );

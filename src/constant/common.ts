@@ -62,6 +62,7 @@ export function formatNumber(number: any) {
   }
 }
 export function readDecimal(number: any, isFormat?: boolean): string {
+  const checkInt = Number(number) % 1;
   if(isFormat && !number ) return '0';
   if (!number) return ''
   let num = number.toString();
@@ -69,8 +70,14 @@ export function readDecimal(number: any, isFormat?: boolean): string {
   let x = 3;
   let n = 2;
   let numPri = parseFloat(num).toFixed(2);
+  if (checkInt == 0) {
+    numPri = num + '.0';
+  }
   let re = '(\\d)(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
   let numReturn = numPri.replace(new RegExp(re, 'g'), '$1 ');
+  if (checkInt == 0) {
+    return numReturn.split('.')[0];
+  }
   if (numReturn.split('.')[1] === '00') {
     return numReturn.split('.')[0];    
   } else return numReturn.split('.')[0] + ',' + numReturn.split('.')[1];

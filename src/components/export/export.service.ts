@@ -60,12 +60,12 @@ import { getSituationTransferMapped } from '@mapping/common/age-of-item-mapped';
 import { TransactionItemRepository } from '@repositories/transaction-item.repository';
 import { UserService } from '@components/user/user.service';
 import { WarehouseServiceInterface } from '@components/warehouse/interface/warehouse.service.interface';
-import { getTimezone } from '@utils/common';
+import { getTimezone, minus } from '@utils/common';
 import { FORMAT_DATE } from '@utils/constant';
 import { formatDate, readDecimal } from '@constant/common';
 import { keyBy, compact, isEmpty } from 'lodash';
 import { InventoryQuantityNormsRepository } from '@repositories/inventory-quantity-norms.repository';
-import { DailyItemLocatorStockPriceRepository } from '@repositories/daily-item-locator-stock-price.repository';
+import { DailyItemWarehouseStockPriceRepository } from '@repositories/daily-item-warehouse-stock-price.repository';
 @Injectable()
 export class ExportService {
   private readonly logger = new Logger(ExportService.name);
@@ -73,8 +73,8 @@ export class ExportService {
     @Inject(DailyLotLocatorStockRepository.name)
     private dailyLotLocatorStockRepository: DailyLotLocatorStockRepository,
 
-    @Inject(DailyItemLocatorStockPriceRepository.name)
-    private dailyItemLocatorStockPriceRepository: DailyItemLocatorStockPriceRepository,
+    @Inject(DailyItemWarehouseStockPriceRepository.name)
+    private dailyItemWarehouseStockPriceRepository: DailyItemWarehouseStockPriceRepository,
 
     @Inject(DailyWarehouseItemStockRepository.name)
     private dailyWarehouseItemStockRepository: DailyWarehouseItemStockRepository,
@@ -194,10 +194,14 @@ export class ExportService {
         (item.quantityExported != 0 || item.quantityImported != 0) &&
         item.quantityExported != item.quantityImported
       ) {
+        const accountInfo = item.accountInfo[0] || '';
         return {
           ...item,
+          origin: accountInfo?.description || '',
+          account: accountInfo?.accountHave || '',
+          checkImport: minus(item?.quantityImported, item?.quantityExported),
           transactionDate: formatDate(request?.dateFrom) || '',
-          key: `${item.warehouseCode}-${item.locatorCode}-${item.itemCode}-${item.companyCode}`,
+          key: `${item.warehouseCode}-${item.locatorCode}-${item.itemCode}-${item.companyCode}-${item?.orderCode}`,
         };
       }
     });
@@ -653,15 +657,24 @@ export class ExportService {
       request,
       data,
     );
-    const inforListItem = await this.dailyItemLocatorStockPriceRepository.getInforItemStock(request);
+    const inforListItem =
+      await this.dailyItemWarehouseStockPriceRepository.getInforItemStock(
+        request,
+      );
     const inforListItemKey = inforListItem.map((item) => {
       return {
         ...item,
-        key: `${item.warehouseCode}-${item?.lotNumber || 'null'}-${item.itemCode}-${item.companyCode}`,
-      }
-    })
-    const inforListItemMap = keyBy(inforListItemKey, 'key')
-    const dataMaped = getInventoryDataMapping(data, this.i18n, inforListItemMap);
+        key: `${item.warehouseCode}-${item?.lotNumber || 'null'}-${
+          item.itemCode
+        }-${item.companyCode}`,
+      };
+    });
+    const inforListItemMap = keyBy(inforListItemKey, 'key');
+    const dataMaped = getInventoryDataMapping(
+      data,
+      this.i18n,
+      inforListItemMap,
+    );
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } = await reportInventoryExcelMapping(
