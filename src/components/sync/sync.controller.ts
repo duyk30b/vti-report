@@ -7,13 +7,14 @@ import { SyncService } from './sync.service';
 import { TransactionRequest } from '@requests/sync-transaction.request';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { SyncReportDailyRequestDto } from './dto/request/sync-report-daily.request.dto';
-import { SYNC_REPORT_DAILY_TOPIC } from './sync.constants';
+import { MessageSyncKafkaEnum } from './sync.constants';
 import { SyncPurchasedOrderRequest } from '@requests/sync-purchased-order-import.request';
 import { SyncSaleOrderExportRequest } from '@requests/sync-sale-order-export.request';
 import { SyncWarehouseTransferRequest } from '@requests/sync-warehouse-transfer-request';
 import { SyncInventory } from '@requests/sync-inventory-request';
 import { InventoryAdjustmentRequest } from '@requests/inventory-adjustments.request';
 import { InventoryQuantityNormsRequest } from '@requests/inventory-quantity-norms.request';
+import { SyncItemWarehouseStockPriceRequestDto } from './dto/request/sync-item-warehouse-stock-price.request.dto';
 
 @Controller('sync')
 export class SyncController {
@@ -182,7 +183,7 @@ export class SyncController {
     return await this.syncService.syncTransaction(request);
   }
 
-  @MessagePattern('SYNC_REPORT_DAILY')
+  @MessagePattern(MessageSyncKafkaEnum.SYNC_REPORT_DAILY_ITEM_STOCK_TOPIC)
   async readMessage(
     @Payload() body: SyncReportDailyRequestDto,
   ): Promise<ResponsePayload<any>> {
@@ -191,5 +192,13 @@ export class SyncController {
     return await this.syncService.saveItemStockWarehouseLocatorByDate(
       request.value,
     );
+  }
+
+  @MessagePattern(MessageSyncKafkaEnum.SYNC_REPORT_DAILY_ITEM_PRICE_TOPIC)
+  async readMessageSyncItemPrice(
+    @Payload() body: SyncReportDailyRequestDto,
+  ): Promise<ResponsePayload<any>> {
+    const { request } = body;
+    return await this.syncService.syncItemPrice(request.value);
   }
 }

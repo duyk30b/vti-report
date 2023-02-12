@@ -26,6 +26,10 @@ export function getTimezone(date?: any, format?: string) {
   return moment(date).tz('Asia/Ho_Chi_Minh').format(format);
 }
 
+export function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export enum EnumSort {
   ASC = 'ASC',
   DESC = 'DESC',
