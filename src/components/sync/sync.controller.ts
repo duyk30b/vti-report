@@ -181,7 +181,7 @@ export class SyncController {
     return await this.syncService.syncTransaction(request);
   }
 
-  @MessagePattern(MessageSyncKafkaEnum.SYNC_REPORT_DAILY_ITEM_STOCK_TOPIC)
+  @MessagePattern('SYNC_REPORT_DAILY_TOPIC')
   async readMessage(
     @Payload() body: SyncReportDailyRequestDto,
   ): Promise<ResponsePayload<any>> {
@@ -191,7 +191,7 @@ export class SyncController {
     );
   }
 
-  @MessagePattern(MessageSyncKafkaEnum.SYNC_REPORT_DAILY_ITEM_PRICE_TOPIC)
+  @MessagePattern('SYNC_REPORT_DAILY_ITEM_PRICE_TOPIC')
   async readMessageSyncItemPrice(
     @Payload() body: SyncReportDailyRequestDto,
   ): Promise<ResponsePayload<any>> {
