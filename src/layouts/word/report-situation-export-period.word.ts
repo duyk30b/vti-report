@@ -270,7 +270,7 @@ export async function generateReportSituationExportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: item.accountDebt,
+                                          text: item.accountDebt + ".",
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
