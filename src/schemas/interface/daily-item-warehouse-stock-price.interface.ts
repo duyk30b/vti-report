@@ -1,4 +1,4 @@
-export interface DailyItemLocatorStockPriceInterface {
+export interface DailyItemWarehouseStockPriceInterface {
   itemCode: string;
   warehouseCode: string;
   lotNumber: string;

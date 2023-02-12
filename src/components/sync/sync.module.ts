@@ -36,7 +36,15 @@ import {
 } from '@schemas/transaction-item.schema';
 import { UserModule } from '@components/user/user.module';
 import { InventoryQuantityNormsRepository } from '@repositories/inventory-quantity-norms.repository';
-import { InventoryQuantityNormModel, InventoryQuantityNormSchema } from '@schemas/inventory-quantity-norms.model';
+import {
+  InventoryQuantityNormModel,
+  InventoryQuantityNormSchema,
+} from '@schemas/inventory-quantity-norms.model';
+import { DailyItemWarehouseStockPriceRepository } from '@repositories/daily-item-warehouse-stock-price.repository';
+import {
+  DailyItemWarehouseStockPrice,
+  DailyItemWarehouseStockPriceSchema,
+} from '@schemas/daily-item-warehouse-stock-price.schema';
 @Module({
   imports: [
     MongooseModule.forFeature([
@@ -50,7 +58,14 @@ import { InventoryQuantityNormModel, InventoryQuantityNormSchema } from '@schema
       { name: ReportOrderItem.name, schema: ReportOrderItemSchema },
       { name: ReportOrderItemLot.name, schema: ReportOrderItemLotSchema },
       { name: TransactionItem.name, schema: TransactionItemSchema },
-      { name: InventoryQuantityNormModel.name, schema: InventoryQuantityNormSchema },
+      {
+        name: InventoryQuantityNormModel.name,
+        schema: InventoryQuantityNormSchema,
+      },
+      {
+        name: DailyItemWarehouseStockPrice.name,
+        schema: DailyItemWarehouseStockPriceSchema,
+      },
     ]),
     UserModule,
   ],
@@ -90,6 +105,10 @@ import { InventoryQuantityNormModel, InventoryQuantityNormSchema } from '@schema
     {
       provide: 'InventoryQuantityNormsRepository',
       useClass: InventoryQuantityNormsRepository,
+    },
+    {
+      provide: 'DailyItemWarehouseStockPriceRepository',
+      useClass: DailyItemWarehouseStockPriceRepository,
     },
   ],
   controllers: [SyncController],

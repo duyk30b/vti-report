@@ -10,7 +10,6 @@ import { ReportOrderItemLotRepository } from '@repositories/report-order-item-lo
 import { ReportOrderItemRepository } from '@repositories/report-order-item.repository';
 import { ReportOrderRepository } from '@repositories/report-order.repository';
 import { TransactionItemRepository } from '@repositories/transaction-item.repository';
-import { SyncDailyStockRequest } from '@requests/sync-daily.request';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { TransactionRequest } from '@requests/sync-transaction.request';
 import { ActionType } from '@enums/export-type.enum';
@@ -45,6 +44,10 @@ import {
 } from '@requests/inventory-quantity-norms.request';
 import { InventoryQuantityNormsInterface } from '@schemas/interface/inventory-quantity-norms';
 import { InventoryQuantityNormsRepository } from '@repositories/inventory-quantity-norms.repository';
+import { SyncItemWarehouseStockPriceRequestDto } from './dto/request/sync-item-warehouse-stock-price.request.dto';
+import { DailyItemWarehouseStockPriceRepository } from '@repositories/daily-item-warehouse-stock-price.repository';
+import { sleep } from '@utils/common';
+import { DailyItemWarehouseStockPriceInterface } from '@schemas/interface/daily-item-warehouse-stock-price.interface';
 @Injectable()
 export class SyncService {
   private readonly logger = new Logger(SyncService.name);
@@ -70,6 +73,9 @@ export class SyncService {
 
     @Inject('TransactionItemRepository')
     private readonly transactionItemRepository: TransactionItemRepository,
+
+    @Inject('DailyItemWarehouseStockPriceRepository')
+    private readonly dailyItemWarehouseStockPriceRepository: DailyItemWarehouseStockPriceRepository,
 
     @Inject('InventoryQuantityNormsRepository')
     private readonly inventoryQuantityNormsRepository: InventoryQuantityNormsRepository,
@@ -917,5 +923,72 @@ export class SyncService {
       .withCode(ResponseCodeEnum.SUCCESS)
       .withMessage(await this.i18n.translate('success.SUCCESS'))
       .build();
+  }
+
+  async syncItemPrice(
+    request: SyncItemWarehouseStockPriceRequestDto,
+  ): Promise<any> {
+    const { companyCode, data } = request;
+    const company = await this.userService.getCompanies({
+      code: companyCode,
+    });
+
+    if (
+      company?.statusCode !== ResponseCodeEnum.SUCCESS ||
+      isEmpty(company.data)
+    ) {
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.BAD_REQUEST)
+        .withMessage(await this.i18n.translate('error.COMPANY_NOT_FOUND'))
+        .build();
+    }
+    try {
+      const itemPriceDocuments = data.map((itemPrice) => {
+        return {
+          updateOne: {
+            filter: {
+              companyCode: companyCode,
+              itemCode: itemPrice.itemCode,
+              warehouseCode: itemPrice.warehouseCode,
+              lotNumber: itemPrice.lotNumber || null,
+            },
+            update: {
+              itemCode: itemPrice?.itemCode,
+              warehouseCode: itemPrice?.warehouseCode,
+              lotNumber: itemPrice?.lotNumber,
+              quantity: itemPrice?.quantity,
+              price: itemPrice?.amount,
+              amount: itemPrice?.totalAmount,
+              reportDate: new Date(itemPrice.reportDate),
+              companyCode: companyCode,
+            } as DailyItemWarehouseStockPriceInterface,
+            upsert: true,
+          },
+        };
+      });
+      const limit = 200;
+      const page = Math.ceil(itemPriceDocuments.length / limit);
+      for (let currentPage = 0; currentPage < page; currentPage++) {
+        const dataStart = currentPage * limit;
+        const dataEnd = (currentPage + 1) * limit;
+        const documents = itemPriceDocuments.slice(dataStart, dataEnd);
+        await this.dailyItemWarehouseStockPriceRepository.bulkWrite(documents);
+        if (currentPage !== page - 1) {
+          await sleep(200);
+        }
+      }
+
+      console.info('SYNC ITEM PRICE SUCCESS:', new Date());
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.SUCCESS)
+        .withMessage(await this.i18n.translate('error.SUCCESS'))
+        .build();
+    } catch (error) {
+      console.error('SYNC ITEM PRICE ERROR:', error);
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.INTERNAL_SERVER_ERROR)
+        .withMessage(await this.i18n.translate('error.INTERNAL_SERVER_ERROR'))
+        .build();
+    }
   }
 }
