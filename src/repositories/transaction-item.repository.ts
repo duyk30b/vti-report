@@ -548,7 +548,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
               $project: {
                 _id: 0,
                 description: 1,
-                accountHave: 1,
+                account: 1,
               },
             },
           ],

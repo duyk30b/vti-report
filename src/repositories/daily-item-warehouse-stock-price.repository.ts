@@ -2,31 +2,32 @@ import { BaseAbstractRepository } from '@core/repository/base.abstract.repositor
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ReportRequest } from '@requests/report.request';
-import { DailyItemLocatorStockPrice } from '@schemas/daily-item-locator-stock-price.schema';
 import { getTimezone } from '@utils/common';
-import { DATE_FOMAT, FORMAT_DATE, TIMEZONE_HCM_CITY } from '@utils/constant';
+import { DATE_FOMAT, FORMAT_DATE } from '@utils/constant';
 import { Model } from 'mongoose';
 import * as moment from 'moment';
+import { DailyItemWarehouseStockPrice } from '@schemas/daily-item-warehouse-stock-price.schema';
+import { DataItemWarehousePriceRequestDto } from '@components/sync/dto/request/sync-item-warehouse-stock-price.request.dto';
 
 @Injectable()
-export class DailyItemLocatorStockPriceRepository extends BaseAbstractRepository<DailyItemLocatorStockPrice> {
+export class DailyItemWarehouseStockPriceRepository extends BaseAbstractRepository<DailyItemWarehouseStockPrice> {
   constructor(
-    @InjectModel(DailyItemLocatorStockPrice.name)
-    private readonly dailyItemLocatorStockPrice: Model<DailyItemLocatorStockPrice>,
+    @InjectModel(DailyItemWarehouseStockPrice.name)
+    private readonly dailyItemLocatorStockPrice: Model<DailyItemWarehouseStockPrice>,
   ) {
     super(dailyItemLocatorStockPrice);
   }
 
-  createEntity(
-    dailyItemStockLocator: any,
-  ): DailyItemLocatorStockPrice {
+  createDocument(
+    dailyItemStockLocator: DataItemWarehousePriceRequestDto,
+  ): DailyItemWarehouseStockPrice {
     const document = new this.dailyItemLocatorStockPrice();
     document.itemCode = dailyItemStockLocator?.itemCode;
     document.warehouseCode = dailyItemStockLocator?.warehouseCode;
     document.lotNumber = dailyItemStockLocator?.lotNumber;
     document.quantity = dailyItemStockLocator?.quantity;
-    document.price = dailyItemStockLocator?.price;
-    document.amount = dailyItemStockLocator?.amount;
+    document.price = dailyItemStockLocator?.amount;
+    document.amount = dailyItemStockLocator?.totalAmount;
     document.reportDate = dailyItemStockLocator.reportDate;
     document.companyCode = dailyItemStockLocator?.companyCode;
     return document;

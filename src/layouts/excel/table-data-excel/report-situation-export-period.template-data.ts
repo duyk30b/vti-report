@@ -184,7 +184,7 @@ export function reportSituationExportPeriodTemplateData(
                 },
                 {
                   nameCell: `J${curRowIdx}`,
-                  value: item.accountDebt,
+                  value: item.accountDebt + ".",
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_BOTTOM_LEFT,
                   border: BORDER,
