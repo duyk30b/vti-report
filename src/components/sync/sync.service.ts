@@ -10,7 +10,6 @@ import { ReportOrderItemLotRepository } from '@repositories/report-order-item-lo
 import { ReportOrderItemRepository } from '@repositories/report-order-item.repository';
 import { ReportOrderRepository } from '@repositories/report-order.repository';
 import { TransactionItemRepository } from '@repositories/transaction-item.repository';
-import { SyncDailyStockRequest } from '@requests/sync-daily.request';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { TransactionRequest } from '@requests/sync-transaction.request';
 import { ActionType } from '@enums/export-type.enum';
@@ -48,6 +47,7 @@ import { InventoryQuantityNormsRepository } from '@repositories/inventory-quanti
 import { SyncItemWarehouseStockPriceRequestDto } from './dto/request/sync-item-warehouse-stock-price.request.dto';
 import { DailyItemWarehouseStockPriceRepository } from '@repositories/daily-item-warehouse-stock-price.repository';
 import { sleep } from '@utils/common';
+import { DailyItemWarehouseStockPriceInterface } from '@schemas/interface/daily-item-warehouse-stock-price.interface';
 @Injectable()
 export class SyncService {
   private readonly logger = new Logger(SyncService.name);
@@ -943,23 +943,26 @@ export class SyncService {
         .withMessage(await this.i18n.translate('error.COMPANY_NOT_FOUND'))
         .build();
     }
-
     try {
       const itemPriceDocuments = data.map((itemPrice) => {
-        const document =
-          this.dailyItemWarehouseStockPriceRepository.createDocument({
-            ...itemPrice,
-            companyCode,
-          });
         return {
           updateOne: {
             filter: {
               companyCode: companyCode,
-              itemCode: document.itemCode,
-              warehouseCode: document.warehouseCode,
-              lotNumber: document.lotNumber,
+              itemCode: itemPrice.itemCode,
+              warehouseCode: itemPrice.warehouseCode,
+              lotNumber: itemPrice.lotNumber || null,
             },
-            update: document,
+            update: {
+              itemCode: itemPrice?.itemCode,
+              warehouseCode: itemPrice?.warehouseCode,
+              lotNumber: itemPrice?.lotNumber,
+              quantity: itemPrice?.quantity,
+              price: itemPrice?.amount,
+              amount: itemPrice?.totalAmount,
+              reportDate: new Date(itemPrice.reportDate),
+              companyCode: companyCode,
+            } as DailyItemWarehouseStockPriceInterface,
             upsert: true,
           },
         };
@@ -976,6 +979,7 @@ export class SyncService {
         }
       }
 
+      console.info('SYNC ITEM PRICE SUCCESS:', new Date());
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.SUCCESS)
         .withMessage(await this.i18n.translate('error.SUCCESS'))
