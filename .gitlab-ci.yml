@@ -84,7 +84,7 @@ deploy_staging:
     - >
       ssh $SSH_STAGING_USER@10.1.47.45
       "docker login ${PRIVATE_REGISTRY_HOST} -u ${PRIVATE_REGISTRY_USERNAME} -p ${PRIVATE_REGISTRY_PASSWD};
-       cd /home/stg_core/app/projects/avenue_wmsx_hq/be/services/report-service;
+       cd /home/stg_core/app/projects/avenue_wmsx/be/services/report-service;
       docker pull ${CONTAINER_STAGING_IMAGE};
       docker-compose down;
       docker-compose -f docker-compose.yml -f docker-compose.production.yml up -d;
