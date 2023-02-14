@@ -1,4 +1,4 @@
-import { readDecimal } from '@constant/common';
+import { formatMoney, readDecimal } from '@constant/common';
 import { TableDataSituationImportPeriod } from '@models/situation_import.model';
 import {
   ALIGNMENT_CENTER,
@@ -239,7 +239,7 @@ export function reportSituationImportPeriodTemplateData(
                 },
                 {
                   nameCell: `S${curRowIdx}`,
-                  value: item.totalPrice,
+                  value: formatMoney(item.totalPrice),
                   font: FONT_BOLD_9,
                   aligment: ALIGNMENT_RIGHT,
                   border: BORDER,
