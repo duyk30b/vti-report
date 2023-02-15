@@ -144,7 +144,7 @@ export const generateTable = async (
         merge: false,
         heightRow: {
           index: 3,
-          value: 35,
+          value: 40,
         },
       },
       {
@@ -212,7 +212,7 @@ export const generateTable = async (
   if (typeof model.footer == 'function') {
     model.footer(rowIndex, worksheet, i18n, model?.companyCode);
   }
-  worksheet.columns[0].width = 30;  
+  worksheet.columns[0].width = 40;  
   const buffer = await workbook.xlsx.writeBuffer();
   // workbook.xlsx.writeFile(`demo${Math.floor(Math.random() * 1000)}.xlsx`);
 
