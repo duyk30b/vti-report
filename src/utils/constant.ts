@@ -1332,3 +1332,5 @@ export const ROW_WHEN_NOT_HAVE_HEADER = 1;
 
 export const LV1 = 1;
 export const LV3 = 3;
+
+export const LENGTH_ACCOUNT_SYNC_EBS = 60;
