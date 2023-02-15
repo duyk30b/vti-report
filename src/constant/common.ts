@@ -1,3 +1,4 @@
+import { LENGTH_ACCOUNT_SYNC_EBS } from "@utils/constant";
 import * as moment from "moment";
 
 export enum APIPrefix {
@@ -61,6 +62,36 @@ export function formatNumber(number: any) {
     return ''
   }
 }
+
+export function formatAccount(
+  item: any,
+  numberCredit: number,
+  numberDebit: number,
+  replaceCredit: boolean,
+  replaceDebt: boolean,
+) {
+  item?.orders?.map((order) => {
+    order?.items?.map((it) => {
+      let debitAccount = it?.accountDebt || '';
+      let creditAccount = it?.accountHave || '';
+      if (creditAccount.length == LENGTH_ACCOUNT_SYNC_EBS) {
+        creditAccount = creditAccount.slice(18, numberCredit)
+        if (replaceCredit) {
+          creditAccount = creditAccount.replace(/^(\d*?[1-9])0+$/, '$1');
+        }
+      }
+      if (debitAccount.length == LENGTH_ACCOUNT_SYNC_EBS) {
+        debitAccount = debitAccount.slice(18, numberDebit);
+        if (replaceDebt) {
+          debitAccount = debitAccount.replace(/^(\d*?[1-9])0+$/, '$1');
+        }
+      }
+      it.accountDebt = debitAccount;
+      it.accountHave = creditAccount;
+    })
+  })
+}
+
 export function readDecimal(number: any, isFormat?: boolean): string {
   const checkInt = Number(number) % 1;
   if (isFormat && !number) return '0';
