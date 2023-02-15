@@ -1,3 +1,4 @@
+import { formatAccount } from '@constant/common';
 import { TableDataSituationExportPeriod } from '@models/situation_export.model';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
@@ -18,6 +19,9 @@ export function getSituationExportPeriodMapped(
   let dataExcell: TableDataSituationExportPeriod[] = [];
   if (data.length > 0) {
     dataExcell = data[0]?.warehouses?.map((item) => {
+      item?.reasons?.map((i) => {
+        formatAccount(i, 29, 43, true, false)
+      })
       return {
         warehouseCode:
           i18n.translate('report.WAREHOUSE_GROUP_CODE') +
