@@ -26,8 +26,11 @@ export function getInventoryDataMapping(
     }
     const keyMapItem = `${cur.warehouseCode}-${cur.lotNumber || 'null'}-${cur.itemCode}-${cur.companyCode}`;
     const totalPrice = inforListItem[keyMapItem]?.price || 0;
-    const amount = inforListItem[keyMapItem]?.amount || 0;
-    const stockQuantity = div(parseFloat(totalPrice.toFixed()), parseFloat(amount.toFixed(2))) || 0;
+    let amount = 0
+    let stockQuantity = cur?.stockQuantity || 0;
+    if (totalPrice && stockQuantity) {
+      amount = div(parseFloat(totalPrice.toFixed()), parseFloat(stockQuantity.toFixed(2))) || 0;
+    }
     const data: InventoryModel = {
       index: 0,
       itemCode: cur.itemCode,
