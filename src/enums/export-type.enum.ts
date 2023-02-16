@@ -6,7 +6,7 @@ export enum ExportType {
 export enum ActionType {
   create = 0,
   update = 1,
-  confirm = 2,
-  reject = 3,
-  delete = 4,
+  delete = 2,
+  confirm = 3,
+  reject = 4,
 }
