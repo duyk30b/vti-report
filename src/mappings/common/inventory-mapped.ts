@@ -2,6 +2,7 @@ import { formatMoney } from '@constant/common';
 import { InventoryModel } from '@models/inventory.model';
 import { TableData } from '@models/report.model';
 import { DailyLotLocatorStock } from '@schemas/daily-lot-locator-stock.schema';
+import { div } from '@utils/common';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
 
@@ -24,16 +25,19 @@ export function getInventoryDataMapping(
       prev[warehouseCode] = [];
     }
     const keyMapItem = `${cur.warehouseCode}-${cur.lotNumber || 'null'}-${cur.itemCode}-${cur.companyCode}`;
+    const totalPrice = inforListItem[keyMapItem]?.price || 0;
+    const amount = inforListItem[keyMapItem]?.amount || 0;
+    const stockQuantity = div(parseFloat(totalPrice.toFixed()), parseFloat(amount.toFixed(2))) || 0;
     const data: InventoryModel = {
       index: 0,
       itemCode: cur.itemCode,
       itemName: cur.itemName,
       unit: cur.unit,
       lotNumber: cur.lotNumber,
-      stockQuantity: formatMoney(cur?.stockQuantity || 0, 2),
+      stockQuantity: formatMoney(stockQuantity || 0, 2),
       locatorCode: cur.locatorCode,
-      storageCost: formatMoney(inforListItem[keyMapItem]?.price || 0, 2),
-      totalPrice: formatMoney(inforListItem[keyMapItem]?.amount || 0, 2).split(",")[0],
+      storageCost: formatMoney(amount || 0, 2),
+      totalPrice: formatMoney(totalPrice || 0, 2).split(",")[0],
     };
     prev[warehouseCode].push(data);
     return prev;
