@@ -1,4 +1,4 @@
-import { formatNumber, readDecimal } from '@constant/common';
+import { formatMoney, formatNumber, readDecimal } from '@constant/common';
 import { TableDataSituationImportPeriod } from '@models/situation_import.model';
 import { plus } from '@utils/common';
 import {
@@ -385,7 +385,7 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: formatNumber(
+                                          text: formatMoney(
                                             Math.round(item?.totalPrice),
                                           ),
                                           ...wordFileStyle.text_style,
@@ -545,7 +545,7 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: formatNumber(
+                                          text: formatMoney(
                                             Math.round(order?.totalPrice),
                                           ),
                                           ...wordFileStyle.text_style,
@@ -661,7 +661,7 @@ export async function generateReportSituationImportPeriod(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(
+                                  text: formatMoney(
                                     Math.round(warehouse?.totalPrice),
                                   ),
                                   ...wordFileStyle.text_style_bold,
@@ -718,7 +718,7 @@ export async function generateReportSituationImportPeriod(
                         alignment: AlignmentType.RIGHT,
                         children: [
                           new TextRun({
-                            text: formatNumber(Math.round(totalWarehouse)),
+                            text: formatMoney(Math.round(totalWarehouse)),
                             ...wordFileStyle.text_style_bold,
                           }),
                         ],
