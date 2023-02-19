@@ -95,63 +95,41 @@ export async function getSituationTransferMapped(
 
   let dataExcell2: TableAgeOfItems[] = [];
   if (!isEmpty(transactionNow)) {
-    if (isEmpty(data[0].warehouses)) {
-      const warehouseCode = data[0]?._id?.warehouseCode || '';
-      const warehouseName = data[0]?._id?.warehouseName || '';
-      dataMaping.warehouseName = warehouseName;
-      const { arrformated, objectTransaction } = pushItemOld(transactionNow, [], warehouseCode);
-      transactionNow = objectTransaction;
-        let arr = {
-          warehouseCode:
-            i18n.translate('report.WAREHOUSE_GROUP_CODE') +
-            [warehouseCode, warehouseName].join('_'),
-          sixMonth: 0,
-          oneYearAgo: 0,
-          twoYearAgo: 0,
-          threeYearAgo: 0,
-          fourYearAgo: 0,
-          fiveYearAgo: 0,
-          greaterfiveYear: 0,
-          totalPrice: 0,
-          items: arrformated,
-        };
-        dataExcell2.push(arr);
-    } else {
-      let warehouseCodeTransaction = [];
-      for (const key in transactionNow) {
-        if (transactionNow[key]) {
-          const code = transactionNow[key]?.warehouseCode || '';
-          warehouseCodeTransaction.push(code);
+    let warehouseCodeTransaction = [];
+    for (const key in transactionNow) {
+      if (transactionNow[key]) {
+        const code = transactionNow[key]?.warehouseCode || '';
+        warehouseCodeTransaction.push(code);
+      }
+    }
+    warehouseCodeTransaction = uniq(warehouseCodeTransaction);
+    const listWarehouses = await warehouseService.getWarehouseByCodes(warehouseCodeTransaction);
+    const listWarehousesMap = keyBy(listWarehouses, 'code');
+    arrWarehouseCode = uniq(arrWarehouseCode);
+    warehouseCodeTransaction.map((warehouseCode) => {
+      if (!arrWarehouseCode.includes(warehouseCode)) {
+        const { arrformated, objectTransaction } = pushItemOld(transactionNow, [], warehouseCode);
+        transactionNow = objectTransaction;
+        if (!isEmpty(arrformated)) {
+          const arr = {
+            warehouseCode:
+              i18n.translate('report.WAREHOUSE_GROUP_CODE') +
+              [warehouseCode, listWarehousesMap[warehouseCode]?.name].join('_'),
+            sixMonth: 0,
+            oneYearAgo: 0,
+            twoYearAgo: 0,
+            threeYearAgo: 0,
+            fourYearAgo: 0,
+            fiveYearAgo: 0,
+            greaterfiveYear: 0,
+            totalPrice: 0,
+            items: arrformated,
+          };
+          dataExcell.push(arr);
         }
       }
-      warehouseCodeTransaction = uniq(warehouseCodeTransaction);
-      const listWarehouses = await warehouseService.getWarehouseByCodes(warehouseCodeTransaction);
-      const listWarehousesMap = keyBy(listWarehouses, 'code');
-      arrWarehouseCode = uniq(arrWarehouseCode);
-      warehouseCodeTransaction.map((warehouseCode) => {
-        if (!arrWarehouseCode.includes(warehouseCode)) {
-          const { arrformated, objectTransaction } = pushItemOld(transactionNow, [], warehouseCode);
-          transactionNow = objectTransaction;
-          if (!isEmpty(arrformated)) {
-            const arr = {
-              warehouseCode:
-                i18n.translate('report.WAREHOUSE_GROUP_CODE') +
-                [warehouseCode, listWarehousesMap[warehouseCode]?.name].join('_'),
-              sixMonth: 0,
-              oneYearAgo: 0,
-              twoYearAgo: 0,
-              threeYearAgo: 0,
-              fourYearAgo: 0,
-              fiveYearAgo: 0,
-              greaterfiveYear: 0,
-              totalPrice: 0,
-              items: arrformated,
-            };
-            dataExcell.push(arr);
-          }
-        }
-      })
-    }
+    })
+
   }
   dataMaping.dataMapped = isEmpty(dataExcell) ? dataExcell2 : dataExcell;
   dataMaping.dataMapped = dataMaping.dataMapped || [];
@@ -177,26 +155,26 @@ function pushItemOld(objectTransaction: any, arrItem: any[], warehouseCode?: str
     }
   }
   Object.keys(objectTransaction).forEach(key => {
-    if (!isEmpty(objectTransaction[key])) {
-      const itemCodeKey = objectTransaction[key]?.itemCode;
+    const itemCodeKey = objectTransaction[key]?.itemCode;
+    if (!isEmpty(objectTransaction[key]) && !isEmpty(keyByArrItem[itemCodeKey]) && objectTransaction[key]?.warehouseCode == warehouseCode) {
       let quantityExport = objectTransaction[key]?.checkImport || 0;
       let totalQuantity = keyByArrItem[itemCodeKey]?.totalQuantity || 0;
-      keyByArrItem[itemCodeKey].groupByStorageDate.map((itemInfo) => {
+      keyByArrItem[itemCodeKey]?.groupByStorageDate.map((itemInfo) => {
         if (quantityExport != 0) {
           itemInfo.stockQuantity = plus(itemInfo.stockQuantity, quantityExport);
           keyByArrItem[itemCodeKey].totalQuantity = plus(totalQuantity, quantityExport);
           if (itemInfo.stockQuantity > 0) {
             quantityExport = 0;
           } else {
-            itemInfo = null;
             quantityExport = itemInfo.stockQuantity
+            itemInfo = null;
           }
         }
       })
       if (keyByArrItem[itemCodeKey].totalQuantity <= 0) {
         keyByArrItem[itemCodeKey] = null;
       } else {
-        const groupItem = keyByArrItem[itemCodeKey].groupByStorageDate || [];
+        const groupItem = keyByArrItem[itemCodeKey]?.groupByStorageDate || [];
         keyByArrItem[itemCodeKey].groupByStorageDate = compact(groupItem);
       }
     }
