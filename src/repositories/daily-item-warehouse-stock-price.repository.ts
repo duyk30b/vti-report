@@ -68,7 +68,7 @@ export class DailyItemWarehouseStockPriceRepository extends BaseAbstractReposito
         warehouseCode: { $eq: request?.warehouseCode },
       });
     return this.dailyItemLocatorStockPrice
-      .find(condition)
+      .find({ condition: condition })
       .sort({ warehouseCode: 1, itemCode: 1, lotNumber: 1 })
       .lean();
   }
