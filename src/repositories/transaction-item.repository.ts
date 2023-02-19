@@ -560,4 +560,100 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
       },
     ]);
   }
+
+  async getByDateLot(request: ReportRequest) {
+    const condition = {
+      $and: [],
+    };
+
+    condition['$and'].push({
+      companyCode: { $eq: request?.companyCode },
+    });
+
+    if (request?.warehouseCode)
+      condition['$and'].push({
+        warehouseCode: { $eq: request?.warehouseCode },
+      });
+
+    if (request?.dateFrom) {
+      condition['$and'].push({
+        $expr: {
+          $gte: [
+            {
+              $dateToString: { date: '$transactionDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+            },
+            moment(request?.dateFrom).format(DATE_FOMAT),
+          ],
+        },
+      });
+    }
+
+    return this.transactionItem.aggregate([
+      { $match: condition },
+      {
+        $project: {
+          _id: 0,
+          companyCode: 1,
+          warehouseCode: 1,
+          warehouseName: 1,
+          itemCode: 1,
+          itemName: 1,
+          unit: 1,
+          lotNumber: 1,
+          quantityExported: {
+            $cond: [
+              {
+                $eq: ['$actionType', ActionType.EXPORT],
+              },
+              '$actualQuantity',
+              0,
+            ],
+          },
+          quantityImported: {
+            $cond: [
+              {
+                $and: [
+                  { $eq: ['$actionType', ActionType.IMPORT] },
+                ],
+              },
+              '$actualQuantity',
+              0,
+            ],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            companyCode: '$companyCode',
+            warehouseCode: '$warehouseCode',
+            warehouseName: '$warehouseName',
+            itemCode: '$itemCode',
+            itemName: '$itemName',
+            unit: '$unit',
+            lotNumber: '$lotNumber',
+          },
+          quantityExported: { $sum: '$quantityExported' },
+          quantityImported: { $sum: '$quantityImported' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          companyCode: '$_id.companyCode',
+          warehouseCode: '$_id.warehouseCode',
+          warehouseName: '$_id.warehouseName',
+          itemCode: '$_id.itemCode',
+          itemName: '$_id.itemName',
+          unit: '$_id.unit',
+          lotNumber: '$_id.lotNumber',
+          quantityExported: 1,
+          quantityImported: 1,
+        },
+      },
+      {
+        $sort: { storageDate: 1 },
+      },
+    ]);
+  }
 }

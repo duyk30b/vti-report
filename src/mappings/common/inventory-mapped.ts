@@ -2,7 +2,7 @@ import { formatMoney } from '@constant/common';
 import { InventoryModel } from '@models/inventory.model';
 import { TableData } from '@models/report.model';
 import { DailyLotLocatorStock } from '@schemas/daily-lot-locator-stock.schema';
-import { div } from '@utils/common';
+import { div, minus, plus } from '@utils/common';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
 
@@ -10,6 +10,7 @@ export function getInventoryDataMapping(
   data: DailyLotLocatorStock[],
   i18n: I18nRequestScopeService,
   inforListItem?: {},
+  transactionArr?: {},
 ): ReportInfo<any> {
   const dataMaping: ReportInfo<any> = {
     companyName: '',
@@ -24,12 +25,16 @@ export function getInventoryDataMapping(
     if (!prev[warehouseCode]) {
       prev[warehouseCode] = [];
     }
-    const keyMapItem = `${cur.warehouseCode}-${cur.lotNumber || 'null'}-${cur.itemCode}-${cur.companyCode}`;
+    const keyMapItem = `${cur.warehouseCode}-${cur?.lotNumber || 'null'}-${cur.itemCode}-${cur.companyCode}`;
     const totalPrice = inforListItem[keyMapItem]?.price || 0;
     let amount = 0
-    let stockQuantity = cur?.stockQuantity || 0;
+    let stockQuantity = inforListItem[keyMapItem]?.quantity || 0;
+    const quantityExported = transactionArr[keyMapItem]?.quantityExported || 0;
+    const quantityImported = transactionArr[keyMapItem]?.quantityImported || 0;
+    stockQuantity = plus(stockQuantity, quantityImported);
+    stockQuantity = minus(stockQuantity, quantityExported);
     if (totalPrice && stockQuantity) {
-      amount = div(parseFloat(totalPrice.toFixed()), parseFloat(stockQuantity.toFixed(2))) || 0;
+      amount = div(parseFloat(totalPrice.toFixed()), parseFloat(stockQuantity.toFixed(2)) || 1) || 0;
     }
     const data: InventoryModel = {
       index: 0,
