@@ -46,7 +46,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
 
   async getReports(request: ReportRequest): Promise<DailyLotLocatorStock[]> {
     const condition = {
-      $and: [],
+      $and: [{}],
     };
 
     if (request?.dateFrom == getTimezone(undefined, FORMAT_DATE)) {
