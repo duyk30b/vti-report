@@ -35,7 +35,7 @@ export class DailyItemWarehouseStockPriceRepository extends BaseAbstractReposito
 
   async getInforItemStock(request: ReportRequest): Promise<any> {
     const condition = {
-      $and: [],
+      $and: [{}],
     };
 
     if (request?.dateFrom == getTimezone(undefined, FORMAT_DATE)) {
@@ -68,7 +68,7 @@ export class DailyItemWarehouseStockPriceRepository extends BaseAbstractReposito
         warehouseCode: { $eq: request?.warehouseCode },
       });
     return this.dailyItemLocatorStockPrice
-      .find({ condition: condition })
+      .find(condition)
       .sort({ warehouseCode: 1, itemCode: 1, lotNumber: 1 })
       .lean();
   }
