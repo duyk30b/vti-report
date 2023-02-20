@@ -70,6 +70,7 @@ export class DailyItemWarehouseStockPriceRepository extends BaseAbstractReposito
     return this.dailyItemLocatorStockPrice
       .find({ condition: condition })
       .sort({ warehouseCode: 1, itemCode: 1, lotNumber: 1 })
+      .setOptions({ allowDiskUse: true })
       .lean();
   }
 }
