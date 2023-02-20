@@ -80,7 +80,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       });
 
     return this.dailyLotLocatorStock
-      .find(condition)
+      .find({ condition: condition })
       .sort({ warehouseCode: 1, itemCode: 1, lotNumber: 1, stockQuantity: 1 })
       .setOptions({ allowDiskUse: true })
       .lean();
