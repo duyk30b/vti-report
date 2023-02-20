@@ -653,10 +653,15 @@ export class ExportService {
 
   async reportInventory(request: ReportRequest): Promise<ReportResponse> {
     let data = await this.dailyLotLocatorStockRepository.getReports(request);
-    data = await this.transactionItemRepository.updateQuantityItem(
-      request,
-      data,
-    );
+    let listItemCode = [];
+    const reportInventories = []
+    data.forEach(item => {
+      const keyMap = `${item?.itemCode}-${item?.lotNumber || 'null'}-${item?.warehouseCode}`;
+      if (!listItemCode.includes(keyMap)) {
+        listItemCode.push(keyMap);
+        reportInventories.push(item)
+      }
+    });
     const inforListItem =
       await this.dailyItemWarehouseStockPriceRepository.getInforItemStock(
         request,
@@ -671,7 +676,7 @@ export class ExportService {
     });
     const inforListItemMap = keyBy(inforListItemKey, 'key');
     const dataMaped = getInventoryDataMapping(
-      data,
+      reportInventories,
       this.i18n,
       inforListItemMap,
     );
