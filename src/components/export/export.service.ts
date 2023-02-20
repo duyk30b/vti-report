@@ -683,20 +683,24 @@ export class ExportService {
       this.i18n,
       inforListItemMap,
     );
-    console.log({'dataMaped'});
-    
-    switch (request.exportType) {
-      case ExportType.EXCEL:
-        const { nameFile, dataBase64 } = await reportInventoryExcelMapping(
-          request,
-          dataMaped,
-          this.i18n,
-        );
-        return { result: dataBase64, nameFile };
-      case ExportType.WORD:
-        return reportInventoryMapping(request, dataMaped, this.i18n);
-      default:
-        return;
+    console.log('dataMaped');
+    try{
+      switch (request.exportType) {
+        case ExportType.EXCEL:
+          const { nameFile, dataBase64 } = await reportInventoryExcelMapping(
+            request,
+            dataMaped,
+            this.i18n,
+          );
+          return { result: dataBase64, nameFile };
+        case ExportType.WORD:
+          return reportInventoryMapping(request, dataMaped, this.i18n);
+        default:
+          return;
+      }
+    }  
+    catch(e) {
+      console.error(e)
     }
   }
 
