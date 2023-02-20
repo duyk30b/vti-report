@@ -652,7 +652,7 @@ export class ExportService {
 
   async reportInventory(request: ReportRequest): Promise<ReportResponse> {
     let data = await this.dailyLotLocatorStockRepository.getReports(request);
-    console.log({data});
+    console.log({mgLength: data.length});
     
     let listItemCode = [];
     const reportInventories = []
@@ -675,7 +675,7 @@ export class ExportService {
         }-${item.companyCode}`,
       };
     });
-    console.log({inforListItemKey});
+    console.log({inforList: inforListItem.length});
     
     const inforListItemMap = keyBy(inforListItemKey, 'key');
     const dataMaped = getInventoryDataMapping(
@@ -683,6 +683,8 @@ export class ExportService {
       this.i18n,
       inforListItemMap,
     );
+    console.log({'dataMaped'});
+    
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } = await reportInventoryExcelMapping(
