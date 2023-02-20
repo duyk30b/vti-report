@@ -955,6 +955,7 @@ export class SyncService {
               itemCode: itemPrice.itemCode,
               warehouseCode: itemPrice.warehouseCode,
               lotNumber: itemPrice.lotNumber || null,
+              reportDate: itemPrice.reportDate,
             },
             update: {
               itemCode: itemPrice?.itemCode,
