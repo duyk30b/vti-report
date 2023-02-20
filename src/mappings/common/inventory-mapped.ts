@@ -10,7 +10,6 @@ export function getInventoryDataMapping(
   data: DailyLotLocatorStock[],
   i18n: I18nRequestScopeService,
   inforListItem?: {},
-  transactionArr?: {},
 ): ReportInfo<any> {
   const dataMaping: ReportInfo<any> = {
     companyName: '',
@@ -29,10 +28,6 @@ export function getInventoryDataMapping(
     const totalPrice = inforListItem[keyMapItem]?.price || 0;
     let amount = 0
     let stockQuantity = inforListItem[keyMapItem]?.quantity || 0;
-    const quantityExported = transactionArr[keyMapItem]?.quantityExported || 0;
-    const quantityImported = transactionArr[keyMapItem]?.quantityImported || 0;
-    stockQuantity = plus(stockQuantity, quantityImported);
-    stockQuantity = minus(stockQuantity, quantityExported);
     if (totalPrice && stockQuantity) {
       amount = div(parseFloat(totalPrice.toFixed()), parseFloat(stockQuantity.toFixed(2)) || 1) || 0;
     }
