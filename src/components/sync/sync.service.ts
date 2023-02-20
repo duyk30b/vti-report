@@ -541,13 +541,16 @@ export class SyncService {
           _id: { $in: map(removeReportOrderItemLots, '_id') },
         });
       }
-      await Promise.all([
+      const response = await Promise.all([
         this.reportOrderRepository.bulkWriteOrderReport(orders),
         this.reportOrderItemRepository.bulkWriteOrderReportItem(orderItems),
         this.reportOrderItemLotRepository.bulkWriteOrderReportItemLot(
           orderItemLots,
         ),
       ]);
+
+      console.log('RESPONSE SYNC ORDER:', response);
+
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.SUCCESS)
         .withMessage(await this.i18n.translate('success.SUCCESS'))
@@ -951,6 +954,7 @@ export class SyncService {
               itemCode: itemPrice.itemCode,
               warehouseCode: itemPrice.warehouseCode,
               lotNumber: itemPrice.lotNumber || null,
+              reportDate: itemPrice.reportDate,
             },
             update: {
               itemCode: itemPrice?.itemCode,
