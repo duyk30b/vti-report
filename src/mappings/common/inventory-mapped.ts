@@ -10,7 +10,6 @@ export function getInventoryDataMapping(
   data: DailyLotLocatorStock[],
   i18n: I18nRequestScopeService,
   inforListItem?: {},
-  transactionArr?: {},
 ): ReportInfo<any> {
   const dataMaping: ReportInfo<any> = {
     companyName: '',
