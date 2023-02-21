@@ -120,6 +120,10 @@ class PurchasedOrderImportDetail {
 
   @ApiProperty()
   @IsOptional()
+  amount: number;
+
+  @ApiProperty()
+  @IsOptional()
   debitAccount: any;
 
   @ApiProperty()

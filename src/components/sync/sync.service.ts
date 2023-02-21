@@ -338,6 +338,7 @@ export class SyncService {
           storageCost: item.price ? Number(item.price) : 0,
           ...reportOrder,
           receiptNumber: '',
+          amount: item.amount ? Number(item.amount) : 0,
         };
         orderItems.push(reportOrderItem);
 
@@ -495,6 +496,7 @@ export class SyncService {
           collectedQuantity: 0,
           exportedQuantity: item?.exportableQuantity,
           storageCost: item?.price ? Number(item?.price) : 0,
+          amount: item?.amount ? Number(item?.amount) : 0,
           ...reportOrder,
           receiptNumber: request.receiptNumber,
         };
@@ -622,6 +624,7 @@ export class SyncService {
           collectedQuantity: 0,
           exportedQuantity: item?.actualQuantity,
           storageCost: Number(item?.item?.price || 0),
+          amount: Number(item?.item?.amount || 0),
           ...reportOrder,
           receiptNumber: request.receiptNumber,
         };
