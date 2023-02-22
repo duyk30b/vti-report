@@ -25,5 +25,6 @@ export interface ReportOrderItemInteface extends ReportOrderInteface {
   collectedQuantity: number;
   exportedQuantity: number;
   storageCost: number;
+  amount: number;
   receiptNumber: string;
 }
