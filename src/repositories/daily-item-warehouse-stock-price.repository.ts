@@ -67,51 +67,46 @@ export class DailyItemWarehouseStockPriceRepository extends BaseAbstractReposito
       condition['$and'].push({
         warehouseCode: { $eq: request?.warehouseCode },
       });
-    return this.dailyItemLocatorStockPrice.aggregate(
-      [
-        { $match: condition },
-        { $sort: { reportDate: -1 } },
-        {
-          $project: {
-            _id: 0,
-            warehouseCode: 1,
-            companyCode: 1,
-            itemCode: 1,
-            lotNumber: 1,
-            reportDate: 1,
-            quantity: 1,
-            price: 1,
-            amount: 1,
+    return this.dailyItemLocatorStockPrice.aggregate([
+      { $match: condition },
+      { $sort: { reportDate: -1 } },
+      {
+        $project: {
+          _id: 0,
+          warehouseCode: 1,
+          companyCode: 1,
+          itemCode: 1,
+          lotNumber: 1,
+          quantity: 1,
+          price: 1,
+          amount: 1,
+        },
+      },
+      {
+        $group: {
+          _id: {
+            companyCode: '$companyCode',
+            warehouseCode: '$warehouseCode',
+            itemCode: '$itemCode',
+            lotNumber: '$lotNumber',
           },
+          quantity: { $first: '$quantity' },
+          price: { $first: '$price' },
+          amount: { $first: '$amount' },
         },
-        {
-          $group:
-          {
-            _id: {
-              companyCode: '$companyCode',
-              warehouseCode: '$warehouseCode',
-              itemCode: '$itemCode',
-              lotNumber: '$lotNumber',
-              reportDate: '$reportDate',
-            },
-            quantity: { $first: '$quantity' },
-            price: { $first: '$price' },
-            amount: { $first: '$amount' },
-          }
+      },
+      {
+        $project: {
+          _id: 0,
+          companyCode: '$_id.companyCode',
+          warehouseCode: '$_id.warehouseCode',
+          itemCode: '$_id.itemCode',
+          lotNumber: '$_id.lotNumber',
+          quantity: 1,
+          price: 1,
+          amount: 1,
         },
-        {
-          $project: {
-            _id: 0,
-            companyCode: '$_id.companyCode',
-            warehouseCode: '$_id.warehouseCode',
-            itemCode: '$_id.itemCode',
-            lotNumber: '$_id.lotNumber',
-            quantity: 1,
-            price: 1,
-            amount: 1,
-          },
-        },
-      ]
-    )
+      },
+    ]);
   }
 }
