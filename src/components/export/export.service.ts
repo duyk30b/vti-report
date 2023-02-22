@@ -63,7 +63,7 @@ import { WarehouseServiceInterface } from '@components/warehouse/interface/wareh
 import { getTimezone, minus } from '@utils/common';
 import { FORMAT_DATE } from '@utils/constant';
 import { formatDate, readDecimal } from '@constant/common';
-import { keyBy, compact, isEmpty } from 'lodash';
+import { keyBy, compact, isEmpty, concat } from 'lodash';
 import { InventoryQuantityNormsRepository } from '@repositories/inventory-quantity-norms.repository';
 import { DailyItemWarehouseStockPriceRepository } from '@repositories/daily-item-warehouse-stock-price.repository';
 @Injectable()
@@ -655,14 +655,24 @@ export class ExportService {
     console.log({mgLength: data.length});
     
     let listItemCode = [];
-    const reportInventories = []
-    data.forEach(item => {
-      const keyMap = `${item?.itemCode}-${item?.lotNumber || 'null'}-${item?.warehouseCode}`;
-      if (!listItemCode.includes(keyMap)) {
-        listItemCode.push(keyMap);
-        reportInventories.push(item)
+    let listKey = [];
+    const reportInventories = [];
+    data.forEach((item) => {
+      const keyMap = `${item?.itemCode}-${item?.lotNumber || 'null'}-${
+        item?.warehouseCode
+      }`;
+      if (!listKey.includes(keyMap)) {
+        listKey.push(keyMap);
+        reportInventories.push(item);
+        listItemCode.push(item?.itemCode);
       }
     });
+    const dataItemTransaction =
+      await this.transactionItemRepository.getByDateItemCode(
+        request,
+        listItemCode,
+      );
+    const dataItem = concat(reportInventories, dataItemTransaction);
     const inforListItem =
       await this.dailyItemWarehouseStockPriceRepository.getInforItemStock(
         request,
@@ -679,7 +689,7 @@ export class ExportService {
     
     const inforListItemMap = keyBy(inforListItemKey, 'key');
     const dataMaped = getInventoryDataMapping(
-      reportInventories,
+      dataItem,
       this.i18n,
       inforListItemMap,
     );

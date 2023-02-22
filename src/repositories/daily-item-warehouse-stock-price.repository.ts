@@ -43,7 +43,7 @@ export class DailyItemWarehouseStockPriceRepository extends BaseAbstractReposito
       prevDate.setDate(prevDate.getDate() - 1);
       condition['$and'].push({
         $expr: {
-          $eq: [
+          $gte: [
             { $dateToString: { date: '$reportDate', format: '%Y-%m-%d' } },
             moment(prevDate).format(DATE_FOMAT),
           ],
@@ -52,7 +52,7 @@ export class DailyItemWarehouseStockPriceRepository extends BaseAbstractReposito
     } else {
       condition['$and'].push({
         $expr: {
-          $eq: [
+          $gte: [
             { $dateToString: { date: '$reportDate', format: '%Y-%m-%d' } },
             moment(request?.dateFrom).format(DATE_FOMAT),
           ],
@@ -67,10 +67,51 @@ export class DailyItemWarehouseStockPriceRepository extends BaseAbstractReposito
       condition['$and'].push({
         warehouseCode: { $eq: request?.warehouseCode },
       });
-    return this.dailyItemLocatorStockPrice
-      .find(condition)
-      .sort({ warehouseCode: 1, itemCode: 1, lotNumber: 1 })
-      .setOptions({ allowDiskUse: true })
-      .lean();
+    return this.dailyItemLocatorStockPrice.aggregate(
+      [
+        { $match: condition },
+        { $sort: { reportDate: -1 } },
+        {
+          $project: {
+            _id: 0,
+            warehouseCode: 1,
+            companyCode: 1,
+            itemCode: 1,
+            lotNumber: 1,
+            reportDate: 1,
+            quantity: 1,
+            price: 1,
+            amount: 1,
+          },
+        },
+        {
+          $group:
+          {
+            _id: {
+              companyCode: '$companyCode',
+              warehouseCode: '$warehouseCode',
+              itemCode: '$itemCode',
+              lotNumber: '$lotNumber',
+              reportDate: '$reportDate',
+            },
+            quantity: { $first: '$quantity' },
+            price: { $first: '$price' },
+            amount: { $first: '$amount' },
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            companyCode: '$_id.companyCode',
+            warehouseCode: '$_id.warehouseCode',
+            itemCode: '$_id.itemCode',
+            lotNumber: '$_id.lotNumber',
+            quantity: 1,
+            price: 1,
+            amount: 1,
+          },
+        },
+      ]
+    )
   }
 }
