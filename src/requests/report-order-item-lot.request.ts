@@ -184,6 +184,11 @@ export class ReportOrderItemLotRequest implements ReportOrderItemLotInteface {
 
   @ApiProperty()
   @IsOptional()
+  @IsNumber()
+  amount: number;
+
+  @ApiProperty()
+  @IsOptional()
   @IsString()
   orderCode: string;
 
