@@ -165,6 +165,11 @@ export class ReportOrderItemRequest implements ReportOrderItemInteface {
 
   @ApiProperty()
   @IsOptional()
+  @IsNumber()
+  amount: number;
+
+  @ApiProperty()
+  @IsOptional()
   @IsString()
   orderCode: string;
 
