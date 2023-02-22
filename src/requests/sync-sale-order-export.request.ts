@@ -39,6 +39,8 @@ export class ItemResponseDto {
 
   price: number;
 
+  amount: number;
+
   itemUnit: string;
 
   description: string;

@@ -54,6 +54,9 @@ export class ReportOrderItem
   storageCost: number;
 
   @Prop({ required: false })
+  amount: number;
+
+  @Prop({ required: false })
   warehouseCode: string;
 
   @Prop({ required: false })
