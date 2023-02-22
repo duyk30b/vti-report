@@ -149,6 +149,10 @@ class WarehouseTransferDetail {
 
   @ApiProperty()
   @IsOptional()
+  amount: number;
+
+  @ApiProperty()
+  @IsOptional()
   planQuantity: number;
 
   @ApiProperty()
@@ -170,7 +174,6 @@ class WarehouseTransferDetail {
   @ApiProperty()
   @IsOptional()
   creditAccount: string;
-
 
   @ApiProperty()
   @IsOptional()

@@ -59,6 +59,9 @@ export class ReportOrderItemLot implements ReportOrderItemLotInteface {
   @Prop({ required: false, default: 0 })
   storageCost: number;
 
+  @Prop({ required: false, default: 0 })
+  amount: number;
+
   @Prop({ required: false })
   orderType: OrderType;
 
