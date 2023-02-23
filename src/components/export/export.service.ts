@@ -651,9 +651,9 @@ export class ExportService {
   }
 
   async reportInventory(request: ReportRequest): Promise<ReportResponse> {
-    let data = await this.dailyLotLocatorStockRepository.getReports(request);
-    let listItemCode = [];
-    let listKey = [];
+    const data = await this.dailyLotLocatorStockRepository.getReports(request);
+    const listItemCode = [];
+    const listKey = [];
     const reportInventories = [];
     data.forEach((item) => {
       const keyMap = `${item?.itemCode}-${item?.lotNumber || 'null'}-${
@@ -666,10 +666,7 @@ export class ExportService {
       }
     });
     const dataItemTransaction =
-      await this.transactionItemRepository.getByDateItemCode(
-        request,
-        listItemCode,
-      );
+      await this.transactionItemRepository.getByDateItemCode(request, listKey);
     const dataItem = concat(reportInventories, dataItemTransaction);
     const inforListItem =
       await this.dailyItemWarehouseStockPriceRepository.getInforItemStock(
