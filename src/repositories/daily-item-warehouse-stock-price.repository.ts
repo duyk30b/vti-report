@@ -80,6 +80,7 @@ export class DailyItemWarehouseStockPriceRepository extends BaseAbstractReposito
           quantity: 1,
           price: 1,
           amount: 1,
+          reportDate: 1,
         },
       },
       {
@@ -105,6 +106,7 @@ export class DailyItemWarehouseStockPriceRepository extends BaseAbstractReposito
           quantity: 1,
           price: 1,
           amount: 1,
+          reportDate: 1,
         },
       },
     ]);

@@ -18,18 +18,23 @@ export function getInventoryDataMapping(
     dataMapped: null,
   };
 
-  const groupByWarehouseCode = data.filter((item) => item?.stockQuantity
-    ).reduce((prev, cur) => {
+  const groupByWarehouseCode = data.reduce((prev, cur) => {
     const warehouseCode = cur.warehouseCode + '_' + cur.warehouseName;
     if (!prev[warehouseCode]) {
       prev[warehouseCode] = [];
     }
-    const keyMapItem = `${cur.warehouseCode}-${cur?.lotNumber || 'null'}-${cur.itemCode}-${cur.companyCode}`;
+    const keyMapItem = `${cur.warehouseCode}-${cur?.lotNumber || 'null'}-${
+      cur.itemCode
+    }-${cur.companyCode}`;
     const totalPrice = inforListItem[keyMapItem]?.price || 0;
-    let amount = 0
-    let stockQuantity = inforListItem[keyMapItem]?.quantity || 0;
+    let amount = 0;
+    const stockQuantity = inforListItem[keyMapItem]?.quantity || 0;
     if (totalPrice && stockQuantity) {
-      amount = div(parseFloat(totalPrice.toFixed()), parseFloat(stockQuantity.toFixed(2)) || 1) || 0;
+      amount =
+        div(
+          parseFloat(totalPrice.toFixed()),
+          parseFloat(stockQuantity.toFixed(2)) || 1,
+        ) || 0;
     }
     const data: InventoryModel = {
       index: 0,
@@ -40,7 +45,7 @@ export function getInventoryDataMapping(
       stockQuantity: formatMoney(stockQuantity || 0, 2),
       locatorCode: cur.locatorCode,
       storageCost: formatMoney(amount || 0, 2),
-      totalPrice: formatMoney(totalPrice || 0, 2).split(",")[0],
+      totalPrice: formatMoney(totalPrice || 0, 2).split(',')[0],
     };
     prev[warehouseCode].push(data);
     return prev;
