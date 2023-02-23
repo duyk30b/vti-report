@@ -159,7 +159,11 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
         $expr: {
           $gte: [
             {
-              $dateToString: { date: '$transactionDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+              $dateToString: {
+                date: '$transactionDate',
+                format: '%Y-%m-%d',
+                timezone: TIMEZONE_HCM_CITY,
+              },
             },
             moment(request?.dateFrom).format(DATE_FOMAT),
           ],
@@ -172,7 +176,11 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
         $expr: {
           $lte: [
             {
-              $dateToString: { date: '$transactionDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+              $dateToString: {
+                date: '$transactionDate',
+                format: '%Y-%m-%d',
+                timezone: TIMEZONE_HCM_CITY,
+              },
             },
             moment(request?.dateTo).format(DATE_FOMAT),
           ],
@@ -184,7 +192,11 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
       $expr: {
         $lte: [
           {
-            $dateToString: { date: '$transactionDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+            $dateToString: {
+              date: '$transactionDate',
+              format: '%Y-%m-%d',
+              timezone: TIMEZONE_HCM_CITY,
+            },
           },
           moment(curDate).format(DATE_FOMAT),
         ],
@@ -338,7 +350,11 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
         $expr: {
           $gte: [
             {
-              $dateToString: { date: '$transactionDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+              $dateToString: {
+                date: '$transactionDate',
+                format: '%Y-%m-%d',
+                timezone: TIMEZONE_HCM_CITY,
+              },
             },
             moment(curDate).format(DATE_FOMAT),
           ],
@@ -419,7 +435,11 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           quantityExported: 1,
           quantityImported: 1,
           transactionDate: {
-            $dateToString: { date: '$_id.transactionDate', format: '%m/%d/%Y', timezone: TIMEZONE_HCM_CITY },
+            $dateToString: {
+              date: '$_id.transactionDate',
+              format: '%m/%d/%Y',
+              timezone: TIMEZONE_HCM_CITY,
+            },
           },
         },
       },
@@ -445,7 +465,11 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
         $expr: {
           $gte: [
             {
-              $dateToString: { date: '$transactionDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+              $dateToString: {
+                date: '$transactionDate',
+                format: '%Y-%m-%d',
+                timezone: TIMEZONE_HCM_CITY,
+              },
             },
             moment(request?.dateFrom).format(DATE_FOMAT),
           ],
@@ -480,9 +504,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           quantityImported: {
             $cond: [
               {
-                $and: [
-                  { $eq: ['$actionType', ActionType.IMPORT] },
-                ],
+                $and: [{ $eq: ['$actionType', ActionType.IMPORT] }],
               },
               '$actualQuantity',
               0,
@@ -583,7 +605,11 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
         $expr: {
           $gte: [
             {
-              $dateToString: { date: '$transactionDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+              $dateToString: {
+                date: '$transactionDate',
+                format: '%Y-%m-%d',
+                timezone: TIMEZONE_HCM_CITY,
+              },
             },
             moment(request?.dateFrom).format(DATE_FOMAT),
           ],
@@ -615,9 +641,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           quantityImported: {
             $cond: [
               {
-                $and: [
-                  { $eq: ['$actionType', ActionType.IMPORT] },
-                ],
+                $and: [{ $eq: ['$actionType', ActionType.IMPORT] }],
               },
               '$actualQuantity',
               0,
@@ -660,10 +684,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
     ]);
   }
 
-  async getByDateItemCode(
-    request: ReportRequest,
-    listItemCode: any[]
-  ) {
+  async getByDateItemCode(request: ReportRequest, listItemCode: any[]) {
     const condition = {
       $and: [],
     };
@@ -677,21 +698,22 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
         warehouseCode: { $eq: request?.warehouseCode },
       });
 
-    const newDate = new Date(request?.dateFrom);
+    const newDate = getTimezone(undefined, FORMAT_DATE);
 
     condition['$and'].push({
       $expr: {
         $gte: [
           {
-            $dateToString: { date: '$transactionDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+            $dateToString: {
+              date: '$transactionDate',
+              format: '%Y-%m-%d',
+              timezone: TIMEZONE_HCM_CITY,
+            },
           },
           moment(newDate).format(DATE_FOMAT),
         ],
       },
     });
-
-    condition['$and'].push({ itemCode: { $nin: listItemCode } })
-
     return this.transactionItem.aggregate([
       { $match: condition },
       {
@@ -704,6 +726,15 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           itemName: 1,
           unit: 1,
           lotNumber: 1,
+          keyMap: {
+            $concat: [
+              '$itemCode',
+              '-',
+              { $ifNull: ['$lotNumber', 'null'] },
+              '-',
+              '$warehouseCode',
+            ],
+          },
         },
       },
       {
@@ -716,6 +747,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
             unit: '$unit',
             lotNumber: '$lotNumber',
             itemCode: '$itemCode',
+            keyMap: '$keyMap',
           },
         },
       },
@@ -729,6 +761,12 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           itemName: '$_id.itemName',
           unit: '$_id.unit',
           lotNumber: '$_id.lotNumber',
+          keyMap: '$_id.keyMap',
+        },
+      },
+      {
+        $match: {
+          keyMap: { $nin: listItemCode },
         },
       },
     ]);
