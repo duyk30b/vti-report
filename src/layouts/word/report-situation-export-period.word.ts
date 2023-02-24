@@ -1,6 +1,6 @@
-import { formatDate, formatNumber, readDecimal } from '@constant/common';
+import { formatDate, formatMoney } from '@constant/common';
 import { TableDataSituationExportPeriod } from '@models/situation_export.model';
-import { plus } from '@utils/common';
+import { plus, plusBigNumber } from '@utils/common';
 import {
   FONT_NAME,
   SITUATION_EXPORT_PERIOD_COLUMNS,
@@ -200,190 +200,207 @@ export async function generateReportSituationExportPeriod(
               }),
               ...dataWord
                 .map((warehouse) => {
-                  totalWarehouse = plus(totalWarehouse, warehouse.totalPrice);
+                  totalWarehouse = plusBigNumber(
+                    totalWarehouse,
+                    warehouse.totalPrice || 0,
+                  );
                   reasonData = warehouse.reasons
                     .map((reason) => {
                       orderData = reason.orders
                         .map((order, index) => {
-                          itemData = order.items.filter((item) => {
-                            if (item.actualQuantity) return item;
-                          }).map((item) => {
-                            return new TableRow({
-                              height: setHeight(
-                                WORD_FILE_CONFIG.TABLE_ROW_HEIGHT,
-                              ),
-                              children: [
-                                new TableCell({
-                                  columnSpan: 5,
-                                  children: [],
-                                }),
-                                new TableCell({
-                                  columnSpan: 2,
-                                  verticalAlign: VerticalAlign.CENTER,
-                                  margins: wordFileStyle.margin_left,
-                                  children: [
-                                    new Paragraph({
-                                      alignment: AlignmentType.LEFT,
-                                      children: [
-                                        new TextRun({
-                                          text: item.itemCode,
-                                          ...wordFileStyle.text_style_bold,
-                                        }),
-                                      ],
-                                    }),
-                                  ],
-                                }),
-                                new TableCell({
-                                  verticalAlign: VerticalAlign.CENTER,
-                                  margins: wordFileStyle.margin_left,
-                                  children: [
-                                    new Paragraph({
-                                      alignment: AlignmentType.LEFT,
-                                      children: [
-                                        new TextRun({
-                                          text: item.itemName,
-                                          ...wordFileStyle.text_style,
-                                        }),
-                                      ],
-                                    }),
-                                  ],
-                                }),
-                                new TableCell({
-                                  verticalAlign: VerticalAlign.CENTER,
-                                  children: [
-                                    new Paragraph({
-                                      alignment: AlignmentType.CENTER,
-                                      children: [
-                                        new TextRun({
-                                          text: item.lotNumber,
-                                          ...wordFileStyle.text_style,
-                                        }),
-                                      ],
-                                    }),
-                                  ],
-                                }),
-                                new TableCell({
-                                  verticalAlign: VerticalAlign.CENTER,
-                                  margins: wordFileStyle.margin_right,
-                                  children: [
-                                    new Paragraph({
-                                      alignment: AlignmentType.RIGHT,
-                                      children: [
-                                        new TextRun({
-                                          text: item.accountDebt + ".",
-                                          ...wordFileStyle.text_style,
-                                        }),
-                                      ],
-                                    }),
-                                  ],
-                                }),
-                                new TableCell({
-                                  verticalAlign: VerticalAlign.CENTER,
-                                  margins: wordFileStyle.margin_right,
-                                  children: [
-                                    new Paragraph({
-                                      alignment: AlignmentType.RIGHT,
-                                      children: [
-                                        new TextRun({
-                                          text: item.accountHave,
-                                          ...wordFileStyle.text_style,
-                                        }),
-                                      ],
-                                    }),
-                                  ],
-                                }),
-                                new TableCell({
-                                  verticalAlign: VerticalAlign.CENTER,
-                                  children: [
-                                    new Paragraph({
-                                      alignment: AlignmentType.CENTER,
-                                      children: [
-                                        new TextRun({
-                                          text: item.unit,
-                                          ...wordFileStyle.text_style,
-                                        }),
-                                      ],
-                                    }),
-                                  ],
-                                }),
-                                new TableCell({
-                                  verticalAlign: VerticalAlign.CENTER,
-                                  margins: wordFileStyle.margin_right,
-                                  children: [
-                                    new Paragraph({
-                                      alignment: AlignmentType.RIGHT,
-                                      children: [
-                                        new TextRun({
-                                          text: readDecimal(item.planQuantity, true),
-                                          ...wordFileStyle.text_style,
-                                        }),
-                                      ],
-                                    }),
-                                  ],
-                                }),
-                                new TableCell({
-                                  verticalAlign: VerticalAlign.CENTER,
-                                  margins: wordFileStyle.margin_right,
-                                  children: [
-                                    new Paragraph({
-                                      alignment: AlignmentType.RIGHT,
-                                      children: [
-                                        new TextRun({
-                                          text: readDecimal(item.actualQuantity, true),
-                                          ...wordFileStyle.text_style,
-                                        }),
-                                      ],
-                                    }),
-                                  ],
-                                }),
-                                new TableCell({
-                                  verticalAlign: VerticalAlign.CENTER,
-                                  margins: wordFileStyle.margin_left,
-                                  children: [
-                                    new Paragraph({
-                                      alignment: AlignmentType.LEFT,
-                                      children: [
-                                        new TextRun({
-                                          text: item.locatorCode,
-                                          ...wordFileStyle.text_style,
-                                        }),
-                                      ],
-                                    }),
-                                  ],
-                                }),
-                                new TableCell({
-                                  verticalAlign: VerticalAlign.CENTER,
-                                  margins: wordFileStyle.margin_right,
-                                  children: [
-                                    new Paragraph({
-                                      alignment: AlignmentType.RIGHT,
-                                      children: [
-                                        new TextRun({
-                                          text: formatNumber(item.storageCost),
-                                          ...wordFileStyle.text_style,
-                                        }),
-                                      ],
-                                    }),
-                                  ],
-                                }),
-                                new TableCell({
-                                  verticalAlign: VerticalAlign.CENTER,
-                                  margins: wordFileStyle.margin_right,
-                                  children: [
-                                    new Paragraph({
-                                      alignment: AlignmentType.RIGHT,
-                                      children: [
-                                        new TextRun({
-                                          text: formatNumber(item.totalPrice),
-                                          ...wordFileStyle.text_style,
-                                        }),
-                                      ],
-                                    }),
-                                  ],
-                                }),
-                              ],
+                          itemData = order.items
+                            .filter((item) => {
+                              if (item.actualQuantity) return item;
+                            })
+                            .map((item) => {
+                              return new TableRow({
+                                height: setHeight(
+                                  WORD_FILE_CONFIG.TABLE_ROW_HEIGHT,
+                                ),
+                                children: [
+                                  new TableCell({
+                                    columnSpan: 5,
+                                    children: [],
+                                  }),
+                                  new TableCell({
+                                    columnSpan: 2,
+                                    verticalAlign: VerticalAlign.CENTER,
+                                    margins: wordFileStyle.margin_left,
+                                    children: [
+                                      new Paragraph({
+                                        alignment: AlignmentType.LEFT,
+                                        children: [
+                                          new TextRun({
+                                            text: item.itemCode,
+                                            ...wordFileStyle.text_style_bold,
+                                          }),
+                                        ],
+                                      }),
+                                    ],
+                                  }),
+                                  new TableCell({
+                                    verticalAlign: VerticalAlign.CENTER,
+                                    margins: wordFileStyle.margin_left,
+                                    children: [
+                                      new Paragraph({
+                                        alignment: AlignmentType.LEFT,
+                                        children: [
+                                          new TextRun({
+                                            text: item.itemName,
+                                            ...wordFileStyle.text_style,
+                                          }),
+                                        ],
+                                      }),
+                                    ],
+                                  }),
+                                  new TableCell({
+                                    verticalAlign: VerticalAlign.CENTER,
+                                    children: [
+                                      new Paragraph({
+                                        alignment: AlignmentType.CENTER,
+                                        children: [
+                                          new TextRun({
+                                            text: item.lotNumber,
+                                            ...wordFileStyle.text_style,
+                                          }),
+                                        ],
+                                      }),
+                                    ],
+                                  }),
+                                  new TableCell({
+                                    verticalAlign: VerticalAlign.CENTER,
+                                    margins: wordFileStyle.margin_right,
+                                    children: [
+                                      new Paragraph({
+                                        alignment: AlignmentType.RIGHT,
+                                        children: [
+                                          new TextRun({
+                                            text: item.accountDebt + '.',
+                                            ...wordFileStyle.text_style,
+                                          }),
+                                        ],
+                                      }),
+                                    ],
+                                  }),
+                                  new TableCell({
+                                    verticalAlign: VerticalAlign.CENTER,
+                                    margins: wordFileStyle.margin_right,
+                                    children: [
+                                      new Paragraph({
+                                        alignment: AlignmentType.RIGHT,
+                                        children: [
+                                          new TextRun({
+                                            text: item.accountHave,
+                                            ...wordFileStyle.text_style,
+                                          }),
+                                        ],
+                                      }),
+                                    ],
+                                  }),
+                                  new TableCell({
+                                    verticalAlign: VerticalAlign.CENTER,
+                                    children: [
+                                      new Paragraph({
+                                        alignment: AlignmentType.CENTER,
+                                        children: [
+                                          new TextRun({
+                                            text: item.unit,
+                                            ...wordFileStyle.text_style,
+                                          }),
+                                        ],
+                                      }),
+                                    ],
+                                  }),
+                                  new TableCell({
+                                    verticalAlign: VerticalAlign.CENTER,
+                                    margins: wordFileStyle.margin_right,
+                                    children: [
+                                      new Paragraph({
+                                        alignment: AlignmentType.RIGHT,
+                                        children: [
+                                          new TextRun({
+                                            text: formatMoney(
+                                              item.planQuantity,
+                                              2,
+                                            ),
+                                            ...wordFileStyle.text_style,
+                                          }),
+                                        ],
+                                      }),
+                                    ],
+                                  }),
+                                  new TableCell({
+                                    verticalAlign: VerticalAlign.CENTER,
+                                    margins: wordFileStyle.margin_right,
+                                    children: [
+                                      new Paragraph({
+                                        alignment: AlignmentType.RIGHT,
+                                        children: [
+                                          new TextRun({
+                                            text: formatMoney(
+                                              item.actualQuantity,
+                                              2,
+                                            ),
+                                            ...wordFileStyle.text_style,
+                                          }),
+                                        ],
+                                      }),
+                                    ],
+                                  }),
+                                  new TableCell({
+                                    verticalAlign: VerticalAlign.CENTER,
+                                    margins: wordFileStyle.margin_left,
+                                    children: [
+                                      new Paragraph({
+                                        alignment: AlignmentType.LEFT,
+                                        children: [
+                                          new TextRun({
+                                            text: item.locatorCode,
+                                            ...wordFileStyle.text_style,
+                                          }),
+                                        ],
+                                      }),
+                                    ],
+                                  }),
+                                  new TableCell({
+                                    verticalAlign: VerticalAlign.CENTER,
+                                    margins: wordFileStyle.margin_right,
+                                    children: [
+                                      new Paragraph({
+                                        alignment: AlignmentType.RIGHT,
+                                        children: [
+                                          new TextRun({
+                                            text:
+                                              formatMoney(
+                                                item.storageCost,
+                                                2,
+                                              ) || '0,00',
+                                            ...wordFileStyle.text_style,
+                                          }),
+                                        ],
+                                      }),
+                                    ],
+                                  }),
+                                  new TableCell({
+                                    verticalAlign: VerticalAlign.CENTER,
+                                    margins: wordFileStyle.margin_right,
+                                    children: [
+                                      new Paragraph({
+                                        alignment: AlignmentType.RIGHT,
+                                        children: [
+                                          new TextRun({
+                                            text:
+                                              formatMoney(item.totalPrice) ||
+                                              '0,00',
+                                            ...wordFileStyle.text_style,
+                                          }),
+                                        ],
+                                      }),
+                                    ],
+                                  }),
+                                ],
+                              });
                             });
-                          });
                           return [
                             new TableRow({
                               height: setHeight(
@@ -426,7 +443,9 @@ export async function generateReportSituationExportPeriod(
                                       alignment: AlignmentType.CENTER,
                                       children: [
                                         new TextRun({
-                                          text: formatDate(order.orderCreatedAt) || '',
+                                          text:
+                                            formatDate(order.orderCreatedAt) ||
+                                            '',
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -497,7 +516,7 @@ export async function generateReportSituationExportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: readDecimal(order.totalPrice, true),
+                                          text: formatMoney(order.totalPrice),
                                           ...wordFileStyle.text_style_bold,
                                         }),
                                       ],
@@ -524,7 +543,9 @@ export async function generateReportSituationExportPeriod(
                                   alignment: AlignmentType.LEFT,
                                   children: [
                                     new TextRun({
-                                      text: `${i18n.translate(`report.REASON`)} ${reason?.value}`,
+                                      text: `${i18n.translate(
+                                        `report.REASON`,
+                                      )} ${reason?.value}`,
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -544,7 +565,7 @@ export async function generateReportSituationExportPeriod(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: readDecimal(reason.totalPrice),
+                                      text: formatMoney(reason.totalPrice),
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -591,7 +612,7 @@ export async function generateReportSituationExportPeriod(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(warehouse.totalPrice),
+                                  text: formatMoney(warehouse.totalPrice),
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
@@ -641,7 +662,7 @@ export async function generateReportSituationExportPeriod(
                         alignment: AlignmentType.RIGHT,
                         children: [
                           new TextRun({
-                            text: totalWarehouse.toString(),
+                            text: formatMoney(totalWarehouse),
                             ...wordFileStyle.text_style_bold,
                           }),
                         ],
