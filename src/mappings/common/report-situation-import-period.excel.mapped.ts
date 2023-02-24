@@ -22,7 +22,7 @@ export function getSituationImportPeriod(
       dataMaping.warehouseName = item.warehouseName;
       item?.reasons?.map((i) => {
         formatAccount(i, 50, 29, false, true);
-      })
+      });
       const tempt: TableDataSituationImportPeriod = {
         warehouseCode:
           i18n.translate('report.WAREHOUSE_GROUP_CODE') +

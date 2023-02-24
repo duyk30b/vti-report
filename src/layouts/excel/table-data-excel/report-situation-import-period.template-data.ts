@@ -1,5 +1,6 @@
 import { formatMoney, readDecimal } from '@constant/common';
 import { TableDataSituationImportPeriod } from '@models/situation_import.model';
+import { plusBigNumber } from '@utils/common';
 import {
   ALIGNMENT_CENTER,
   ALIGNMENT_LEFT,
@@ -23,7 +24,7 @@ export function reportSituationImportPeriodTemplateData(
     const cells: ConfigCells[] = [];
     let totalPrice = 0;
     dataExcell.forEach((item) => {
-      totalPrice += item.totalPrice;
+      totalPrice = plusBigNumber(totalPrice, item.totalPrice || 0);
       cells.push(
         ...[
           {
