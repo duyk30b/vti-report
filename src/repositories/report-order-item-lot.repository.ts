@@ -61,7 +61,13 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
       condition['$and'].push({
         $expr: {
           $eq: [
-            { $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY } },
+            {
+              $dateToString: {
+                date: '$orderCreatedAt',
+                format: '%Y-%m-%d',
+                timezone: TIMEZONE_HCM_CITY,
+              },
+            },
             moment(request?.dateFrom).format(DATE_FOMAT),
           ],
         },
@@ -72,7 +78,11 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
           $expr: {
             $gte: [
               {
-                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+                $dateToString: {
+                  date: '$orderCreatedAt',
+                  format: '%Y-%m-%d',
+                  timezone: TIMEZONE_HCM_CITY,
+                },
               },
               moment(request?.dateFrom).format(DATE_FOMAT),
             ],
@@ -85,7 +95,11 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
           $expr: {
             $lte: [
               {
-                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+                $dateToString: {
+                  date: '$orderCreatedAt',
+                  format: '%Y-%m-%d',
+                  timezone: TIMEZONE_HCM_CITY,
+                },
               },
               moment(request?.dateTo).format(DATE_FOMAT),
             ],
@@ -156,7 +170,11 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
             lotNumber: '$lotNumber',
             storageCost: '$storageCost',
             reportDate: {
-              $dateToString: { date: '$reportDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+              $dateToString: {
+                date: '$reportDate',
+                format: '%Y-%m-%d',
+                timezone: TIMEZONE_HCM_CITY,
+              },
             },
             note: '$note',
           },
@@ -240,7 +258,13 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
       condition['$and'].push({
         $expr: {
           $eq: [
-            { $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY } },
+            {
+              $dateToString: {
+                date: '$orderCreatedAt',
+                format: '%Y-%m-%d',
+                timezone: TIMEZONE_HCM_CITY,
+              },
+            },
             moment(request?.dateFrom).format(DATE_FOMAT),
           ],
         },
@@ -251,7 +275,11 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
           $expr: {
             $gte: [
               {
-                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+                $dateToString: {
+                  date: '$orderCreatedAt',
+                  format: '%Y-%m-%d',
+                  timezone: TIMEZONE_HCM_CITY,
+                },
               },
               moment(request?.dateFrom).format(DATE_FOMAT),
             ],
@@ -263,7 +291,11 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
           $expr: {
             $lte: [
               {
-                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+                $dateToString: {
+                  date: '$orderCreatedAt',
+                  format: '%Y-%m-%d',
+                  timezone: TIMEZONE_HCM_CITY,
+                },
               },
               moment(request?.dateTo).format(DATE_FOMAT),
             ],
@@ -968,13 +1000,8 @@ function reportSituationTransfer(
             storageCost: '$storageCost',
             totalPrice: {
               $cond: {
-                if: '$transactionItem.actualQuantity',
-                then: {
-                  $multiply: [
-                    '$storageCost',
-                    '$transactionItem.actualQuantity',
-                  ],
-                },
+                if: '$amount',
+                then: '$amount',
                 else: {
                   $multiply: ['$storageCost', '$actualQuantity'],
                 },

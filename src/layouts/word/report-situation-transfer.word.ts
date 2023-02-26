@@ -1,6 +1,6 @@
-import { formatDate, formatNumber, readDecimal } from '@constant/common';
+import { formatDate, formatMoney } from '@constant/common';
 import { TableDataSituationTransfer } from '@models/situation-transfer.model';
-import { plus } from '@utils/common';
+import { plus, plusBigNumber } from '@utils/common';
 import {
   FONT_NAME,
   SITUATION_TRANSFER_COLUMNS,
@@ -199,7 +199,7 @@ export async function generateReportSituationTransfer(
               }),
               ...dataWord
                 .map((warehouse) => {
-                  totalPrice = plus(totalPrice, warehouse.totalPrice);
+                  totalPrice = plusBigNumber(totalPrice, warehouse.totalPrice);
                   orderData = warehouse.orders
                     .map((order, index) => {
                       itemData = order.items.map((item) => {
@@ -307,7 +307,10 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: readDecimal(item?.actualQuantity, true),
+                                      text: formatMoney(
+                                        item?.actualQuantity,
+                                        2,
+                                      ),
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -337,7 +340,7 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: readDecimal(item?.storageCost),
+                                      text: formatMoney(item?.storageCost, 2),
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -352,7 +355,8 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: readDecimal(item?.totalPrice) || '',
+                                      text:
+                                        formatMoney(item?.totalPrice) || '0',
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -451,7 +455,7 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: formatNumber(order?.totalPrice),
+                                      text: formatMoney(order?.totalPrice),
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -492,7 +496,7 @@ export async function generateReportSituationTransfer(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(warehouse?.totalPrice),
+                                  text: formatMoney(warehouse?.totalPrice),
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
@@ -532,7 +536,7 @@ export async function generateReportSituationTransfer(
                         alignment: AlignmentType.RIGHT,
                         children: [
                           new TextRun({
-                            text: formatNumber(totalPrice),
+                            text: formatMoney(totalPrice),
                             ...wordFileStyle.text_style_bold,
                           }),
                         ],
