@@ -35,7 +35,7 @@ export function getOrderExportByRequestForItemMapped(
         warehouseExportProposals: cur.warehouseExportProposals,
         orderCode: cur.orderCode,
         orderCreatedAt: cur.orderCreatedAt
-          ? moment(cur.orderCreatedAt).format(DATE_FOMAT_EXCELL)
+          ? moment(cur.orderCreatedAt).format(DATE_FOMAT_EXCELL_MM_DD_YY)
           : '',
         planQuantity: readDecimal(cur.planQuantity, true),
         exportedQuantity: readDecimal(cur.actualQuantity, true),
