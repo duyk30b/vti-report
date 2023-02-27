@@ -48,6 +48,7 @@ import { SyncItemWarehouseStockPriceRequestDto } from './dto/request/sync-item-w
 import { DailyItemWarehouseStockPriceRepository } from '@repositories/daily-item-warehouse-stock-price.repository';
 import { sleep } from '@utils/common';
 import { DailyItemWarehouseStockPriceInterface } from '@schemas/interface/daily-item-warehouse-stock-price.interface';
+import { isNumber } from 'class-validator';
 @Injectable()
 export class SyncService {
   private readonly logger = new Logger(SyncService.name);
@@ -495,7 +496,8 @@ export class SyncService {
           storedQuantity: 0,
           collectedQuantity: 0,
           exportedQuantity: item?.exportableQuantity,
-          storageCost: item?.price ? Number(item?.price) : 0,
+          storageCost:
+            item?.price && isNumber(+item?.price) ? Number(item?.price) : 0,
           amount: item?.amount ? Number(item?.amount) : 0,
           ...reportOrder,
           receiptNumber: request.receiptNumber,

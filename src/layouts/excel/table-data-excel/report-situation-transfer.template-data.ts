@@ -1,5 +1,6 @@
-import { formatDate, readDecimal } from '@constant/common';
+import { formatDate, formatMoney } from '@constant/common';
 import { TableDataSituationTransfer } from '@models/situation-transfer.model';
+import { plusBigNumber } from '@utils/common';
 import {
   ALIGNMENT_CENTER,
   ALIGNMENT_LEFT,
@@ -31,11 +32,11 @@ export function reportSituationTransferTemplateData(
       translate: false,
       border: BORDER,
       heightRow: { index: curRowIdx, value: 25 },
-      merge:true
+      merge: true,
     });
     cells.push({
       nameCell: `O${curRowIdx}`,
-      value: item.totalPrice || '0',
+      value: formatMoney(item.totalPrice) || '0',
       font: FONT_BOLD_8,
       aligment: ALIGNMENT_RIGHT,
       translate: false,
@@ -89,7 +90,7 @@ export function reportSituationTransferTemplateData(
           },
           {
             nameCell: `O${curRowIdx}`,
-            value: order.totalPrice || '0',
+            value: formatMoney(order.totalPrice) || '0',
             font: FONT_NORMAL_9,
             aligment: ALIGNMENT_RIGHT,
             translate: false,
@@ -100,7 +101,7 @@ export function reportSituationTransferTemplateData(
       );
       curRowIdx++;
       order.items.forEach((row3) => {
-        totalQuantity += row3.totalPrice;
+        totalQuantity = plusBigNumber(totalQuantity, row3.totalPrice || 0);
         worksheet.mergeCells(`A${curRowIdx}:D${curRowIdx}`);
         worksheet.mergeCells(`E${curRowIdx}:F${curRowIdx}`);
         cells.push(
@@ -158,7 +159,7 @@ export function reportSituationTransferTemplateData(
             },
             {
               nameCell: `L${curRowIdx}`,
-              value: readDecimal(row3.actualQuantity, true),
+              value: formatMoney(row3.actualQuantity, 2) || '0,00',
               font: FONT_NORMAL_9,
               aligment: ALIGNMENT_RIGHT,
               border: BORDER,
@@ -173,7 +174,7 @@ export function reportSituationTransferTemplateData(
             },
             {
               nameCell: `N${curRowIdx}`,
-              value: readDecimal(row3.storageCost),
+              value: formatMoney(row3.storageCost, 2) || '0,00',
               font: FONT_NORMAL_9,
               aligment: ALIGNMENT_RIGHT,
               border: BORDER,
@@ -181,7 +182,7 @@ export function reportSituationTransferTemplateData(
             },
             {
               nameCell: `O${curRowIdx}`,
-              value: readDecimal(row3.totalPrice) || '0',
+              value: formatMoney(row3.totalPrice) || '0',
               font: FONT_NORMAL_9,
               aligment: ALIGNMENT_RIGHT,
               border: BORDER,
@@ -206,7 +207,7 @@ export function reportSituationTransferTemplateData(
       },
       {
         nameCell: `O${curRowIdx}`,
-        value: readDecimal(totalQuantity),
+        value: formatMoney(totalQuantity) || '0',
         font: FONT_BOLD_8,
         aligment: ALIGNMENT_RIGHT,
         border: BORDER,
