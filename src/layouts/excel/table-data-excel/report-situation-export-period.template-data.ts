@@ -1,5 +1,6 @@
-import { formatDate, readDecimal } from '@constant/common';
+import { formatDate, formatMoney, readDecimal } from '@constant/common';
 import { TableDataSituationExportPeriod } from '@models/situation_export.model';
+import { plusBigNumber } from '@utils/common';
 import {
   ALIGNMENT_CENTER,
   ALIGNMENT_CENTER_BOTTOM,
@@ -26,7 +27,7 @@ export function reportSituationExportPeriodTemplateData(
   let totalPriceAll = 0;
   const cells: ConfigCells[] = [];
   dataExcell.forEach((item) => {
-    totalPriceAll += item.totalPrice;
+    totalPriceAll = plusBigNumber(totalPriceAll, item.totalPrice || 0);
     cells.push(
       ...[
         {
@@ -43,7 +44,7 @@ export function reportSituationExportPeriodTemplateData(
         },
         {
           nameCell: `L${curRowIdx}:Q${curRowIdx}`,
-          value: item.totalPrice || '0',
+          value: formatMoney(item.totalPrice) || '0',
           font: FONT_BOLD_9,
           aligment: ALIGNMENT_RIGHT,
           border: BORDER,
@@ -70,7 +71,7 @@ export function reportSituationExportPeriodTemplateData(
           },
           {
             nameCell: `L${curRowIdx}:Q${curRowIdx}`,
-            value: reason.totalPrice || '0',
+            value: formatMoney(reason.totalPrice) || '0',
             font: FONT_BOLD_9,
             aligment: ALIGNMENT_RIGHT,
             border: BORDER,
@@ -128,9 +129,9 @@ export function reportSituationExportPeriodTemplateData(
             },
             {
               nameCell: `N${curRowIdx}`,
-              value: order.totalPrice || 0,
+              value: formatMoney(order.totalPrice) || '0',
               font: FONT_BOLD_9,
-              aligment: ALIGNMENT_LEFT,
+              aligment: ALIGNMENT_RIGHT,
               numFmt: '### ### ### ### ',
             },
             {
@@ -184,7 +185,7 @@ export function reportSituationExportPeriodTemplateData(
                 },
                 {
                   nameCell: `J${curRowIdx}`,
-                  value: item.accountDebt + ".",
+                  value: item.accountDebt + '.',
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_BOTTOM_LEFT,
                   border: BORDER,
@@ -228,7 +229,7 @@ export function reportSituationExportPeriodTemplateData(
                 },
                 {
                   nameCell: `P${curRowIdx}`,
-                  value: item.storageCost || 0,
+                  value: formatMoney(item.storageCost, 2) || '0,00',
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_BOTTOM_RIGHT,
                   border: BORDER,
@@ -236,7 +237,7 @@ export function reportSituationExportPeriodTemplateData(
                 },
                 {
                   nameCell: `Q${curRowIdx}`,
-                  value: item.totalPrice || 0,
+                  value: formatMoney(item.totalPrice) || '0',
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_BOTTOM_RIGHT,
                   border: BORDER,
@@ -264,7 +265,7 @@ export function reportSituationExportPeriodTemplateData(
       },
       {
         nameCell: `L${curRowIdx}:Q${curRowIdx}`,
-        value: readDecimal(totalPriceAll, true),
+        value: formatMoney(totalPriceAll) || '0',
         font: FONT_BOLD_9,
         aligment: ALIGNMENT_RIGHT,
         border: BORDER,
