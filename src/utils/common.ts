@@ -24,22 +24,6 @@ export const minusBigNumber = (first: any, second: any): any => {
   return new Big(first).minus(new Big(second)).valueOf();
 };
 
-export const plusBigNumber = (first: any, second: any): any => {
-  return new Big(first).plus(new Big(second)).valueOf();
-};
-
-export const minusBigNumber = (first: any, second: any): any => {
-  return new Big(first).minus(new Big(second)).valueOf();
-};
-
-export const plusBigNumber = (first: any, second: any): any => {
-  return new Big(first).plus(new Big(second)).valueOf();
-};
-
-export const minusBigNumber = (first: any, second: any): any => {
-  return new Big(first).minus(new Big(second)).valueOf();
-};
-
 export const escapeCharForSearch = (str: string): string => {
   return str.toLowerCase().replace(/[?%\\_]/gi, function (x) {
     return '\\' + x;

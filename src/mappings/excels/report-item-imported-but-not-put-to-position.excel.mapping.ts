@@ -34,7 +34,6 @@ export async function reportItemImportedButNotPutToPositionExcelMapping(
     recievedQuantity: { alignment: Alignment.RIGHT, numFmt: '### ### ### ###' },
     actualQuantity: { alignment: Alignment.RIGHT, numFmt: '### ### ### ###' },
     remainQuantity: { alignment: Alignment.RIGHT, numFmt: '### ### ### ###' },
-    note: Alignment.LEFT,
     performerName: Alignment.LEFT,
   };
 
