@@ -43,6 +43,11 @@ export class DataItemWarehousePriceRequestDto {
   amount: number;
 
   companyCode: string;
+
+  @ApiProperty({ example: 'Vietnam', description: 'Xuât xứ' })
+  @IsString()
+  @IsOptional()
+  manufacturingCountry: string;
 }
 
 export class SyncItemWarehouseStockPriceRequestDto extends BaseDto {

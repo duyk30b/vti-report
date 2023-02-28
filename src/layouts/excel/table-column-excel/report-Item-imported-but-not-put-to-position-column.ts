@@ -51,10 +51,6 @@ export const REPORT_ITEM_IMPORT_BUT_NOT_PUT_TO_POSITION_COLUMN: TableColumn[] =
       width: 10,
     },
     {
-      name: 'NOTE',
-      width: 25,
-    },
-    {
       name: 'RECEIVER',
       width: 20,
     },
