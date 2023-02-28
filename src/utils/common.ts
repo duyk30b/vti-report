@@ -13,7 +13,7 @@ export const mul = (first: number, second: number): number => {
 };
 
 export const div = (first: number, second: number): number => {
-  return Number(new Big(first).div(new Big(second)));
+  return Number(new Big(first).div(new Big(second ? second : 1)));
 };
 
 export const plusBigNumber = (first: any, second: any): any => {
