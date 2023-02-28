@@ -31,6 +31,9 @@ export class DailyItemWarehouseStockPrice
 
   @Prop({ required: false })
   companyCode: string;
+
+  @Prop({ required: false })
+  manufacturingCountry: string;
 }
 
 export const DailyItemWarehouseStockPriceSchema = SchemaFactory.createForClass(
