@@ -317,7 +317,7 @@ export async function generateReportItemImportedButNotPutToPosition(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: (item.recievedQuantity).toString(),
+                                  text: item.recievedQuantity.toString(),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -332,7 +332,7 @@ export async function generateReportItemImportedButNotPutToPosition(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: (item.actualQuantity).toString(),
+                                  text: item.actualQuantity.toString(),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -347,22 +347,7 @@ export async function generateReportItemImportedButNotPutToPosition(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: (item.remainQuantity).toString(),
-                                  ...wordFileStyle.text_style,
-                                }),
-                              ],
-                            }),
-                          ],
-                        }),
-                        new TableCell({
-                          verticalAlign: VerticalAlign.CENTER,
-                          margins: wordFileStyle.margin_left,
-                          children: [
-                            new Paragraph({
-                              alignment: AlignmentType.LEFT,
-                              children: [
-                                new TextRun({
-                                  text: item.note,
+                                  text: item.remainQuantity.toString(),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],

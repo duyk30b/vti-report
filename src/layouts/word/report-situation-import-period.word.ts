@@ -1,4 +1,4 @@
-import { formatMoney, formatNumber, readDecimal } from '@constant/common';
+import { formatMoney } from '@constant/common';
 import { TableDataSituationImportPeriod } from '@models/situation_import.model';
 import { plus } from '@utils/common';
 import {
@@ -325,7 +325,10 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: readDecimal(item.actualQuantity, true),
+                                          text: formatMoney(
+                                            item.actualQuantity,
+                                            2,
+                                          ),
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -355,7 +358,10 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.RIGHT,
                                       children: [
                                         new TextRun({
-                                          text: readDecimal(item.storageCost, true),
+                                          text: formatMoney(
+                                            item.storageCost,
+                                            2,
+                                          ),
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -439,7 +445,10 @@ export async function generateReportSituationImportPeriod(
                                       alignment: AlignmentType.CENTER,
                                       children: [
                                         new TextRun({
-                                          text: moment(order.orderCreatedAt).format('DD/MM/YYYY') || '',
+                                          text:
+                                            moment(order.orderCreatedAt).format(
+                                              'DD/MM/YYYY',
+                                            ) || '',
                                           ...wordFileStyle.text_style,
                                         }),
                                       ],
@@ -605,7 +614,11 @@ export async function generateReportSituationImportPeriod(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: '',
+                                      text:
+                                        '' +
+                                        formatMoney(
+                                          Math.round(reason?.totalPrice || 0),
+                                        ),
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
