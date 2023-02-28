@@ -970,6 +970,7 @@ export class SyncService {
               amount: itemPrice?.totalAmount,
               reportDate: new Date(itemPrice.reportDate),
               companyCode: companyCode,
+              manufacturingCountry: itemPrice?.manufacturingCountry,
             } as DailyItemWarehouseStockPriceInterface,
             upsert: true,
           },

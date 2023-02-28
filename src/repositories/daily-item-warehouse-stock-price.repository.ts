@@ -30,6 +30,7 @@ export class DailyItemWarehouseStockPriceRepository extends BaseAbstractReposito
     document.amount = dailyItemStockLocator?.totalAmount;
     document.reportDate = new Date(dailyItemStockLocator.reportDate);
     document.companyCode = dailyItemStockLocator?.companyCode;
+    document.manufacturingCountry = dailyItemStockLocator?.manufacturingCountry;
     return document;
   }
 

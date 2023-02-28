@@ -32,12 +32,11 @@ export function getItemImportedButNotPutToPositionMapped(
         recievedQuantity: readDecimal(item.recievedQuantity, true),
         actualQuantity: readDecimal(item.actualQuantity, true),
         remainQuantity: readDecimal(item.remainQuantity, true),
-        note: item.note,
         performerName: item.performerName,
       };
       return dataReturn;
     });
-    dataMaping.warehouseName = wh?.warehouseName
+    dataMaping.warehouseName = wh?.warehouseName;
     return {
       warehouseCode:
         i18n.translate('report.WAREHOUSE_GROUP_CODE') +
