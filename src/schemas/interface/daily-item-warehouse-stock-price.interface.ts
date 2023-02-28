@@ -7,4 +7,5 @@ export interface DailyItemWarehouseStockPriceInterface {
   amount: number;
   reportDate: Date;
   companyCode: string;
+  manufacturingCountry: string;
 }
