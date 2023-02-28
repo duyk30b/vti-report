@@ -45,7 +45,9 @@ export function reportSituationImportPeriodTemplateData(
           },
           {
             nameCell: `S${curRowIdx}`,
-            value: item.totalPrice ? formatMoney(item.totalPrice) : '0',
+            value: item.totalPrice
+              ? formatMoney(Math.round(item.totalPrice))
+              : '0',
             font: FONT_BOLD_9,
             aligment: ALIGNMENT_RIGHT,
             numFmt: '### ### ### ###',
@@ -75,7 +77,10 @@ export function reportSituationImportPeriodTemplateData(
             },
             {
               nameCell: `S${curRowIdx}`,
+              value: formatMoney(Math.round(reason?.totalPrice || 0)) || '0',
               border: BORDER,
+              font: FONT_BOLD_9,
+              aligment: ALIGNMENT_RIGHT,
             },
           ],
         );
@@ -211,7 +216,7 @@ export function reportSituationImportPeriodTemplateData(
                 },
                 {
                   nameCell: `O${curRowIdx}`,
-                  value: readDecimal(item.actualQuantity, true),
+                  value: formatMoney(item.actualQuantity, 2),
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_CENTER,
                   border: BORDER,
@@ -226,7 +231,7 @@ export function reportSituationImportPeriodTemplateData(
                 },
                 {
                   nameCell: `Q${curRowIdx}`,
-                  value: readDecimal(item.storageCost, true),
+                  value: formatMoney(item.storageCost, 2),
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_RIGHT,
                   border: BORDER,

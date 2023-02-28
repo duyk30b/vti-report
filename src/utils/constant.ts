@@ -308,13 +308,13 @@ export const ARR_REPORT_TYPE_CHANGE_TITLE_EXCELL = [
   ReportType.ITEM_INVENTORY_BELOW_SAFE,
   ReportType.ITEM_INVENTORY,
   ReportType.SITUATION_INVENTORY_PERIOD,
-]
+];
 
 export const LOCATION_CELL_REPORT_TYPE_CHANGE_TITLE_EXCELL = {
   CELL_TITLE_REPORT: 'A4',
   CELL_TITLE_REPORT_WAREHOUSE: 'A5',
   CEll_REPORT_TIME: 'A6',
-}
+};
 
 export const WORD_FILE_CONFIG = {
   WORD_FONT_SIZE_9: 18,
@@ -563,10 +563,6 @@ export const ITEM_IMPORTED_BUT_NOT_PUT_TO_POSITION_COLUMNS: TableColumn[] = [
   {
     name: 'QUANTITY_RECEIVE',
     width: 1,
-  },
-  {
-    name: 'NOTE',
-    width: 2,
   },
   {
     name: 'RECEIVER',
