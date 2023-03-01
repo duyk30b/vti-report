@@ -22,12 +22,16 @@ export const INVENTORY_COLUMN: TableColumn[] = [
     width: 10,
   },
   {
-    name: 'QUANTITY_STOCK',
+    name: 'MANUFACTURING_COUNTRY',
     width: 10,
   },
   {
     name: 'LOCATION',
     width: 20,
+  },
+  {
+    name: 'QUANTITY_STOCK',
+    width: 10,
   },
   {
     name: 'UNIT_PRICE',

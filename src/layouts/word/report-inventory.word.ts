@@ -1,10 +1,13 @@
-import { formatNumber, readDecimal } from '@constant/common';
 import { InventoryModel } from '@models/inventory.model';
 import { TableData } from '@models/report.model';
-import { mul } from '@utils/common';
-import { INVENTORY_COLUMNS, WORD_FILE_CONFIG } from '@utils/constant';
+import {
+  FONT_NAME,
+  INVENTORY_COLUMNS,
+  WORD_FILE_CONFIG,
+} from '@utils/constant';
 import {
   AlignmentType,
+  convertInchesToTwip,
   Document,
   Packer,
   Paragraph,
@@ -20,6 +23,8 @@ import { setHeight, setWidth, wordFileStyle } from './word-common.styles';
 export async function generateReportInventory(
   dataWord: TableData<InventoryModel>[],
   i18n: I18nRequestScopeService,
+  title,
+  reportTime,
 ): Promise<any> {
   let index = 1;
   let itemData = [];
@@ -47,6 +52,46 @@ export async function generateReportInventory(
           },
         },
         children: [
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: title.slice(0, title.indexOf('\n')),
+                size: WORD_FILE_CONFIG.WORD_FONT_SIZE_14,
+                bold: WORD_FILE_CONFIG.WORD_BOLD,
+                font: FONT_NAME,
+                allCaps: true,
+              }),
+            ],
+            alignment: AlignmentType.CENTER,
+            style: 'formatSpacing',
+            spacing: {
+              before: convertInchesToTwip(WORD_FILE_CONFIG.SPACING_BEFORE),
+            },
+          }),
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: title.slice(title.indexOf('\n')),
+                size: WORD_FILE_CONFIG.WORD_FONT_SIZE_12,
+                font: FONT_NAME,
+                bold: WORD_FILE_CONFIG.WORD_BOLD,
+              }),
+            ],
+            alignment: AlignmentType.CENTER,
+            style: 'formatSpacing',
+          }),
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: reportTime,
+                size: WORD_FILE_CONFIG.WORD_FONT_SIZE_10,
+                font: FONT_NAME,
+                bold: WORD_FILE_CONFIG.WORD_BOLD,
+              }),
+            ],
+            alignment: AlignmentType.CENTER,
+            style: 'formatSpacing',
+          }),
           new Table({
             width: setWidth(WORD_FILE_CONFIG.TABLE_WIDTH_PAGE_A3),
             rows: [
@@ -159,7 +204,7 @@ export async function generateReportInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: (item.stockQuantity).toString(),
+                                  text: item.manufacturingCountry,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -183,12 +228,27 @@ export async function generateReportInventory(
                         }),
                         new TableCell({
                           verticalAlign: VerticalAlign.CENTER,
+                          margins: wordFileStyle.margin_right,
+                          children: [
+                            new Paragraph({
+                              alignment: AlignmentType.RIGHT,
+                              children: [
+                                new TextRun({
+                                  text: item.stockQuantity.toString(),
+                                  ...wordFileStyle.text_style,
+                                }),
+                              ],
+                            }),
+                          ],
+                        }),
+                        new TableCell({
+                          verticalAlign: VerticalAlign.CENTER,
                           children: [
                             new Paragraph({
                               alignment: AlignmentType.CENTER,
                               children: [
                                 new TextRun({
-                                  text: (item.storageCost).toString(),
+                                  text: item.storageCost.toString(),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
