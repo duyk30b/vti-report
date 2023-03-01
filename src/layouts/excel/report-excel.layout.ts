@@ -23,9 +23,9 @@ import {
   COLUMN_COLOR,
   DATE_FOMAT_EXCELL,
   DATE_FOMAT_EXCELL_FILE,
+  DATE_FORMAT_TIME_HH_MM_SS,
   EXCEL_COLUMN,
   FONT_BOLD_10,
-  FONT_BOLD_11,
   FONT_BOLD_12,
   FONT_BOLD_14,
   FONT_BOLD_9,
@@ -35,13 +35,15 @@ import {
   INDEX_REPORT_TITLE,
   INDEX_REPORT_WAREHOUSE,
   LOCATION_CELL_REPORT_TYPE_CHANGE_TITLE_EXCELL,
+  LOCATION_CELL_TITLE_NOT_COMPANY,
   LV1,
   LV3,
   REPORT_INFO,
   ROW_WHEN_HAVE_HEADER,
   ROW_WHEN_NOT_HAVE_HEADER,
 } from '@utils/constant';
-import { ARR_REPORT_TYPE_CHANGE_FONT_SIZE, ReportType } from '@enums/report-type.enum';
+import { ReportType } from '@enums/report-type.enum';
+import { getTimezone } from '@utils/common';
 export const generateTable = async (
   model: ReportModel<any>,
   generateDataTable: (
@@ -101,6 +103,18 @@ export const generateTable = async (
       cellTitleTime = locationCell.CEll_REPORT_TIME;
       indexReportTime = INDEX_REPORT_TIME - 1;
       rowIndexChange = ROW_WHEN_HAVE_HEADER - 1;
+    } else if (
+      [REPORT_INFO[ReportType[ReportType.INVENTORY]].key].includes(model.key)
+    ) {
+      const locationCell = LOCATION_CELL_TITLE_NOT_COMPANY;
+      cellTitle = locationCell.CELL_TITLE_REPORT;
+      indexReportTitle = LOCATION_CELL_TITLE_NOT_COMPANY.INDEX_REPORT_TITLE;
+      cellTitleWarehosue = locationCell.CELL_TITLE_REPORT_WAREHOUSE;
+      indexTitleWarehouse =
+        LOCATION_CELL_TITLE_NOT_COMPANY.INDEX_REPORT_WAREHOUSE;
+      cellTitleTime = locationCell.CEll_REPORT_TIME;
+      indexReportTime = LOCATION_CELL_TITLE_NOT_COMPANY.INDEX_REPORT_TIME;
+      rowIndexChange = indexReportTime + 1;
     }
 
     worksheet.mergeCells(
@@ -113,62 +127,89 @@ export const generateTable = async (
       `${cellTitleTime}:${EXCEL_COLUMN[index - 2]}${indexReportTime}`,
     );
 
-    configCells(worksheet, i18n, [
-      {
-        nameCell: CELL_PARENT_COMPANY,
-        value: 'PARENT_COMPANY',
-        font: FONT_BOLD_10,
-        aligment: ALIGNMENT_LEFT,
-        translate: true,
-        merge: false,
-        heightRow: {
-          index: 1,
-          value: 30,
+    if (
+      [REPORT_INFO[ReportType[ReportType.INVENTORY]].key].includes(model.key)
+    ) {
+      configCells(worksheet, i18n, [
+        {
+          nameCell: cellTitle,
+          value: title.split('\n')[0],
+          font: FONT_BOLD_14,
+          aligment: ALIGNMENT_CENTER,
+          translate: false,
         },
-      },
-      {
-        nameCell: CELL_CHILD_COMPANY,
-        value: model.childCompany,
-        font: FONT_BOLD_10,
-        aligment: ALIGNMENT_LEFT,
-        translate: false,
-        merge: false,
-      },
-
-      {
-        nameCell: CELL_ADDRESS_CHILD_COMPANY,
-        value: model.addressChildCompany,
-        font: FONT_BOLD_10,
-        aligment: ALIGNMENT_LEFT,
-        translate: false,
-        merge: false,
-        heightRow: {
-          index: 3,
-          value: 40,
+        {
+          nameCell: cellTitleWarehosue,
+          value: title.split('\n')[1],
+          font: FONT_BOLD_12,
+          aligment: ALIGNMENT_CENTER,
+          translate: false,
         },
-      },
-      {
-        nameCell: cellTitle,
-        value: title.split('\n')[0],
-        font: FONT_BOLD_14,
-        aligment: ALIGNMENT_CENTER,
-        translate: false,
-      },
-      {
-        nameCell: cellTitleWarehosue,
-        value: title.split('\n')[1],
-        font: FONT_BOLD_12,
-        aligment: ALIGNMENT_CENTER,
-        translate: false,
-      },
-      {
-        nameCell: cellTitleTime,
-        value: reportTime,
-        font: FONT_BOLD_10,
-        aligment: ALIGNMENT_CENTER,
-        translate: false,
-      },
-    ]);
+        {
+          nameCell: cellTitleTime,
+          value: reportTime,
+          font: FONT_BOLD_10,
+          aligment: ALIGNMENT_CENTER,
+          translate: false,
+        },
+      ]);
+    } else {
+      configCells(worksheet, i18n, [
+        {
+          nameCell: CELL_PARENT_COMPANY,
+          value: 'PARENT_COMPANY',
+          font: FONT_BOLD_10,
+          aligment: ALIGNMENT_LEFT,
+          translate: true,
+          merge: false,
+          heightRow: {
+            index: 1,
+            value: 30,
+          },
+        },
+        {
+          nameCell: CELL_CHILD_COMPANY,
+          value: model.childCompany,
+          font: FONT_BOLD_10,
+          aligment: ALIGNMENT_LEFT,
+          translate: false,
+          merge: false,
+        },
+        {
+          nameCell: CELL_ADDRESS_CHILD_COMPANY,
+          value: model.addressChildCompany,
+          font: FONT_BOLD_10,
+          aligment: ALIGNMENT_LEFT,
+          translate: false,
+          merge: false,
+          heightRow: {
+            index: 3,
+            value: 40,
+          },
+        },
+        {
+          nameCell: cellTitle,
+          value: title.split('\n')[0],
+          font: FONT_BOLD_14,
+          aligment: ALIGNMENT_CENTER,
+          translate: false,
+        },
+        {
+          nameCell: cellTitleWarehosue,
+          value: title.split('\n')[1],
+          font: FONT_BOLD_12,
+          aligment: ALIGNMENT_CENTER,
+          translate: false,
+        },
+        {
+          nameCell: cellTitleTime,
+          value: reportTime,
+          font: FONT_BOLD_10,
+          aligment: ALIGNMENT_CENTER,
+          translate: false,
+        },
+      ]);
+    }
 
     if (
       [
@@ -212,7 +253,7 @@ export const generateTable = async (
   if (typeof model.footer == 'function') {
     model.footer(rowIndex, worksheet, i18n, model?.companyCode);
   }
-  worksheet.columns[0].width = 40;  
+  worksheet.columns[0].width = 40;
   const buffer = await workbook.xlsx.writeBuffer();
   // workbook.xlsx.writeFile(`demo${Math.floor(Math.random() * 1000)}.xlsx`);
 
@@ -406,7 +447,12 @@ export const getReportInfo = (
   title = i18n.translate(`report.${key}.TITLE`, {
     args: { property: property },
   });
-
+  if ([REPORT_INFO[ReportType[ReportType.INVENTORY]].key].includes(key)) {
+    reportTime =
+      i18n.translate(`report.DATE`) +
+      ': ' +
+      getTimezone(dateFrom, DATE_FORMAT_TIME_HH_MM_SS);
+  }
   return {
     nameFile,
     title,

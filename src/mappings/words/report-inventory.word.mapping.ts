@@ -14,7 +14,7 @@ export async function reportInventoryMapping(
   data: ReportInfo<TableData<InventoryModel>[]>,
   i18n: I18nRequestScopeService,
 ): Promise<ExportResponse> {
-  const { nameFile } = getReportInfo(
+  const { nameFile, title, reportTime } = getReportInfo(
     i18n,
     REPORT_INFO[ReportType[ReportType.INVENTORY]].key,
     request.warehouseCode ? data?.warehouseName : null,
@@ -24,6 +24,11 @@ export async function reportInventoryMapping(
 
   return {
     nameFile: nameFile,
-    result: await generateReportInventory(data.dataMapped, i18n),
+    result: await generateReportInventory(
+      data.dataMapped,
+      i18n,
+      title,
+      reportTime,
+    ),
   };
 }
