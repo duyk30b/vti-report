@@ -13,6 +13,7 @@ export const DATE_FOMAT = 'YYYY-MM-DD';
 export const DATE_FOMAT_EXCELL = 'DD/MM/YYYY';
 export const DATE_FOMAT_EXCELL_MM_DD_YY = 'MM/DD/YYYY';
 export const DATE_FOMAT_EXCELL_FILE = 'DDMMYYYY';
+export const DATE_FORMAT_TIME_HH_MM_SS = 'DD/MM/YYYY HH:mm:ss';
 export const FONT_NAME = 'Times New Roman';
 export const COLOR = '000000';
 export const CELL_A = 'A';
@@ -316,6 +317,15 @@ export const LOCATION_CELL_REPORT_TYPE_CHANGE_TITLE_EXCELL = {
   CEll_REPORT_TIME: 'A6',
 };
 
+export const LOCATION_CELL_TITLE_NOT_COMPANY = {
+  CELL_TITLE_REPORT: 'A1',
+  CELL_TITLE_REPORT_WAREHOUSE: 'A2',
+  CEll_REPORT_TIME: 'A3',
+  INDEX_REPORT_TITLE: 1,
+  INDEX_REPORT_WAREHOUSE: 2,
+  INDEX_REPORT_TIME: 3,
+};
+
 export const WORD_FILE_CONFIG = {
   WORD_FONT_SIZE_9: 18,
   WORD_FONT_SIZE_10: 20,
@@ -616,11 +626,11 @@ export const INVENTORY_COLUMNS: TableColumn[] = [
   },
   {
     name: 'ITEM_CODE',
-    width: 2.4,
+    width: 2.2,
   },
   {
     name: 'ITEM_NAME',
-    width: 3.2,
+    width: 2.6,
   },
   {
     name: 'UNIT',
@@ -631,12 +641,16 @@ export const INVENTORY_COLUMNS: TableColumn[] = [
     width: 0.8,
   },
   {
-    name: 'QUANTITY_STOCK',
-    width: 0.8,
+    name: 'MANUFACTURING_COUNTRY',
+    width: 1,
   },
   {
     name: 'LOCATION',
-    width: 1.8,
+    width: 1.6,
+  },
+  {
+    name: 'QUANTITY_STOCK',
+    width: 0.9,
   },
   {
     name: 'UNIT_PRICE',
