@@ -24,6 +24,14 @@ export const minusBigNumber = (first: any, second: any): any => {
   return new Big(first).minus(new Big(second)).valueOf();
 };
 
+export const mulBigNumber = (first: any, second: any): any => {
+  return new Big(first).mul(new Big(second)).valueOf();
+};
+
+export const divBigNumber = (first: any, second: any): any => {
+  return new Big(first).div(new Big(+second ? second : 1)).valueOf();
+};
+
 export const escapeCharForSearch = (str: string): string => {
   return str.toLowerCase().replace(/[?%\\_]/gi, function (x) {
     return '\\' + x;

@@ -78,6 +78,7 @@
     "LACK": "Thiếu",
     "CURRENCY_DONG": "Đơn vị tính: đồng",
     "REASON": "Mục đích: ",
+    "MANUFACTURING_COUNTRY": "Nơi SX",
     "SIX_MONTH": "6 tháng",
     "SIX_MONTH_TO_ONE_YEAR": "Từ 6 tháng đến < 1 năm",
     "ONE_YEAR_TO_TWO_YEAR": "Từ 1 năm đến < 2 năm",
@@ -137,7 +138,7 @@
         "SHEET_NAME": "W008-NK_theo_yêu_cầu-{property}"
     },
     "INVENTORY": {
-        "TITLE": "",
+        "TITLE": "THỐNG KÊ TỒN KHO HIỆN TẠI\n{property}",
         "FILE_NAME": "W007-Thống kê tồn kho-{property}",
         "SHEET_NAME": "W007-Thống_kê_tồn-{property}"
     },

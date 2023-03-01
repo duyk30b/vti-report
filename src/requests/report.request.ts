@@ -51,7 +51,7 @@ export class ReportRequest extends BaseDto {
 
   @IsOptional()
   @Transform(({ value }) => {
-    return getTimezone(value, FORMAT_DATE);
+    return getTimezone(value);
   })
   dateFrom: Date;
 }
