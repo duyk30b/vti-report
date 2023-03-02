@@ -115,6 +115,14 @@ export class LotItems {
   @ApiProperty()
   @IsOptional()
   actualQuantity: number;
+
+  @ApiProperty()
+  @IsOptional()
+  price: number;
+
+  @ApiProperty()
+  @IsOptional()
+  amount: number;
 }
 
 export class ItemDetail {
