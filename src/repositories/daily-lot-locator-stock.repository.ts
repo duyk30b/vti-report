@@ -673,19 +673,52 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
               warehouseName: '$warehouseName',
               itemCode: '$itemCode',
               itemName: '$itemName',
+              origin: '$origin',
+              account: '$account',
+              lotNumber: '$lotNumber',
+              locatorCode: '$locatorCode',
+              unit: '$unit',
+              storageCost: '$storageCost',
+              storageDate: {
+                $dateToString: {
+                  format: '%d/%m/%Y',
+                  date: '$storageDate',
+                  timezone: TIMEZONE_HCM_CITY,
+                },
+              },
+            },
+            stockQuantity: { $sum: '$stockQuantity' },
+            totalPrice: { $first: '$totalPrice' },
+            sixMonthAgo: { $first: '$sixMonthAgo' },
+            oneYearAgo: { $first: '$oneYearAgo' },
+            twoYearAgo: { $first: '$twoYearAgo' },
+            threeYearAgo: { $first: '$threeYearAgo' },
+            fourYearAgo: { $first: '$fourYearAgo' },
+            fiveYearAgo: { $first: '$fiveYearAgo' },
+            greaterfiveYear: { $first: '$greaterfiveYear' },
+          },
+        },
+        {
+          $group: {
+            _id: {
+              companyCode: '$_id.companyCode',
+              companyName: '$_id.companyName',
+              companyAddress: '$_id.companyAddress',
+              warehouseCode: '$_id.warehouseCode',
+              warehouseName: '$_id.warehouseName',
+              itemCode: '$_id.itemCode',
+              itemName: '$_id.itemName',
             },
             groupByStorageDate: {
               $push: {
-                storageDate: {
-                  $dateToString: { format: '%d/%m/%Y', date: '$storageDate', timezone: TIMEZONE_HCM_CITY },
-                },
-                origin: '$origin',
-                account: '$account',
-                lotNumber: '$lotNumber',
-                locatorCode: '$locatorCode',
-                unit: '$unit',
+                storageDate: '$_id.storageDate',
+                origin: '$_id.origin',
+                account: '$_id.account',
+                lotNumber: '$_id.lotNumber',
+                locatorCode: '$_id.locatorCode',
+                unit: '$_id.unit',
                 stockQuantity: '$stockQuantity',
-                storageCost: '$storageCost',
+                storageCost: '$_id.storageCost',
                 totalPrice: '$totalPrice',
                 sixMonthAgo: '$sixMonthAgo',
                 oneYearAgo: '$oneYearAgo',
@@ -831,7 +864,11 @@ function getQueryAgeOfItems(sum = false) {
         {
           $gt: [
             {
-              $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
+              $dateToString: {
+                date: '$storageDate',
+                format: '%d/%m/%Y',
+                timezone: TIMEZONE_HCM_CITY,
+              },
             },
             sixMonthAgo,
           ],
@@ -847,7 +884,11 @@ function getQueryAgeOfItems(sum = false) {
             {
               $lte: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: {
+                    date: '$storageDate',
+                    format: '%d/%m/%Y',
+                    timezone: TIMEZONE_HCM_CITY,
+                  },
                 },
                 sixMonthAgo,
               ],
@@ -855,7 +896,11 @@ function getQueryAgeOfItems(sum = false) {
             {
               $gt: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: {
+                    date: '$storageDate',
+                    format: '%d/%m/%Y',
+                    timezone: TIMEZONE_HCM_CITY,
+                  },
                 },
                 oneYearAgo,
               ],
@@ -873,7 +918,11 @@ function getQueryAgeOfItems(sum = false) {
             {
               $lte: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: {
+                    date: '$storageDate',
+                    format: '%d/%m/%Y',
+                    timezone: TIMEZONE_HCM_CITY,
+                  },
                 },
                 oneYearAgo,
               ],
@@ -881,7 +930,11 @@ function getQueryAgeOfItems(sum = false) {
             {
               $gt: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: {
+                    date: '$storageDate',
+                    format: '%d/%m/%Y',
+                    timezone: TIMEZONE_HCM_CITY,
+                  },
                 },
                 twoYearAgo,
               ],
@@ -899,7 +952,11 @@ function getQueryAgeOfItems(sum = false) {
             {
               $lte: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: {
+                    date: '$storageDate',
+                    format: '%d/%m/%Y',
+                    timezone: TIMEZONE_HCM_CITY,
+                  },
                 },
                 twoYearAgo,
               ],
@@ -907,7 +964,11 @@ function getQueryAgeOfItems(sum = false) {
             {
               $gt: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: {
+                    date: '$storageDate',
+                    format: '%d/%m/%Y',
+                    timezone: TIMEZONE_HCM_CITY,
+                  },
                 },
                 threeYearAgo,
               ],
@@ -925,7 +986,11 @@ function getQueryAgeOfItems(sum = false) {
             {
               $lte: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: {
+                    date: '$storageDate',
+                    format: '%d/%m/%Y',
+                    timezone: TIMEZONE_HCM_CITY,
+                  },
                 },
                 threeYearAgo,
               ],
@@ -933,7 +998,11 @@ function getQueryAgeOfItems(sum = false) {
             {
               $gt: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: {
+                    date: '$storageDate',
+                    format: '%d/%m/%Y',
+                    timezone: TIMEZONE_HCM_CITY,
+                  },
                 },
                 fourYearAgo,
               ],
@@ -951,7 +1020,11 @@ function getQueryAgeOfItems(sum = false) {
             {
               $lte: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: {
+                    date: '$storageDate',
+                    format: '%d/%m/%Y',
+                    timezone: TIMEZONE_HCM_CITY,
+                  },
                 },
                 fourYearAgo,
               ],
@@ -959,7 +1032,11 @@ function getQueryAgeOfItems(sum = false) {
             {
               $gt: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: {
+                    date: '$storageDate',
+                    format: '%d/%m/%Y',
+                    timezone: TIMEZONE_HCM_CITY,
+                  },
                 },
                 fiveYearAgo,
               ],
@@ -977,7 +1054,11 @@ function getQueryAgeOfItems(sum = false) {
             {
               $lt: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: {
+                    date: '$storageDate',
+                    format: '%d/%m/%Y',
+                    timezone: TIMEZONE_HCM_CITY,
+                  },
                 },
                 fiveYearAgo,
               ],
