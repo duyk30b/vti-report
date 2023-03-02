@@ -646,6 +646,8 @@ export class SyncService {
             exportedQuantity: lot?.actualQuantity,
             locatorName: null,
             locatorCode: null,
+            storageCost: Number(lot?.price || 0),
+            amount: Number(lot?.amount || 0),
           };
           orderItemLots.push(reportOrderItemLot);
         }
