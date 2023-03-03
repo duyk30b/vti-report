@@ -2,7 +2,7 @@ import { formatMoney } from '@constant/common';
 import { InventoryModel } from '@models/inventory.model';
 import { TableData } from '@models/report.model';
 import { DailyLotLocatorStock } from '@schemas/daily-lot-locator-stock.schema';
-import { divBigNumber, mulBigNumber } from '@utils/common';
+import { div, divBigNumber, mulBigNumber, plus } from '@utils/common';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
 
@@ -35,7 +35,6 @@ export function getInventoryDataMapping(
 
     const totalPrice = inforListItem[keyMapItem]?.price || 0;
     let averagePrice = 0;
-    let amount = 0;
     let stockQuantity = Number(cur.stockQuantity) || 0;
     let totalAmount = 0;
 
@@ -45,11 +44,10 @@ export function getInventoryDataMapping(
         inforListItem[keyMapItem]?.quantity,
       );
     }
-
-    if (listTransaction[keyMapLocator]?.quantity > 0) {
-      stockQuantity += listTransaction[keyMapLocator]?.stockQuantity;
-    }
-    totalAmount = mulBigNumber(averagePrice, stockQuantity);
+    const quantityTransaction =
+      Number(listTransaction[keyMapLocator]?.stockQuantity) || 0;
+    stockQuantity = plus(stockQuantity, quantityTransaction);
+    totalAmount = mulBigNumber(Number(averagePrice), stockQuantity);
     const data: InventoryModel = {
       index: 0,
       itemCode: cur.itemCode,
