@@ -8,7 +8,14 @@ import { ReportRequest } from '@requests/report.request';
 import { DailyWarehouseItemRequest } from '@requests/sync-daily.request';
 import { DailyLotLocatorStock } from '@schemas/daily-lot-locator-stock.schema';
 import { getTimezone } from '@utils/common';
-import { DATE_FOMAT, DATE_FOMAT_EXCELL, FORMAT_DATE, MONTHS, TIMEZONE_HCM_CITY, YEARS } from '@utils/constant';
+import {
+  DATE_FOMAT,
+  DATE_FOMAT_EXCELL,
+  FORMAT_DATE,
+  MONTHS,
+  TIMEZONE_HCM_CITY,
+  YEARS,
+} from '@utils/constant';
 import * as moment from 'moment';
 import { Model } from 'mongoose';
 @Injectable()
@@ -49,13 +56,21 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       $and: [{}],
     };
 
+    if (request?.dateFrom)
+      request.dateFrom = getTimezone(request?.dateFrom, FORMAT_DATE);
     if (request?.dateFrom == getTimezone(undefined, FORMAT_DATE)) {
       const prevDate = new Date(request?.dateFrom);
       prevDate.setDate(prevDate.getDate() - 1);
       condition['$and'].push({
         $expr: {
           $eq: [
-            { $dateToString: { date: '$reportDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY } },
+            {
+              $dateToString: {
+                date: '$reportDate',
+                format: '%Y-%m-%d',
+                timezone: TIMEZONE_HCM_CITY,
+              },
+            },
             moment(prevDate).format(DATE_FOMAT),
           ],
         },
@@ -64,7 +79,13 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       condition['$and'].push({
         $expr: {
           $eq: [
-            { $dateToString: { date: '$reportDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY } },
+            {
+              $dateToString: {
+                date: '$reportDate',
+                format: '%Y-%m-%d',
+                timezone: TIMEZONE_HCM_CITY,
+              },
+            },
             moment(request?.dateFrom).format(DATE_FOMAT),
           ],
         },
@@ -78,12 +99,60 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       condition['$and'].push({
         warehouseCode: { $eq: request?.warehouseCode },
       });
-
-    return this.dailyLotLocatorStock
-      .find({ condition: condition })
-      .sort({ warehouseCode: 1, itemCode: 1, lotNumber: 1, stockQuantity: 1 })
-      .setOptions({ allowDiskUse: true })
-      .lean();
+    return this.dailyLotLocatorStock.aggregate([
+      { $match: condition },
+      {
+        $project: {
+          _id: 0,
+          companyCode: 1,
+          warehouseCode: 1,
+          warehouseName: 1,
+          itemCode: 1,
+          itemName: 1,
+          unit: 1,
+          lotNumber: 1,
+          locatorCode: 1,
+          stockQuantity: 1,
+        },
+      },
+      {
+        $group: {
+          _id: {
+            companyCode: '$companyCode',
+            warehouseCode: '$warehouseCode',
+            warehouseName: '$warehouseName',
+            itemName: '$itemName',
+            unit: '$unit',
+            lotNumber: '$lotNumber',
+            itemCode: '$itemCode',
+            locatorCode: '$locatorCode',
+          },
+          stockQuantity: { $sum: '$stockQuantity' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          companyCode: '$_id.companyCode',
+          warehouseCode: '$_id.warehouseCode',
+          warehouseName: '$_id.warehouseName',
+          itemCode: '$_id.itemCode',
+          itemName: '$_id.itemName',
+          unit: '$_id.unit',
+          lotNumber: '$_id.lotNumber',
+          locatorCode: '$_id.locatorCode',
+          stockQuantity: 1,
+        },
+      },
+      {
+        $sort: {
+          warehouseCode: 1,
+          itemCode: 1,
+          lotNumber: 1,
+          stockQuantity: 1,
+        },
+      },
+    ]);
   }
 
   async getReportItemInventory(request: ReportRequest): Promise<any[]> {
@@ -115,7 +184,11 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
           {
             $eq: [
               {
-                $dateToString: { date: '$reportDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+                $dateToString: {
+                  date: '$reportDate',
+                  format: '%Y-%m-%d',
+                  timezone: TIMEZONE_HCM_CITY,
+                },
               },
               dateFromSubtractOne,
             ],
@@ -129,7 +202,11 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
           {
             $eq: [
               {
-                $dateToString: { date: '$reportDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+                $dateToString: {
+                  date: '$reportDate',
+                  format: '%Y-%m-%d',
+                  timezone: TIMEZONE_HCM_CITY,
+                },
               },
               moment(request?.dateTo).format(DATE_FOMAT),
             ],
@@ -154,7 +231,11 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
           {
             $eq: [
               {
-                $dateToString: { date: '$reportDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+                $dateToString: {
+                  date: '$reportDate',
+                  format: '%Y-%m-%d',
+                  timezone: TIMEZONE_HCM_CITY,
+                },
               },
               moment(prevDate).format(DATE_FOMAT) as any,
             ],
@@ -168,7 +249,11 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
           {
             $eq: [
               {
-                $dateToString: { date: '$reportDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+                $dateToString: {
+                  date: '$reportDate',
+                  format: '%Y-%m-%d',
+                  timezone: TIMEZONE_HCM_CITY,
+                },
               },
               moment(prevDate).format(DATE_FOMAT),
             ],
@@ -182,7 +267,11 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
         $expr: {
           $eq: [
             {
-              $dateToString: { date: '$reportDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+              $dateToString: {
+                date: '$reportDate',
+                format: '%Y-%m-%d',
+                timezone: TIMEZONE_HCM_CITY,
+              },
             },
             moment(prevDate).format(DATE_FOMAT),
           ],
@@ -192,7 +281,11 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
         $expr: {
           $eq: [
             {
-              $dateToString: { date: '$reportDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+              $dateToString: {
+                date: '$reportDate',
+                format: '%Y-%m-%d',
+                timezone: TIMEZONE_HCM_CITY,
+              },
             },
             moment(prevDate).format(DATE_FOMAT),
           ],
@@ -204,7 +297,11 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
           {
             $eq: [
               {
-                $dateToString: { date: '$reportDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+                $dateToString: {
+                  date: '$reportDate',
+                  format: '%Y-%m-%d',
+                  timezone: TIMEZONE_HCM_CITY,
+                },
               },
               moment(prevDate).format(DATE_FOMAT) as any,
             ],
@@ -219,7 +316,11 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
         $expr: {
           $eq: [
             {
-              $dateToString: { date: '$reportDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+              $dateToString: {
+                date: '$reportDate',
+                format: '%Y-%m-%d',
+                timezone: TIMEZONE_HCM_CITY,
+              },
             },
             moment(prevDate).format(DATE_FOMAT),
           ],
@@ -230,7 +331,11 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
         $expr: {
           $eq: [
             {
-              $dateToString: { date: '$reportDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+              $dateToString: {
+                date: '$reportDate',
+                format: '%Y-%m-%d',
+                timezone: TIMEZONE_HCM_CITY,
+              },
             },
             moment(request?.dateTo).format(DATE_FOMAT),
           ],
@@ -242,7 +347,11 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
           {
             $eq: [
               {
-                $dateToString: { date: '$reportDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+                $dateToString: {
+                  date: '$reportDate',
+                  format: '%Y-%m-%d',
+                  timezone: TIMEZONE_HCM_CITY,
+                },
               },
               moment(dateFromSubtractOne).format(DATE_FOMAT) as any,
             ],
@@ -256,7 +365,11 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
           {
             $eq: [
               {
-                $dateToString: { date: '$reportDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+                $dateToString: {
+                  date: '$reportDate',
+                  format: '%Y-%m-%d',
+                  timezone: TIMEZONE_HCM_CITY,
+                },
               },
               moment(prevDate).format(DATE_FOMAT),
             ],
@@ -271,7 +384,11 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
         $expr: {
           $eq: [
             {
-              $dateToString: { date: '$reportDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+              $dateToString: {
+                date: '$reportDate',
+                format: '%Y-%m-%d',
+                timezone: TIMEZONE_HCM_CITY,
+              },
             },
             dateFromSubtractOne,
           ],
@@ -282,7 +399,11 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
         $expr: {
           $eq: [
             {
-              $dateToString: { date: '$reportDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+              $dateToString: {
+                date: '$reportDate',
+                format: '%Y-%m-%d',
+                timezone: TIMEZONE_HCM_CITY,
+              },
             },
             moment(prevDate).format(DATE_FOMAT),
           ],
@@ -294,7 +415,11 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
         $expr: {
           $eq: [
             {
-              $dateToString: { date: '$reportDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+              $dateToString: {
+                date: '$reportDate',
+                format: '%Y-%m-%d',
+                timezone: TIMEZONE_HCM_CITY,
+              },
             },
             moment(dateFromSubtractOne).format(DATE_FOMAT),
           ],
@@ -305,7 +430,11 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
         $expr: {
           $eq: [
             {
-              $dateToString: { date: '$reportDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+              $dateToString: {
+                date: '$reportDate',
+                format: '%Y-%m-%d',
+                timezone: TIMEZONE_HCM_CITY,
+              },
             },
             moment(request.dateTo).format(DATE_FOMAT),
           ],
@@ -444,7 +573,13 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       condition['$and'].push({
         $expr: {
           $eq: [
-            { $dateToString: { date: '$reportDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY } },
+            {
+              $dateToString: {
+                date: '$reportDate',
+                format: '%d/%m/%Y',
+                timezone: TIMEZONE_HCM_CITY,
+              },
+            },
             moment(prevDate).format(DATE_FOMAT_EXCELL),
           ],
         },
@@ -453,7 +588,13 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       condition['$and'].push({
         $expr: {
           $eq: [
-            { $dateToString: { date: '$reportDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY } },
+            {
+              $dateToString: {
+                date: '$reportDate',
+                format: '%d/%m/%Y',
+                timezone: TIMEZONE_HCM_CITY,
+              },
+            },
             moment(request?.dateFrom).format(DATE_FOMAT_EXCELL),
           ],
         },
@@ -532,19 +673,52 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
               warehouseName: '$warehouseName',
               itemCode: '$itemCode',
               itemName: '$itemName',
+              origin: '$origin',
+              account: '$account',
+              lotNumber: '$lotNumber',
+              locatorCode: '$locatorCode',
+              unit: '$unit',
+              storageCost: '$storageCost',
+              storageDate: {
+                $dateToString: {
+                  format: '%d/%m/%Y',
+                  date: '$storageDate',
+                  timezone: TIMEZONE_HCM_CITY,
+                },
+              },
+            },
+            stockQuantity: { $sum: '$stockQuantity' },
+            totalPrice: { $first: '$totalPrice' },
+            sixMonthAgo: { $first: '$sixMonthAgo' },
+            oneYearAgo: { $first: '$oneYearAgo' },
+            twoYearAgo: { $first: '$twoYearAgo' },
+            threeYearAgo: { $first: '$threeYearAgo' },
+            fourYearAgo: { $first: '$fourYearAgo' },
+            fiveYearAgo: { $first: '$fiveYearAgo' },
+            greaterfiveYear: { $first: '$greaterfiveYear' },
+          },
+        },
+        {
+          $group: {
+            _id: {
+              companyCode: '$_id.companyCode',
+              companyName: '$_id.companyName',
+              companyAddress: '$_id.companyAddress',
+              warehouseCode: '$_id.warehouseCode',
+              warehouseName: '$_id.warehouseName',
+              itemCode: '$_id.itemCode',
+              itemName: '$_id.itemName',
             },
             groupByStorageDate: {
               $push: {
-                storageDate: {
-                  $dateToString: { format: '%d/%m/%Y', date: '$storageDate', timezone: TIMEZONE_HCM_CITY },
-                },
-                origin: '$origin',
-                account: '$account',
-                lotNumber: '$lotNumber',
-                locatorCode: '$locatorCode',
-                unit: '$unit',
+                storageDate: '$_id.storageDate',
+                origin: '$_id.origin',
+                account: '$_id.account',
+                lotNumber: '$_id.lotNumber',
+                locatorCode: '$_id.locatorCode',
+                unit: '$_id.unit',
                 stockQuantity: '$stockQuantity',
-                storageCost: '$storageCost',
+                storageCost: '$_id.storageCost',
                 totalPrice: '$totalPrice',
                 sixMonthAgo: '$sixMonthAgo',
                 oneYearAgo: '$oneYearAgo',
@@ -690,7 +864,11 @@ function getQueryAgeOfItems(sum = false) {
         {
           $gt: [
             {
-              $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
+              $dateToString: {
+                date: '$storageDate',
+                format: '%d/%m/%Y',
+                timezone: TIMEZONE_HCM_CITY,
+              },
             },
             sixMonthAgo,
           ],
@@ -706,7 +884,11 @@ function getQueryAgeOfItems(sum = false) {
             {
               $lte: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: {
+                    date: '$storageDate',
+                    format: '%d/%m/%Y',
+                    timezone: TIMEZONE_HCM_CITY,
+                  },
                 },
                 sixMonthAgo,
               ],
@@ -714,7 +896,11 @@ function getQueryAgeOfItems(sum = false) {
             {
               $gt: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: {
+                    date: '$storageDate',
+                    format: '%d/%m/%Y',
+                    timezone: TIMEZONE_HCM_CITY,
+                  },
                 },
                 oneYearAgo,
               ],
@@ -732,7 +918,11 @@ function getQueryAgeOfItems(sum = false) {
             {
               $lte: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: {
+                    date: '$storageDate',
+                    format: '%d/%m/%Y',
+                    timezone: TIMEZONE_HCM_CITY,
+                  },
                 },
                 oneYearAgo,
               ],
@@ -740,7 +930,11 @@ function getQueryAgeOfItems(sum = false) {
             {
               $gt: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: {
+                    date: '$storageDate',
+                    format: '%d/%m/%Y',
+                    timezone: TIMEZONE_HCM_CITY,
+                  },
                 },
                 twoYearAgo,
               ],
@@ -758,7 +952,11 @@ function getQueryAgeOfItems(sum = false) {
             {
               $lte: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: {
+                    date: '$storageDate',
+                    format: '%d/%m/%Y',
+                    timezone: TIMEZONE_HCM_CITY,
+                  },
                 },
                 twoYearAgo,
               ],
@@ -766,7 +964,11 @@ function getQueryAgeOfItems(sum = false) {
             {
               $gt: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: {
+                    date: '$storageDate',
+                    format: '%d/%m/%Y',
+                    timezone: TIMEZONE_HCM_CITY,
+                  },
                 },
                 threeYearAgo,
               ],
@@ -784,7 +986,11 @@ function getQueryAgeOfItems(sum = false) {
             {
               $lte: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: {
+                    date: '$storageDate',
+                    format: '%d/%m/%Y',
+                    timezone: TIMEZONE_HCM_CITY,
+                  },
                 },
                 threeYearAgo,
               ],
@@ -792,7 +998,11 @@ function getQueryAgeOfItems(sum = false) {
             {
               $gt: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: {
+                    date: '$storageDate',
+                    format: '%d/%m/%Y',
+                    timezone: TIMEZONE_HCM_CITY,
+                  },
                 },
                 fourYearAgo,
               ],
@@ -810,7 +1020,11 @@ function getQueryAgeOfItems(sum = false) {
             {
               $lte: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: {
+                    date: '$storageDate',
+                    format: '%d/%m/%Y',
+                    timezone: TIMEZONE_HCM_CITY,
+                  },
                 },
                 fourYearAgo,
               ],
@@ -818,7 +1032,11 @@ function getQueryAgeOfItems(sum = false) {
             {
               $gt: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: {
+                    date: '$storageDate',
+                    format: '%d/%m/%Y',
+                    timezone: TIMEZONE_HCM_CITY,
+                  },
                 },
                 fiveYearAgo,
               ],
@@ -836,7 +1054,11 @@ function getQueryAgeOfItems(sum = false) {
             {
               $lt: [
                 {
-                  $dateToString: { date: '$storageDate', format: '%d/%m/%Y', timezone: TIMEZONE_HCM_CITY },
+                  $dateToString: {
+                    date: '$storageDate',
+                    format: '%d/%m/%Y',
+                    timezone: TIMEZONE_HCM_CITY,
+                  },
                 },
                 fiveYearAgo,
               ],

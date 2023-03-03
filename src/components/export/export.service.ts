@@ -60,7 +60,7 @@ import { getSituationTransferMapped } from '@mapping/common/age-of-item-mapped';
 import { TransactionItemRepository } from '@repositories/transaction-item.repository';
 import { UserService } from '@components/user/user.service';
 import { WarehouseServiceInterface } from '@components/warehouse/interface/warehouse.service.interface';
-import { getTimezone, minus } from '@utils/common';
+import { getTimezone, minus, minusBigNumber } from '@utils/common';
 import { FORMAT_DATE } from '@utils/constant';
 import { formatDate, readDecimal } from '@constant/common';
 import { keyBy, compact, isEmpty, concat } from 'lodash';
@@ -651,23 +651,37 @@ export class ExportService {
   }
 
   async reportInventory(request: ReportRequest): Promise<ReportResponse> {
+    const dateFrom = request?.dateFrom;
     const data = await this.dailyLotLocatorStockRepository.getReports(request);
-    const listItemCode = [];
     const listKey = [];
     const reportInventories = [];
     data.forEach((item) => {
-      const keyMap = `${item?.itemCode}-${item?.lotNumber || 'null'}-${
-        item?.warehouseCode
-      }`;
-      if (!listKey.includes(keyMap)) {
-        listKey.push(keyMap);
-        reportInventories.push(item);
-        listItemCode.push(item?.itemCode);
-      }
+      const keyMap = `${item.warehouseCode}-${item?.lotNumber || 'null'}-${
+        item.itemCode
+      }-${item.companyCode}-${item?.locatorCode}-${item?.companyCode}`;
+      listKey.push(keyMap);
     });
     const dataItemTransaction =
-      await this.transactionItemRepository.getByDateItemCode(request, listKey);
-    const dataItem = concat(reportInventories, dataItemTransaction);
+      await this.transactionItemRepository.getTransactionByDate(request);
+
+    const listTransaction = dataItemTransaction.map((item) => {
+      const key = `${item.warehouseCode}-${item?.lotNumber || 'null'}-${
+        item.itemCode
+      }-${item.companyCode}-${item?.locatorCode}-${item?.companyCode}`;
+      const transaction = {
+        ...item,
+        stockQuantity: minusBigNumber(
+          item?.quantityImported,
+          item?.quantityExported,
+        ),
+        key: key,
+      };
+      if (Number(transaction?.stockQuantity) > 0) {
+        if (!listKey.includes(key)) reportInventories.push(transaction);
+        return transaction;
+      }
+    });
+    const dataItem = concat(data, reportInventories);
     const inforListItem =
       await this.dailyItemWarehouseStockPriceRepository.getInforItemStock(
         request,
@@ -681,11 +695,14 @@ export class ExportService {
       };
     });
     const inforListItemMap = keyBy(inforListItemKey, 'key');
+    const listTransactionMap = keyBy(listTransaction, 'key');
     const dataMaped = getInventoryDataMapping(
       dataItem,
       this.i18n,
       inforListItemMap,
+      listTransactionMap,
     );
+    request.dateFrom = dateFrom;
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } = await reportInventoryExcelMapping(

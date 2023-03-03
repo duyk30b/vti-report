@@ -4,8 +4,9 @@ export interface InventoryModel {
   itemName: string;
   unit: string;
   lotNumber: string;
-  stockQuantity: number | string;
+  manufacturingCountry: string;
   locatorCode: string;
+  stockQuantity: number | string;
   storageCost: number | string;
   totalPrice: number | string;
 }

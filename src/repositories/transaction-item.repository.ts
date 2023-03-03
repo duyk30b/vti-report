@@ -461,6 +461,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
       });
 
     if (request?.dateFrom) {
+      request.dateFrom = getTimezone(request?.dateFrom, FORMAT_DATE);
       condition['$and'].push({
         $expr: {
           $gte: [
@@ -526,6 +527,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           },
           quantityExported: { $sum: '$quantityExported' },
           quantityImported: { $sum: '$quantityImported' },
+          warehouseName: { $first: '$warehouseName' },
         },
       },
       {
@@ -542,6 +544,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           orderCode: '$_id.orderCode',
           quantityExported: 1,
           quantityImported: 1,
+          warehouseName: 1,
         },
       },
       {
@@ -723,6 +726,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           itemName: 1,
           unit: 1,
           lotNumber: 1,
+          locatorCode: 1,
           keyMap: {
             $concat: [
               '$itemCode',
@@ -744,6 +748,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
             unit: '$unit',
             lotNumber: '$lotNumber',
             itemCode: '$itemCode',
+            locatorCode: '$locatorCode',
             keyMap: '$keyMap',
           },
         },
@@ -758,6 +763,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           itemName: '$_id.itemName',
           unit: '$_id.unit',
           lotNumber: '$_id.lotNumber',
+          locatorCode: '$_id.locatorCode',
           keyMap: '$_id.keyMap',
         },
       },

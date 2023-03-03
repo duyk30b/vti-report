@@ -39,6 +39,8 @@ export class DailyItemWarehouseStockPriceRepository extends BaseAbstractReposito
       $and: [{}],
     };
 
+    if (request?.dateFrom)
+      request.dateFrom = getTimezone(request?.dateFrom, FORMAT_DATE);
     if (request?.dateFrom == getTimezone(undefined, FORMAT_DATE)) {
       const prevDate = new Date(request?.dateFrom);
       prevDate.setDate(prevDate.getDate() - 1);
@@ -82,6 +84,7 @@ export class DailyItemWarehouseStockPriceRepository extends BaseAbstractReposito
           price: 1,
           amount: 1,
           reportDate: 1,
+          manufacturingCountry: 1,
         },
       },
       {
@@ -92,6 +95,7 @@ export class DailyItemWarehouseStockPriceRepository extends BaseAbstractReposito
             itemCode: '$itemCode',
             lotNumber: '$lotNumber',
           },
+          manufacturingCountry: { $first: '$manufacturingCountry' },
           quantity: { $first: '$quantity' },
           price: { $first: '$price' },
           amount: { $first: '$amount' },
@@ -108,6 +112,7 @@ export class DailyItemWarehouseStockPriceRepository extends BaseAbstractReposito
           price: 1,
           amount: 1,
           reportDate: 1,
+          manufacturingCountry: 1,
         },
       },
     ]);
