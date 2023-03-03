@@ -527,6 +527,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           },
           quantityExported: { $sum: '$quantityExported' },
           quantityImported: { $sum: '$quantityImported' },
+          warehouseName: { $first: '$warehouseName' },
         },
       },
       {
@@ -543,6 +544,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           orderCode: '$_id.orderCode',
           quantityExported: 1,
           quantityImported: 1,
+          warehouseName: 1,
         },
       },
       {
