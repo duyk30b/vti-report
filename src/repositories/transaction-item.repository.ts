@@ -518,7 +518,6 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           _id: {
             companyCode: '$companyCode',
             warehouseCode: '$warehouseCode',
-            warehouseName: '$warehouseName',
             itemCode: '$itemCode',
             itemName: '$itemName',
             locatorCode: '$locatorCode',
@@ -529,6 +528,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           },
           quantityExported: { $sum: '$quantityExported' },
           quantityImported: { $sum: '$quantityImported' },
+          warehouseName: { $first: '$warehouseName' },
         },
       },
       {
@@ -536,7 +536,6 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           _id: 0,
           companyCode: '$_id.companyCode',
           warehouseCode: '$_id.warehouseCode',
-          warehouseName: '$_id.warehouseName',
           itemCode: '$_id.itemCode',
           itemName: '$_id.itemName',
           locatorCode: '$_id.locatorCode',
@@ -546,6 +545,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           orderCode: '$_id.orderCode',
           quantityExported: 1,
           quantityImported: 1,
+          warehouseName: 1,
         },
       },
       {
