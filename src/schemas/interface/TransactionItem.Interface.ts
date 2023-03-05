@@ -6,4 +6,5 @@ export interface TransactionItemInterface extends ReportOrderItemLotInteface {
   orderDetailId: number;
   transactionDate: Date;
   movementType: number;
+  manufacturingCountry: string;
 }
