@@ -684,7 +684,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
     ]);
   }
 
-  async getByDateItemCode(request: ReportRequest, listItemCode: any[]) {
+  async getByDateItemCode(request: ReportRequest) {
     const condition = {
       $and: [],
     };
@@ -727,13 +727,23 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           unit: 1,
           lotNumber: 1,
           locatorCode: 1,
-          keyMap: {
-            $concat: [
-              '$itemCode',
-              '-',
-              { $ifNull: ['$lotNumber', 'null'] },
-              '-',
-              '$warehouseCode',
+          manufacturingCountry: 1,
+          quantityExported: {
+            $cond: [
+              {
+                $eq: ['$actionType', ActionType.EXPORT],
+              },
+              '$actualQuantity',
+              0,
+            ],
+          },
+          quantityImported: {
+            $cond: [
+              {
+                $and: [{ $eq: ['$actionType', ActionType.IMPORT] }],
+              },
+              '$actualQuantity',
+              0,
             ],
           },
         },
@@ -743,14 +753,16 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           _id: {
             companyCode: '$companyCode',
             warehouseCode: '$warehouseCode',
-            warehouseName: '$warehouseName',
             itemName: '$itemName',
             unit: '$unit',
             lotNumber: '$lotNumber',
             itemCode: '$itemCode',
             locatorCode: '$locatorCode',
-            keyMap: '$keyMap',
+            manufacturingCountry: '$manufacturingCountry',
           },
+          quantityExported: { $sum: '$quantityExported' },
+          quantityImported: { $sum: '$quantityImported' },
+          warehouseName: { $first: '$warehouseName' },
         },
       },
       {
@@ -758,18 +770,16 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           _id: 0,
           companyCode: '$_id.companyCode',
           warehouseCode: '$_id.warehouseCode',
-          warehouseName: '$_id.warehouseName',
           itemCode: '$_id.itemCode',
           itemName: '$_id.itemName',
           unit: '$_id.unit',
           lotNumber: '$_id.lotNumber',
           locatorCode: '$_id.locatorCode',
           keyMap: '$_id.keyMap',
-        },
-      },
-      {
-        $match: {
-          keyMap: { $nin: listItemCode },
+          manufacturingCountry: '$_id.manufacturingCountry',
+          warehouseName: 1,
+          quantityExported: 1,
+          quantityImported: 1,
         },
       },
     ]);

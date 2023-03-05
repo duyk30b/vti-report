@@ -651,7 +651,7 @@ export class ExportService {
   }
 
   async reportInventory(request: ReportRequest): Promise<ReportResponse> {
-    const dateFrom = request?.dateFrom;
+    const dateFrom = request.dateFrom;
     const data = await this.dailyLotLocatorStockRepository.getReports(request);
     const listKey = [];
     const reportInventories = [];
@@ -662,7 +662,7 @@ export class ExportService {
       listKey.push(keyMap);
     });
     const dataItemTransaction =
-      await this.transactionItemRepository.getTransactionByDate(request);
+      await this.transactionItemRepository.getByDateItemCode(request);
 
     const listTransaction = dataItemTransaction.map((item) => {
       const key = `${item.warehouseCode}-${item?.lotNumber || 'null'}-${
@@ -676,8 +676,8 @@ export class ExportService {
         ),
         key: key,
       };
-      if (Number(transaction?.stockQuantity) > 0) {
-        if (!listKey.includes(key)) reportInventories.push(transaction);
+      if (!listKey.includes(key)) reportInventories.push(transaction);
+      else {
         return transaction;
       }
     });
@@ -694,6 +694,7 @@ export class ExportService {
         }-${item.companyCode}`,
       };
     });
+
     const inforListItemMap = keyBy(inforListItemKey, 'key');
     const listTransactionMap = keyBy(listTransaction, 'key');
     const dataMaped = getInventoryDataMapping(
@@ -703,6 +704,7 @@ export class ExportService {
       listTransactionMap,
     );
     request.dateFrom = dateFrom;
+
     switch (request.exportType) {
       case ExportType.EXCEL:
         const { nameFile, dataBase64 } = await reportInventoryExcelMapping(
