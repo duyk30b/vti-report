@@ -63,7 +63,13 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
       condition['$and'].push({
         $expr: {
           $eq: [
-            { $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY } },
+            {
+              $dateToString: {
+                date: '$orderCreatedAt',
+                format: '%Y-%m-%d',
+                timezone: TIMEZONE_HCM_CITY,
+              },
+            },
             moment(request?.dateFrom).format(DATE_FOMAT),
           ],
         },
@@ -74,7 +80,11 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
           $expr: {
             $gte: [
               {
-                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+                $dateToString: {
+                  date: '$orderCreatedAt',
+                  format: '%Y-%m-%d',
+                  timezone: TIMEZONE_HCM_CITY,
+                },
               },
               moment(request?.dateFrom).format(DATE_FOMAT),
             ],
@@ -86,7 +96,11 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
           $expr: {
             $lte: [
               {
-                $dateToString: { date: '$orderCreatedAt', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY },
+                $dateToString: {
+                  date: '$orderCreatedAt',
+                  format: '%Y-%m-%d',
+                  timezone: TIMEZONE_HCM_CITY,
+                },
               },
               moment(request?.dateTo).format(DATE_FOMAT),
             ],
@@ -186,9 +200,7 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
       .find(condition)
       .sort({
         warehouseCode: -1,
-        orderCode: -1,
-        itemCode: -1,
-        warehouseExportProposals: -1,
+        orderCreatedAt: -1,
       })
       .lean();
   }
