@@ -882,6 +882,7 @@ export class SyncService {
           companyCode: request?.company?.code,
           companyName: request?.company?.name,
           companyAddress: request?.company?.address,
+          manufacturingCountry: item.manufacturingCountry,
         } as any;
         transactionitems.push(temp);
       }
