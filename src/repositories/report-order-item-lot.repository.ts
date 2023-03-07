@@ -663,6 +663,7 @@ function reportSituationExport(
           constructionName: '$constructionName',
           departmentReceiptName: '$departmentReceiptName',
           explain: '$explain',
+          ebsNumber: '$ebsNumber',
         },
         items: {
           $push: {
@@ -717,6 +718,7 @@ function reportSituationExport(
         orders: {
           $push: {
             orderCode: '$_id.orderCode',
+            ebsNumber: '$_id.ebsNumber',
             orderCreatedAt: '$_id.orderCreatedAt',
             contract: '$_id.contract',
             constructionName: '$_id.constructionName',
@@ -832,6 +834,7 @@ function reportSituationImport(
           providerName: '$providerName',
           departmentReceiptName: '$departmentReceiptName',
           explain: '$explain',
+          ebsNumber: '$ebsNumber',
         },
         items: {
           $push: {
@@ -887,6 +890,7 @@ function reportSituationImport(
               if: { $gt: [{ $size: '$items' }, 0] },
               then: {
                 orderCode: '$_id.orderCode',
+                ebsNumber: '$_id.ebsNumber',
                 orderCreatedAt: '$_id.orderCreatedAt',
                 contract: '$_id.contract',
                 constructionName: '$_id.constructionName',
@@ -987,6 +991,7 @@ function reportSituationTransfer(
           warehouseTargetName: '$warehouseTargetName',
           warehouseTargetCode: '$warehouseTargetCode',
           explain: '$explain',
+          ebsNumber: '$ebsNumber',
         },
         items: {
           $push: {
@@ -1033,6 +1038,7 @@ function reportSituationTransfer(
         orders: {
           $push: {
             orderCode: '$_id.orderCode',
+            ebsNumber: '$_id.ebsNumber',
             orderCreatedAt: '$_id.orderCreatedAt',
             totalPrice: { $sum: '$items.totalPrice' },
             warehouseImport: {
