@@ -1,7 +1,8 @@
-import { formatDate, formatMoney } from '@constant/common';
+import { formatMoney } from '@constant/common';
 import { TableDataSituationTransfer } from '@models/situation-transfer.model';
 import { plus, plusBigNumber } from '@utils/common';
 import {
+  DATE_FOMAT_EXCELL,
   FONT_NAME,
   SITUATION_TRANSFER_COLUMNS,
   WORD_FILE_CONFIG,
@@ -20,6 +21,7 @@ import {
 } from 'docx';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { setHeight, setWidth, wordFileStyle } from './word-common.styles';
+import * as moment from 'moment';
 export async function generateReportSituationTransfer(
   dataWord: TableDataSituationTransfer[],
   companyName,
@@ -208,7 +210,7 @@ export async function generateReportSituationTransfer(
                           height: setHeight(WORD_FILE_CONFIG.TABLE_ROW_HEIGHT),
                           children: [
                             new TableCell({
-                              columnSpan: 4,
+                              columnSpan: 5,
                               children: [],
                             }),
                             new TableCell({
@@ -409,8 +411,24 @@ export async function generateReportSituationTransfer(
                                   alignment: AlignmentType.CENTER,
                                   children: [
                                     new TextRun({
+                                      text: order.ebsNumber || '',
+                                      ...wordFileStyle.text_style,
+                                    }),
+                                  ],
+                                }),
+                              ],
+                            }),
+                            new TableCell({
+                              verticalAlign: VerticalAlign.CENTER,
+                              children: [
+                                new Paragraph({
+                                  alignment: AlignmentType.CENTER,
+                                  children: [
+                                    new TextRun({
                                       text:
-                                        formatDate(order?.orderCreatedAt) || '',
+                                        moment(order.orderCreatedAt).format(
+                                          DATE_FOMAT_EXCELL,
+                                        ) || '',
                                       ...wordFileStyle.text_style,
                                     }),
                                   ],
@@ -474,7 +492,7 @@ export async function generateReportSituationTransfer(
                       height: setHeight(WORD_FILE_CONFIG.TABLE_ROW_HEIGHT),
                       children: [
                         new TableCell({
-                          columnSpan: 14,
+                          columnSpan: 15,
                           verticalAlign: VerticalAlign.CENTER,
                           margins: wordFileStyle.margin_left,
                           children: [
@@ -514,7 +532,7 @@ export async function generateReportSituationTransfer(
                 height: setHeight(WORD_FILE_CONFIG.TABLE_ROW_HEIGHT),
                 children: [
                   new TableCell({
-                    columnSpan: 14,
+                    columnSpan: 15,
                     verticalAlign: VerticalAlign.CENTER,
                     children: [
                       new Paragraph({

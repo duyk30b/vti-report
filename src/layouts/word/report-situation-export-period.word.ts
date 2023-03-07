@@ -219,7 +219,7 @@ export async function generateReportSituationExportPeriod(
                                 ),
                                 children: [
                                   new TableCell({
-                                    columnSpan: 5,
+                                    columnSpan: 6,
                                     children: [],
                                   }),
                                   new TableCell({
@@ -438,6 +438,21 @@ export async function generateReportSituationExportPeriod(
                                 }),
                                 new TableCell({
                                   verticalAlign: VerticalAlign.CENTER,
+                                  margins: wordFileStyle.margin_left,
+                                  children: [
+                                    new Paragraph({
+                                      alignment: AlignmentType.CENTER,
+                                      children: [
+                                        new TextRun({
+                                          text: order.ebsNumber || '',
+                                          ...wordFileStyle.text_style,
+                                        }),
+                                      ],
+                                    }),
+                                  ],
+                                }),
+                                new TableCell({
+                                  verticalAlign: VerticalAlign.CENTER,
                                   children: [
                                     new Paragraph({
                                       alignment: AlignmentType.CENTER,
@@ -534,7 +549,7 @@ export async function generateReportSituationExportPeriod(
                           height: setHeight(WORD_FILE_CONFIG.TABLE_ROW_HEIGHT),
                           children: [
                             new TableCell({
-                              columnSpan: 15,
+                              columnSpan: 16,
                               verticalAlign: VerticalAlign.CENTER,
                               margins: wordFileStyle.margin_left,
                               borders: wordFileStyle.border_right_none,
@@ -583,7 +598,7 @@ export async function generateReportSituationExportPeriod(
                       height: setHeight(WORD_FILE_CONFIG.TABLE_ROW_HEIGHT),
                       children: [
                         new TableCell({
-                          columnSpan: 15,
+                          columnSpan: 16,
                           verticalAlign: VerticalAlign.CENTER,
                           margins: wordFileStyle.margin_left,
                           borders: wordFileStyle.border_right_none,
@@ -629,7 +644,7 @@ export async function generateReportSituationExportPeriod(
                 height: setHeight(WORD_FILE_CONFIG.TABLE_ROW_HEIGHT),
                 children: [
                   new TableCell({
-                    columnSpan: 11,
+                    columnSpan: 12,
                     verticalAlign: VerticalAlign.BOTTOM,
                     children: [
                       new Paragraph({

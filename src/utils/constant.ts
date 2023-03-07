@@ -850,6 +850,11 @@ export const SITUATION_TRANSFER_COLUMNS: TableColumn[] = [
     rowSpan: 2,
   },
   {
+    name: 'ORDER_NUMBER_EBS',
+    width: 1,
+    rowSpan: 2,
+  },
+  {
     name: 'DATE',
     width: 0.8,
     rowSpan: 2,
@@ -929,6 +934,11 @@ export const SITUATION_IMPORT_PERIOD_COLUMNS: TableColumn[] = [
   },
   {
     name: 'POST',
+    width: 1.4,
+    rowSpan: 2,
+  },
+  {
+    name: 'ORDER_NUMBER_EBS',
     width: 1.4,
     rowSpan: 2,
   },
@@ -1031,6 +1041,11 @@ export const SITUATION_EXPORT_PERIOD_COLUMNS: TableColumn[] = [
   },
   {
     name: 'POST',
+    width: 1,
+    rowSpan: 2,
+  },
+  {
+    name: 'ORDER_NUMBER_EBS',
     width: 1,
     rowSpan: 2,
   },

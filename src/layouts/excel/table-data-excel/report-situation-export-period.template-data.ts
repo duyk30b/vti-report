@@ -1,4 +1,4 @@
-import { formatDate, formatMoney, readDecimal } from '@constant/common';
+import { formatMoney, readDecimal } from '@constant/common';
 import { TableDataSituationExportPeriod } from '@models/situation_export.model';
 import { plusBigNumber } from '@utils/common';
 import {
@@ -13,10 +13,12 @@ import {
   BORDER_T_L_B,
   ALIGNMENT_BOTTOM_LEFT,
   ALIGNMENT_BOTTOM_RIGHT,
+  FORMAT_DATE_EXCEL,
 } from '@utils/constant';
 import * as ExcelJS from 'exceljs';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { configCells, ConfigCells } from '../report-excel.layout';
+import * as moment from 'moment';
 export function reportSituationExportPeriodTemplateData(
   curRowIdx: number,
   worksheet: ExcelJS.Worksheet,
@@ -31,7 +33,7 @@ export function reportSituationExportPeriodTemplateData(
     cells.push(
       ...[
         {
-          nameCell: `A${curRowIdx}:K${curRowIdx}`,
+          nameCell: `A${curRowIdx}:L${curRowIdx}`,
           value: item.warehouseCode,
           font: FONT_BOLD_9,
           aligment: ALIGNMENT_LEFT,
@@ -43,7 +45,7 @@ export function reportSituationExportPeriodTemplateData(
           },
         },
         {
-          nameCell: `L${curRowIdx}:Q${curRowIdx}`,
+          nameCell: `M${curRowIdx}:R${curRowIdx}`,
           value: formatMoney(item.totalPrice) || '0',
           font: FONT_BOLD_9,
           aligment: ALIGNMENT_RIGHT,
@@ -58,7 +60,7 @@ export function reportSituationExportPeriodTemplateData(
       cells.push(
         ...[
           {
-            nameCell: `A${curRowIdx}:K${curRowIdx}`,
+            nameCell: `A${curRowIdx}:L${curRowIdx}`,
             value: i18n.translate('report.REASON') + reason.value,
             font: FONT_BOLD_9,
             aligment: ALIGNMENT_LEFT,
@@ -70,7 +72,7 @@ export function reportSituationExportPeriodTemplateData(
             },
           },
           {
-            nameCell: `L${curRowIdx}:Q${curRowIdx}`,
+            nameCell: `M${curRowIdx}:R${curRowIdx}`,
             value: formatMoney(reason.totalPrice) || '0',
             font: FONT_BOLD_9,
             aligment: ALIGNMENT_RIGHT,
@@ -100,27 +102,35 @@ export function reportSituationExportPeriodTemplateData(
             },
             {
               nameCell: `C${curRowIdx}`,
-              value: formatDate(order.orderCreatedAt) || '',
+              value: order.ebsNumber || '',
               font: FONT_NORMAL_9,
               aligment: ALIGNMENT_CENTER,
               border: BORDER,
             },
             {
               nameCell: `D${curRowIdx}`,
+              value:
+                moment(order.orderCreatedAt).format(FORMAT_DATE_EXCEL) || '',
+              font: FONT_NORMAL_9,
+              aligment: ALIGNMENT_CENTER,
+              border: BORDER,
+            },
+            {
+              nameCell: `E${curRowIdx}`,
               value: order.constructionName,
               font: FONT_NORMAL_9,
               aligment: ALIGNMENT_LEFT,
               border: BORDER,
             },
             {
-              nameCell: `E${curRowIdx}`,
+              nameCell: `F${curRowIdx}`,
               value: order.departmentReceiptName,
               font: FONT_NORMAL_9,
               aligment: ALIGNMENT_LEFT,
               border: BORDER,
             },
             {
-              nameCell: `F${curRowIdx}:K${curRowIdx}`,
+              nameCell: `G${curRowIdx}:L${curRowIdx}`,
               value: order.explain,
               font: FONT_NORMAL_9,
               aligment: ALIGNMENT_LEFT,
@@ -128,19 +138,19 @@ export function reportSituationExportPeriodTemplateData(
               merge: true,
             },
             {
-              nameCell: `N${curRowIdx}`,
+              nameCell: `O${curRowIdx}`,
               value: formatMoney(order.totalPrice) || '0',
               font: FONT_BOLD_9,
               aligment: ALIGNMENT_RIGHT,
               numFmt: '### ### ### ### ',
             },
             {
-              nameCell: `N${curRowIdx}:Q${curRowIdx}`,
+              nameCell: `O${curRowIdx}:R${curRowIdx}`,
               merge: true,
               border: BORDER_T_R_B,
             },
             {
-              nameCell: `L${curRowIdx}:M${curRowIdx}`,
+              nameCell: `M${curRowIdx}:N${curRowIdx}`,
               merge: true,
               border: BORDER_T_L_B,
             },
@@ -153,7 +163,7 @@ export function reportSituationExportPeriodTemplateData(
             cells.push(
               ...[
                 {
-                  nameCell: `A${curRowIdx}:E${curRowIdx}`,
+                  nameCell: `A${curRowIdx}:F${curRowIdx}`,
                   border: BORDER,
                   merge: true,
                   heightRow: {
@@ -162,7 +172,7 @@ export function reportSituationExportPeriodTemplateData(
                   },
                 },
                 {
-                  nameCell: `F${curRowIdx}:G${curRowIdx}`,
+                  nameCell: `G${curRowIdx}:H${curRowIdx}`,
                   value: item.itemCode,
                   font: FONT_BOLD_9,
                   aligment: ALIGNMENT_BOTTOM_LEFT,
@@ -170,42 +180,42 @@ export function reportSituationExportPeriodTemplateData(
                   merge: true,
                 },
                 {
-                  nameCell: `H${curRowIdx}`,
+                  nameCell: `I${curRowIdx}`,
                   value: item.itemName,
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_BOTTOM_LEFT,
                   border: BORDER,
                 },
                 {
-                  nameCell: `I${curRowIdx}`,
+                  nameCell: `J${curRowIdx}`,
                   value: item.lotNumber,
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_CENTER,
                   border: BORDER,
                 },
                 {
-                  nameCell: `J${curRowIdx}`,
+                  nameCell: `K${curRowIdx}`,
                   value: item.accountDebt + '.',
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_BOTTOM_LEFT,
                   border: BORDER,
                 },
                 {
-                  nameCell: `K${curRowIdx}`,
+                  nameCell: `L${curRowIdx}`,
                   value: item.accountHave,
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_BOTTOM_LEFT,
                   border: BORDER,
                 },
                 {
-                  nameCell: `L${curRowIdx}`,
+                  nameCell: `M${curRowIdx}`,
                   value: item.unit,
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_CENTER_BOTTOM,
                   border: BORDER,
                 },
                 {
-                  nameCell: `M${curRowIdx}`,
+                  nameCell: `N${curRowIdx}`,
                   value: readDecimal(item.planQuantity, true),
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_BOTTOM_RIGHT,
@@ -213,7 +223,7 @@ export function reportSituationExportPeriodTemplateData(
                   numFmt: '### ### ### ### ',
                 },
                 {
-                  nameCell: `N${curRowIdx}`,
+                  nameCell: `O${curRowIdx}`,
                   value: readDecimal(item.actualQuantity, true),
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_BOTTOM_RIGHT,
@@ -221,14 +231,14 @@ export function reportSituationExportPeriodTemplateData(
                   numFmt: '### ### ### ###',
                 },
                 {
-                  nameCell: `O${curRowIdx}`,
+                  nameCell: `P${curRowIdx}`,
                   value: item.locatorCode,
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_BOTTOM_RIGHT,
                   border: BORDER,
                 },
                 {
-                  nameCell: `P${curRowIdx}`,
+                  nameCell: `Q${curRowIdx}`,
                   value: formatMoney(item.storageCost, 2) || '0,00',
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_BOTTOM_RIGHT,
@@ -236,7 +246,7 @@ export function reportSituationExportPeriodTemplateData(
                   numFmt: '### ### ### ###',
                 },
                 {
-                  nameCell: `Q${curRowIdx}`,
+                  nameCell: `R${curRowIdx}`,
                   value: formatMoney(item.totalPrice) || '0',
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_BOTTOM_RIGHT,
@@ -255,7 +265,7 @@ export function reportSituationExportPeriodTemplateData(
   cells.push(
     ...[
       {
-        nameCell: `A${curRowIdx}:K${curRowIdx}`,
+        nameCell: `A${curRowIdx}:L${curRowIdx}`,
         value: 'TOTAL',
         font: FONT_BOLD_9,
         aligment: ALIGNMENT_CENTER,
@@ -264,7 +274,7 @@ export function reportSituationExportPeriodTemplateData(
         translate: true,
       },
       {
-        nameCell: `L${curRowIdx}:Q${curRowIdx}`,
+        nameCell: `M${curRowIdx}:R${curRowIdx}`,
         value: formatMoney(totalPriceAll) || '0',
         font: FONT_BOLD_9,
         aligment: ALIGNMENT_RIGHT,
