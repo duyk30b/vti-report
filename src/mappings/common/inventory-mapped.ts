@@ -2,7 +2,7 @@ import { formatMoney } from '@constant/common';
 import { InventoryModel } from '@models/inventory.model';
 import { TableData } from '@models/report.model';
 import { DailyLotLocatorStock } from '@schemas/daily-lot-locator-stock.schema';
-import { div, divBigNumber, mulBigNumber, plus } from '@utils/common';
+import { divBigNumber, mulBigNumber, plusBigNumber } from '@utils/common';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
 
@@ -35,7 +35,7 @@ export function getInventoryDataMapping(
 
     const totalPrice = inforListItem[keyMapItem]?.price || 0;
     let averagePrice = 0;
-    let stockQuantity = Number(cur.stockQuantity) || 0;
+    let stockQuantity = cur.stockQuantity || 0;
     let totalAmount = 0;
 
     if (totalPrice && inforListItem[keyMapItem]?.quantity) {
@@ -45,9 +45,9 @@ export function getInventoryDataMapping(
       );
     }
     const quantityTransaction =
-      Number(listTransaction[keyMapLocator]?.stockQuantity) || 0;
-    stockQuantity = plus(stockQuantity, quantityTransaction);
-    totalAmount = mulBigNumber(Number(averagePrice), stockQuantity);
+      listTransaction[keyMapLocator]?.stockQuantity || 0;
+    stockQuantity = plusBigNumber(stockQuantity, quantityTransaction);
+    totalAmount = mulBigNumber(averagePrice, stockQuantity);
     const data: InventoryModel = {
       index: 0,
       itemCode: cur.itemCode,
@@ -61,7 +61,7 @@ export function getInventoryDataMapping(
       storageCost: formatMoney(averagePrice || 0, 2),
       totalPrice: formatMoney(totalAmount || 0),
     };
-    prev[warehouseCode].push(data);
+    if (Number(stockQuantity)) prev[warehouseCode].push(data);
     return prev;
   }, {});
   const dataExcell: TableData<InventoryModel>[] = [];

@@ -14,6 +14,7 @@ export interface DataSituationImportItem {
 
 export interface DataSituationImportOrder {
   orderCode: string;
+  ebsNumber: string;
   orderCreatedAt: Date;
   contract: string;
   constructionName: string;

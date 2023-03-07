@@ -213,7 +213,7 @@ export async function generateReportSituationImportPeriod(
                               ),
                               children: [
                                 new TableCell({
-                                  columnSpan: 7,
+                                  columnSpan: 8,
                                   verticalAlign: VerticalAlign.CENTER,
                                   margins: wordFileStyle.margin_left,
                                   children: [
@@ -440,6 +440,21 @@ export async function generateReportSituationImportPeriod(
                                 }),
                                 new TableCell({
                                   verticalAlign: VerticalAlign.CENTER,
+                                  margins: wordFileStyle.margin_left,
+                                  children: [
+                                    new Paragraph({
+                                      alignment: AlignmentType.CENTER,
+                                      children: [
+                                        new TextRun({
+                                          text: order.ebsNumber || '',
+                                          ...wordFileStyle.text_style,
+                                        }),
+                                      ],
+                                    }),
+                                  ],
+                                }),
+                                new TableCell({
+                                  verticalAlign: VerticalAlign.CENTER,
                                   children: [
                                     new Paragraph({
                                       alignment: AlignmentType.CENTER,
@@ -614,6 +629,21 @@ export async function generateReportSituationImportPeriod(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
+                                      text: '',
+                                      ...wordFileStyle.text_style,
+                                    }),
+                                  ],
+                                }),
+                              ],
+                            }),
+                            new TableCell({
+                              verticalAlign: VerticalAlign.CENTER,
+                              margins: wordFileStyle.margin_right,
+                              children: [
+                                new Paragraph({
+                                  alignment: AlignmentType.RIGHT,
+                                  children: [
+                                    new TextRun({
                                       text:
                                         '' +
                                         formatMoney(
@@ -674,6 +704,21 @@ export async function generateReportSituationImportPeriod(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
+                                  text: '',
+                                  ...wordFileStyle.text_style,
+                                }),
+                              ],
+                            }),
+                          ],
+                        }),
+                        new TableCell({
+                          verticalAlign: VerticalAlign.CENTER,
+                          margins: wordFileStyle.margin_right,
+                          children: [
+                            new Paragraph({
+                              alignment: AlignmentType.RIGHT,
+                              children: [
+                                new TextRun({
                                   text: formatMoney(
                                     Math.round(warehouse?.totalPrice),
                                   ),
@@ -703,6 +748,21 @@ export async function generateReportSituationImportPeriod(
                             text: i18n.translate(`report.TOTAL`),
                             ...wordFileStyle.text_style_bold,
                             allCaps: true,
+                          }),
+                        ],
+                      }),
+                    ],
+                  }),
+                  new TableCell({
+                    verticalAlign: VerticalAlign.CENTER,
+                    margins: wordFileStyle.margin_right,
+                    children: [
+                      new Paragraph({
+                        alignment: AlignmentType.RIGHT,
+                        children: [
+                          new TextRun({
+                            text: '',
+                            ...wordFileStyle.text_style,
                           }),
                         ],
                       }),

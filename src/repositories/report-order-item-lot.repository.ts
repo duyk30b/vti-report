@@ -530,13 +530,20 @@ function reportItemImportedButNotPutToPosition(
           lotNumber: '$lotNumber',
           note: '$note',
           performerName: '$performerName',
+          orderCreatedAt: {
+            $dateToString: {
+              date: '$orderCreatedAt',
+              format: '%Y-%m-%d',
+              timezone: TIMEZONE_HCM_CITY,
+            },
+          },
         },
         totalRecievedQuantity: { $sum: '$receivedQuantity' },
         totalActualQuantity: { $sum: '$actualQuantity' },
       },
     },
     {
-      $sort: { '_id.itemCode': -1 },
+      $sort: { '_id.orderCreatedAt': -1, '_id.itemCode': -1 },
     },
     {
       $group: {
@@ -656,6 +663,7 @@ function reportSituationExport(
           constructionName: '$constructionName',
           departmentReceiptName: '$departmentReceiptName',
           explain: '$explain',
+          ebsNumber: '$ebsNumber',
         },
         items: {
           $push: {
@@ -710,6 +718,7 @@ function reportSituationExport(
         orders: {
           $push: {
             orderCode: '$_id.orderCode',
+            ebsNumber: '$_id.ebsNumber',
             orderCreatedAt: '$_id.orderCreatedAt',
             contract: '$_id.contract',
             constructionName: '$_id.constructionName',
@@ -825,6 +834,7 @@ function reportSituationImport(
           providerName: '$providerName',
           departmentReceiptName: '$departmentReceiptName',
           explain: '$explain',
+          ebsNumber: '$ebsNumber',
         },
         items: {
           $push: {
@@ -880,6 +890,7 @@ function reportSituationImport(
               if: { $gt: [{ $size: '$items' }, 0] },
               then: {
                 orderCode: '$_id.orderCode',
+                ebsNumber: '$_id.ebsNumber',
                 orderCreatedAt: '$_id.orderCreatedAt',
                 contract: '$_id.contract',
                 constructionName: '$_id.constructionName',
@@ -980,6 +991,7 @@ function reportSituationTransfer(
           warehouseTargetName: '$warehouseTargetName',
           warehouseTargetCode: '$warehouseTargetCode',
           explain: '$explain',
+          ebsNumber: '$ebsNumber',
         },
         items: {
           $push: {
@@ -1026,6 +1038,7 @@ function reportSituationTransfer(
         orders: {
           $push: {
             orderCode: '$_id.orderCode',
+            ebsNumber: '$_id.ebsNumber',
             orderCreatedAt: '$_id.orderCreatedAt',
             totalPrice: { $sum: '$items.totalPrice' },
             warehouseImport: {

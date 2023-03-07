@@ -662,7 +662,7 @@ export class ExportService {
       listKey.push(keyMap);
     });
     const dataItemTransaction =
-      await this.transactionItemRepository.getTransactionByDate(request);
+      await this.transactionItemRepository.getByDateItemCode(request);
 
     const listTransaction = dataItemTransaction.map((item) => {
       const key = `${item.warehouseCode}-${item?.lotNumber || 'null'}-${
@@ -676,8 +676,8 @@ export class ExportService {
         ),
         key: key,
       };
-      if (Number(transaction?.stockQuantity) > 0) {
-        if (!listKey.includes(key)) reportInventories.push(transaction);
+      if (!listKey.includes(key)) reportInventories.push(transaction);
+      else {
         return transaction;
       }
     });
@@ -694,21 +694,6 @@ export class ExportService {
         }-${item.companyCode}`,
       };
     });
-    const transactionDateNow =
-      await this.transactionItemRepository.getByDateLot(request);
-    let transactionArr = transactionDateNow.map((item) => {
-      if (
-        (item.quantityExported != 0 || item.quantityImported != 0) &&
-        item.quantityExported != item.quantityImported
-      ) {
-        return {
-          ...item,
-          checkImport: minus(item?.quantityImported, item?.quantityExported),
-          key: `${item.warehouseCode}-${item?.lotNumber || 'null'}-${item.itemCode}-${item.companyCode}`,
-        };
-      }
-    });
-    const transactionInput = keyBy(transactionArr, 'key');
     const inforListItemMap = keyBy(inforListItemKey, 'key');
     const listTransactionMap = keyBy(listTransaction, 'key');
     const dataMaped = getInventoryDataMapping(
