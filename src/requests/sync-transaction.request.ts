@@ -75,6 +75,10 @@ export class SyncTransactionRequest {
 
   @ApiProperty()
   @IsOptional()
+  manufacturingCountry: string;
+
+  @ApiProperty()
+  @IsOptional()
   locator: DataCommont;
 }
 
