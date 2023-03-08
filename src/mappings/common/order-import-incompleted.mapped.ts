@@ -1,12 +1,7 @@
 import { formatMoney, readDecimal } from '@constant/common';
-import { InventoryModel } from '@models/inventory.model';
-import { ReportInventoryBelowMinimumModel } from '@models/item-inventory-below-minimum.model';
-import { OrderExportIncompleteModel } from '@models/order-exported-incomplete.model';
 import { OrderImportIncompleteModel } from '@models/order-import-incomplete.model';
 import { TableData } from '@models/report.model';
-import { DailyWarehouseItemStock } from '@schemas/daily-warehouse-item-stock.schema';
 import { ReportOrderItem } from '@schemas/report-order-item.schema';
-import * as moment from 'moment';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
 import { getTimezone } from '@utils/common';
@@ -40,9 +35,9 @@ export function getOrderImportIncompletedMapped(
         itemCode: cur.itemCode,
         itemName: cur.itemName,
         unit: cur.unit,
-        actualQuantity: readDecimal(cur.receivedQuantity, true),
-        storageCost: readDecimal(cur.storageCost, true),
-        totalPrice: readDecimal(cur.storageCost * cur.planQuantity, true),
+        actualQuantity: readDecimal(cur.receivedQuantity),
+        storageCost: formatMoney(cur.storageCost, 2),
+        totalPrice: formatMoney(cur?.amount),
         constructionName: cur.constructionName,
         deliverName: cur.performerName,
       };
