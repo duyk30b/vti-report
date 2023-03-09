@@ -694,6 +694,7 @@ export class ExportService {
         }-${item.companyCode}`,
       };
     });
+
     const inforListItemMap = keyBy(inforListItemKey, 'key');
     const listTransactionMap = keyBy(listTransaction, 'key');
     const dataMaped = getInventoryDataMapping(
