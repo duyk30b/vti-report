@@ -826,8 +826,6 @@ function reportSituationImport(
         _id: {
           warehouseCode: '$warehouseCode',
           warehouseName: '$warehouseName',
-          companyName: '$companyName',
-          companyAddress: '$companyAddress',
           companyCode: '$companyCode',
           reason: '$reason',
           orderCode: '$orderCode',
@@ -888,8 +886,6 @@ function reportSituationImport(
         _id: {
           warehouseCode: '$_id.warehouseCode',
           warehouseName: '$_id.warehouseName',
-          companyName: '$_id.companyName',
-          companyAddress: '$_id.companyAddress',
           companyCode: '$_id.companyCode',
           reason: '$_id.reason',
         },
@@ -923,8 +919,6 @@ function reportSituationImport(
         _id: {
           warehouseCode: '$_id.warehouseCode',
           warehouseName: '$_id.warehouseName',
-          companyName: '$_id.companyName',
-          companyAddress: '$_id.companyAddress',
           companyCode: '$_id.companyCode',
         },
         reasons: {
@@ -948,8 +942,6 @@ function reportSituationImport(
     {
       $group: {
         _id: {
-          companyName: '$_id.companyName',
-          companyAddress: '$_id.companyAddress',
           companyCode: '$_id.companyCode',
         },
         warehouses: {
