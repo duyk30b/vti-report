@@ -2,8 +2,10 @@ import { readDecimal } from '@constant/common';
 import { OrderExportIncompleteModel } from '@models/order-exported-incomplete.model';
 import { TableData } from '@models/report.model';
 import { ReportOrderItem } from '@schemas/report-order-item.schema';
+import { DATE_FOMAT_EXCELL } from '@utils/constant';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
+import * as moment from 'moment';
 
 export function getOrderExportIncompletedMapped(
   data: ReportOrderItem[],
@@ -27,6 +29,7 @@ export function getOrderExportIncompletedMapped(
         const data: OrderExportIncompleteModel = {
           index: 0,
           orderCode: cur.orderCode,
+          orderCreatedAt: moment(cur.orderCreatedAt).format(DATE_FOMAT_EXCELL),
           itemCode: cur.itemCode,
           itemName: cur.itemName,
           unit: cur.unit,
