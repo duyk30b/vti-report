@@ -52,5 +52,8 @@ export class ReportOrder extends BaseEntity implements ReportOrderInteface {
 
   @Prop({ required: false })
   description: string;
+
+  @Prop({ required: false })
+  transactionNumberCreated: string;
 }
 export const ReportOrderSchema = SchemaFactory.createForClass(ReportOrder);

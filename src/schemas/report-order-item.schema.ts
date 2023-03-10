@@ -133,6 +133,9 @@ export class ReportOrderItem
 
   @Prop({ required: false })
   warehouseExportProposals: string; // Giay de nghi xuat vat tu
+
+  @Prop({ required: false })
+  transactionNumberCreated: string;
 }
 
 export const ReportOrderItemSchema =

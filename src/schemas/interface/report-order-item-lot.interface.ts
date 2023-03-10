@@ -9,4 +9,5 @@ export interface ReportOrderItemLotInteface extends ReportOrderItemInteface {
   note: string;
   locatorName: string;
   locatorCode: string;
+  transactionNumberCreated?: string;
 }
