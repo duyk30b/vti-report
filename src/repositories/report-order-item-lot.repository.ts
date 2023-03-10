@@ -664,6 +664,7 @@ function reportSituationExport(
           departmentReceiptName: '$departmentReceiptName',
           explain: '$explain',
           ebsNumber: '$ebsNumber',
+          transactionNumberCreated: '$transactionNumberCreated',
         },
         items: {
           $push: {
@@ -718,7 +719,15 @@ function reportSituationExport(
         orders: {
           $push: {
             orderCode: '$_id.orderCode',
-            ebsNumber: '$_id.ebsNumber',
+            ebsNumber: {
+              $concat: [
+                { $ifNull: ['$_id.ebsNumber', ''] },
+                '\n',
+                {
+                  $ifNull: ['$_id.transactionNumberCreated', ''],
+                },
+              ],
+            },
             orderCreatedAt: '$_id.orderCreatedAt',
             contract: '$_id.contract',
             constructionName: '$_id.constructionName',

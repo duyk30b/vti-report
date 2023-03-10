@@ -80,7 +80,13 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
       condition['$and'].push({
         $expr: {
           $eq: [
-            { $dateToString: { date: '$reportDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY } },
+            {
+              $dateToString: {
+                date: '$reportDate',
+                format: '%Y-%m-%d',
+                timezone: TIMEZONE_HCM_CITY,
+              },
+            },
             moment(prevDate).format(DATE_FOMAT),
           ],
         },
@@ -89,7 +95,13 @@ export class DailyWarehouseItemStockRepository extends BaseAbstractRepository<Da
       condition['$and'].push({
         $expr: {
           $eq: [
-            { $dateToString: { date: '$reportDate', format: '%Y-%m-%d', timezone: TIMEZONE_HCM_CITY } },
+            {
+              $dateToString: {
+                date: '$reportDate',
+                format: '%Y-%m-%d',
+                timezone: TIMEZONE_HCM_CITY,
+              },
+            },
             moment(request?.dateTo).format(DATE_FOMAT),
           ],
         },

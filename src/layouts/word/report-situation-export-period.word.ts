@@ -20,6 +20,7 @@ import {
 } from 'docx';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { setHeight, setWidth, wordFileStyle } from './word-common.styles';
+import { isEmpty } from 'lodash';
 export async function generateReportSituationExportPeriod(
   dataWord: TableDataSituationExportPeriod[],
   companyName,
@@ -208,6 +209,34 @@ export async function generateReportSituationExportPeriod(
                     .map((reason) => {
                       orderData = reason.orders
                         .map((order, index) => {
+                          const ebsId = order?.ebsNumber.split('\n')[0] || '';
+                          const transactionNumberCreated =
+                            order?.ebsNumber.split('\n')[1] || '';
+                          const columnEbs = [
+                            new Paragraph({
+                              alignment: AlignmentType.CENTER,
+                              children: [
+                                new TextRun({
+                                  text: ebsId || '',
+                                  ...wordFileStyle.text_style,
+                                }),
+                              ],
+                            }),
+                          ];
+                          if (!isEmpty(transactionNumberCreated)) {
+                            columnEbs.push(
+                              new Paragraph({
+                                alignment: AlignmentType.CENTER,
+                                children: [
+                                  new TextRun({
+                                    text: transactionNumberCreated || '',
+                                    ...wordFileStyle.text_style,
+                                  }),
+                                ],
+                              }),
+                            );
+                          }
+
                           itemData = order.items
                             .filter((item) => {
                               if (item.actualQuantity) return item;
@@ -439,17 +468,7 @@ export async function generateReportSituationExportPeriod(
                                 new TableCell({
                                   verticalAlign: VerticalAlign.CENTER,
                                   margins: wordFileStyle.margin_left,
-                                  children: [
-                                    new Paragraph({
-                                      alignment: AlignmentType.CENTER,
-                                      children: [
-                                        new TextRun({
-                                          text: order.ebsNumber || '',
-                                          ...wordFileStyle.text_style,
-                                        }),
-                                      ],
-                                    }),
-                                  ],
+                                  children: columnEbs,
                                 }),
                                 new TableCell({
                                   verticalAlign: VerticalAlign.CENTER,
