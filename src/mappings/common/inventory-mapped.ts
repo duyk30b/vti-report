@@ -61,7 +61,7 @@ export function getInventoryDataMapping(
       storageCost: formatMoney(averagePrice || 0, 2),
       totalPrice: formatMoney(totalAmount || 0),
     };
-    if (Number(stockQuantity)) prev[warehouseCode].push(data);
+    if (Number(stockQuantity) > 0) prev[warehouseCode].push(data);
     return prev;
   }, {});
   const dataExcell: TableData<InventoryModel>[] = [];
