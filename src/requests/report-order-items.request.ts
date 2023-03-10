@@ -238,6 +238,11 @@ export class ReportOrderItemRequest implements ReportOrderItemInteface {
   @IsString()
   description: string;
 
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  transactionNumberCreated: string;
+
   @IsNotEmpty()
   @IsArray()
   @ValidateNested({ each: true })

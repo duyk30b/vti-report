@@ -256,4 +256,9 @@ export class ReportOrderItemLotRequest implements ReportOrderItemLotInteface {
   @IsOptional()
   @IsString()
   description: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  transactionNumberCreated: string;
 }

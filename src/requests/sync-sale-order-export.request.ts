@@ -202,6 +202,10 @@ export class SaleOrderExportResponseDto extends BaseDto {
   @ApiProperty()
   @IsOptional()
   qrCode: string;
+
+  @ApiProperty()
+  @IsOptional()
+  transactionNumberCreated: string;
 }
 
 export class SyncSaleOrderExportRequest extends BaseDto {

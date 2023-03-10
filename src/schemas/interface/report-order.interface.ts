@@ -22,4 +22,5 @@ export interface ReportOrderInteface {
   constructionName: string;
 
   description: string;
+  transactionNumberCreated?: string;
 }

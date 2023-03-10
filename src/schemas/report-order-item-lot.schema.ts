@@ -145,6 +145,9 @@ export class ReportOrderItemLot implements ReportOrderItemLotInteface {
 
   @Prop({ required: false })
   orderCode: string;
+
+  @Prop({ required: false })
+  transactionNumberCreated: string;
 }
 
 export const ReportOrderItemLotSchema =

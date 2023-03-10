@@ -177,6 +177,9 @@ export class TransactionItem
 
   @Prop({ required: false })
   manufacturingCountry: string;
+
+  @Prop({ required: false })
+  transactionNumberCreated: string;
 }
 
 export const TransactionItemSchema =

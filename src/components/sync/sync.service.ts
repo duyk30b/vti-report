@@ -595,6 +595,7 @@ export class SyncService {
         constructionCode: request?.construction?.code || null,
         constructionName: request?.construction?.name || null,
         description: request?.explanation,
+        transactionNumberCreated: request.transactionNumberCreated,
       };
 
       orders.push(reportOrder);
@@ -629,6 +630,7 @@ export class SyncService {
           amount: Number(item?.item?.amount || 0),
           ...reportOrder,
           receiptNumber: request.receiptNumber,
+          transactionNumberCreated: request?.transactionNumberCreated,
         };
         orderItems.push(reportOrderItem);
 
@@ -648,6 +650,7 @@ export class SyncService {
             locatorCode: null,
             storageCost: Number(lot?.price || 0),
             amount: Number(lot?.amount || 0),
+            transactionNumberCreated: request?.transactionNumberCreated,
           };
           orderItemLots.push(reportOrderItemLot);
         }
