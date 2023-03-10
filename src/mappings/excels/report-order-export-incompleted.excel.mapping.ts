@@ -24,6 +24,7 @@ export async function reportOrderExportIncompletedExcelMapping(
   const formatByKey: FormatByKey<OrderExportIncompleteModel> = {
     index: Alignment.CENTER,
     orderCode: Alignment.LEFT,
+    orderCreatedAt: Alignment.CENTER,
     itemCode: Alignment.LEFT,
     itemName: Alignment.LEFT,
     unit: Alignment.CENTER,

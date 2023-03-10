@@ -10,6 +10,10 @@ export const REPORT_ORDER_EXPORT_INCOMPLETE_COLUMN: TableColumn[] = [
     width: 25,
   },
   {
+    name: 'VOUCHERS_DATE',
+    width: 20,
+  },
+  {
     name: 'ITEM_CODE',
     width: 25,
   },
