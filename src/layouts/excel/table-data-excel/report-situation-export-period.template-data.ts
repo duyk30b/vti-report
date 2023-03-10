@@ -19,6 +19,7 @@ import * as ExcelJS from 'exceljs';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { configCells, ConfigCells } from '../report-excel.layout';
 import * as moment from 'moment';
+import { isEmpty } from 'lodash';
 export function reportSituationExportPeriodTemplateData(
   curRowIdx: number,
   worksheet: ExcelJS.Worksheet,
@@ -84,6 +85,12 @@ export function reportSituationExportPeriodTemplateData(
       );
       curRowIdx++;
       reason.orders.forEach((order, index) => {
+        const ebsId = order?.ebsNumber.split('\n')[0] || '';
+        const transactionNumberCreated = order?.ebsNumber.split('\n')[1] || '';
+        let ebsNumber = '';
+        if (!isEmpty(transactionNumberCreated) && !isEmpty(ebsId)) {
+          ebsNumber = order.ebsNumber;
+        } else if (isEmpty(transactionNumberCreated)) ebsNumber = ebsId;
         cells.push(
           ...[
             {
@@ -102,7 +109,7 @@ export function reportSituationExportPeriodTemplateData(
             },
             {
               nameCell: `C${curRowIdx}`,
-              value: order.ebsNumber || '',
+              value: ebsNumber || '',
               font: FONT_NORMAL_9,
               aligment: ALIGNMENT_CENTER,
               border: BORDER,

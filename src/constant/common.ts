@@ -1,5 +1,5 @@
-import { LENGTH_ACCOUNT_SYNC_EBS } from "@utils/constant";
-import * as moment from "moment";
+import { LENGTH_ACCOUNT_SYNC_EBS } from '@utils/constant';
+import * as moment from 'moment';
 
 export enum APIPrefix {
   Version = 'api/v1',
@@ -57,9 +57,8 @@ export function formatNumber(number: any) {
     if (num.split('.')[1]) {
       return num.split('.')[0] + ',' + num.split('.')[1];
     } else return num.split('.')[0];
-  }
-  else {
-    return ''
+  } else {
+    return '';
   }
 }
 
@@ -75,7 +74,7 @@ export function formatAccount(
       let debitAccount = it?.accountDebt || '';
       let creditAccount = it?.accountHave || '';
       if (creditAccount.length == LENGTH_ACCOUNT_SYNC_EBS) {
-        creditAccount = creditAccount.slice(18, numberCredit)
+        creditAccount = creditAccount.slice(18, numberCredit);
         if (replaceCredit) {
           creditAccount = creditAccount.replace(/^(\d*?[1-9])0+$/, '$1');
         }
@@ -88,14 +87,14 @@ export function formatAccount(
       }
       it.accountDebt = debitAccount;
       it.accountHave = creditAccount;
-    })
-  })
+    });
+  });
 }
 
 export function readDecimal(number: any, isFormat?: boolean): string {
   const checkInt = Number(number) % 1;
   if (isFormat && !number) return '0';
-  if (!number) return ''
+  if (!number) return '';
   let num = number.toString();
   if (num.includes(',')) num = num.split(',')[0] + '.' + num.split(',')[1];
   let x = 3;
@@ -128,7 +127,7 @@ export function formatMoney(number: any, isDecimal?: number) {
     return numReturn.split('.')[0] + ',' + numReturn.split('.')[1];
   }
   return numReturn.split('.')[0];
-};
+}
 
 export function formatDate(date: any) {
   if (!date) return '';

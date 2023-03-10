@@ -222,6 +222,10 @@ export class WarehouseTransferResponseDto extends WarehouseTransferResponse {
   @ApiProperty()
   @IsOptional()
   qrCode: string;
+
+  @ApiProperty()
+  @IsOptional()
+  transactionNumberCreated: string;
 }
 
 export class SyncWarehouseTransferRequest extends BaseDto {
