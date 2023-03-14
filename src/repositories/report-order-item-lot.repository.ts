@@ -515,8 +515,6 @@ function reportItemImportedButNotPutToPosition(
     {
       $group: {
         _id: {
-          companyAddress: '$companyAddress',
-          companyName: '$companyName',
           companyCode: '$companyCode',
           warehouseCode: '$warehouseCode',
           warehouseName: '$warehouseName',
@@ -548,8 +546,6 @@ function reportItemImportedButNotPutToPosition(
     {
       $group: {
         _id: {
-          companyAddress: '$_id.companyAddress',
-          companyName: '$_id.companyName',
           companyCode: '$_id.companyCode',
           warehouseCode: '$_id.warehouseCode',
           warehouseName: '$_id.warehouseName',
@@ -601,8 +597,6 @@ function reportItemImportedButNotPutToPosition(
     {
       $group: {
         _id: {
-          companyAddress: '$_id.companyAddress',
-          companyName: '$_id.companyName',
           companyCode: '$_id.companyCode',
         },
         warehouses: {
@@ -648,8 +642,6 @@ function reportSituationExport(
         _id: {
           warehouseCode: '$warehouseCode',
           warehouseName: '$warehouseName',
-          companyName: '$companyName',
-          companyAddress: '$companyAddress',
           companyCode: '$companyCode',
           reason: '$reason',
           orderCode: '$orderCode',
@@ -711,8 +703,6 @@ function reportSituationExport(
         _id: {
           warehouseCode: '$_id.warehouseCode',
           warehouseName: '$_id.warehouseName',
-          companyName: '$_id.companyName',
-          companyAddress: '$_id.companyAddress',
           companyCode: '$_id.companyCode',
           reason: '$_id.reason',
         },
@@ -748,8 +738,6 @@ function reportSituationExport(
         _id: {
           warehouseCode: '$_id.warehouseCode',
           warehouseName: '$_id.warehouseName',
-          companyName: '$_id.companyName',
-          companyAddress: '$_id.companyAddress',
           companyCode: '$_id.companyCode',
         },
         reasons: {
@@ -767,8 +755,6 @@ function reportSituationExport(
     {
       $group: {
         _id: {
-          companyName: '$_id.companyName',
-          companyAddress: '$_id.companyAddress',
           companyCode: '$_id.companyCode',
         },
         warehouses: {
@@ -978,8 +964,6 @@ function reportSituationTransfer(
         _id: {
           warehouseCode: '$warehouseCode',
           warehouseName: '$warehouseName',
-          companyName: '$companyName',
-          companyAddress: '$companyAddress',
           companyCode: '$companyCode',
           orderCode: '$orderCode',
           orderCreatedAt: {
@@ -1032,8 +1016,6 @@ function reportSituationTransfer(
         _id: {
           warehouseCode: '$_id.warehouseCode',
           warehouseName: '$_id.warehouseName',
-          companyName: '$_id.companyName',
-          companyAddress: '$_id.companyAddress',
           companyCode: '$_id.companyCode',
         },
         orders: {
@@ -1183,8 +1165,6 @@ function reportSituationInventory(
         _id: {
           warehouseCode: '$warehouseCode',
           warehouseName: '$warehouseName',
-          companyName: '$companyName',
-          companyAddress: '$companyAddress',
         },
         totalPlanQuantity: { $sum: '$planQuantity' },
         totalActualQuantity: { $sum: '$actualQuantity' },

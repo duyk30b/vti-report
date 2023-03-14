@@ -29,11 +29,20 @@ export async function getSituationTransferMapped(
       let check = 0;
       item.items?.map((i) => {
         i?.groupByStorageDate.map((infoStock) => {
-          if (transactionNow[`${item.warehouseCode}-${infoStock.locatorCode}-${i.itemCode}-${companyCode}`]) {
-            let transaction = transactionNow[`${item.warehouseCode}-${infoStock.locatorCode}-${i.itemCode}-${companyCode}`];
-            let info = infoStock;
+          if (
+            transactionNow[
+              `${item.warehouseCode}-${infoStock.locatorCode}-${i.itemCode}-${companyCode}`
+            ]
+          ) {
+            const transaction =
+              transactionNow[
+                `${item.warehouseCode}-${infoStock.locatorCode}-${i.itemCode}-${companyCode}`
+              ];
             if (transaction?.quantityImported) {
-              i.totalQuantity = plus(i.totalQuantity, transaction?.quantityImported);
+              i.totalQuantity = plus(
+                i.totalQuantity,
+                transaction?.quantityImported,
+              );
               i?.groupByStorageDate.push({
                 storageDate: transaction?.transactionDate ?? '',
                 lotNumber: infoStock?.lotNumber,
@@ -49,17 +58,30 @@ export async function getSituationTransferMapped(
                 fourYearAgo: infoStock?.fourYearAgo,
                 fiveYearAgo: infoStock?.fiveYearAgo,
                 greaterfiveYear: infoStock?.greaterfiveYear,
-              })
-              transactionNow[`${item.warehouseCode}-${infoStock.locatorCode}-${i.itemCode}-${companyCode}`].quantityImported = 0;
+              });
+              transactionNow[
+                `${item.warehouseCode}-${infoStock.locatorCode}-${i.itemCode}-${companyCode}`
+              ].quantityImported = 0;
             }
             if (transaction?.quantityExported) {
-              i.totalQuantity = minus(i.totalQuantity, transaction?.quantityExported);
-              const numberCheck = minus(infoStock.stockQuantity, transaction?.quantityExported);
+              i.totalQuantity = minus(
+                i.totalQuantity,
+                transaction?.quantityExported,
+              );
+              const numberCheck = minus(
+                infoStock.stockQuantity,
+                transaction?.quantityExported,
+              );
               if (numberCheck >= 0) {
-                transactionNow[`${item.warehouseCode}-${infoStock.locatorCode}-${i.itemCode}-${companyCode}`].quantityExported = 0;
+                transactionNow[
+                  `${item.warehouseCode}-${infoStock.locatorCode}-${i.itemCode}-${companyCode}`
+                ].quantityExported = 0;
                 infoStock.stockQuantity = numberCheck;
               } else {
-                const quantity = minus(transaction?.quantityExported, infoStock.stockQuantity);
+                const quantity = minus(
+                  transaction?.quantityExported,
+                  infoStock.stockQuantity,
+                );
                 transaction.quantityExported = quantity;
                 infoStock.stockQuantity = 0;
               }
@@ -93,7 +115,6 @@ export async function getSituationTransferMapped(
   }
   dataExcell = compact(dataExcell);
 
-  let dataExcell2: TableAgeOfItems[] = [];
   if (!isEmpty(transactionNow)) {
     let warehouseCodeTransaction = [];
     for (const key in transactionNow) {
@@ -131,13 +152,16 @@ export async function getSituationTransferMapped(
     })
 
   }
-  dataMaping.dataMapped = isEmpty(dataExcell) ? dataExcell2 : dataExcell;
-  dataMaping.dataMapped = dataMaping.dataMapped || [];
+  dataMaping.dataMapped = dataExcell || [];
   return dataMaping;
 }
 
-function pushItemOld(objectTransaction: any, arrItem: any[], warehouseCode?: string) {
-  let keyByArrItem = keyBy(arrItem, 'itemCode');
+function pushItemOld(
+  objectTransaction: any,
+  arrItem: any[],
+  warehouseCode?: string,
+) {
+  const keyByArrItem = keyBy(arrItem, 'itemCode');
   const arrformated: any[] = [];
   for (const key in objectTransaction) {
     const item = objectTransaction[key];
@@ -154,23 +178,28 @@ function pushItemOld(objectTransaction: any, arrItem: any[], warehouseCode?: str
       keyByArrItem[item?.itemCode] = formatItem(item, stockQuantity);
     }
   }
-  Object.keys(objectTransaction).forEach(key => {
+  Object.keys(objectTransaction).forEach((key) => {
     const itemCodeKey = objectTransaction[key]?.itemCode;
-    if (!isEmpty(objectTransaction[key]) && !isEmpty(keyByArrItem[itemCodeKey]) && objectTransaction[key]?.warehouseCode == warehouseCode) {
+    if (
+      !isEmpty(objectTransaction[key]) &&
+      !isEmpty(keyByArrItem[itemCodeKey]) &&
+      objectTransaction[key]?.warehouseCode == warehouseCode
+    ) {
       let quantityExport = objectTransaction[key]?.checkImport || 0;
       let totalQuantity = keyByArrItem[itemCodeKey]?.totalQuantity || 0;
       keyByArrItem[itemCodeKey]?.groupByStorageDate.map((itemInfo) => {
         if (quantityExport != 0) {
           itemInfo.stockQuantity = plus(itemInfo.stockQuantity, quantityExport);
-          keyByArrItem[itemCodeKey].totalQuantity = plus(totalQuantity, quantityExport);
+          totalQuantity = plus(totalQuantity, quantityExport);
           if (itemInfo.stockQuantity > 0) {
             quantityExport = 0;
           } else {
-            quantityExport = itemInfo.stockQuantity
+            quantityExport = itemInfo.stockQuantity;
             itemInfo = null;
           }
         }
-      })
+      });
+      keyByArrItem[itemCodeKey].totalQuantity = totalQuantity;
       if (keyByArrItem[itemCodeKey].totalQuantity <= 0) {
         keyByArrItem[itemCodeKey] = null;
       } else {
