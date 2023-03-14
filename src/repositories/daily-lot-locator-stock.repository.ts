@@ -614,8 +614,6 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
         {
           $project: {
             companyCode: '$companyCode',
-            companyName: '$companyName',
-            companyAddress: '$companyAddress',
             warehouseCode: '$warehouseCode',
             warehouseName: '$warehouseName',
             itemCode: '$itemCode',
@@ -645,8 +643,6 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
         {
           $project: {
             companyCode: '$companyCode',
-            companyName: '$companyName',
-            companyAddress: '$companyAddress',
             warehouseCode: '$warehouseCode',
             warehouseName: '$warehouseName',
             itemCode: '$itemCode',
@@ -667,8 +663,6 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
           $group: {
             _id: {
               companyCode: '$companyCode',
-              companyName: '$companyName',
-              companyAddress: '$companyAddress',
               warehouseCode: '$warehouseCode',
               warehouseName: '$warehouseName',
               itemCode: '$itemCode',
@@ -702,8 +696,6 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
           $group: {
             _id: {
               companyCode: '$_id.companyCode',
-              companyName: '$_id.companyName',
-              companyAddress: '$_id.companyAddress',
               warehouseCode: '$_id.warehouseCode',
               warehouseName: '$_id.warehouseName',
               itemCode: '$_id.itemCode',
@@ -737,8 +729,6 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
               warehouseCode: '$_id.warehouseCode',
               warehouseName: '$_id.warehouseName',
               companyCode: '$_id.companyCode',
-              companyName: '$_id.companyName',
-              companyAddress: '$_id.companyAddress',
             },
             items: {
               $push: {
@@ -764,8 +754,6 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
           $group: {
             _id: {
               companyCode: '$_id.companyCode',
-              companyName: '$_id.companyName',
-              companyAddress: '$_id.companyAddress',
             },
             warehouses: {
               $push: {
