@@ -131,7 +131,7 @@
     "ITEM_INVENTORY": {
         "TITLE": "BÁO CÁO VẬT TƯ TỒN KHO\n{property}",
         "FILE_NAME": "W010-Báo cáo vật tư tồn kho-{property}",
-        "SHEET_NAME": "W010-Báo_cáo_tồn-{property}"
+        "SHEET_NAME": "EVN_INV_017-Bao_cao_nhap_xuat_ton-{property}"
     },
     "ORDER_IMPORT_BY_REQUEST_FOR_ITEM": {
         "TITLE": "",
@@ -141,7 +141,7 @@
     "INVENTORY": {
         "TITLE": "THỐNG KÊ TỒN KHO HIỆN TẠI\n{property}",
         "FILE_NAME": "W007-Thống kê tồn kho-{property}",
-        "SHEET_NAME": "W007-Thống_kê_tồn-{property}"
+        "SHEET_NAME": "EVN_INV_011-Bao_cao_vat_tu_ton_kho-{property}"
     },
     "ITEM_INVENTORY_IMPORTED_NO_QR_CODE": {
         "TITLE": "",
@@ -156,7 +156,7 @@
     "SITUATION_TRANSFER": {
         "TITLE": "BẢNG LIỆT KÊ PHIẾU XUẤT NỘI BỘ KHO SXKD\n{property}",
         "FILE_NAME": "W013-Thống kê tình hình chuyển kho-{property}",
-        "SHEET_NAME": "W013-Thống_kê_CK-{property}"
+        "SHEET_NAME": "EVN_INV_008-Bang_liet_ke_phieu_xuat_vat_tu_noi_bo-{property}"
     },
     "SITUATION_INVENTORY_PERIOD": {
         "TITLE": "BẢNG KIỂM KÊ VẬT TƯ, HÀNG HÓA TỒN KHO\n{property}",
@@ -166,16 +166,16 @@
     "SITUATION_IMPORT_PERIOD": {
         "TITLE": "BẢNG LIỆT KÊ CHỨNG TỪ NHẬP (SXKD)\n{property}",
         "FILE_NAME": "W011-Thống kê tình hình nhập kho theo kỳ-{property}",
-        "SHEET_NAME": "W011-Thống_kê_NK-{property}"
+        "SHEET_NAME": "EVN_INV_007-Bang_liet_ke_chung_tu_nhap-{property}"
     },
     "SITUATION_EXPORT_PERIOD": {
         "TITLE": "BẢNG LIỆT KÊ PHIẾU XUẤT VẬT TƯ (SXKD)\n{property}",
         "FILE_NAME": "W012-Thống kê tình hình xuất kho theo kỳ-{property}",
-        "SHEET_NAME": "W012-Thống_kê_XK-{property}"
+        "SHEET_NAME": "EVN_INV_009-Bang_liet_ke_phieu_xuat_vat_tu-{property}"
     },
     "AGE_OF_ITEM_STOCK": {
         "TITLE": "BÁO CÁO TUỔI HÀNG TỒN KHO\n{property}",
         "FILE_NAME": "W009-Thống kê tuổi hàng tồn kho-{property}",
-        "SHEET_NAME": "W009-Thống_kê_tuổi_hàng_tồn-{property}"
+        "SHEET_NAME": "EVN_INV_049-Bao_cao_tuoi_hang_ton_kho-{property}"
     }
 }
