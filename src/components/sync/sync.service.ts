@@ -357,6 +357,8 @@ export class SyncService {
             exportedQuantity: lot?.exportedQuantity,
             locatorName: null,
             locatorCode: null,
+            storageCost: +lot?.price ? lot?.price : 0,
+            amount: +lot?.amount ? lot?.amount : 0,
           };
 
           orderItemLots.push(reportOrderItemLot);
@@ -518,6 +520,7 @@ export class SyncService {
             exportedQuantity: 0,
             locatorName: null,
             locatorCode: null,
+            amount: +lot?.amount ? lot.amount : 0
           };
           orderItemLots.push(reportOrderItemLot);
         }
