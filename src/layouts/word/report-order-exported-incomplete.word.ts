@@ -1,4 +1,3 @@
-import { formatNumber } from '@constant/common';
 import { OrderExportIncompleteModel } from '@models/order-exported-incomplete.model';
 import { TableData } from '@models/report.model';
 import {
@@ -212,6 +211,21 @@ export async function generateReportOrderExportIncompleted(
                               alignment: AlignmentType.LEFT,
                               children: [
                                 new TextRun({
+                                  text: item.orderCreatedAt,
+                                  ...wordFileStyle.text_style,
+                                }),
+                              ],
+                            }),
+                          ],
+                        }),
+                        new TableCell({
+                          verticalAlign: VerticalAlign.CENTER,
+                          margins: wordFileStyle.margin_left,
+                          children: [
+                            new Paragraph({
+                              alignment: AlignmentType.LEFT,
+                              children: [
+                                new TextRun({
                                   text: item.itemCode,
                                   ...wordFileStyle.text_style,
                                 }),
@@ -256,7 +270,7 @@ export async function generateReportOrderExportIncompleted(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: (item.actualQuantity).toString(),
+                                  text: item.actualQuantity.toString(),
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -301,7 +315,7 @@ export async function generateReportOrderExportIncompleted(
                       height: setHeight(WORD_FILE_CONFIG.TABLE_ROW_HEIGHT),
                       children: [
                         new TableCell({
-                          columnSpan: 8,
+                          columnSpan: 9,
                           verticalAlign: VerticalAlign.CENTER,
                           margins: wordFileStyle.margin_left,
                           children: [
