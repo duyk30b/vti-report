@@ -133,6 +133,14 @@ class LotExport {
   @ApiProperty()
   @IsOptional()
   lotNumber: string;
+
+  @ApiProperty()
+  @IsOptional()
+  price: number;
+
+  @ApiProperty()
+  @IsOptional()
+  amount: number;
 }
 class WarehouseTransferDetail {
   @ApiProperty()
