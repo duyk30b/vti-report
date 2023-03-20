@@ -1,15 +1,16 @@
-import { TableAgeOfItems, Items } from '@models/age-of-items.model';
-import { minus, mul, plus } from '@utils/common';
+import {
+  TableAgeOfItems,
+  SituationTransferItem,
+} from '@models/age-of-items.model';
+import { mulBigNumber, plusBigNumber } from '@utils/common';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
-import { compact, keyBy, isEmpty, uniq } from 'lodash';
-import { WarehouseServiceInterface } from '@components/warehouse/interface/warehouse.service.interface';
+import { compact, isEmpty, groupBy } from 'lodash';
 
 export async function getSituationTransferMapped(
   data: any[],
   i18n: I18nRequestScopeService,
-  warehouseService?: WarehouseServiceInterface,
-  transactionNow?: any,
+  transactionDateNow?: any,
 ): Promise<ReportInfo<TableAgeOfItems[]>> {
   const dataMaping: ReportInfo<TableAgeOfItems[]> = {
     companyCode: data[0]?._id?.companyCode || '',
@@ -18,85 +19,117 @@ export async function getSituationTransferMapped(
     warehouseName: '',
     dataMapped: null,
   };
-
   const companyCode = data[0]?._id?.companyCode || '';
-  let arrWarehouseCode = [];
+  const arrWarehouseCode = [];
   let dataExcell: TableAgeOfItems[] = [];
   if (data.length > 0) {
     dataExcell = data[0]?.warehouses?.map((item: any) => {
       arrWarehouseCode.push(item.warehouseCode);
       dataMaping.warehouseName = item.warehouseName;
-      let check = 0;
-      item.items?.map((i) => {
-        i?.groupByStorageDate.map((infoStock) => {
-          if (
-            transactionNow[
-              `${item.warehouseCode}-${infoStock.locatorCode}-${i.itemCode}-${companyCode}`
-            ]
-          ) {
-            const transaction =
-              transactionNow[
-                `${item.warehouseCode}-${infoStock.locatorCode}-${i.itemCode}-${companyCode}`
-              ];
-            if (transaction?.quantityImported) {
-              i.totalQuantity = plus(
-                i.totalQuantity,
-                transaction?.quantityImported,
-              );
-              i?.groupByStorageDate.push({
-                storageDate: transaction?.transactionDate,
-                lotNumber: infoStock?.lotNumber,
-                locatorCode: infoStock?.locatorCode,
-                unit: infoStock?.unit,
-                stockQuantity: transaction?.quantityImported,
-                storageCost: infoStock?.storageCost,
-                totalPrice: infoStock?.storageCost,
-                sixMonthAgo: infoStock?.sixMonthAgo,
-                oneYearAgo: infoStock?.oneYearAgo,
-                twoYearAgo: infoStock?.twoYearAgo,
-                threeYearAgo: infoStock?.threeYearAgo,
-                fourYearAgo: infoStock?.fourYearAgo,
-                fiveYearAgo: infoStock?.fiveYearAgo,
-                greaterfiveYear: infoStock?.greaterfiveYear,
-              });
-              transactionNow[
-                `${item.warehouseCode}-${infoStock.locatorCode}-${i.itemCode}-${companyCode}`
-              ].quantityImported = 0;
-            }
-            if (transaction?.quantityExported) {
-              i.totalQuantity = minus(
-                i.totalQuantity,
-                transaction?.quantityExported,
-              );
-              const numberCheck = minus(
-                infoStock.stockQuantity,
-                transaction?.quantityExported,
-              );
-              if (numberCheck >= 0) {
-                transactionNow[
-                  `${item.warehouseCode}-${infoStock.locatorCode}-${i.itemCode}-${companyCode}`
-                ].quantityExported = 0;
-                infoStock.stockQuantity = numberCheck;
-              } else {
-                const quantity = minus(
-                  transaction?.quantityExported,
-                  infoStock.stockQuantity,
+      const keyWarehouse = `${companyCode}-${item.warehouseCode}`;
+      const listItemTransaction = transactionDateNow[keyWarehouse];
+      delete transactionDateNow[keyWarehouse];
+      const listItemGroup = groupBy(listItemTransaction, 'itemCode');
+      item.totalPrice = 0;
+      item.items?.map((i, index) => {
+        let totalPrice = i.totalPrice || 0;
+        const itemCode = i.itemCode;
+        const listItem = listItemGroup[itemCode];
+        delete listItemGroup[itemCode];
+        if (!isEmpty(listItem)) {
+          for (let j = 0; j < listItem.length; j++) {
+            const price = mulBigNumber(
+              listItem[j]?.quantity || 0,
+              listItem[j]?.storageCost || 0,
+            );
+            i.totalQuantity = plusBigNumber(
+              i.totalQuantity,
+              listItem[j]?.quantity || 0,
+            );
+            switch (true) {
+              case listItem[j]?.quantity > 0:
+                // eslint-disable-next-line no-case-declarations
+                const itemFormated = formatItemInGroup(listItem[j]);
+                i?.groupByStorageDate.push(itemFormated);
+                listItem[j] = null;
+                break;
+              case listItem[j]?.quantity === 0:
+                listItem[j] = null;
+                break;
+              case listItem[j]?.quantity < 0:
+                // eslint-disable-next-line no-case-declarations
+                const groupByStorageDate = formatGroupByStorageDate(
+                  i.groupByStorageDate,
+                  listItem[j],
                 );
-                transaction.quantityExported = quantity;
-                infoStock.stockQuantity = 0;
-              }
+                i.groupByStorageDate = groupByStorageDate;
+                if (isEmpty(groupByStorageDate)) delete item.items[index];
+                listItem[j] = null;
+                break;
+              default:
+                break;
             }
+            totalPrice = price ? plusBigNumber(price, totalPrice) : totalPrice;
           }
-        })
-        check = plus(check, i?.totalQuantity) || check;
-      })
-      if (!check) return null;
+          i.totalPrice = totalPrice;
+        }
+        item.totalPrice = plusBigNumber(item.totalPrice, i.totalPrice);
+      });
+      if (!isEmpty(listItemGroup)) {
+        const listItem: any = {};
+        for (const key in listItemGroup) {
+          Object.values(listItemGroup[key]).map((el: any) => {
+            const itemCode = el?.itemCode;
 
-      const { arrformated, objectTransaction } = pushItemOld(transactionNow, item.items, item.warehouseCode);
-      if (!isEmpty(arrformated)) {
-        item.items = arrformated;
-        transactionNow = objectTransaction;
+            if (el?.quantity > 0) {
+              if (!listItem[itemCode]) {
+                const tempItem = {
+                  itemCode: itemCode,
+                  itemName: el?.itemName,
+                  totalQuantity: el?.totalQuantity || 0,
+                  storageCost: el?.storageCost || 0,
+                  totalPrice: el?.totalPrice
+                    ? el?.totalPrice
+                    : mulBigNumber(el?.storageCost, el?.totalQuantity),
+                  sixMonthAgo: el?.totalPrice
+                    ? el?.totalPrice
+                    : mulBigNumber(el?.storageCost, el?.totalQuantity),
+                  oneYearAgo: 0,
+                  twoYearAgo: 0,
+                  threeYearAgo: 0,
+                  fourYearAgo: 0,
+                  fiveYearAgo: 0,
+                  greaterfiveYear: 0,
+                  groupByStorageDate: [],
+                };
+                const tmp = formatItemInGroup(el, true);
+                tempItem.groupByStorageDate.push(tmp);
+                listItem[itemCode] = tempItem;
+                item.totalPrice = plusBigNumber(
+                  item.totalPrice,
+                  tempItem.totalPrice || 0,
+                );
+              } else {
+                const tmp = formatItemInGroup(el);
+
+                listItem[itemCode]?.groupByStorageDate.push(tmp);
+              }
+            } else if (el?.quantity < 0) {
+              const groupByStorageDate = formatGroupByStorageDate(
+                listItem[itemCode].groupByStorageDate,
+                el,
+              );
+              listItem.groupByStorageDate = groupByStorageDate;
+              if (isEmpty(groupByStorageDate)) delete listItem[itemCode];
+            }
+          });
+        }
+        Object.values(listItem).map((el) => {
+          if (!isEmpty(el)) item.items.push(el);
+        });
       }
+      if (isEmpty(compact(item.items))) return [];
+      updatePriceItems(item);
       return {
         warehouseCode:
           i18n.translate('report.WAREHOUSE_GROUP_CODE') +
@@ -109,167 +142,179 @@ export async function getSituationTransferMapped(
         fiveYearAgo: item.fiveYearAgo,
         greaterfiveYear: item.greaterfiveYear,
         totalPrice: item.totalPrice,
-        items: item.items,
+        items: compact(item.items),
       };
     });
   }
-  dataExcell = compact(dataExcell);
-
-  if (!isEmpty(transactionNow)) {
-    let warehouseCodeTransaction = [];
-    for (const key in transactionNow) {
-      if (transactionNow[key]) {
-        const code = transactionNow[key]?.warehouseCode || '';
-        warehouseCodeTransaction.push(code);
-      }
-    }
-    warehouseCodeTransaction = uniq(warehouseCodeTransaction);
-    const listWarehouses = await warehouseService.getWarehouseByCodes(warehouseCodeTransaction);
-    const listWarehousesMap = keyBy(listWarehouses, 'code');
-    arrWarehouseCode = uniq(arrWarehouseCode);
-    warehouseCodeTransaction.map((warehouseCode) => {
-      if (!arrWarehouseCode.includes(warehouseCode)) {
-        const { arrformated, objectTransaction } = pushItemOld(transactionNow, [], warehouseCode);
-        transactionNow = objectTransaction;
-        if (!isEmpty(arrformated)) {
-          const arr = {
-            warehouseCode:
-              i18n.translate('report.WAREHOUSE_GROUP_CODE') +
-              [warehouseCode, listWarehousesMap[warehouseCode]?.name].join('_'),
-            sixMonth: 0,
-            oneYearAgo: 0,
-            twoYearAgo: 0,
-            threeYearAgo: 0,
-            fourYearAgo: 0,
-            fiveYearAgo: 0,
-            greaterfiveYear: 0,
-            totalPrice: 0,
-            items: arrformated,
-          };
-          dataExcell.push(arr);
-        }
-      }
-    })
-
-  }
-  dataMaping.dataMapped = dataExcell || [];
-  return dataMaping;
-}
-
-function pushItemOld(
-  objectTransaction: any,
-  arrItem: any[],
-  warehouseCode?: string,
-) {
-  const keyByArrItem = keyBy(arrItem, 'itemCode');
-  const arrformated: any[] = [];
-  for (const key in objectTransaction) {
-    const item = objectTransaction[key];
-    if (item && keyByArrItem[item?.itemCode] && item.warehouseCode == warehouseCode && item.checkImport > 0) {
-      objectTransaction[key] = null;
-      const quantity = minus(item?.quantityImported, item?.quantityExported);
-      const stockQuantityOld = keyByArrItem[item?.itemCode]?.totalQuantity;
-      keyByArrItem[item?.itemCode].totalQuantity = plus(stockQuantityOld, quantity) || stockQuantityOld;
-      keyByArrItem[item.itemCode]?.groupByStorageDate?.push(formatGroupByStorageDate(item, quantity));
-    } else if (item && item.warehouseCode == warehouseCode && item.checkImport > 0) {
-      objectTransaction[key] = null;
-      const quantity = minus(item?.quantityImported, item?.quantityExported)
-      const stockQuantity = Math.abs(quantity);
-      keyByArrItem[item?.itemCode] = formatItem(item, stockQuantity);
-    }
-  }
-  Object.keys(objectTransaction).forEach((key) => {
-    const itemCodeKey = objectTransaction[key]?.itemCode;
-    if (
-      !isEmpty(objectTransaction[key]) &&
-      !isEmpty(keyByArrItem[itemCodeKey]) &&
-      objectTransaction[key]?.warehouseCode == warehouseCode
-    ) {
-      let quantityExport = objectTransaction[key]?.checkImport || 0;
-      let totalQuantity = keyByArrItem[itemCodeKey]?.totalQuantity || 0;
-      keyByArrItem[itemCodeKey]?.groupByStorageDate.map((itemInfo) => {
-        if (quantityExport != 0) {
-          itemInfo.stockQuantity = plus(itemInfo.stockQuantity, quantityExport);
-          totalQuantity = plus(totalQuantity, quantityExport);
-          if (itemInfo.stockQuantity > 0) {
-            quantityExport = 0;
+  if (!isEmpty(transactionDateNow)) {
+    for (const key in transactionDateNow) {
+      const itemTransaction = transactionDateNow[key];
+      const listItem: any = {};
+      let totalPrice = 0;
+      Object.values(itemTransaction).map((el: any) => {
+        dataMaping.warehouseName = el.warehouseName;
+        const itemCode = el?.itemCode;
+        if (el?.quantity > 0) {
+          totalPrice = plusBigNumber(totalPrice, el?.price) || 0;
+          if (!listItem[itemCode]) {
+            const tempItem = {
+              itemCode: itemCode,
+              itemName: el?.itemName,
+              totalQuantity: el?.totalQuantity || 0,
+              totalPrice: el?.price,
+              sixMonthAgo: el?.price,
+              oneYearAgo: 0,
+              twoYearAgo: 0,
+              threeYearAgo: 0,
+              fourYearAgo: 0,
+              fiveYearAgo: 0,
+              greaterfiveYear: 0,
+              groupByStorageDate: [],
+            };
+            const tmp = formatItemInGroup(el);
+            tempItem?.groupByStorageDate.push(tmp);
+            listItem[itemCode] = tempItem;
           } else {
-            quantityExport = itemInfo.stockQuantity;
-            itemInfo = null;
+            const tmp = formatItemInGroup(el);
+            listItem[itemCode]?.groupByStorageDate.push(tmp);
           }
         }
       });
-      keyByArrItem[itemCodeKey].totalQuantity = totalQuantity;
-      if (keyByArrItem[itemCodeKey].totalQuantity <= 0) {
-        keyByArrItem[itemCodeKey] = null;
-      } else {
-        const groupItem = keyByArrItem[itemCodeKey]?.groupByStorageDate || [];
-        keyByArrItem[itemCodeKey].groupByStorageDate = compact(groupItem);
-      }
+      dataExcell.push({
+        warehouseCode:
+          i18n.translate('report.WAREHOUSE_GROUP_CODE') +
+          [
+            itemTransaction[0].warehouseCode,
+            itemTransaction[0].warehouseName,
+          ].join('_'),
+        sixMonth: totalPrice,
+        oneYearAgo: 0,
+        twoYearAgo: 0,
+        threeYearAgo: 0,
+        fourYearAgo: 0,
+        fiveYearAgo: 0,
+        greaterfiveYear: 0,
+        totalPrice: 0,
+        items: Object.values(listItem),
+      });
     }
-  })
-  for (const key in keyByArrItem) {
-    if (!isEmpty(keyByArrItem[key])) arrformated.push(keyByArrItem[key]);
   }
-  return {
-    arrformated: arrformated as Array<Items>,
-    objectTransaction: objectTransaction,
-  };
+  dataMaping.dataMapped = compact(dataExcell) || [];
+  return dataMaping;
 }
 
-function formatItem(item: any, quantity?: number) {
+function formatItemInGroup(
+  item: any,
+  checkNewItem?: boolean,
+): SituationTransferItem {
+  const totalPrice = checkNewItem
+    ? item?.totalPrice
+    : mulBigNumber(item?.storageCost, item?.totalQuantity);
   return {
-    itemCode: item.itemCode,
-    itemName: item.itemName,
-    totalQuantity: quantity || 0,
-    totalPrice: item?.storageCost || 0,
-    sixMonthAgo: item?.sixMonthAgo || 0,
+    origin: item?.accountInfo[0]?.description || '',
+    account: item?.accountInfo[0]?.accountHave || '',
+    storageDate: item?.storageDate || '',
+    lotNumber: item.lotNumber || '',
+    locatorCode: item.locatorCode || '',
+    unit: item.unit || '',
+    stockQuantity: item?.quantity || 0,
+    storageCost: item?.storageCost || 0,
+    totalPrice: totalPrice || 0,
+    sixMonthAgo: totalPrice || 0,
     oneYearAgo: item?.oneYearAgo || 0,
     twoYearAgo: item?.twoYearAgo || 0,
     threeYearAgo: item?.threeYearAgo || 0,
     fourYearAgo: item?.fourYearAgo || 0,
     fiveYearAgo: item?.fiveYearAgo || 0,
     greaterfiveYear: item?.greaterfiveYear || 0,
-    groupByStorageDate: [
-      {
-        origin: item?.origin || '',
-        account: item?.account || '',
-        storageDate: item.transactionDate,
-        lotNumber: item.lotNumber,
-        locatorCode: item.locatorCode,
-        unit: item.unit,
-        stockQuantity: quantity || 0,
-        storageCost: item?.storageCost || 0,
-        totalPrice: item?.totalPrice || 0,
-        sixMonthAgo: item.sixMonthAgo || 0,
-        oneYearAgo: item?.oneYearAgo || 0,
-        twoYearAgo: item?.twoYearAgo || 0,
-        threeYearAgo: item?.threeYearAgo || 0,
-        fourYearAgo: item?.fourYearAgo || 0,
-        fiveYearAgo: item?.fiveYearAgo || 0,
-        greaterfiveYear: item?.greaterfiveYear || 0,
-      }
-    ]
-  }
+  };
 }
 
-function formatGroupByStorageDate(item: any, quantity?: number) {
-  return {
-    storageDate: item.transactionDate,
-    origin: item?.origin || null,
-    account: item?.account || null,
-    lotNumber: item.lotNumber,
-    locatorCode: item.locatorCode,
-    unit: item.unit,
-    stockQuantity: quantity || 0,
-    storageCost: item.storageCost || 0,
-    totalPrice: mul(item.storageCost, item.quantityImported),
-    sixMonthAgo: item.sixMonthAgo || 0,
-    oneYearAgo: item.oneYearAgo || 0,
-    twoYearAgo: item.twoYearAgo || 0,
-    threeYearAgo: item.threeYearAgo || 0,
-    fourYearAgo: item.fourYearAgo || 0,
-    fiveYearAgo: item.fiveYearAgo || 0,
-    greaterfiveYear: item.greaterfiveYear || 0,
-  }
+function formatGroupByStorageDate(
+  groupByStorageDate: any,
+  itemTransaction: any,
+) {
+  let checkQuantity = itemTransaction?.quantity || 0;
+  const groupFormated = [];
+  groupByStorageDate.map((item) => {
+    if (checkQuantity < 0) {
+      item.stockQuantity = plusBigNumber(item?.stockQuantity, checkQuantity);
+      checkQuantity = item.stockQuantity;
+    }
+    if (item.stockQuantity > 0) {
+      item.totalPrice = mulBigNumber(
+        itemTransaction.storageCost || 0,
+        item.stockQuantity || 0,
+      );
+      switch (true) {
+        case item.sixMonthAgo > 0:
+          item.sixMonthAgo = item.totalPrice;
+          break;
+        case item.oneYearAgo > 0:
+          item.oneYearAgo = item.totalPrice;
+          break;
+        case item.twoYearAgo > 0:
+          item.twoYearAgo = item.totalPrice;
+          break;
+        case item.threeYearAgo > 0:
+          item.threeYearAgo = item.totalPrice;
+          break;
+        case item.fourYearAgo > 0:
+          item.fourYearAgo = item.totalPrice;
+          break;
+        case item.fiveYearAgo > 0:
+          item.fiveYearAgo = item.totalPrice;
+          break;
+        case item.greaterfiveYear > 0:
+          item.greaterfiveYear = item.totalPrice;
+          break;
+        default:
+          break;
+      }
+      groupFormated.push(item);
+    }
+  });
+  return compact(groupFormated) || [];
+}
+
+function updatePriceItems(item: TableAgeOfItems) {
+  item.sixMonth = 0;
+  item.oneYearAgo = 0;
+  item.twoYearAgo = 0;
+  item.threeYearAgo = 0;
+  item.fourYearAgo = 0;
+  item.fiveYearAgo = 0;
+  item.greaterfiveYear = 0;
+  item.totalPrice = 0;
+  item.items.map((el) => {
+    el.sixMonthAgo = 0;
+    el.oneYearAgo = 0;
+    el.twoYearAgo = 0;
+    el.threeYearAgo = 0;
+    el.fourYearAgo = 0;
+    el.fiveYearAgo = 0;
+    el.greaterfiveYear = 0;
+    el.totalPrice = 0;
+    el.groupByStorageDate.map((i) => {
+      el.sixMonthAgo = plusBigNumber(el.sixMonthAgo, i.sixMonthAgo);
+      el.oneYearAgo = plusBigNumber(el.oneYearAgo, i.oneYearAgo);
+      el.twoYearAgo = plusBigNumber(el.twoYearAgo, i.twoYearAgo);
+      el.threeYearAgo = plusBigNumber(el.threeYearAgo, i.threeYearAgo);
+      el.fourYearAgo = plusBigNumber(el.fourYearAgo, i.fourYearAgo);
+      el.fiveYearAgo = plusBigNumber(el.fiveYearAgo, i.fiveYearAgo);
+      el.greaterfiveYear = plusBigNumber(el.greaterfiveYear, i.greaterfiveYear);
+      el.totalPrice = plusBigNumber(el.totalPrice, i.totalPrice);
+    });
+    item.totalPrice = plusBigNumber(item.totalPrice, el.totalPrice);
+    item.sixMonth = plusBigNumber(item.sixMonth, el.sixMonthAgo);
+    item.oneYearAgo = plusBigNumber(item.oneYearAgo, el.oneYearAgo);
+    item.twoYearAgo = plusBigNumber(item.twoYearAgo, el.twoYearAgo);
+    item.threeYearAgo = plusBigNumber(item.threeYearAgo, el.threeYearAgo);
+    item.fourYearAgo = plusBigNumber(item.fourYearAgo, el.fourYearAgo);
+    item.fiveYearAgo = plusBigNumber(item.fiveYearAgo, el.fiveYearAgo);
+    item.greaterfiveYear = plusBigNumber(
+      item.greaterfiveYear,
+      el.greaterfiveYear,
+    );
+  });
 }

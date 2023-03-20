@@ -1,6 +1,6 @@
-import { formatDate, formatNumber, readDecimal } from '@constant/common';
+import { formatMoney, readDecimal } from '@constant/common';
 import { TableAgeOfItems } from '@models/age-of-items.model';
-import { plus } from '@utils/common';
+import { plusBigNumber } from '@utils/common';
 import {
   AGE_OF_ITEM_STOCK_COLUMNS,
   FONT_NAME,
@@ -205,273 +205,290 @@ export async function generateReportAgeOfItemStock(
               }),
               ...dataWord
                 .map((warehouse) => {
-                  warehouseTotalPrice = plus(
+                  warehouseTotalPrice = plusBigNumber(
                     warehouseTotalPrice,
                     warehouse.totalPrice,
                   );
-                  sixMonth = plus(sixMonth, warehouse.sixMonth);
-                  oneYearAgo = plus(oneYearAgo, warehouse.oneYearAgo);
-                  twoYearAgo = plus(twoYearAgo, warehouse.twoYearAgo);
-                  threeYearAgo = plus(threeYearAgo, warehouse.threeYearAgo);
-                  fourYearAgo = plus(fourYearAgo, warehouse.fourYearAgo);
-                  fiveYearAgo = plus(fiveYearAgo, warehouse.fiveYearAgo);
-                  greaterfiveYear = plus(
+                  sixMonth = plusBigNumber(sixMonth, warehouse.sixMonth);
+                  oneYearAgo = plusBigNumber(oneYearAgo, warehouse.oneYearAgo);
+                  twoYearAgo = plusBigNumber(twoYearAgo, warehouse.twoYearAgo);
+                  threeYearAgo = plusBigNumber(
+                    threeYearAgo,
+                    warehouse.threeYearAgo,
+                  );
+                  fourYearAgo = plusBigNumber(
+                    fourYearAgo,
+                    warehouse.fourYearAgo,
+                  );
+                  fiveYearAgo = plusBigNumber(
+                    fiveYearAgo,
+                    warehouse.fiveYearAgo,
+                  );
+                  greaterfiveYear = plusBigNumber(
                     greaterfiveYear,
                     warehouse.greaterfiveYear,
                   );
                   itemData = warehouse.items
                     .map((item) => {
-                      recordData = item.groupByStorageDate.filter((itemReport) => itemReport.stockQuantity
-                      ).map((record) => {
-                        return new TableRow({
-                          height: setHeight(WORD_FILE_CONFIG.TABLE_ROW_HEIGHT),
-                          children: [
-                            new TableCell({
-                              children: [],
-                            }),
-                            new TableCell({
-                              children: [],
-                            }),
-                            new TableCell({
-                              verticalAlign: VerticalAlign.CENTER,
-                              children: [
-                                new Paragraph({
-                                  alignment: AlignmentType.CENTER,
-                                  children: [
-                                    new TextRun({
-                                      text: record.storageDate || '',
-                                      ...wordFileStyle.text_style,
-                                    }),
-                                  ],
-                                }),
-                              ],
-                            }),
-                            new TableCell({
-                              verticalAlign: VerticalAlign.CENTER,
-                              margins: wordFileStyle.margin_left,
-                              children: [
-                                new Paragraph({
-                                  alignment: AlignmentType.LEFT,
-                                  children: [
-                                    new TextRun({
-                                      text: record.origin,
-                                      ...wordFileStyle.text_style,
-                                    }),
-                                  ],
-                                }),
-                              ],
-                            }),
-                            new TableCell({
-                              verticalAlign: VerticalAlign.CENTER,
-                              margins: wordFileStyle.margin_right,
-                              children: [
-                                new Paragraph({
-                                  alignment: AlignmentType.RIGHT,
-                                  children: [
-                                    new TextRun({
-                                      text: record.account,
-                                      ...wordFileStyle.text_style,
-                                    }),
-                                  ],
-                                }),
-                              ],
-                            }),
-                            new TableCell({
-                              verticalAlign: VerticalAlign.CENTER,
-                              children: [
-                                new Paragraph({
-                                  alignment: AlignmentType.CENTER,
-                                  children: [
-                                    new TextRun({
-                                      text: record.lotNumber,
-                                      ...wordFileStyle.text_style,
-                                    }),
-                                  ],
-                                }),
-                              ],
-                            }),
-                            new TableCell({
-                              verticalAlign: VerticalAlign.CENTER,
-                              margins: wordFileStyle.margin_left,
-                              children: [
-                                new Paragraph({
-                                  alignment: AlignmentType.LEFT,
-                                  children: [
-                                    new TextRun({
-                                      text: record.locatorCode,
-                                      ...wordFileStyle.text_style,
-                                    }),
-                                  ],
-                                }),
-                              ],
-                            }),
-                            new TableCell({
-                              verticalAlign: VerticalAlign.CENTER,
-                              children: [
-                                new Paragraph({
-                                  alignment: AlignmentType.CENTER,
-                                  children: [
-                                    new TextRun({
-                                      text: record.unit,
-                                      ...wordFileStyle.text_style,
-                                    }),
-                                  ],
-                                }),
-                              ],
-                            }),
-                            new TableCell({
-                              verticalAlign: VerticalAlign.CENTER,
-                              margins: wordFileStyle.margin_right,
-                              children: [
-                                new Paragraph({
-                                  alignment: AlignmentType.RIGHT,
-                                  children: [
-                                    new TextRun({
-                                      text: readDecimal(record.stockQuantity),
-                                      ...wordFileStyle.text_style,
-                                    }),
-                                  ],
-                                }),
-                              ],
-                            }),
-                            new TableCell({
-                              verticalAlign: VerticalAlign.CENTER,
-                              margins: wordFileStyle.margin_right,
-                              children: [
-                                new Paragraph({
-                                  alignment: AlignmentType.RIGHT,
-                                  children: [
-                                    new TextRun({
-                                      text: formatNumber(record.storageCost),
-                                      ...wordFileStyle.text_style,
-                                    }),
-                                  ],
-                                }),
-                              ],
-                            }),
-                            new TableCell({
-                              verticalAlign: VerticalAlign.CENTER,
-                              margins: wordFileStyle.margin_right,
-                              children: [
-                                new Paragraph({
-                                  alignment: AlignmentType.RIGHT,
-                                  children: [
-                                    new TextRun({
-                                      text: formatNumber(record.totalPrice),
-                                      ...wordFileStyle.text_style,
-                                    }),
-                                  ],
-                                }),
-                              ],
-                            }),
-                            new TableCell({
-                              verticalAlign: VerticalAlign.CENTER,
-                              margins: wordFileStyle.margin_right,
-                              children: [
-                                new Paragraph({
-                                  alignment: AlignmentType.RIGHT,
-                                  children: [
-                                    new TextRun({
-                                      text: formatNumber(record.sixMonthAgo),
-                                      ...wordFileStyle.text_style,
-                                    }),
-                                  ],
-                                }),
-                              ],
-                            }),
-                            new TableCell({
-                              verticalAlign: VerticalAlign.CENTER,
-                              margins: wordFileStyle.margin_right,
-                              children: [
-                                new Paragraph({
-                                  alignment: AlignmentType.RIGHT,
-                                  children: [
-                                    new TextRun({
-                                      text: formatNumber(record.oneYearAgo),
-                                      ...wordFileStyle.text_style,
-                                    }),
-                                  ],
-                                }),
-                              ],
-                            }),
-                            new TableCell({
-                              verticalAlign: VerticalAlign.CENTER,
-                              margins: wordFileStyle.margin_right,
-                              children: [
-                                new Paragraph({
-                                  alignment: AlignmentType.RIGHT,
-                                  children: [
-                                    new TextRun({
-                                      text: formatNumber(record.twoYearAgo),
-                                      ...wordFileStyle.text_style,
-                                    }),
-                                  ],
-                                }),
-                              ],
-                            }),
-                            new TableCell({
-                              verticalAlign: VerticalAlign.CENTER,
-                              margins: wordFileStyle.margin_right,
-                              children: [
-                                new Paragraph({
-                                  alignment: AlignmentType.RIGHT,
-                                  children: [
-                                    new TextRun({
-                                      text: formatNumber(record.threeYearAgo),
-                                      ...wordFileStyle.text_style,
-                                    }),
-                                  ],
-                                }),
-                              ],
-                            }),
-                            new TableCell({
-                              verticalAlign: VerticalAlign.CENTER,
-                              margins: wordFileStyle.margin_right,
-                              children: [
-                                new Paragraph({
-                                  alignment: AlignmentType.RIGHT,
-                                  children: [
-                                    new TextRun({
-                                      text: formatNumber(record.fourYearAgo),
-                                      ...wordFileStyle.text_style,
-                                    }),
-                                  ],
-                                }),
-                              ],
-                            }),
-                            new TableCell({
-                              verticalAlign: VerticalAlign.CENTER,
-                              margins: wordFileStyle.margin_right,
-                              children: [
-                                new Paragraph({
-                                  alignment: AlignmentType.RIGHT,
-                                  children: [
-                                    new TextRun({
-                                      text: formatNumber(record.fiveYearAgo),
-                                      ...wordFileStyle.text_style,
-                                    }),
-                                  ],
-                                }),
-                              ],
-                            }),
-                            new TableCell({
-                              verticalAlign: VerticalAlign.CENTER,
-                              margins: wordFileStyle.margin_right,
-                              children: [
-                                new Paragraph({
-                                  alignment: AlignmentType.RIGHT,
-                                  children: [
-                                    new TextRun({
-                                      text: formatNumber(record.greaterfiveYear),
-                                      ...wordFileStyle.text_style,
-                                    }),
-                                  ],
-                                }),
-                              ],
-                            }),
-                          ],
+                      recordData = item.groupByStorageDate
+                        .filter((itemReport) => itemReport.stockQuantity)
+                        .map((record) => {
+                          return new TableRow({
+                            height: setHeight(
+                              WORD_FILE_CONFIG.TABLE_ROW_HEIGHT,
+                            ),
+                            children: [
+                              new TableCell({
+                                children: [],
+                              }),
+                              new TableCell({
+                                children: [],
+                              }),
+                              new TableCell({
+                                verticalAlign: VerticalAlign.CENTER,
+                                children: [
+                                  new Paragraph({
+                                    alignment: AlignmentType.CENTER,
+                                    children: [
+                                      new TextRun({
+                                        text: record.storageDate || '',
+                                        ...wordFileStyle.text_style,
+                                      }),
+                                    ],
+                                  }),
+                                ],
+                              }),
+                              new TableCell({
+                                verticalAlign: VerticalAlign.CENTER,
+                                margins: wordFileStyle.margin_left,
+                                children: [
+                                  new Paragraph({
+                                    alignment: AlignmentType.LEFT,
+                                    children: [
+                                      new TextRun({
+                                        text: record.origin,
+                                        ...wordFileStyle.text_style,
+                                      }),
+                                    ],
+                                  }),
+                                ],
+                              }),
+                              new TableCell({
+                                verticalAlign: VerticalAlign.CENTER,
+                                margins: wordFileStyle.margin_right,
+                                children: [
+                                  new Paragraph({
+                                    alignment: AlignmentType.RIGHT,
+                                    children: [
+                                      new TextRun({
+                                        text: record.account,
+                                        ...wordFileStyle.text_style,
+                                      }),
+                                    ],
+                                  }),
+                                ],
+                              }),
+                              new TableCell({
+                                verticalAlign: VerticalAlign.CENTER,
+                                children: [
+                                  new Paragraph({
+                                    alignment: AlignmentType.CENTER,
+                                    children: [
+                                      new TextRun({
+                                        text: record.lotNumber,
+                                        ...wordFileStyle.text_style,
+                                      }),
+                                    ],
+                                  }),
+                                ],
+                              }),
+                              new TableCell({
+                                verticalAlign: VerticalAlign.CENTER,
+                                margins: wordFileStyle.margin_left,
+                                children: [
+                                  new Paragraph({
+                                    alignment: AlignmentType.LEFT,
+                                    children: [
+                                      new TextRun({
+                                        text: record.locatorCode,
+                                        ...wordFileStyle.text_style,
+                                      }),
+                                    ],
+                                  }),
+                                ],
+                              }),
+                              new TableCell({
+                                verticalAlign: VerticalAlign.CENTER,
+                                children: [
+                                  new Paragraph({
+                                    alignment: AlignmentType.CENTER,
+                                    children: [
+                                      new TextRun({
+                                        text: record.unit,
+                                        ...wordFileStyle.text_style,
+                                      }),
+                                    ],
+                                  }),
+                                ],
+                              }),
+                              new TableCell({
+                                verticalAlign: VerticalAlign.CENTER,
+                                margins: wordFileStyle.margin_right,
+                                children: [
+                                  new Paragraph({
+                                    alignment: AlignmentType.RIGHT,
+                                    children: [
+                                      new TextRun({
+                                        text: readDecimal(record.stockQuantity),
+                                        ...wordFileStyle.text_style,
+                                      }),
+                                    ],
+                                  }),
+                                ],
+                              }),
+                              new TableCell({
+                                verticalAlign: VerticalAlign.CENTER,
+                                margins: wordFileStyle.margin_right,
+                                children: [
+                                  new Paragraph({
+                                    alignment: AlignmentType.RIGHT,
+                                    children: [
+                                      new TextRun({
+                                        text: formatMoney(
+                                          record.storageCost,
+                                          2,
+                                        ),
+                                        ...wordFileStyle.text_style,
+                                      }),
+                                    ],
+                                  }),
+                                ],
+                              }),
+                              new TableCell({
+                                verticalAlign: VerticalAlign.CENTER,
+                                margins: wordFileStyle.margin_right,
+                                children: [
+                                  new Paragraph({
+                                    alignment: AlignmentType.RIGHT,
+                                    children: [
+                                      new TextRun({
+                                        text: formatMoney(record.totalPrice),
+                                        ...wordFileStyle.text_style,
+                                      }),
+                                    ],
+                                  }),
+                                ],
+                              }),
+                              new TableCell({
+                                verticalAlign: VerticalAlign.CENTER,
+                                margins: wordFileStyle.margin_right,
+                                children: [
+                                  new Paragraph({
+                                    alignment: AlignmentType.RIGHT,
+                                    children: [
+                                      new TextRun({
+                                        text: formatMoney(record.sixMonthAgo),
+                                        ...wordFileStyle.text_style,
+                                      }),
+                                    ],
+                                  }),
+                                ],
+                              }),
+                              new TableCell({
+                                verticalAlign: VerticalAlign.CENTER,
+                                margins: wordFileStyle.margin_right,
+                                children: [
+                                  new Paragraph({
+                                    alignment: AlignmentType.RIGHT,
+                                    children: [
+                                      new TextRun({
+                                        text: formatMoney(record.oneYearAgo),
+                                        ...wordFileStyle.text_style,
+                                      }),
+                                    ],
+                                  }),
+                                ],
+                              }),
+                              new TableCell({
+                                verticalAlign: VerticalAlign.CENTER,
+                                margins: wordFileStyle.margin_right,
+                                children: [
+                                  new Paragraph({
+                                    alignment: AlignmentType.RIGHT,
+                                    children: [
+                                      new TextRun({
+                                        text: formatMoney(record.twoYearAgo),
+                                        ...wordFileStyle.text_style,
+                                      }),
+                                    ],
+                                  }),
+                                ],
+                              }),
+                              new TableCell({
+                                verticalAlign: VerticalAlign.CENTER,
+                                margins: wordFileStyle.margin_right,
+                                children: [
+                                  new Paragraph({
+                                    alignment: AlignmentType.RIGHT,
+                                    children: [
+                                      new TextRun({
+                                        text: formatMoney(record.threeYearAgo),
+                                        ...wordFileStyle.text_style,
+                                      }),
+                                    ],
+                                  }),
+                                ],
+                              }),
+                              new TableCell({
+                                verticalAlign: VerticalAlign.CENTER,
+                                margins: wordFileStyle.margin_right,
+                                children: [
+                                  new Paragraph({
+                                    alignment: AlignmentType.RIGHT,
+                                    children: [
+                                      new TextRun({
+                                        text: formatMoney(record.fourYearAgo),
+                                        ...wordFileStyle.text_style,
+                                      }),
+                                    ],
+                                  }),
+                                ],
+                              }),
+                              new TableCell({
+                                verticalAlign: VerticalAlign.CENTER,
+                                margins: wordFileStyle.margin_right,
+                                children: [
+                                  new Paragraph({
+                                    alignment: AlignmentType.RIGHT,
+                                    children: [
+                                      new TextRun({
+                                        text: formatMoney(record.fiveYearAgo),
+                                        ...wordFileStyle.text_style,
+                                      }),
+                                    ],
+                                  }),
+                                ],
+                              }),
+                              new TableCell({
+                                verticalAlign: VerticalAlign.CENTER,
+                                margins: wordFileStyle.margin_right,
+                                children: [
+                                  new Paragraph({
+                                    alignment: AlignmentType.RIGHT,
+                                    children: [
+                                      new TextRun({
+                                        text: formatMoney(
+                                          record.greaterfiveYear,
+                                        ),
+                                        ...wordFileStyle.text_style,
+                                      }),
+                                    ],
+                                  }),
+                                ],
+                              }),
+                            ],
+                          });
                         });
-                      });
                       return [
                         new TableRow({
                           height: setHeight(WORD_FILE_CONFIG.TABLE_ROW_HEIGHT),
@@ -549,7 +566,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: readDecimal(item.totalPrice),
+                                      text: formatMoney(item.totalPrice),
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -564,7 +581,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: formatNumber(item.sixMonthAgo),
+                                      text: formatMoney(item.sixMonthAgo),
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -579,7 +596,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: formatNumber(item.oneYearAgo),
+                                      text: formatMoney(item.oneYearAgo),
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -594,7 +611,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: formatNumber(item.twoYearAgo),
+                                      text: formatMoney(item.twoYearAgo),
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -609,7 +626,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: formatNumber(item.threeYearAgo),
+                                      text: formatMoney(item.threeYearAgo),
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -624,7 +641,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: formatNumber(item.fourYearAgo),
+                                      text: formatMoney(item.fourYearAgo),
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -639,7 +656,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: formatNumber(item.fiveYearAgo),
+                                      text: formatMoney(item.fiveYearAgo),
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -654,7 +671,7 @@ export async function generateReportAgeOfItemStock(
                                   alignment: AlignmentType.RIGHT,
                                   children: [
                                     new TextRun({
-                                      text: formatNumber(item.greaterfiveYear),
+                                      text: formatMoney(item.greaterfiveYear),
                                       ...wordFileStyle.text_style_bold,
                                     }),
                                   ],
@@ -697,7 +714,7 @@ export async function generateReportAgeOfItemStock(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(warehouse.totalPrice),
+                                  text: formatMoney(warehouse.totalPrice),
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
@@ -712,7 +729,7 @@ export async function generateReportAgeOfItemStock(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(warehouse.sixMonth),
+                                  text: formatMoney(warehouse.sixMonth),
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
@@ -727,7 +744,7 @@ export async function generateReportAgeOfItemStock(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(warehouse.oneYearAgo),
+                                  text: formatMoney(warehouse.oneYearAgo),
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
@@ -742,7 +759,7 @@ export async function generateReportAgeOfItemStock(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(warehouse.twoYearAgo),
+                                  text: formatMoney(warehouse.twoYearAgo),
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
@@ -757,7 +774,7 @@ export async function generateReportAgeOfItemStock(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(warehouse.threeYearAgo),
+                                  text: formatMoney(warehouse.threeYearAgo),
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
@@ -772,7 +789,7 @@ export async function generateReportAgeOfItemStock(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(warehouse.fourYearAgo),
+                                  text: formatMoney(warehouse.fourYearAgo),
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
@@ -787,7 +804,7 @@ export async function generateReportAgeOfItemStock(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(warehouse.fiveYearAgo),
+                                  text: formatMoney(warehouse.fiveYearAgo),
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
@@ -802,7 +819,7 @@ export async function generateReportAgeOfItemStock(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: formatNumber(warehouse.greaterfiveYear),
+                                  text: formatMoney(warehouse.greaterfiveYear),
                                   ...wordFileStyle.text_style_bold,
                                 }),
                               ],
@@ -843,7 +860,7 @@ export async function generateReportAgeOfItemStock(
                         alignment: AlignmentType.RIGHT,
                         children: [
                           new TextRun({
-                            text: formatNumber(warehouseTotalPrice),
+                            text: formatMoney(warehouseTotalPrice),
                             ...wordFileStyle.text_style_bold,
                           }),
                         ],
@@ -858,7 +875,7 @@ export async function generateReportAgeOfItemStock(
                         alignment: AlignmentType.RIGHT,
                         children: [
                           new TextRun({
-                            text: formatNumber(sixMonth),
+                            text: formatMoney(sixMonth),
                             ...wordFileStyle.text_style_bold,
                           }),
                         ],
@@ -873,7 +890,7 @@ export async function generateReportAgeOfItemStock(
                         alignment: AlignmentType.RIGHT,
                         children: [
                           new TextRun({
-                            text: formatNumber(oneYearAgo),
+                            text: formatMoney(oneYearAgo),
                             ...wordFileStyle.text_style_bold,
                           }),
                         ],
@@ -888,7 +905,7 @@ export async function generateReportAgeOfItemStock(
                         alignment: AlignmentType.RIGHT,
                         children: [
                           new TextRun({
-                            text: formatNumber(twoYearAgo),
+                            text: formatMoney(twoYearAgo),
                             ...wordFileStyle.text_style_bold,
                           }),
                         ],
@@ -903,7 +920,7 @@ export async function generateReportAgeOfItemStock(
                         alignment: AlignmentType.RIGHT,
                         children: [
                           new TextRun({
-                            text: formatNumber(threeYearAgo),
+                            text: formatMoney(threeYearAgo),
                             ...wordFileStyle.text_style_bold,
                           }),
                         ],
@@ -918,7 +935,7 @@ export async function generateReportAgeOfItemStock(
                         alignment: AlignmentType.RIGHT,
                         children: [
                           new TextRun({
-                            text: formatNumber(fourYearAgo),
+                            text: formatMoney(fourYearAgo),
                             ...wordFileStyle.text_style_bold,
                           }),
                         ],
@@ -933,7 +950,7 @@ export async function generateReportAgeOfItemStock(
                         alignment: AlignmentType.RIGHT,
                         children: [
                           new TextRun({
-                            text: formatNumber(fiveYearAgo),
+                            text: formatMoney(fiveYearAgo),
                             ...wordFileStyle.text_style_bold,
                           }),
                         ],
@@ -948,7 +965,7 @@ export async function generateReportAgeOfItemStock(
                         alignment: AlignmentType.RIGHT,
                         children: [
                           new TextRun({
-                            text: formatNumber(greaterfiveYear),
+                            text: formatMoney(greaterfiveYear),
                             ...wordFileStyle.text_style_bold,
                           }),
                         ],
