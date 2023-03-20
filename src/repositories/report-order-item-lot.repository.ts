@@ -541,7 +541,10 @@ function reportItemImportedButNotPutToPosition(
       },
     },
     {
-      $sort: { '_id.orderCreatedAt': -1, '_id.itemCode': -1 },
+      $sort: {
+        '_id.orderCreatedAt': -1,
+        '_id.orderCode': 1,
+      },
     },
     {
       $group: {
