@@ -273,6 +273,8 @@ export class SyncService {
       case ActionType.confirm:
       case ActionType.reject:
         return this.createOrderFromPurchasedOrderImportDetail(request.data);
+      case ActionType.delete:
+        return this.deletePurchaseOrderImport(request.data);
       default:
         break;
     }
@@ -281,6 +283,42 @@ export class SyncService {
       .withCode(ResponseCodeEnum.BAD_REQUEST)
       .withMessage(await this.i18n.translate('error.NOT_FOUND'))
       .build();
+  }
+
+  async deletePurchaseOrderImport(request: PurchasedOrderImportRequestDto) {
+    try {
+      this.logger.log(
+        `START DELETE PO IMPORT: ORDER_CODE (${request.code}), COMPANY (${request?.company?.code})`,
+      );
+
+      const condition = {
+        orderCode: request.code,
+        orderType: OrderType.IMPORT,
+        companyCode: request?.company?.code,
+      };
+
+      const response = await Promise.all([
+        this.reportOrderItemLotRepository.deleteAllByCondition(condition),
+        this.reportOrderItemRepository.deleteAllByCondition(condition),
+        this.reportOrderRepository.deleteAllByCondition(condition),
+      ]);
+
+      console.log('RESPONSE DELETE ORDER:', response);
+
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.SUCCESS)
+        .withMessage(await this.i18n.translate('success.SUCCESS'))
+        .build();
+    } catch (error) {
+      console.log(error);
+      this.logger.error(
+        `ERROR DELETE PO IMPORT: ORDER_CODE (${request.code}), COMPANY (${request?.company?.code})`,
+      );
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.BAD_REQUEST)
+        .withMessage(await this.i18n.translate('error.BAD_REQUEST'))
+        .build();
+    }
   }
 
   async createOrderFromWarehouseTransferDetailDetail(
