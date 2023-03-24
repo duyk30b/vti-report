@@ -442,11 +442,15 @@ export const ORDER_TRANSFER_INCOMPLETED_COLUMNS: TableColumn[] = [
 export const ORDER_EXPORT_INCOMPLETED_COLUMNS: TableColumn[] = [
   {
     name: 'INDEX',
-    width: 0.7,
+    width: 0.5,
   },
   {
     name: 'ORDER_ID_WMSX',
-    width: 1.4,
+    width: 1.2,
+  },
+  {
+    name: 'VOUCHERS_DATE',
+    width: 1.2,
   },
   {
     name: 'ITEM_CODE',
@@ -454,7 +458,7 @@ export const ORDER_EXPORT_INCOMPLETED_COLUMNS: TableColumn[] = [
   },
   {
     name: 'ITEM_NAME',
-    width: 3.6,
+    width: 3.2,
   },
   {
     name: 'UNIT',
@@ -466,11 +470,11 @@ export const ORDER_EXPORT_INCOMPLETED_COLUMNS: TableColumn[] = [
   },
   {
     name: 'CONTRUCTION',
-    width: 1.8,
+    width: 1.6,
   },
   {
     name: 'RECEIVER',
-    width: 2.2,
+    width: 2,
   },
 ];
 

@@ -1,5 +1,6 @@
-import { formatDate, readDecimal } from '@constant/common';
+import { formatMoney, readDecimal } from '@constant/common';
 import { TableAgeOfItems } from '@models/age-of-items.model';
+import { plusBigNumber } from '@utils/common';
 import {
   ALIGNMENT_CENTER,
   ALIGNMENT_LEFT,
@@ -29,14 +30,20 @@ export function reportAgeOfItemsTemplateData(
   let totalGreaterFiveYearAll = 0;
   const cells: ConfigCells[] = [];
   dataExcell.forEach((warehouse) => {
-    totalPriceAll += warehouse.totalPrice;
-    totalSixMonthAll += warehouse.sixMonth;
-    totalOneYearAll += warehouse.oneYearAgo;
-    totalTwoYearAll += warehouse.twoYearAgo;
-    totalThreeYearAll += warehouse.threeYearAgo;
-    totalFourYearAll += warehouse.fourYearAgo;
-    totalFiveYearAll += warehouse.fiveYearAgo;
-    totalGreaterFiveYearAll += warehouse.greaterfiveYear;
+    totalPriceAll = plusBigNumber(warehouse.totalPrice, totalPriceAll);
+    totalSixMonthAll = plusBigNumber(warehouse.sixMonth, totalSixMonthAll);
+    totalOneYearAll = plusBigNumber(warehouse.oneYearAgo, totalOneYearAll);
+    totalTwoYearAll = plusBigNumber(warehouse.twoYearAgo, totalTwoYearAll);
+    totalThreeYearAll = plusBigNumber(
+      warehouse.threeYearAgo,
+      totalThreeYearAll,
+    );
+    totalFourYearAll = plusBigNumber(warehouse.fourYearAgo, totalFourYearAll);
+    totalFiveYearAll = plusBigNumber(warehouse.fiveYearAgo, totalFiveYearAll);
+    totalGreaterFiveYearAll = plusBigNumber(
+      warehouse.greaterfiveYear,
+      totalGreaterFiveYearAll,
+    );
     cells.push(
       ...[
         {
@@ -49,7 +56,7 @@ export function reportAgeOfItemsTemplateData(
         },
         {
           nameCell: `K${curRowIdx}`,
-          value: warehouse.totalPrice,
+          value: formatMoney(warehouse.totalPrice),
           font: FONT_BOLD_8,
           aligment: ALIGNMENT_RIGHT,
           border: BORDER,
@@ -57,7 +64,7 @@ export function reportAgeOfItemsTemplateData(
         },
         {
           nameCell: `L${curRowIdx}`,
-          value: warehouse.sixMonth,
+          value: formatMoney(warehouse.sixMonth),
           font: FONT_BOLD_8,
           aligment: ALIGNMENT_RIGHT,
           border: BORDER,
@@ -65,7 +72,7 @@ export function reportAgeOfItemsTemplateData(
         },
         {
           nameCell: `M${curRowIdx}`,
-          value: warehouse.oneYearAgo,
+          value: formatMoney(warehouse.oneYearAgo),
           font: FONT_BOLD_8,
           aligment: ALIGNMENT_RIGHT,
           border: BORDER,
@@ -73,7 +80,7 @@ export function reportAgeOfItemsTemplateData(
         },
         {
           nameCell: `N${curRowIdx}`,
-          value: warehouse.twoYearAgo,
+          value: formatMoney(warehouse.twoYearAgo),
           font: FONT_BOLD_8,
           aligment: ALIGNMENT_RIGHT,
           border: BORDER,
@@ -81,7 +88,7 @@ export function reportAgeOfItemsTemplateData(
         },
         {
           nameCell: `O${curRowIdx}`,
-          value: warehouse.threeYearAgo,
+          value: formatMoney(warehouse.threeYearAgo),
           font: FONT_BOLD_8,
           aligment: ALIGNMENT_RIGHT,
           border: BORDER,
@@ -89,7 +96,7 @@ export function reportAgeOfItemsTemplateData(
         },
         {
           nameCell: `P${curRowIdx}`,
-          value: warehouse.fourYearAgo,
+          value: formatMoney(warehouse.fourYearAgo),
           font: FONT_BOLD_8,
           aligment: ALIGNMENT_RIGHT,
           border: BORDER,
@@ -97,7 +104,7 @@ export function reportAgeOfItemsTemplateData(
         },
         {
           nameCell: `Q${curRowIdx}`,
-          value: warehouse.fiveYearAgo,
+          value: formatMoney(warehouse.fiveYearAgo),
           font: FONT_BOLD_8,
           aligment: ALIGNMENT_RIGHT,
           border: BORDER,
@@ -105,7 +112,7 @@ export function reportAgeOfItemsTemplateData(
         },
         {
           nameCell: `R${curRowIdx}`,
-          value: warehouse.greaterfiveYear,
+          value: formatMoney(warehouse.greaterfiveYear),
           font: FONT_BOLD_8,
           aligment: ALIGNMENT_RIGHT,
           border: BORDER,
@@ -146,15 +153,7 @@ export function reportAgeOfItemsTemplateData(
           },
           {
             nameCell: `K${curRowIdx}`,
-            value: item.totalPrice,
-            font: FONT_BOLD_9,
-            aligment: ALIGNMENT_RIGHT,
-            border: BORDER,
-            numFmt: '### ### ### ###',
-          },
-          {
-            nameCell: `K${curRowIdx}`,
-            value: item.totalPrice,
+            value: formatMoney(item.totalPrice),
             font: FONT_BOLD_9,
             aligment: ALIGNMENT_RIGHT,
             border: BORDER,
@@ -162,7 +161,7 @@ export function reportAgeOfItemsTemplateData(
           },
           {
             nameCell: `L${curRowIdx}`,
-            value: item.sixMonthAgo,
+            value: formatMoney(item.sixMonthAgo),
             font: FONT_BOLD_9,
             aligment: ALIGNMENT_RIGHT,
             border: BORDER,
@@ -170,7 +169,7 @@ export function reportAgeOfItemsTemplateData(
           },
           {
             nameCell: `M${curRowIdx}`,
-            value: item.oneYearAgo,
+            value: formatMoney(item.oneYearAgo),
             font: FONT_BOLD_9,
             aligment: ALIGNMENT_RIGHT,
             border: BORDER,
@@ -178,7 +177,7 @@ export function reportAgeOfItemsTemplateData(
           },
           {
             nameCell: `N${curRowIdx}`,
-            value: item.twoYearAgo,
+            value: formatMoney(item.twoYearAgo),
             font: FONT_BOLD_9,
             aligment: ALIGNMENT_RIGHT,
             border: BORDER,
@@ -186,7 +185,7 @@ export function reportAgeOfItemsTemplateData(
           },
           {
             nameCell: `O${curRowIdx}`,
-            value: item.threeYearAgo,
+            value: formatMoney(item.threeYearAgo),
             font: FONT_BOLD_9,
             aligment: ALIGNMENT_RIGHT,
             border: BORDER,
@@ -194,7 +193,7 @@ export function reportAgeOfItemsTemplateData(
           },
           {
             nameCell: `P${curRowIdx}`,
-            value: item.fourYearAgo,
+            value: formatMoney(item.fourYearAgo),
             font: FONT_BOLD_9,
             aligment: ALIGNMENT_RIGHT,
             border: BORDER,
@@ -202,7 +201,7 @@ export function reportAgeOfItemsTemplateData(
           },
           {
             nameCell: `Q${curRowIdx}`,
-            value: item.fiveYearAgo,
+            value: formatMoney(item.fiveYearAgo),
             font: FONT_BOLD_9,
             aligment: ALIGNMENT_RIGHT,
             border: BORDER,
@@ -210,7 +209,7 @@ export function reportAgeOfItemsTemplateData(
           },
           {
             nameCell: `R${curRowIdx}`,
-            value: item.greaterfiveYear,
+            value: formatMoney(item.greaterfiveYear),
             font: FONT_BOLD_9,
             aligment: ALIGNMENT_RIGHT,
             border: BORDER,
@@ -291,7 +290,7 @@ export function reportAgeOfItemsTemplateData(
               },
               {
                 nameCell: `K${curRowIdx}`,
-                value: readDecimal(order.totalPrice),
+                value: formatMoney(order.totalPrice),
                 font: FONT_NORMAL_9,
                 aligment: ALIGNMENT_RIGHT,
                 numFmt: '### ### ### ###',
@@ -299,7 +298,7 @@ export function reportAgeOfItemsTemplateData(
               },
               {
                 nameCell: `L${curRowIdx}`,
-                value: order.sixMonthAgo,
+                value: formatMoney(order.sixMonthAgo),
                 font: FONT_BOLD_9,
                 aligment: ALIGNMENT_RIGHT,
                 border: BORDER,
@@ -307,7 +306,7 @@ export function reportAgeOfItemsTemplateData(
               },
               {
                 nameCell: `M${curRowIdx}`,
-                value: order.oneYearAgo,
+                value: formatMoney(order.oneYearAgo),
                 font: FONT_BOLD_9,
                 aligment: ALIGNMENT_RIGHT,
                 border: BORDER,
@@ -315,7 +314,7 @@ export function reportAgeOfItemsTemplateData(
               },
               {
                 nameCell: `N${curRowIdx}`,
-                value: order.twoYearAgo,
+                value: formatMoney(order.twoYearAgo),
                 font: FONT_BOLD_9,
                 aligment: ALIGNMENT_RIGHT,
                 border: BORDER,
@@ -323,7 +322,7 @@ export function reportAgeOfItemsTemplateData(
               },
               {
                 nameCell: `O${curRowIdx}`,
-                value: order.threeYearAgo,
+                value: formatMoney(order.threeYearAgo),
                 font: FONT_BOLD_9,
                 aligment: ALIGNMENT_RIGHT,
                 border: BORDER,
@@ -331,7 +330,7 @@ export function reportAgeOfItemsTemplateData(
               },
               {
                 nameCell: `P${curRowIdx}`,
-                value: order.fourYearAgo,
+                value: formatMoney(order.fourYearAgo),
                 font: FONT_BOLD_9,
                 aligment: ALIGNMENT_RIGHT,
                 border: BORDER,
@@ -339,7 +338,7 @@ export function reportAgeOfItemsTemplateData(
               },
               {
                 nameCell: `Q${curRowIdx}`,
-                value: order.fiveYearAgo,
+                value: formatMoney(order.fiveYearAgo),
                 font: FONT_BOLD_9,
                 aligment: ALIGNMENT_RIGHT,
                 border: BORDER,
@@ -347,7 +346,7 @@ export function reportAgeOfItemsTemplateData(
               },
               {
                 nameCell: `R${curRowIdx}`,
-                value: order.greaterfiveYear,
+                value: formatMoney(order.greaterfiveYear),
                 font: FONT_BOLD_9,
                 aligment: ALIGNMENT_RIGHT,
                 border: BORDER,
@@ -373,7 +372,7 @@ export function reportAgeOfItemsTemplateData(
       },
       {
         nameCell: `K${curRowIdx}`,
-        value: readDecimal(totalPriceAll),
+        value: formatMoney(totalPriceAll),
         font: FONT_NORMAL_9,
         aligment: ALIGNMENT_RIGHT,
         numFmt: '### ### ### ###',
@@ -381,7 +380,7 @@ export function reportAgeOfItemsTemplateData(
       },
       {
         nameCell: `L${curRowIdx}`,
-        value: totalSixMonthAll,
+        value: formatMoney(totalSixMonthAll),
         font: FONT_BOLD_9,
         aligment: ALIGNMENT_RIGHT,
         border: BORDER,
@@ -389,7 +388,7 @@ export function reportAgeOfItemsTemplateData(
       },
       {
         nameCell: `M${curRowIdx}`,
-        value: totalOneYearAll,
+        value: formatMoney(totalOneYearAll),
         font: FONT_BOLD_9,
         aligment: ALIGNMENT_RIGHT,
         border: BORDER,
@@ -397,7 +396,7 @@ export function reportAgeOfItemsTemplateData(
       },
       {
         nameCell: `N${curRowIdx}`,
-        value: totalTwoYearAll,
+        value: formatMoney(totalTwoYearAll),
         font: FONT_BOLD_9,
         aligment: ALIGNMENT_RIGHT,
         border: BORDER,
@@ -405,7 +404,7 @@ export function reportAgeOfItemsTemplateData(
       },
       {
         nameCell: `O${curRowIdx}`,
-        value: totalThreeYearAll,
+        value: formatMoney(totalThreeYearAll),
         font: FONT_BOLD_9,
         aligment: ALIGNMENT_RIGHT,
         border: BORDER,
@@ -413,7 +412,7 @@ export function reportAgeOfItemsTemplateData(
       },
       {
         nameCell: `P${curRowIdx}`,
-        value: totalFourYearAll,
+        value: formatMoney(totalFourYearAll),
         font: FONT_BOLD_9,
         aligment: ALIGNMENT_RIGHT,
         border: BORDER,
@@ -421,7 +420,7 @@ export function reportAgeOfItemsTemplateData(
       },
       {
         nameCell: `Q${curRowIdx}`,
-        value: totalFiveYearAll,
+        value: formatMoney(totalFiveYearAll),
         font: FONT_BOLD_9,
         aligment: ALIGNMENT_RIGHT,
         border: BORDER,
@@ -429,7 +428,7 @@ export function reportAgeOfItemsTemplateData(
       },
       {
         nameCell: `R${curRowIdx}`,
-        value: totalGreaterFiveYearAll,
+        value: formatMoney(totalGreaterFiveYearAll),
         font: FONT_BOLD_9,
         aligment: ALIGNMENT_RIGHT,
         border: BORDER,
