@@ -60,10 +60,10 @@ import { getSituationTransferMapped } from '@mapping/common/age-of-item-mapped';
 import { TransactionItemRepository } from '@repositories/transaction-item.repository';
 import { UserService } from '@components/user/user.service';
 import { WarehouseServiceInterface } from '@components/warehouse/interface/warehouse.service.interface';
-import { getTimezone, minus, minusBigNumber } from '@utils/common';
+import { getTimezone, minusBigNumber } from '@utils/common';
 import { FORMAT_DATE } from '@utils/constant';
-import { formatDate, readDecimal } from '@constant/common';
-import { keyBy, compact, isEmpty, concat } from 'lodash';
+import { readDecimal } from '@constant/common';
+import { keyBy, isEmpty, concat, groupBy } from 'lodash';
 import { InventoryQuantityNormsRepository } from '@repositories/inventory-quantity-norms.repository';
 import { DailyItemWarehouseStockPriceRepository } from '@repositories/daily-item-warehouse-stock-price.repository';
 @Injectable()
@@ -188,30 +188,12 @@ export class ExportService {
     await this.getInfoWarehouse(request, data, true);
     const transactionDateNow =
       await this.transactionItemRepository.getTransactionByDate(request);
-    let transactionArr = transactionDateNow.map((item) => {
-      if (
-        (item.quantityExported != 0 || item.quantityImported != 0) &&
-        item.quantityExported != item.quantityImported
-      ) {
-        const accountInfo = item.accountInfo[0] || '';
-        return {
-          ...item,
-          origin: accountInfo?.description || '',
-          account: accountInfo?.accountHave || '',
-          checkImport: minus(item?.quantityImported, item?.quantityExported),
-          transactionDate: formatDate(request?.dateFrom) || '',
-          key: `${item.warehouseCode}-${item.locatorCode}-${item.itemCode}-${item.companyCode}-${item?.orderCode}`,
-        };
-      }
-    });
-    transactionArr = compact(transactionArr);
-    const transactionInput = keyBy(transactionArr, 'key');
+    const transactionDate = groupBy(transactionDateNow, 'keyWarehouse');
 
     const dataMapped = await getSituationTransferMapped(
       data,
       this.i18n,
-      this.warehouseServiceInterface,
-      transactionInput,
+      transactionDate,
     );
     if (dataMapped.companyCode) {
       const dataCompany = await this.getCompany(dataMapped.companyCode);

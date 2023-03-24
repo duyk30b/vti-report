@@ -9,7 +9,12 @@ import { TransactionItem } from '@schemas/transaction-item.schema';
 import { Model } from 'mongoose';
 import * as moment from 'moment';
 import { getTimezone } from '@utils/common';
-import { DATE_FOMAT, FORMAT_DATE, TIMEZONE_HCM_CITY } from '@utils/constant';
+import {
+  DATE_FOMAT,
+  DATE_FOMAT_EXCELL,
+  FORMAT_DATE,
+  TIMEZONE_HCM_CITY,
+} from '@utils/constant';
 import { keyBy } from 'lodash';
 import { ActionType, ReportType } from '@enums/report-type.enum';
 import {
@@ -513,6 +518,50 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
         },
       },
       {
+        $lookup: {
+          from: 'daily-item-warehouse-stock-price',
+          let: {
+            companyCodeMap: '$companyCode',
+            warehouseCodeMap: '$warehouseCode',
+            itemCodeMap: '$itemCode',
+            lotNumberMap: '$lotNumber',
+          },
+          pipeline: [
+            {
+              $sort: { reportDate: -1 },
+            },
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$companyCode', '$$companyCodeMap'] },
+                    { $eq: ['$warehouseCode', '$$warehouseCodeMap'] },
+                    { $eq: ['$lotNumber', '$$lotNumberMap'] },
+                    { $eq: ['$itemCode', '$$itemCodeMap'] },
+                  ],
+                },
+              },
+            },
+            {
+              $project: {
+                averagePrice: {
+                  $cond: {
+                    if: '$quantity',
+                    then: {
+                      $divide: ['$price', '$quantity'],
+                    },
+                    else: 0,
+                  },
+                },
+                quantity: 1,
+                price: 1,
+              },
+            },
+          ],
+          as: 'priceItem',
+        },
+      },
+      {
         $group: {
           _id: {
             companyCode: '$companyCode',
@@ -522,7 +571,9 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
             locatorCode: '$locatorCode',
             unit: '$unit',
             lotNumber: '$lotNumber',
-            storageCost: '$storageCost',
+            storageCost: { $arrayElemAt: ['$priceItem.averagePrice', 0] },
+            totalQuantity: { $arrayElemAt: ['$priceItem.quantity', 0] },
+            totalPrice: { $arrayElemAt: ['$priceItem.price', 0] },
             orderCode: '$orderCode',
           },
           quantityExported: { $sum: '$quantityExported' },
@@ -542,9 +593,16 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           lotNumber: '$_id.lotNumber',
           storageCost: '$_id.storageCost',
           orderCode: '$_id.orderCode',
+          totalQuantity: '$_id.totalQuantity',
+          totalPrice: '$_id.totalPrice',
           quantityExported: 1,
           quantityImported: 1,
           warehouseName: 1,
+          quantity: { $subtract: ['$quantityImported', '$quantityExported'] },
+          keyWarehouse: {
+            $concat: ['$_id.companyCode', '-', '$_id.warehouseCode'],
+          },
+          storageDate: moment(request?.dateFrom).format(DATE_FOMAT_EXCELL),
         },
       },
       {
@@ -581,7 +639,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
         },
       },
       {
-        $sort: { storageDate: 1 },
+        $sort: { quantity: -1, storageDate: 1 },
       },
     ]);
   }

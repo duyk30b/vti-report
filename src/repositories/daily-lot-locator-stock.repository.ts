@@ -625,19 +625,51 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
             locatorCode: '$locatorCode',
             unit: '$unit',
             storageCost: '$storageCost',
-            stockQuantity: {
-              $cond: {
-                if: '$transactionItem',
-                then: {
-                  $sum: [
-                    '$stockQuantity',
-                    '$transactionItem.quantityExported',
-                    '$transactionItem.quantityImported',
-                  ],
-                },
-                else: '$stockQuantity',
-              },
+            stockQuantity: '$stockQuantity',
+          },
+        },
+        {
+          $lookup: {
+            from: 'daily-item-warehouse-stock-price',
+            let: {
+              companyCodeMap: '$companyCode',
+              warehouseCodeMap: '$warehouseCode',
+              itemCodeMap: '$itemCode',
+              lotNumberMap: '$lotNumber',
             },
+            pipeline: [
+              {
+                $sort: { reportDate: -1 },
+              },
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ['$companyCode', '$$companyCodeMap'] },
+                      { $eq: ['$warehouseCode', '$$warehouseCodeMap'] },
+                      { $eq: ['$itemCode', '$$itemCodeMap'] },
+                      { $eq: ['$lotNumber', '$$lotNumberMap'] },
+                    ],
+                  },
+                },
+              },
+              {
+                $project: {
+                  price: 1,
+                  quantity: 1,
+                  averagePrice: {
+                    $cond: {
+                      if: '$quantity',
+                      then: {
+                        $divide: ['$price', '$quantity'],
+                      },
+                      else: 0,
+                    },
+                  },
+                },
+              },
+            ],
+            as: 'priceItem',
           },
         },
         {
@@ -654,8 +686,13 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
             locatorCode: '$locatorCode',
             unit: '$unit',
             stockQuantity: '$stockQuantity',
-            storageCost: '$storageCost',
-            totalPrice: { $multiply: ['$storageCost', '$stockQuantity'] },
+            storageCost: { $arrayElemAt: ['$priceItem.averagePrice', 0] },
+            totalPrice: {
+              $multiply: [
+                { $arrayElemAt: ['$priceItem.averagePrice', 0] },
+                '$stockQuantity',
+              ],
+            },
             ...getQueryAgeOfItems(),
           },
         },
@@ -846,6 +883,7 @@ function getQueryAgeOfItems(sum = false) {
   const threeYearAgo = moment().subtract(3, YEARS).format(FORMAT_DATE);
   const fourYearAgo = moment().subtract(4, YEARS).format(FORMAT_DATE);
   const fiveYearAgo = moment().subtract(5, YEARS).format(FORMAT_DATE);
+  const a = '%Y-%m-%d';
   return {
     sixMonthAgo: {
       $cond: [
@@ -854,14 +892,19 @@ function getQueryAgeOfItems(sum = false) {
             {
               $dateToString: {
                 date: '$storageDate',
-                format: '%d/%m/%Y',
+                format: a,
                 timezone: TIMEZONE_HCM_CITY,
               },
             },
             sixMonthAgo,
           ],
         },
-        { $multiply: ['$storageCost', '$stockQuantity'] },
+        {
+          $multiply: [
+            { $arrayElemAt: ['$priceItem.averagePrice', 0] },
+            '$stockQuantity',
+          ],
+        },
         0,
       ],
     },
@@ -874,7 +917,7 @@ function getQueryAgeOfItems(sum = false) {
                 {
                   $dateToString: {
                     date: '$storageDate',
-                    format: '%d/%m/%Y',
+                    format: a,
                     timezone: TIMEZONE_HCM_CITY,
                   },
                 },
@@ -886,7 +929,7 @@ function getQueryAgeOfItems(sum = false) {
                 {
                   $dateToString: {
                     date: '$storageDate',
-                    format: '%d/%m/%Y',
+                    format: a,
                     timezone: TIMEZONE_HCM_CITY,
                   },
                 },
@@ -895,7 +938,12 @@ function getQueryAgeOfItems(sum = false) {
             },
           ],
         },
-        { $multiply: ['$storageCost', '$stockQuantity'] },
+        {
+          $multiply: [
+            { $arrayElemAt: ['$priceItem.averagePrice', 0] },
+            '$stockQuantity',
+          ],
+        },
         0,
       ],
     },
@@ -908,7 +956,7 @@ function getQueryAgeOfItems(sum = false) {
                 {
                   $dateToString: {
                     date: '$storageDate',
-                    format: '%d/%m/%Y',
+                    format: a,
                     timezone: TIMEZONE_HCM_CITY,
                   },
                 },
@@ -920,7 +968,7 @@ function getQueryAgeOfItems(sum = false) {
                 {
                   $dateToString: {
                     date: '$storageDate',
-                    format: '%d/%m/%Y',
+                    format: a,
                     timezone: TIMEZONE_HCM_CITY,
                   },
                 },
@@ -929,7 +977,12 @@ function getQueryAgeOfItems(sum = false) {
             },
           ],
         },
-        { $multiply: ['$storageCost', '$stockQuantity'] },
+        {
+          $multiply: [
+            { $arrayElemAt: ['$priceItem.averagePrice', 0] },
+            '$stockQuantity',
+          ],
+        },
         0,
       ],
     },
@@ -942,7 +995,7 @@ function getQueryAgeOfItems(sum = false) {
                 {
                   $dateToString: {
                     date: '$storageDate',
-                    format: '%d/%m/%Y',
+                    format: a,
                     timezone: TIMEZONE_HCM_CITY,
                   },
                 },
@@ -954,7 +1007,7 @@ function getQueryAgeOfItems(sum = false) {
                 {
                   $dateToString: {
                     date: '$storageDate',
-                    format: '%d/%m/%Y',
+                    format: a,
                     timezone: TIMEZONE_HCM_CITY,
                   },
                 },
@@ -963,7 +1016,12 @@ function getQueryAgeOfItems(sum = false) {
             },
           ],
         },
-        { $multiply: ['$storageCost', '$stockQuantity'] },
+        {
+          $multiply: [
+            { $arrayElemAt: ['$priceItem.averagePrice', 0] },
+            '$stockQuantity',
+          ],
+        },
         0,
       ],
     },
@@ -976,7 +1034,7 @@ function getQueryAgeOfItems(sum = false) {
                 {
                   $dateToString: {
                     date: '$storageDate',
-                    format: '%d/%m/%Y',
+                    format: a,
                     timezone: TIMEZONE_HCM_CITY,
                   },
                 },
@@ -988,7 +1046,7 @@ function getQueryAgeOfItems(sum = false) {
                 {
                   $dateToString: {
                     date: '$storageDate',
-                    format: '%d/%m/%Y',
+                    format: a,
                     timezone: TIMEZONE_HCM_CITY,
                   },
                 },
@@ -997,7 +1055,12 @@ function getQueryAgeOfItems(sum = false) {
             },
           ],
         },
-        { $multiply: ['$storageCost', '$stockQuantity'] },
+        {
+          $multiply: [
+            { $arrayElemAt: ['$priceItem.averagePrice', 0] },
+            '$stockQuantity',
+          ],
+        },
         0,
       ],
     },
@@ -1010,7 +1073,7 @@ function getQueryAgeOfItems(sum = false) {
                 {
                   $dateToString: {
                     date: '$storageDate',
-                    format: '%d/%m/%Y',
+                    format: a,
                     timezone: TIMEZONE_HCM_CITY,
                   },
                 },
@@ -1022,7 +1085,7 @@ function getQueryAgeOfItems(sum = false) {
                 {
                   $dateToString: {
                     date: '$storageDate',
-                    format: '%d/%m/%Y',
+                    format: a,
                     timezone: TIMEZONE_HCM_CITY,
                   },
                 },
@@ -1031,29 +1094,35 @@ function getQueryAgeOfItems(sum = false) {
             },
           ],
         },
-        { $multiply: ['$storageCost', '$stockQuantity'] },
+        {
+          $multiply: [
+            { $arrayElemAt: ['$priceItem.averagePrice', 0] },
+            '$stockQuantity',
+          ],
+        },
         0,
       ],
     },
     greaterfiveYear: {
       $cond: [
         {
-          $and: [
+          $lte: [
             {
-              $lt: [
-                {
-                  $dateToString: {
-                    date: '$storageDate',
-                    format: '%d/%m/%Y',
-                    timezone: TIMEZONE_HCM_CITY,
-                  },
-                },
-                fiveYearAgo,
-              ],
+              $dateToString: {
+                date: '$storageDate',
+                format: a,
+                timezone: TIMEZONE_HCM_CITY,
+              },
             },
+            fiveYearAgo,
           ],
         },
-        { $multiply: ['$storageCost', '$stockQuantity'] },
+        {
+          $multiply: [
+            { $arrayElemAt: ['$priceItem.averagePrice', 0] },
+            '$stockQuantity',
+          ],
+        },
         0,
       ],
     },
