@@ -215,8 +215,9 @@ export class SyncService {
       case ActionType.update:
       case ActionType.confirm:
       case ActionType.reject:
-      case ActionType.delete:
         return this.createOrderFromWarehouseTransferDetailDetail(request.data);
+      case ActionType.delete:
+        return this.deleteWarehouseTransfer(request.data);
       default:
         break;
     }
@@ -351,6 +352,42 @@ export class SyncService {
       console.log(error);
       this.logger.error(
         `ERROR DELETE SO EXPORT: ORDER_CODE (${request.code}), COMPANY (${request?.company?.code})`,
+      );
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.BAD_REQUEST)
+        .withMessage(await this.i18n.translate('error.BAD_REQUEST'))
+        .build();
+    }
+  }
+
+  async deleteWarehouseTransfer(request: WarehouseTransferResponseDto) {
+    try {
+      this.logger.log(
+        `START DELETE WAREHOUSE TRANSFER: ORDER_CODE (${request.code}), COMPANY (${request?.company?.code})`,
+      );
+
+      const condition = {
+        orderCode: request.code,
+        orderType: OrderType.TRANSFER,
+        companyCode: request?.company?.code,
+      };
+
+      const response = await Promise.all([
+        this.reportOrderItemLotRepository.deleteAllByCondition(condition),
+        this.reportOrderItemRepository.deleteAllByCondition(condition),
+        this.reportOrderRepository.deleteAllByCondition(condition),
+      ]);
+
+      console.log('RESPONSE DELETE ORDER:', response);
+
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.SUCCESS)
+        .withMessage(await this.i18n.translate('success.SUCCESS'))
+        .build();
+    } catch (error) {
+      console.log(error);
+      this.logger.error(
+        `ERROR DELETE WAREHOUSE TRANSFER: ORDER_CODE (${request.code}), COMPANY (${request?.company?.code})`,
       );
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.BAD_REQUEST)
