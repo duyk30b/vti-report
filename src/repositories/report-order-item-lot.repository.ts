@@ -42,6 +42,7 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
             orderCode: doc.orderCode,
             orderType: doc.orderType,
             itemCode: doc.itemCode,
+            lotNumber: doc.lotNumber,
           },
           update: doc,
           upsert: true,
