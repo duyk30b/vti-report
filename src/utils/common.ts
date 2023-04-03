@@ -17,7 +17,7 @@ export const div = (first: number, second: number): number => {
 };
 
 export const plusBigNumber = (first: any, second: any): any => {
-  return new Big(first).plus(new Big(second)).valueOf();
+  return new Big(first || 0).plus(new Big(second || 0)).valueOf();
 };
 
 export const minusBigNumber = (first: any, second: any): any => {
@@ -25,7 +25,7 @@ export const minusBigNumber = (first: any, second: any): any => {
 };
 
 export const mulBigNumber = (first: any, second: any): any => {
-  return new Big(first).mul(new Big(second)).valueOf();
+  return new Big(first || 0).mul(new Big(second || 0)).valueOf();
 };
 
 export const divBigNumber = (first: any, second: any): any => {
