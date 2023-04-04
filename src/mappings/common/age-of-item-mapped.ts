@@ -78,9 +78,9 @@ export async function getSituationTransferMapped(
       if (!isEmpty(listItemGroup)) {
         const listItem: any = {};
         for (const key in listItemGroup) {
+          const check = Object.keys(listItemGroup[key]).length ? true : false;
           Object.values(listItemGroup[key]).map((el: any) => {
             const itemCode = el?.itemCode;
-
             if (el?.quantity > 0) {
               if (!listItem[itemCode]) {
                 const tempItem = {
@@ -102,7 +102,7 @@ export async function getSituationTransferMapped(
                   greaterfiveYear: 0,
                   groupByStorageDate: [],
                 };
-                const tmp = formatItemInGroup(el, true);
+                const tmp = formatItemInGroup(el, check);
                 tempItem.groupByStorageDate.push(tmp);
                 listItem[itemCode] = tempItem;
                 item.totalPrice = plusBigNumber(
@@ -151,18 +151,23 @@ export async function getSituationTransferMapped(
       const itemTransaction = transactionDateNow[key];
       const listItem: any = {};
       let totalPrice = 0;
+      let warehouse = '';
       Object.values(itemTransaction).map((el: any) => {
         dataMaping.warehouseName = el.warehouseName;
+        warehouse = [el?.warehouseCode || '', el?.warehouseName || ''].join(
+          '_',
+        );
         const itemCode = el?.itemCode;
         if (el?.quantity > 0) {
-          totalPrice = plusBigNumber(totalPrice, el?.price) || 0;
+          const amount = mulBigNumber(el?.quantity || 0, el?.storageCost || 0);
+          totalPrice = plusBigNumber(totalPrice, amount) || 0;
           if (!listItem[itemCode]) {
             const tempItem = {
               itemCode: itemCode,
               itemName: el?.itemName,
               totalQuantity: el?.totalQuantity || 0,
-              totalPrice: el?.price,
-              sixMonthAgo: el?.price,
+              totalPrice: totalPrice,
+              sixMonthAgo: totalPrice,
               oneYearAgo: 0,
               twoYearAgo: 0,
               threeYearAgo: 0,
@@ -180,13 +185,10 @@ export async function getSituationTransferMapped(
           }
         }
       });
+      dataExcell = dataExcell ? dataExcell : [];
       dataExcell.push({
         warehouseCode:
-          i18n.translate('report.WAREHOUSE_GROUP_CODE') +
-          [
-            itemTransaction[0].warehouseCode,
-            itemTransaction[0].warehouseName,
-          ].join('_'),
+          i18n.translate('report.WAREHOUSE_GROUP_CODE') + warehouse,
         sixMonth: totalPrice,
         oneYearAgo: 0,
         twoYearAgo: 0,
@@ -194,7 +196,7 @@ export async function getSituationTransferMapped(
         fourYearAgo: 0,
         fiveYearAgo: 0,
         greaterfiveYear: 0,
-        totalPrice: 0,
+        totalPrice: totalPrice,
         items: Object.values(listItem),
       });
     }
