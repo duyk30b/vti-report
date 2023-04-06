@@ -66,6 +66,13 @@ import { readDecimal } from '@constant/common';
 import { keyBy, isEmpty, concat, groupBy } from 'lodash';
 import { InventoryQuantityNormsRepository } from '@repositories/inventory-quantity-norms.repository';
 import { DailyItemWarehouseStockPriceRepository } from '@repositories/daily-item-warehouse-stock-price.repository';
+import { ReportItemPlanningQuantities } from '@schemas/report-item-planning-quantitie.schema';
+import { ReportItemPlanningQuantitesRepository } from '@repositories/report-item-planning-quantities.repository';
+import { ReportReceiptRepository } from '@repositories/report-receipt.repository';
+import { ReportReceipt } from '@schemas/report-receipt.schema';
+import { getReOrderQuantity } from '@mapping/common/reorder-quantity.mapped';
+import { reportReorderQuantityExcelMapping } from '@mapping/excels/report-reorder-quantity.excel.mapping';
+import { reportReorderQuantity } from '@mapping/words/report-reorder-quantity.word.mapping';
 @Injectable()
 export class ExportService {
   constructor(
@@ -89,6 +96,12 @@ export class ExportService {
 
     @Inject(InventoryQuantityNormsRepository.name)
     private inventoryQuantityNormsRepository: InventoryQuantityNormsRepository,
+
+    @Inject(ReportItemPlanningQuantities.name)
+    private reportItemPlanningQuantitesRepository: ReportItemPlanningQuantitesRepository,
+
+    @Inject(ReportReceipt.name)
+    private reportReceiptRepository: ReportReceiptRepository,
 
     @Inject('UserServiceInterface')
     private readonly userService: UserService,
@@ -169,6 +182,9 @@ export class ExportService {
           dataReturn = await this.reportAgeOfItemStock(request);
           break;
 
+        case ReportType.REORDER_QUANTITY:
+          dataReturn = await this.reportReOrderQuantity(request);
+          break;
         default:
           dataReturn = null;
           break;
@@ -930,6 +946,56 @@ export class ExportService {
           dataMaped,
           this.i18n,
         );
+      default:
+        return;
+    }
+  }
+
+  async reportReOrderQuantity(request: ReportRequest): Promise<ReportResponse> {
+    const data =
+      await this.dailyLotLocatorStockRepository.getReportReOrderQuantity(
+        request,
+      );
+    const itemPlanning =
+      await this.reportItemPlanningQuantitesRepository.getReportItemPlanning(
+        request,
+      );
+    const receipts = await this.reportReceiptRepository.getDataRecept(request);
+    const inventory =
+      await this.inventoryQuantityNormsRepository.getReportReOderQuantity(
+        request,
+      );
+    const dataItemPlanning = keyBy(itemPlanning, 'key');
+    const dataReceipt = keyBy(receipts, 'key');
+    const dataInventory = keyBy(inventory, 'key');
+    const dataMapped = await getReOrderQuantity(
+      data,
+      this.i18n,
+      dataItemPlanning,
+      dataReceipt,
+      dataInventory,
+      request,
+      this.userService,
+    );
+
+    if (dataMapped.companyCode) {
+      const dataCompany = await this.getCompany(dataMapped.companyCode);
+      dataMapped.companyName = dataCompany[0].name || dataMapped.companyName;
+      dataMapped.companyAddress =
+        dataCompany[0].address || dataMapped.companyAddress;
+    }
+
+    switch (request.exportType) {
+      case ExportType.EXCEL:
+        const { nameFile, dataBase64 } =
+          await reportReorderQuantityExcelMapping(
+            request,
+            dataMapped,
+            this.i18n,
+          );
+        return { result: dataBase64, nameFile };
+      case ExportType.WORD:
+        return reportReorderQuantity(request, dataMapped, this.i18n);
       default:
         return;
     }

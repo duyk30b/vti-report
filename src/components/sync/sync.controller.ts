@@ -15,6 +15,8 @@ import { SyncInventory } from '@requests/sync-inventory-request';
 import { InventoryAdjustmentRequest } from '@requests/inventory-adjustments.request';
 import { InventoryQuantityNormsRequest } from '@requests/inventory-quantity-norms.request';
 import { SyncItemWarehouseStockPriceRequestDto } from './dto/request/sync-item-warehouse-stock-price.request.dto';
+import { ReceiptRequest } from '@requests/receipt.request';
+import { ItemPlanningQuantitesRequest } from '@requests/report-item-planning-quantities.request';
 
 @Controller('sync')
 export class SyncController {
@@ -181,6 +183,46 @@ export class SyncController {
       return responseError;
     }
     return await this.syncService.syncTransaction(request);
+  }
+
+  @Post('/receipt')
+  @ApiOperation({
+    tags: ['Sync'],
+    summary: 'Đồng bộ dữ liệu giao dịch',
+    description: 'Đồng bộ dữ liệu giao dịch',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: SuccessResponse,
+  })
+  async syncReceipt(@Body() payload: ReceiptRequest): Promise<any> {
+    const { request, responseError } = payload;
+    if (responseError && !isEmpty(responseError)) {
+      return responseError;
+    }
+    return await this.syncService.syncReceipt(request);
+  }
+
+  @Post('/item-planning-quantity')
+  @ApiOperation({
+    tags: ['Sync'],
+    summary: 'Đồng bộ dữ liệu giao dịch',
+    description: 'Đồng bộ dữ liệu giao dịch',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: SuccessResponse,
+  })
+  async syncItemPlanningQuantites(
+    @Body() payload: ItemPlanningQuantitesRequest,
+  ): Promise<any> {
+    const { request, responseError } = payload;
+    if (responseError && !isEmpty(responseError)) {
+      return responseError;
+    }
+    return await this.syncService.syncItemPlanningQuantity(request);
   }
 
   @MessagePattern(MessageSyncKafkaEnum.SYNC_REPORT_DAILY_ITEM_STOCK_TOPIC)
