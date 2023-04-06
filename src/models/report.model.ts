@@ -11,7 +11,7 @@ export interface TableColumn {
 export interface TableData<T> {
   warehouseCode: string;
   data: T[];
-  reportType?: number,
+  reportType?: number;
 }
 
 export enum Alignment {
@@ -24,7 +24,7 @@ export enum Alignment {
 }
 
 export type FormatByKey<T> = {
-  [P in keyof T]?: Alignment | { alignment:Alignment ; numFmt: string };
+  [P in keyof T]?: Alignment | { alignment: Alignment; numFmt: string };
 };
 
 export interface ReportModel<T> {
@@ -39,7 +39,7 @@ export interface ReportModel<T> {
   warehouse?: string;
   dateFrom: Date;
   dateTo?: Date;
-  reportType?: number,
+  reportType?: number;
   footer?: (
     curRowIdx: number,
     worksheet: ExcelJS.Worksheet,

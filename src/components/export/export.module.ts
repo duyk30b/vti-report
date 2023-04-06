@@ -45,6 +45,16 @@ import {
   DailyItemWarehouseStockPriceSchema,
 } from '@schemas/daily-item-warehouse-stock-price.schema';
 import { DailyItemWarehouseStockPriceRepository } from '@repositories/daily-item-warehouse-stock-price.repository';
+import {
+  ReportReceipt,
+  ReportReceiptSchema,
+} from '@schemas/report-receipt.schema';
+import { ReportReceiptRepository } from '@repositories/report-receipt.repository';
+import {
+  ReportItemPlanningQuantities,
+  ReportItemPlanningQuantitiesSchema,
+} from '@schemas/report-item-planning-quantitie.schema';
+import { ReportItemPlanningQuantitesRepository } from '@repositories/report-item-planning-quantities.repository';
 
 @Module({
   imports: [
@@ -80,6 +90,14 @@ import { DailyItemWarehouseStockPriceRepository } from '@repositories/daily-item
       {
         name: DailyItemWarehouseStockPrice.name,
         schema: DailyItemWarehouseStockPriceSchema,
+      },
+      {
+        name: ReportReceipt.name,
+        schema: ReportReceiptSchema,
+      },
+      {
+        name: ReportItemPlanningQuantities.name,
+        schema: ReportItemPlanningQuantitiesSchema,
       },
     ]),
     UserModule,
@@ -129,6 +147,14 @@ import { DailyItemWarehouseStockPriceRepository } from '@repositories/daily-item
     {
       provide: DailyItemWarehouseStockPriceRepository.name,
       useClass: DailyItemWarehouseStockPriceRepository,
+    },
+    {
+      provide: ReportReceipt.name,
+      useClass: ReportReceiptRepository,
+    },
+    {
+      provide: ReportItemPlanningQuantities.name,
+      useClass: ReportItemPlanningQuantitesRepository,
     },
   ],
 })

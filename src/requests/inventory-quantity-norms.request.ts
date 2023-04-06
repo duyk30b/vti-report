@@ -11,7 +11,6 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-
 export class LotItems {
   @ApiProperty()
   @IsOptional()
@@ -62,6 +61,18 @@ export class InventoryQuantityNorms {
   @Transform(({ value }) => Number(value))
   @IsNumber()
   minInventoryLimit: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @Transform(({ value }) => Number(value))
+  @IsNumber()
+  reorderPoint: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @Transform(({ value }) => Number(value))
+  @IsNumber()
+  eoq: number;
 }
 
 export class InventoryQuantityNormsRequest extends BaseDto {

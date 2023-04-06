@@ -874,6 +874,80 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
 
     return await this.dailyLotLocatorStock.aggregate(aggregateState);
   }
+
+  async getReportReOrderQuantity(request: ReportRequest): Promise<any[]> {
+    const condition = {
+      $and: [{}],
+    };
+    const prevDate = new Date(request?.dateFrom);
+    prevDate.setDate(prevDate.getDate() - 1);
+    condition['$and'].push({
+      $expr: {
+        $eq: [
+          {
+            $dateToString: {
+              date: '$reportDate',
+              format: '%Y-%m-%d',
+              timezone: TIMEZONE_HCM_CITY,
+            },
+          },
+          moment(prevDate).format(DATE_FOMAT),
+        ],
+      },
+    });
+    if (request?.companyCode)
+      condition['$and'].push({
+        companyCode: { $eq: request?.companyCode },
+      });
+    if (request?.warehouseCode)
+      condition['$and'].push({
+        warehouseCode: { $eq: request?.warehouseCode },
+      });
+    return this.dailyLotLocatorStock.aggregate([
+      { $match: condition },
+      {
+        $group: {
+          _id: {
+            companyCode: '$companyCode',
+            warehouseCode: '$warehouseCode',
+            itemCode: '$itemCode',
+          },
+          warehouseName: { $first: '$warehouseName' },
+          unit: { $first: '$unit' },
+          itemName: { $first: '$itemName' },
+          stockQuantity: { $sum: '$stockQuantity' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          companyCode: '$_id.companyCode',
+          warehouseCode: '$_id.warehouseCode',
+          itemCode: '$_id.itemCode',
+          warehouseName: 1,
+          itemName: 1,
+          unit: 1,
+          stockQuantity: 1,
+          key: {
+            $concat: [
+              { $ifNull: ['$_id.companyCode', ''] },
+              '-',
+              { $ifNull: ['$_id.warehouseCode', ''] },
+              '-',
+              { $ifNull: ['$_id.itemCode', ''] },
+            ],
+          },
+        },
+      },
+      {
+        $sort: {
+          warehouseCode: 1,
+          itemCode: 1,
+          stockQuantity: 1,
+        },
+      },
+    ]);
+  }
 }
 
 function getQueryAgeOfItems(sum = false) {

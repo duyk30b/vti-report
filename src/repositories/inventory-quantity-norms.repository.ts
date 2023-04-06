@@ -286,4 +286,58 @@ export class InventoryQuantityNormsRepository extends BaseAbstractRepository<Inv
       },
     ]);
   }
+
+  async getReportReOderQuantity(request: ReportRequest): Promise<any> {
+    const { companyCode, warehouseCode } = request;
+    const condition = {
+      $and: [],
+    } as any;
+    if (companyCode) {
+      condition['$and'].push({
+        companyCode: { $eq: companyCode },
+      });
+    }
+
+    if (warehouseCode) {
+      condition['$and'].push({
+        warehouseCode: { $eq: warehouseCode },
+      });
+    }
+
+    return this.inventoryQuantityNorms.aggregate([
+      {
+        $match: condition,
+      },
+      {
+        $group: {
+          _id: {
+            companyCode: '$companyCode',
+            warehouseCode: '$warehouseCode',
+            itemCode: '$itemCode',
+          },
+          eoq: { $sum: '$eoq' },
+          reorderPoint: { $sum: '$reorderPoint' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          companyCode: '$_id.companyCode',
+          itemCode: '$_id.itemCode',
+          warehouseCode: '$_id.warehouseCode',
+          eoq: 1,
+          reorderPoint: 1,
+          key: {
+            $concat: [
+              { $ifNull: ['$_id.companyCode', ''] },
+              '-',
+              { $ifNull: ['$_id.warehouseCode', ''] },
+              '-',
+              { $ifNull: ['$_id.itemCode', ''] },
+            ],
+          },
+        },
+      },
+    ]);
+  }
 }

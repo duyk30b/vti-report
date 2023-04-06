@@ -9,6 +9,10 @@ export interface InventoryQuantityNormsInterface {
 
   minInventoryLimit: number;
 
+  reorderPoint: number;
+
+  eoq: number;
+
   itemName: string;
 
   unit: string;
