@@ -49,6 +49,15 @@ import { DailyItemWarehouseStockPriceRepository } from '@repositories/daily-item
 import { sleep } from '@utils/common';
 import { DailyItemWarehouseStockPriceInterface } from '@schemas/interface/daily-item-warehouse-stock-price.interface';
 import { isNumber } from 'class-validator';
+import { ReceiptRequest } from '@requests/receipt.request';
+import { ReportReceiptInteface } from '@schemas/interface/report-receipt.interface';
+import { ReportReceiptRepository } from '@repositories/report-receipt.repository';
+import {
+  ItemPlanningQuantitesRequest,
+  SyncItemPlanningQuantitiesRequest,
+} from '@requests/report-item-planning-quantities.request';
+import { ReportItemPlanningQuantitiesInteface } from '@schemas/interface/report-item-planning-quantities.interface';
+import { ReportItemPlanningQuantitesRepository } from '@repositories/report-item-planning-quantities.repository';
 @Injectable()
 export class SyncService {
   private readonly logger = new Logger(SyncService.name);
@@ -80,6 +89,12 @@ export class SyncService {
 
     @Inject('InventoryQuantityNormsRepository')
     private readonly inventoryQuantityNormsRepository: InventoryQuantityNormsRepository,
+
+    @Inject('ReportReceiptRepository')
+    private readonly reportReceiptRepository: ReportReceiptRepository,
+
+    @Inject('ReportItemPlanningQuantitesRepository')
+    private readonly reportItemPlanningQuantitesRepository: ReportItemPlanningQuantitesRepository,
 
     private readonly i18n: I18nRequestScopeService,
 
@@ -892,6 +907,8 @@ export class SyncService {
           unit: item.itemUnit,
           inventoryLimit: item?.inventoryLimit || 0,
           minInventoryLimit: item?.minInventoryLimit || 0,
+          reorderPoint: item?.reorderPoint || 0,
+          eoq: item?.eoq || 0,
         };
         const itemTobeDelete = {
           companyCode: companyInfo.code,
@@ -1120,6 +1137,206 @@ export class SyncService {
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.INTERNAL_SERVER_ERROR)
         .withMessage(await this.i18n.translate('error.INTERNAL_SERVER_ERROR'))
+        .build();
+    }
+  }
+
+  async syncReceipt(request: ReceiptRequest): Promise<any> {
+    const { data } = request;
+    const company = await this.userService.getCompanies({
+      code: data.syncCode,
+    });
+
+    if (
+      company?.statusCode !== ResponseCodeEnum.SUCCESS ||
+      isEmpty(company.data) ||
+      isEmpty(data.syncCode)
+    ) {
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.BAD_REQUEST)
+        .withMessage(await this.i18n.translate('error.COMPANY_NOT_FOUND'))
+        .build();
+    }
+    try {
+      const receiptDocuments = data?.dataSync.map((receipt) => {
+        return {
+          updateOne: {
+            filter: {
+              code: receipt.code,
+              itemCode: receipt.itemCode,
+              companyCode: data.syncCode,
+            },
+            update: {
+              code: receipt.code,
+              contractNumber: receipt.contractNumber,
+              receiptNumber: receipt.receiptNumber,
+              status: receipt?.status,
+              itemCode: receipt.itemCode,
+              itemName: receipt.itemName,
+              quantity: receipt?.quantity,
+              orderQuantity: receipt?.orderQuantity,
+              price: receipt?.price,
+              amount: receipt?.amount,
+              receiptDate: new Date(receipt.receiptDate),
+              companyCode: data.syncCode,
+            } as ReportReceiptInteface,
+            upsert: true,
+          },
+        };
+      });
+      const limit = 200;
+      const page = Math.ceil(receiptDocuments.length / limit);
+      for (let currentPage = 0; currentPage < page; currentPage++) {
+        const dataStart = currentPage * limit;
+        const dataEnd = (currentPage + 1) * limit;
+        const documents = receiptDocuments.slice(dataStart, dataEnd);
+        await this.reportReceiptRepository.bulkWrite(documents);
+        if (currentPage !== page - 1) {
+          await sleep(200);
+        }
+      }
+      console.info('SYNC RECEIPT SUCCESS:', new Date());
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.SUCCESS)
+        .withMessage(await this.i18n.translate('error.SUCCESS'))
+        .build();
+    } catch (error) {
+      console.error('SYNC RECEIPT ERROR:', error);
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.INTERNAL_SERVER_ERROR)
+        .withMessage(await this.i18n.translate('error.INTERNAL_SERVER_ERROR'))
+        .build();
+    }
+  }
+
+  async syncItemPlanningQuantity(
+    request: ItemPlanningQuantitesRequest,
+  ): Promise<any> {
+    const { data, syncCode } = request;
+    const company = await this.userService.getCompanies({
+      code: syncCode,
+    });
+
+    if (
+      company?.statusCode !== ResponseCodeEnum.SUCCESS ||
+      isEmpty(company.data) ||
+      isEmpty(syncCode)
+    ) {
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.BAD_REQUEST)
+        .withMessage(await this.i18n.translate('error.COMPANY_NOT_FOUND'))
+        .build();
+    }
+    try {
+      switch (request?.actionType) {
+        case ActionType.delete:
+          return this.deletePlanningQuantity(data, company.data[0]);
+        case ActionType.update:
+          // eslint-disable-next-line no-case-declarations
+          const itemPlanningQuantityDocuments = data.map((ipq) => {
+            return {
+              updateOne: {
+                filter: {
+                  itemCode: ipq.itemCode,
+                  companyCode: syncCode,
+                  lotNumber: ipq.lotNumber,
+                  warehouseCode: ipq.warehouseCode,
+                  locatorCode: ipq.locatorCode,
+                  orderCode: ipq.orderCode,
+                  orderType: ipq.orderType,
+                },
+                update: {
+                  itemCode: ipq.itemCode,
+                  itemName: ipq.itemName,
+                  itemUnit: ipq.itemUnit,
+                  companyCode: syncCode,
+                  lotNumber: ipq.lotNumber,
+                  warehouseCode: ipq.warehouseCode,
+                  locatorCode: ipq.locatorCode,
+                  orderCode: ipq.orderCode,
+                  planQuantity: ipq.planQuantity,
+                  quantity: ipq.quantity,
+                  orderType: ipq.orderType,
+                } as ReportItemPlanningQuantitiesInteface,
+                upsert: true,
+              },
+            };
+          });
+          // eslint-disable-next-line no-case-declarations
+          const limit = 200;
+          // eslint-disable-next-line no-case-declarations
+          const page = Math.ceil(itemPlanningQuantityDocuments.length / limit);
+          for (let currentPage = 0; currentPage < page; currentPage++) {
+            const dataStart = currentPage * limit;
+            const dataEnd = (currentPage + 1) * limit;
+            const documents = itemPlanningQuantityDocuments.slice(
+              dataStart,
+              dataEnd,
+            );
+            await this.reportItemPlanningQuantitesRepository.bulkWrite(
+              documents,
+            );
+            if (currentPage !== page - 1) {
+              await sleep(200);
+            }
+          }
+          break;
+        default:
+          break;
+      }
+
+      console.info('SYNC ITEM PLANNING QUANTITIES  SUCCESS:', new Date());
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.SUCCESS)
+        .withMessage(await this.i18n.translate('error.SUCCESS'))
+        .build();
+    } catch (error) {
+      console.error('SYNC ITEM PLANNING QUANTITIES  ERROR:', error);
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.INTERNAL_SERVER_ERROR)
+        .withMessage(await this.i18n.translate('error.INTERNAL_SERVER_ERROR'))
+        .build();
+    }
+  }
+
+  async deletePlanningQuantity(
+    request: SyncItemPlanningQuantitiesRequest[],
+    company: Company,
+  ) {
+    try {
+      console.log(company);
+
+      const promiseAll = [];
+      for (const item of request) {
+        const itemTobeDelete = {
+          companyCode: company.code,
+          itemCode: item.itemCode,
+          lotNumber: item.lotNumber || null,
+          warehouseCode: item.warehouseCode,
+          locatorCode: item.locatorCode,
+          orderCode: item.orderCode,
+          orderType: item.orderType,
+        };
+        console.log('itemTobeDelete ', itemTobeDelete);
+
+        promiseAll.push(
+          this.reportItemPlanningQuantitesRepository.deleteByCondition(
+            itemTobeDelete,
+          ),
+        );
+      }
+      const a = await Promise.all(promiseAll);
+      console.log(a);
+
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.SUCCESS)
+        .withMessage(await this.i18n.translate('success.SUCCESS'))
+        .build();
+    } catch (error) {
+      console.log('SYNC ITEM PLANNING QUANTITIES  ERROR DELETE:', error);
+      return new ResponseBuilder()
+        .withCode(ResponseCodeEnum.BAD_REQUEST)
+        .withMessage(await this.i18n.translate('error.BAD_REQUEST'))
         .build();
     }
   }

@@ -1,4 +1,7 @@
-import { ARR_REPORT_TYPE_CHANGE_FONT_SIZE } from '@enums/report-type.enum';
+import {
+  ARR_REPORT_TYPE_CHANGE_FONT_SIZE,
+  ReportType,
+} from '@enums/report-type.enum';
 import { Alignment, FormatByKey, TableData } from '@models/report.model';
 import {
   ALIGNMENT_BOTTOM,
@@ -22,23 +25,25 @@ export function reportGroupByWarehouseTemplateData(
   data: TableData<any>[],
   format?: FormatByKey<any>,
 ) {
-
   const reportType = data[0]?.reportType || 0;
   let fontSize = FONT_BOLD_12;
-  if (ARR_REPORT_TYPE_CHANGE_FONT_SIZE.includes(reportType)) fontSize = FONT_BOLD_9;
+  if (ARR_REPORT_TYPE_CHANGE_FONT_SIZE.includes(reportType))
+    fontSize = FONT_BOLD_9;
   data.forEach((warehouseData: any) => {
-    const endColumn = `${
-      EXCEL_COLUMN[worksheet['columnNumber_'] - 2]
-    }${rowIdx}`;
-    const cellGroupByWarehouse = worksheet.getCell(
-      `${CELL_A}${rowIdx}:${endColumn}`,
-    );
-    worksheet.mergeCells(`${CELL_A}${rowIdx}:${endColumn}`);
-    cellGroupByWarehouse.value = warehouseData.warehouseCode;
-    cellGroupByWarehouse.font = FONT_BOLD_9;
-    cellGroupByWarehouse.alignment = ALIGNMENT_LEFT as any;
-    cellGroupByWarehouse.border = BORDER as any;
-    rowIdx++;
+    if (reportType !== ReportType.REORDER_QUANTITY) {
+      const endColumn = `${
+        EXCEL_COLUMN[worksheet['columnNumber_'] - 2]
+      }${rowIdx}`;
+      const cellGroupByWarehouse = worksheet.getCell(
+        `${CELL_A}${rowIdx}:${endColumn}`,
+      );
+      worksheet.mergeCells(`${CELL_A}${rowIdx}:${endColumn}`);
+      cellGroupByWarehouse.value = warehouseData.warehouseCode;
+      cellGroupByWarehouse.font = FONT_BOLD_9;
+      cellGroupByWarehouse.alignment = ALIGNMENT_LEFT as any;
+      cellGroupByWarehouse.border = BORDER as any;
+      rowIdx++;
+    }
     warehouseData.data.forEach((item: any, indexData) => {
       Object.keys(item).forEach((key: any, indexKey) => {
         const currenCell = worksheet.getCell(
@@ -55,7 +60,7 @@ export function reportGroupByWarehouseTemplateData(
           if (typeof format[key] == 'number') {
             switchAliment(format, key, currenCell);
           } else {
-            switchAliment(format, key, currenCell,true);
+            switchAliment(format, key, currenCell, true);
           }
       });
       rowIdx++;
@@ -99,8 +104,7 @@ function switchAliment(
       default:
         break;
     }
-  }
-  else {
+  } else {
     switch (format[key]['alignment']) {
       case Alignment.CENTER:
         currenCell.alignment = ALIGNMENT_CENTER as any;
@@ -129,6 +133,6 @@ function switchAliment(
       default:
         break;
     }
-    currenCell.numFmt = format[key]['numFmt']
+    currenCell.numFmt = format[key]['numFmt'];
   }
 }

@@ -45,6 +45,16 @@ import {
   DailyItemWarehouseStockPrice,
   DailyItemWarehouseStockPriceSchema,
 } from '@schemas/daily-item-warehouse-stock-price.schema';
+import { ReportReceiptRepository } from '@repositories/report-receipt.repository';
+import {
+  ReportReceipt,
+  ReportReceiptSchema,
+} from '@schemas/report-receipt.schema';
+import { ReportItemPlanningQuantitesRepository } from '@repositories/report-item-planning-quantities.repository';
+import {
+  ReportItemPlanningQuantities,
+  ReportItemPlanningQuantitiesSchema,
+} from '@schemas/report-item-planning-quantitie.schema';
 @Module({
   imports: [
     MongooseModule.forFeature([
@@ -65,6 +75,14 @@ import {
       {
         name: DailyItemWarehouseStockPrice.name,
         schema: DailyItemWarehouseStockPriceSchema,
+      },
+      {
+        name: ReportReceipt.name,
+        schema: ReportReceiptSchema,
+      },
+      {
+        name: ReportItemPlanningQuantities.name,
+        schema: ReportItemPlanningQuantitiesSchema,
       },
     ]),
     UserModule,
@@ -109,6 +127,14 @@ import {
     {
       provide: 'DailyItemWarehouseStockPriceRepository',
       useClass: DailyItemWarehouseStockPriceRepository,
+    },
+    {
+      provide: 'ReportReceiptRepository',
+      useClass: ReportReceiptRepository,
+    },
+    {
+      provide: 'ReportItemPlanningQuantitesRepository',
+      useClass: ReportItemPlanningQuantitesRepository,
     },
   ],
   controllers: [SyncController],

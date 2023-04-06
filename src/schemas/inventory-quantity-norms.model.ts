@@ -31,6 +31,12 @@ export class InventoryQuantityNormModel
 
   @Prop({ required: false, default: 0 })
   minInventoryLimit: number;
+
+  @Prop({ required: false, default: 0 })
+  reorderPoint: number;
+
+  @Prop({ required: false, default: 0 })
+  eoq: number;
 }
 export const InventoryQuantityNormSchema = SchemaFactory.createForClass(
   InventoryQuantityNormModel,
