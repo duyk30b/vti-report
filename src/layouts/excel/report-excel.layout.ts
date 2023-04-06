@@ -8,10 +8,12 @@ import * as ExcelJS from 'exceljs';
 import * as moment from 'moment';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import {
+  ALIGNMENT_BOTTOM_LEFT,
   ALIGNMENT_CENTER,
   ALIGNMENT_CENTER_BOTTOM,
   ALIGNMENT_LEFT,
   ARR_REPORT_TYPE_CHANGE_TITLE_EXCELL,
+  ARR_REPORT_TYPE_TITLE_NO_COMPANY,
   BORDER,
   CELL_ADDRESS_CHILD_COMPANY,
   CELL_CHILD_COMPANY,
@@ -103,9 +105,7 @@ export const generateTable = async (
       cellTitleTime = locationCell.CEll_REPORT_TIME;
       indexReportTime = INDEX_REPORT_TIME - 1;
       rowIndexChange = ROW_WHEN_HAVE_HEADER - 1;
-    } else if (
-      [REPORT_INFO[ReportType[ReportType.INVENTORY]].key].includes(model.key)
-    ) {
+    } else if (ARR_REPORT_TYPE_TITLE_NO_COMPANY.includes(model.key)) {
       const locationCell = LOCATION_CELL_TITLE_NOT_COMPANY;
       cellTitle = locationCell.CELL_TITLE_REPORT;
       indexReportTitle = LOCATION_CELL_TITLE_NOT_COMPANY.INDEX_REPORT_TITLE;
@@ -127,9 +127,7 @@ export const generateTable = async (
       `${cellTitleTime}:${EXCEL_COLUMN[index - 2]}${indexReportTime}`,
     );
 
-    if (
-      [REPORT_INFO[ReportType[ReportType.INVENTORY]].key].includes(model.key)
-    ) {
+    if (ARR_REPORT_TYPE_TITLE_NO_COMPANY.includes(model.key)) {
       configCells(worksheet, i18n, [
         {
           nameCell: cellTitle,
@@ -240,7 +238,13 @@ export const generateTable = async (
   ) {
     rowIndex++;
   }
-  rowIndex += generateColumnTable(worksheet, model.tableColumn, rowIndex, i18n);
+  rowIndex += generateColumnTable(
+    worksheet,
+    model.tableColumn,
+    rowIndex,
+    i18n,
+    model?.reportType || 0,
+  );
   if (typeof generateDataTable == 'function') {
     rowIndex = generateDataTable(
       rowIndex,
@@ -268,7 +272,11 @@ const generateColumnTable = (
   tableColumn: TableColumn[],
   rowIdx: number,
   i18n: I18nRequestScopeService,
+  reportType?: number,
 ) => {
+  let aligment = ALIGNMENT_CENTER_BOTTOM;
+  if (reportType == ReportType.REORDER_QUANTITY)
+    aligment = ALIGNMENT_BOTTOM_LEFT;
   const checkLevel = tableColumn.some((column) => column['child']);
   const columnsByLevel = tableColumn.map((item, index) => {
     const lv = {
@@ -377,7 +385,7 @@ const generateColumnTable = (
         nameCell: cellLv1,
         value: column?.lv1[0]?.name,
         font: FONT_BOLD_9,
-        aligment: ALIGNMENT_CENTER_BOTTOM,
+        aligment: aligment,
         border: BORDER,
         fill: COLUMN_COLOR,
         merge: true,
@@ -452,6 +460,14 @@ export const getReportInfo = (
       i18n.translate(`report.DATE`) +
       ': ' +
       getTimezone(dateFrom, DATE_FORMAT_TIME_HH_MM_SS);
+  }
+  if (
+    [REPORT_INFO[ReportType[ReportType.REORDER_QUANTITY]].key].includes(key)
+  ) {
+    reportTime =
+      i18n.translate(`report.DATE`) +
+      ': ' +
+      getTimezone(dateFrom, DATE_FOMAT_EXCELL);
   }
   return {
     nameFile,

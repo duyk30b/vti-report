@@ -231,6 +231,9 @@ export const REPORT_INFO = {
   [ReportType[ReportType.AGE_OF_ITEM_STOCK]]: {
     key: 'AGE_OF_ITEM_STOCK',
   },
+  [ReportType[ReportType.REORDER_QUANTITY]]: {
+    key: 'REORDER_QUANTITY',
+  },
 };
 export const FORMAT_DATE_EXCEL = 'DD/MM/YYYY';
 export const FORMAT_DATE = 'YYYY-MM-DD';
@@ -309,6 +312,11 @@ export const ARR_REPORT_TYPE_CHANGE_TITLE_EXCELL = [
   ReportType.ITEM_INVENTORY_BELOW_SAFE,
   ReportType.ITEM_INVENTORY,
   ReportType.SITUATION_INVENTORY_PERIOD,
+];
+
+export const ARR_REPORT_TYPE_TITLE_NO_COMPANY = [
+  REPORT_INFO[ReportType[ReportType.INVENTORY]].key,
+  REPORT_INFO[ReportType[ReportType.REORDER_QUANTITY]].key,
 ];
 
 export const LOCATION_CELL_REPORT_TYPE_CHANGE_TITLE_EXCELL = {
@@ -1348,6 +1356,33 @@ export const SITUATION_INVENTORY_PERIOD_COLUMNS: TableColumn[] = [
     name: 'NOTE',
     width: 1.4,
     rowSpan: 3,
+  },
+];
+
+export const REORDER_QUANTITY_COLUMNS: TableColumn[] = [
+  {
+    name: 'COMPANY',
+    width: 3,
+  },
+  {
+    name: 'WAREHOUSE',
+    width: 3,
+  },
+  {
+    name: 'ITEM_CODE',
+    width: 2,
+  },
+  {
+    name: 'ITEM_NAME',
+    width: 3,
+  },
+  {
+    name: 'ITEM_UNIT',
+    width: 1,
+  },
+  {
+    name: 'REORDER_QUANTITY_NUMBER',
+    width: 2,
   },
 ];
 
