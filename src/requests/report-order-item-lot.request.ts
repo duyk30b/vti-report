@@ -1,7 +1,10 @@
 import { OrderStatus } from '@enums/order-status.enum';
 import { OrderType } from '@enums/order-type.enum';
 import { ApiProperty } from '@nestjs/swagger';
-import { ReportOrderItemLotInteface } from '@schemas/interface/report-order-item-lot.interface';
+import {
+  ReportOrderItemLotInteface,
+  source,
+} from '@schemas/interface/report-order-item-lot.interface';
 import {
   IsDateString,
   IsEnum,
@@ -261,4 +264,9 @@ export class ReportOrderItemLotRequest implements ReportOrderItemLotInteface {
   @IsOptional()
   @IsString()
   transactionNumberCreated: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  source: source;
 }

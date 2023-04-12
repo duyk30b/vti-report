@@ -5,6 +5,8 @@ export enum OrderType {
   TRANSFER = 3,
   INVENTORY_ADJUSTMENTS_IMPORT = 4,
   INVENTORY_ADJUSTMENTS_EXPORT = 5,
+  ALL_TRANSACTION = 6,
+  GET_WAREHOUSE_TARGET = 7,
 }
 
 export enum OrderTypeEnum {
