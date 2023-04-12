@@ -2,7 +2,10 @@ import { INVENTORY_ADJUSTMENT_TYPE } from '@constant/common';
 import { OrderStatus } from '@enums/order-status.enum';
 import { OrderType } from '@enums/order-type.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { ReportOrderItemLotInteface } from './interface/report-order-item-lot.interface';
+import {
+  ReportOrderItemLotInteface,
+  source,
+} from './interface/report-order-item-lot.interface';
 
 export type OrderItemLotDocument = ReportOrderItemLot & Document;
 
@@ -148,6 +151,9 @@ export class ReportOrderItemLot implements ReportOrderItemLotInteface {
 
   @Prop({ required: false })
   transactionNumberCreated: string;
+
+  @Prop({ required: false })
+  source: source;
 }
 
 export const ReportOrderItemLotSchema =
