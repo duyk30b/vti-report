@@ -234,6 +234,9 @@ export const REPORT_INFO = {
   [ReportType[ReportType.REORDER_QUANTITY]]: {
     key: 'REORDER_QUANTITY',
   },
+  [ReportType[ReportType.TRANSACTION_DETAIL]]: {
+    key: 'TRANSACTION_DETAIL',
+  },
 };
 export const FORMAT_DATE_EXCEL = 'DD/MM/YYYY';
 export const FORMAT_DATE = 'YYYY-MM-DD';
@@ -318,6 +321,15 @@ export const ARR_REPORT_TYPE_TITLE_NO_COMPANY = [
   REPORT_INFO[ReportType[ReportType.INVENTORY]].key,
   REPORT_INFO[ReportType[ReportType.REORDER_QUANTITY]].key,
 ];
+
+export const ARR_REPORT_DATA_HIDDEN_WAREHOUSE_CODE = [
+  ReportType.REORDER_QUANTITY,
+  ReportType.TRANSACTION_DETAIL,
+];
+
+export const ARR_REPORT_HEADER_DATA_LEFT_BOTTOM = [ReportType.REORDER_QUANTITY];
+
+export const ARR_REPORT_HEADER_DATA_CENTER = [ReportType.TRANSACTION_DETAIL];
 
 export const LOCATION_CELL_REPORT_TYPE_CHANGE_TITLE_EXCELL = {
   CELL_TITLE_REPORT: 'A4',
@@ -1382,6 +1394,81 @@ export const REORDER_QUANTITY_COLUMNS: TableColumn[] = [
   },
   {
     name: 'REORDER_QUANTITY_NUMBER',
+    width: 2,
+  },
+];
+
+export const TRANSACTION_DETAIL_COLUMNS: TableColumn[] = [
+  {
+    name: 'WAREHOUSE',
+    width: 1.5,
+  },
+  {
+    name: 'ITEM_CODE',
+    width: 1.5,
+  },
+  {
+    name: 'ITEM_NAME',
+    width: 2,
+  },
+  {
+    name: 'UNIT',
+    width: 0.5,
+  },
+  {
+    name: 'QUANTITY',
+    width: 1,
+  },
+  {
+    name: 'UNIT_PRICE',
+    width: 1,
+  },
+  {
+    name: 'TOTAL_PRICE',
+    width: 1.5,
+  },
+  {
+    name: 'ORIGIN_ITEM',
+    width: 1,
+  },
+  {
+    name: 'ORDER_CODE_WMS',
+    width: 1,
+  },
+  {
+    name: 'ORDER_CODE_EBS',
+    width: 1,
+  },
+  {
+    name: 'TYPE_TRANSACTION',
+    width: 1,
+  },
+  {
+    name: 'ORDER_CREATED_DATE',
+    width: 1,
+  },
+  {
+    name: 'REASON_EN',
+    width: 1,
+  },
+  {
+    name: 'SOURCE_EN',
+    width: 1.5,
+  },
+  {
+    name: 'CONTRACT_NUMBER',
+    width: 1,
+  },
+  {
+    name: 'VENDOR',
+    width: 1,
+  },
+  {
+    name: 'CONTRUCTION',
+    width: 1.5,
+  },
+  {
+    name: 'EXPLAIN',
     width: 2,
   },
 ];
