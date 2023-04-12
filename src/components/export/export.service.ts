@@ -73,6 +73,9 @@ import { ReportReceipt } from '@schemas/report-receipt.schema';
 import { getReOrderQuantity } from '@mapping/common/reorder-quantity.mapped';
 import { reportReorderQuantityExcelMapping } from '@mapping/excels/report-reorder-quantity.excel.mapping';
 import { reportReorderQuantity } from '@mapping/words/report-reorder-quantity.word.mapping';
+import { getTransactionDetail } from '@mapping/common/transaction-detail.mapped';
+import { reportTransactionDetailExcelMapping } from '@mapping/excels/report-transaction-detail.excel.mapping';
+import { reportTransactionDetail } from '@mapping/words/report-transaction-detail.mapping';
 @Injectable()
 export class ExportService {
   constructor(
@@ -184,6 +187,9 @@ export class ExportService {
 
         case ReportType.REORDER_QUANTITY:
           dataReturn = await this.reportReOrderQuantity(request);
+          break;
+        case ReportType.TRANSACTION_DETAIL:
+          dataReturn = await this.reportTransactionDetail(request);
           break;
         default:
           dataReturn = null;
@@ -996,6 +1002,50 @@ export class ExportService {
         return { result: dataBase64, nameFile };
       case ExportType.WORD:
         return reportReorderQuantity(request, dataMapped, this.i18n);
+      default:
+        return;
+    }
+  }
+
+  async reportTransactionDetail(
+    request: ReportRequest,
+  ): Promise<ReportResponse> {
+    const data =
+      await this.reportOrderItemLotRepository.getReportsGroupByWarehouse(
+        request,
+        OrderType.ALL_TRANSACTION,
+      );
+    const dataWarehouseTargetCode =
+      await this.reportOrderItemLotRepository.getReportsGroupByWarehouse(
+        request,
+        OrderType.GET_WAREHOUSE_TARGET,
+      );
+
+    const dataMapped = await getTransactionDetail(
+      data,
+      this.i18n,
+      dataWarehouseTargetCode,
+      request?.reportType,
+    );
+
+    if (request.companyCode) {
+      const dataCompany = await this.getCompany(request.companyCode);
+      dataMapped.companyName = dataCompany[0].name || dataMapped.companyName;
+      dataMapped.companyAddress =
+        dataCompany[0].address || dataMapped.companyAddress;
+    }
+
+    switch (request.exportType) {
+      case ExportType.EXCEL:
+        const { nameFile, dataBase64 } =
+          await reportTransactionDetailExcelMapping(
+            request,
+            dataMapped,
+            this.i18n,
+          );
+        return { result: dataBase64, nameFile };
+      case ExportType.WORD:
+        return reportTransactionDetail(request, dataMapped, this.i18n);
       default:
         return;
     }

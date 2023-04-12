@@ -10,6 +10,7 @@ import {
   ALIGNMENT_CENTER_RIGHT,
   ALIGNMENT_LEFT,
   ALIGNMENT_RIGHT,
+  ARR_REPORT_DATA_HIDDEN_WAREHOUSE_CODE,
   BORDER,
   CELL_A,
   EXCEL_COLUMN,
@@ -30,7 +31,7 @@ export function reportGroupByWarehouseTemplateData(
   if (ARR_REPORT_TYPE_CHANGE_FONT_SIZE.includes(reportType))
     fontSize = FONT_BOLD_9;
   data.forEach((warehouseData: any) => {
-    if (reportType !== ReportType.REORDER_QUANTITY) {
+    if (!ARR_REPORT_DATA_HIDDEN_WAREHOUSE_CODE.includes(reportType)) {
       const endColumn = `${
         EXCEL_COLUMN[worksheet['columnNumber_'] - 2]
       }${rowIdx}`;

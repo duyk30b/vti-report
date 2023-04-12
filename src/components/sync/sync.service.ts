@@ -487,6 +487,7 @@ export class SyncService {
             locatorCode: null,
             storageCost: +lot?.price ? lot?.price : 0,
             amount: +lot?.amount ? lot?.amount : 0,
+            source: request?.source,
           };
 
           orderItemLots.push(reportOrderItemLot);
@@ -649,6 +650,7 @@ export class SyncService {
             locatorName: null,
             locatorCode: null,
             amount: +lot?.amount ? lot.amount : 0,
+            source: request?.source,
           };
           orderItemLots.push(reportOrderItemLot);
         }
@@ -782,6 +784,7 @@ export class SyncService {
             storageCost: Number(lot?.price || 0),
             amount: Number(lot?.amount || 0),
             transactionNumberCreated: request?.transactionNumberCreated,
+            source: request?.source,
           };
           orderItemLots.push(reportOrderItemLot);
         }
@@ -1305,8 +1308,6 @@ export class SyncService {
     company: Company,
   ) {
     try {
-      console.log(company);
-
       const promiseAll = [];
       for (const item of request) {
         const itemTobeDelete = {
@@ -1318,8 +1319,6 @@ export class SyncService {
           orderCode: item.orderCode,
           orderType: item.orderType,
         };
-        console.log('itemTobeDelete ', itemTobeDelete);
-
         promiseAll.push(
           this.reportItemPlanningQuantitesRepository.deleteByCondition(
             itemTobeDelete,
@@ -1327,8 +1326,6 @@ export class SyncService {
         );
       }
       const a = await Promise.all(promiseAll);
-      console.log(a);
-
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.SUCCESS)
         .withMessage(await this.i18n.translate('success.SUCCESS'))

@@ -83,6 +83,14 @@
   "CURRENCY_DONG": "Đơn vị tính: đồng",
   "REASON": "Mục đích: ",
   "MANUFACTURING_COUNTRY": "Nơi SX",
+  "REASON_EN": "Reason",
+  "SOURCE_EN": "Source",
+  "CONTRACT_NUMBER": "Số hợp đồng",
+  "ORIGIN_ITEM": "Xuất xứ",
+  "ORDER_CODE_WMS": "Số phiếu nhập, xuất, chuyển WMS",
+  "ORDER_CODE_EBS": "Số phiếu nhập, xuất, chuyển EBS",
+  "TYPE_TRANSACTION": "Loại giao dịch",
+  "VENDOR": "Nhà cung cấp",
   "SIX_MONTH": "6 tháng",
   "SIX_MONTH_TO_ONE_YEAR": "Từ 6 tháng đến < 1 năm",
   "ONE_YEAR_TO_TWO_YEAR": "Từ 1 năm đến < 2 năm",
@@ -184,7 +192,12 @@
   },
   "REORDER_QUANTITY": {
     "TITLE": "THỐNG KÊ GIAO DỊCH CHI TIẾT\n{property}",
-    "FILE_NAME": "W017-Thống kê giao dịch chi tiết-{property}",
-    "SHEET_NAME": "W017-Thong_ke_giao_dich_chi_tiet-{property}"
+    "FILE_NAME": "W017-Thống kê lượng hàng cần đặt (re-order)-{property}",
+    "SHEET_NAME": "W017-Thong_ke_luong_hang_can_dat-{property}"
+  },
+  "TRANSACTION_DETAIL": {
+    "TITLE": "THỐNG KÊ GIAO DỊCH CHI TIẾT\n{property}",
+    "FILE_NAME": "W018-Thống kê giao dịch chi tiết-{property}",
+    "SHEET_NAME": "W018-Thong_ke_giao_dich_chi_tiet-{property}"
   }
 }
