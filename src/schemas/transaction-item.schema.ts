@@ -4,6 +4,7 @@ import { OrderType } from '@enums/order-type.enum';
 import { ActionType } from '@enums/report-type.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { TransactionItemInterface } from './interface/TransactionItem.Interface';
+import { source } from './interface/report-order-item-lot.interface';
 export type TransactionItemDocument = TransactionItem & Document;
 @Schema({ collection: 'transaction-item', timestamps: true })
 export class TransactionItem
@@ -180,6 +181,9 @@ export class TransactionItem
 
   @Prop({ required: false })
   transactionNumberCreated: string;
+
+  @Prop({ required: false })
+  source: source;
 }
 
 export const TransactionItemSchema =

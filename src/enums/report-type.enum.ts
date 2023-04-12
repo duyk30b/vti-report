@@ -16,6 +16,7 @@ export enum ReportType {
   SITUATION_EXPORT_PERIOD = 15,
   AGE_OF_ITEM_STOCK = 16,
   REORDER_QUANTITY = 17,
+  TRANSACTION_DETAIL = 18,
 }
 
 export enum ActionType {

@@ -51,6 +51,14 @@ export enum INVENTORY_ADJUSTMENT_TYPE {
   EXPORT = 1,
 }
 
+export const WAREHOUSE_TARGET = {
+  YES: 1,
+  NO: 0,
+};
+
+export const TYPE_TRANSACTION = ['Nhập', 'Xuất', '', 'Xuất - chuyển'];
+export const TYPE_TRANSACTION_TRANFER_IMPORT = 'Nhập - chuyển';
+
 export function formatNumber(number: any) {
   if (number && typeof number === 'number') {
     const num = number.toString();
