@@ -14,6 +14,7 @@ import { DATE_FOMAT, TIMEZONE_HCM_CITY } from '@utils/constant';
 import { Model } from 'mongoose';
 import * as moment from 'moment';
 import { INVENTORY_ADJUSTMENT_TYPE } from '@constant/common';
+import { isEmpty } from 'lodash';
 
 @Injectable()
 export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportOrderItemLot> {
@@ -375,10 +376,21 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
       condition['$and'].push({
         companyCode: { $eq: request?.companyCode },
       });
-    if (request?.warehouseCode)
+    if (request?.warehouseCode && type != OrderType.GET_WAREHOUSE_TARGET)
       condition['$and'].push({
         warehouseCode: { $eq: request?.warehouseCode },
       });
+    if (type == OrderType.GET_WAREHOUSE_TARGET) {
+      if (isEmpty(request.warehouseCode)) {
+        condition['$and'].push({
+          warehouseTargetCode: { $exists: true, $ne: null },
+        });
+      } else {
+        condition['$and'].push({
+          warehouseTargetCode: { $eq: request?.warehouseCode },
+        });
+      }
+    }
     if (isConstruction && request?.constructionCode)
       condition['$and'].push({
         constructionCode: { $eq: request?.constructionCode },
@@ -502,6 +514,8 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
         return reportSituationImport(this.reportOrderItemLot, condition);
       case ReportType.SITUATION_EXPORT_PERIOD:
         return reportSituationExport(this.reportOrderItemLot, condition);
+      case ReportType.TRANSACTION_DETAIL:
+        return reportTransactionDetail(this.reportOrderItemLot, condition);
       default:
         break;
     }
@@ -1193,6 +1207,79 @@ function reportSituationInventory(
     },
     {
       $sort: { '_id.warehouseCode': -1 },
+    },
+  ]);
+}
+
+function reportTransactionDetail(
+  reportOrderItemLot: Model<ReportOrderItemLot>,
+  condition: any,
+) {
+  return reportOrderItemLot.aggregate([
+    { $match: condition },
+    {
+      $sort: { warehouseCode: 1, itemCode: 1, orderCreatedAt: 1 },
+    },
+    {
+      $lookup: {
+        from: 'transaction-item',
+        let: {
+          companyCodeMap: '$companyCode',
+          warehouseCodeMap: '$warehouseCode',
+          itemCodeMap: '$itemCode',
+          orderCodeMap: '$orderCode',
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ['$companyCode', '$$companyCodeMap'] },
+                  { $eq: ['$warehouseCode', '$$warehouseCodeMap'] },
+                  { $eq: ['$itemCode', '$$itemCodeMap'] },
+                  { $eq: ['$orderCode', '$$orderCodeMap'] },
+                ],
+              },
+            },
+          },
+          {
+            $project: {
+              manufacturingCountry: 1,
+            },
+          },
+        ],
+        as: 'transactionItem',
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        companyCode: 1,
+        itemCode: 1,
+        itemName: 1,
+        unit: 1,
+        warehouseName: 1,
+        warehouseCode: 1,
+        planQuantity: 1,
+        storageCost: 1,
+        amount: 1,
+        orderCode: 1,
+        ebsNumber: 1,
+        orderCreatedAt: 1,
+        reason: 1,
+        source: 1,
+        contractNumber: 1,
+        providerName: 1,
+        constructionCode: 1,
+        explain: 1,
+        orderType: 1,
+        transactionNumberCreated: 1,
+        warehouseTargetCode: 1,
+        warehouseTargetName: 1,
+        manufacturingCountry: {
+          $arrayElemAt: ['$transactionItem.manufacturingCountry', 0],
+        },
+      },
     },
   ]);
 }

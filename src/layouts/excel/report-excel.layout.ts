@@ -12,6 +12,8 @@ import {
   ALIGNMENT_CENTER,
   ALIGNMENT_CENTER_BOTTOM,
   ALIGNMENT_LEFT,
+  ARR_REPORT_HEADER_DATA_CENTER,
+  ARR_REPORT_HEADER_DATA_LEFT_BOTTOM,
   ARR_REPORT_TYPE_CHANGE_TITLE_EXCELL,
   ARR_REPORT_TYPE_TITLE_NO_COMPANY,
   BORDER,
@@ -275,8 +277,10 @@ const generateColumnTable = (
   reportType?: number,
 ) => {
   let aligment = ALIGNMENT_CENTER_BOTTOM;
-  if (reportType == ReportType.REORDER_QUANTITY)
+  if (ARR_REPORT_HEADER_DATA_LEFT_BOTTOM.includes(reportType))
     aligment = ALIGNMENT_BOTTOM_LEFT;
+  else if (ARR_REPORT_HEADER_DATA_CENTER.includes(reportType))
+    aligment = ALIGNMENT_CENTER;
   const checkLevel = tableColumn.some((column) => column['child']);
   const columnsByLevel = tableColumn.map((item, index) => {
     const lv = {
