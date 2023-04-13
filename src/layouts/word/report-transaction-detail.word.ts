@@ -293,6 +293,7 @@ export async function generateReportTransactionDetail(
                         }),
                         new TableCell({
                           verticalAlign: VerticalAlign.CENTER,
+                          margins: wordFileStyle.margin_left,
                           children: [
                             new Paragraph({
                               alignment: AlignmentType.CENTER,
@@ -307,10 +308,10 @@ export async function generateReportTransactionDetail(
                         }),
                         new TableCell({
                           verticalAlign: VerticalAlign.CENTER,
-                          margins: wordFileStyle.margin_right,
+                          margins: wordFileStyle.margin_left,
                           children: [
                             new Paragraph({
-                              alignment: AlignmentType.RIGHT,
+                              alignment: AlignmentType.CENTER,
                               children: [
                                 new TextRun({
                                   text: item?.ebsNumber || '',

@@ -58,7 +58,7 @@ function formatData(item: any, type: number, groupByWarehouseCode: any) {
   const check = isEmpty(item?.transactionNumberCreated);
   let ebsNumber = check
     ? `${item?.ebsNumber || ''}`
-    : `${item?.transactionNumberCreated}'\n'${item?.ebsNumber || ''}`;
+    : `${item?.transactionNumberCreated}\n${item?.ebsNumber || ''}`;
   const source = item?.source
     ? `${item?.source?.code} - ${item?.source?.name}`
     : '';
