@@ -1,12 +1,12 @@
 import { readDecimal } from '@constant/common';
 import { OrderTransferIncompleteModel } from '@models/order-transfer incomplete.model';
 import { TableData } from '@models/report.model';
-import { ReportOrderItem } from '@schemas/report-order-item.schema';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
+import { ReportOrderItemLot } from '@schemas/report-order-item-lot.schema';
 
 export function getOrderTransferIncompletedMapped(
-  data: ReportOrderItem[],
+  data: ReportOrderItemLot[],
   i18n: I18nRequestScopeService,
   isEmpty: boolean,
   reportType?: number,
@@ -31,6 +31,7 @@ export function getOrderTransferIncompletedMapped(
         itemCode: cur.itemCode,
         itemName: cur.itemName,
         unit: cur.unit,
+        lotNumber: cur?.lotNumber || '',
         planQuantity: readDecimal(cur.planQuantity, true),
         constructionName: cur.constructionName,
         warehouseImport:
