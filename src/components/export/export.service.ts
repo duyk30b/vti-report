@@ -849,7 +849,7 @@ export class ExportService {
   async reportOrderTransferIncompleted(
     request: ReportRequest,
   ): Promise<ReportResponse> {
-    const data = await this.reportOrderItemRepository.getReports(
+    const data = await this.reportOrderItemLotRepository.getReports(
       request,
       OrderType.TRANSFER,
     );

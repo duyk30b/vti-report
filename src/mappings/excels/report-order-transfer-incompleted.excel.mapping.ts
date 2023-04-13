@@ -27,6 +27,7 @@ export async function reportOrderTransferIncompletedExcelMapping(
     itemCode: Alignment.LEFT,
     itemName: Alignment.LEFT,
     unit: Alignment.CENTER,
+    lotNumber: Alignment.CENTER,
     planQuantity: Alignment.RIGHT,
     constructionName: Alignment.LEFT,
     warehouseImport: Alignment.LEFT,

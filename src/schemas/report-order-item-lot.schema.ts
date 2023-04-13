@@ -12,6 +12,12 @@ export type OrderItemLotDocument = ReportOrderItemLot & Document;
 @Schema({ collection: 'report-order-item-lot', timestamps: true })
 export class ReportOrderItemLot implements ReportOrderItemLotInteface {
   @Prop({ required: false })
+  baseId: number;
+
+  @Prop({ required: false })
+  lotNumberOld: string;
+
+  @Prop({ required: false })
   receiptNumber: string;
 
   @Prop({ required: false })

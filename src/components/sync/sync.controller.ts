@@ -39,8 +39,6 @@ export class SyncController {
   async syncOrderImport(
     @Body() payload: SyncPurchasedOrderRequest,
   ): Promise<ResponsePayload<any>> {
-    console.log({payload});
-    
     const { request, responseError } = payload;
     if (responseError && !isEmpty(responseError)) {
       return responseError;

@@ -21,7 +21,7 @@ export class ReportItemPlanningQuantitesRepository extends BaseAbstractRepositor
 
     if (request?.companyCode)
       condition['$and'].push({
-        companyCode: { $eq: '030800' },
+        companyCode: { $eq: request?.companyCode },
       });
     if (request?.warehouseCode)
       condition['$and'].push({
