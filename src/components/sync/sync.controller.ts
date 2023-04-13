@@ -39,8 +39,6 @@ export class SyncController {
   async syncOrderImport(
     @Body() payload: SyncPurchasedOrderRequest,
   ): Promise<ResponsePayload<any>> {
-    console.log({payload});
-    
     const { request, responseError } = payload;
     if (responseError && !isEmpty(responseError)) {
       return responseError;
@@ -235,7 +233,7 @@ export class SyncController {
     );
   }
 
-  @MessagePattern('SYNC_REPORT_DAILY_ITEM_PRICE_TOPIC')
+  @MessagePattern(MessageSyncKafkaEnum.SYNC_REPORT_DAILY_ITEM_PRICE_TOPIC)
   async readMessageSyncItemPrice(
     @Payload() body: SyncReportDailyRequestDto,
   ): Promise<ResponsePayload<any>> {

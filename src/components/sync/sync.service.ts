@@ -638,6 +638,8 @@ export class SyncService {
         for (const lot of item?.lots || []) {
           const reportOrderItemLot: ReportOrderItemLotInteface = {
             ...reportOrderItem,
+            baseId: lot?.id,
+            lotNumberOld: lot?.lotNumberOld?.toUpperCase(),
             lotNumber: lot?.lotNumber?.toUpperCase(),
             explain: request?.explanation,
             note: request?.explanation,
@@ -655,34 +657,39 @@ export class SyncService {
           orderItemLots.push(reportOrderItemLot);
         }
       }
-      const serializeItemLotRequest = keyBy(orderItemLots, (lot) =>
-        [lot.itemCode, lot?.lotNumber?.toUpperCase() || ''].join('-'),
-      );
 
-      const reportOrderItemLots =
-        await this.reportOrderItemLotRepository.findAllByCondition({
-          companyCode: { $eq: company.code },
-          orderCode: { $eq: code },
-          orderType: { $eq: orderType },
-        });
-      const removeReportOrderItemLots = reportOrderItemLots.filter(
-        (lot) =>
-          !has(
-            serializeItemLotRequest,
-            [lot.itemCode, lot?.lotNumber?.toUpperCase() || ''].join('-'),
-          ),
-      );
+      const itemLotReports = await this.reportOrderItemLotRepository.findAllByCondition({
+        companyCode: {$eq: company.code},
+        orderCode:  {$eq: request.code },
+        orderType:  {$eq: orderType },
+      });
 
-      if (!isEmpty(removeReportOrderItemLots)) {
-        await this.reportOrderItemLotRepository.deleteAllByCondition({
-          _id: { $in: map(removeReportOrderItemLots, '_id') },
-        });
+      if (!isEmpty(itemLotReports)) {
+        const baseIds = map(orderItemLots, 'id');
+        const idsRemove = itemLotReports.filter((itemLotReport) => itemLotReport.baseId && !baseIds.includes(itemLotReport.baseId)).map((itemLotReport) => itemLotReport._id);
+        if (!isEmpty(idsRemove)) {
+          await this.reportOrderItemLotRepository.removeDocumentByConditions({ _id: { $in: idsRemove } })
+        }
       }
+      const itemLotBulkWrite = orderItemLots.map((lot) => {
+        return {
+          updateOne: {
+            filter: {
+              companyCode: lot.companyCode,
+              orderCode: lot.orderCode,
+              orderType: lot.orderType,
+              baseId: lot.baseId,
+            },
+            update: lot,
+            upsert: true,
+          }
+        }
+      })
       const response = await Promise.all([
         this.reportOrderRepository.bulkWriteOrderReport(orders),
         this.reportOrderItemRepository.bulkWriteOrderReportItem(orderItems),
-        this.reportOrderItemLotRepository.bulkWriteOrderReportItemLot(
-          orderItemLots,
+        this.reportOrderItemLotRepository.bulkWrite(
+          itemLotBulkWrite,
         ),
       ]);
 
@@ -998,6 +1005,7 @@ export class SyncService {
           .build();
       }
       request['company'] = company?.data?.pop();
+
       const transactionitems: TransactionItemInterface[] = [];
       for (const item of request.data) {
         const temp: TransactionItemInterface = {

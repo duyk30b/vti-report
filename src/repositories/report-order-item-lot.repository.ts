@@ -32,6 +32,10 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
     await document.save();
   }
 
+  public async removeDocumentByConditions(condition): Promise<any> {
+    await this.reportOrderItemLot.remove(condition);
+  }
+
   public async bulkWriteOrderReportItemLot(
     bulkOps: ReportOrderItemLotInteface[],
   ): Promise<any> {
@@ -1129,7 +1133,6 @@ function getCommonConditionSituation(orderType: OrderType) {
           orderCode: '$orderCode',
           warehouseCode: '$warehouseCode',
           lotNumber: '$lotNumber',
-          status: '$status',
         },
         pipeline: [
           {
