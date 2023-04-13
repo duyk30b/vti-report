@@ -250,6 +250,20 @@ export async function generatereportOrderTransferIncompleted(
                         }),
                         new TableCell({
                           verticalAlign: VerticalAlign.CENTER,
+                          children: [
+                            new Paragraph({
+                              alignment: AlignmentType.CENTER,
+                              children: [
+                                new TextRun({
+                                  text: item.lotNumber || '',
+                                  ...wordFileStyle.text_style,
+                                }),
+                              ],
+                            }),
+                          ],
+                        }),
+                        new TableCell({
+                          verticalAlign: VerticalAlign.CENTER,
                           margins: wordFileStyle.margin_right,
                           children: [
                             new Paragraph({
@@ -301,7 +315,7 @@ export async function generatereportOrderTransferIncompleted(
                       height: setHeight(WORD_FILE_CONFIG.TABLE_ROW_HEIGHT),
                       children: [
                         new TableCell({
-                          columnSpan: 8,
+                          columnSpan: 9,
                           verticalAlign: VerticalAlign.CENTER,
                           margins: wordFileStyle.margin_left,
                           children: [

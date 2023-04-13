@@ -342,6 +342,20 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
           },
         });
         break;
+      case ReportType.ORDER_TRANSFER_INCOMPLETED:
+        condition['$and'].push({
+          ebsNumber: { $eq: null },
+        });
+        condition['$and'].push({
+          status: {
+            $in: [
+              WarehouseTransferStatusEnum.COMPLETED,
+              WarehouseTransferStatusEnum.EXPORTED,
+              WarehouseTransferStatusEnum.INPROGRESS,
+            ],
+          },
+        });
+        break;
     }
 
     if (
@@ -354,7 +368,7 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
     }
     return this.reportOrderItemLot
       .find(condition)
-      .sort({ warehouseCode: 1, itemCode: 1 })
+      .sort({ warehouseCode: 1, itemCode: 1, orderCreatedAt: 1 })
       .lean();
   }
 

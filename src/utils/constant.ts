@@ -446,6 +446,10 @@ export const ORDER_TRANSFER_INCOMPLETED_COLUMNS: TableColumn[] = [
     width: 0.8,
   },
   {
+    name: 'LOT',
+    width: 1,
+  },
+  {
     name: 'QUANTITY',
     width: 0.8,
   },
