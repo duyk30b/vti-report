@@ -38,7 +38,7 @@ export enum WarehouseTransferStatusEnum {
 export const WAREHOUSE_EXPORT_RECEIPT_STATUS_MAP = {
   [OrderStatus.Pending]: 'statusSoExport.pending',
   [OrderStatus.Confirmed]: 'statusSoExport.confirmed',
-  [OrderStatus.InProgress]: 'statusSoExport.inCollecting',
+  [OrderStatus.InCollecting]: 'statusSoExport.inCollecting',
   [OrderStatus.Completed]: 'statusSoExport.completed',
   [OrderStatus.Reject]: 'statusSoExport.rejected',
   [OrderStatus.Collected]: 'statusSoExport.collected',
