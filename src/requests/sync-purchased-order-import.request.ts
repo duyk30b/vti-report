@@ -48,6 +48,14 @@ export class WarehouseResponseDto {
 class PurchasedOrderImportWarehouseLot {
   @ApiProperty()
   @IsOptional()
+  id: number;
+
+  @ApiProperty()
+  @IsOptional()
+  lotNumberOld: string;
+
+  @ApiProperty()
+  @IsOptional()
   itemId: number;
 
   @ApiProperty()

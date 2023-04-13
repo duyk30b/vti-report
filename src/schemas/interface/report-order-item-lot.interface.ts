@@ -16,6 +16,8 @@ export class source {
 }
 
 export interface ReportOrderItemLotInteface extends ReportOrderItemInteface {
+  baseId?: number;
+  lotNumberOld?: string;
   lotNumber: string;
   reason: string;
   explain: string;

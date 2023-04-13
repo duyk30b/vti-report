@@ -22,6 +22,10 @@ export const REPORT_ORDER_TRANSFER_INCOMPLETE_COLUMN: TableColumn[] = [
     width: 10,
   },
   {
+    name: 'LOT',
+    width: 15,
+  },
+  {
     name: 'QUANTITY',
     width: 10,
   },

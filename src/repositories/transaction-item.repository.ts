@@ -490,6 +490,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           _id: 0,
           companyCode: 1,
           warehouseCode: 1,
+          warehouseName: 1,
           itemCode: 1,
           itemName: 1,
           locatorCode: 1,

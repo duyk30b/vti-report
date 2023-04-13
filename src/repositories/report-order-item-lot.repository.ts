@@ -32,6 +32,10 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
     await document.save();
   }
 
+  public async removeDocumentByConditions(condition): Promise<any> {
+    await this.reportOrderItemLot.remove(condition);
+  }
+
   public async bulkWriteOrderReportItemLot(
     bulkOps: ReportOrderItemLotInteface[],
   ): Promise<any> {
@@ -342,6 +346,20 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
           },
         });
         break;
+      case ReportType.ORDER_TRANSFER_INCOMPLETED:
+        condition['$and'].push({
+          ebsNumber: { $eq: null },
+        });
+        condition['$and'].push({
+          status: {
+            $in: [
+              WarehouseTransferStatusEnum.COMPLETED,
+              WarehouseTransferStatusEnum.EXPORTED,
+              WarehouseTransferStatusEnum.INPROGRESS,
+            ],
+          },
+        });
+        break;
     }
 
     if (
@@ -354,7 +372,7 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
     }
     return this.reportOrderItemLot
       .find(condition)
-      .sort({ warehouseCode: 1, itemCode: 1 })
+      .sort({ warehouseCode: 1, itemCode: 1, orderCreatedAt: 1 })
       .lean();
   }
 
@@ -1115,7 +1133,6 @@ function getCommonConditionSituation(orderType: OrderType) {
           orderCode: '$orderCode',
           warehouseCode: '$warehouseCode',
           lotNumber: '$lotNumber',
-          status: '$status',
         },
         pipeline: [
           {

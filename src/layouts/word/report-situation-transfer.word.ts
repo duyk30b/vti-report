@@ -205,7 +205,6 @@ export async function generateReportSituationTransfer(
                   orderData = warehouse.orders
                     .map((order, index) => {
                       itemData = order.items.map((item) => {
-                        console.log(item);
                         return new TableRow({
                           height: setHeight(WORD_FILE_CONFIG.TABLE_ROW_HEIGHT),
                           children: [
