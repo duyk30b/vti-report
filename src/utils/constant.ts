@@ -766,6 +766,10 @@ export const ORDER_EXPORT_BY_REQUEST_FOR_ITEM_COLUMNS: TableColumn[] = [
     name: 'QUANTITY_EXPORTED',
     width: 0.8,
   },
+  {
+    name: 'STATUS',
+    width: 0.8,
+  },
 ];
 
 export const ITEM_INVENTORY_COLUMNS: TableColumn[] = [

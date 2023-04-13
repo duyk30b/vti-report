@@ -7,4 +7,5 @@ export interface ReportOrderExportByRequestForItemModel {
   orderCreatedAt: string;
   planQuantity: number | string;
   exportedQuantity: number | string;
+  status: string;
 }

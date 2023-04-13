@@ -4,9 +4,9 @@ import { ReportOrderItem } from '@schemas/report-order-item.schema';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { ReportInfo } from './Item-inventory-mapped';
 import * as moment from 'moment';
-import { DATE_FOMAT_EXCELL, DATE_FOMAT_EXCELL_MM_DD_YY } from '@utils/constant';
-import { isEmpty } from 'lodash';
+import { DATE_FOMAT_EXCELL_MM_DD_YY } from '@utils/constant';
 import { readDecimal } from '@constant/common';
+import { WAREHOUSE_EXPORT_RECEIPT_STATUS_MAP } from '@enums/order-status.enum';
 
 export function getOrderExportByRequestForItemMapped(
   data: ReportOrderItem[],
@@ -39,6 +39,9 @@ export function getOrderExportByRequestForItemMapped(
           : '',
         planQuantity: readDecimal(cur.planQuantity, true),
         exportedQuantity: readDecimal(cur.actualQuantity, true),
+        status: i18n.translate(
+          `report.${WAREHOUSE_EXPORT_RECEIPT_STATUS_MAP[cur?.status]}`,
+        ),
       };
       prev[warehouseCode].push(data);
       return prev;
