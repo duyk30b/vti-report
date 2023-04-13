@@ -33,4 +33,8 @@ export const REPORT_ORDER_EXPORT_BY_REQUEST_FOR_ITEM_MODEL: TableColumn[] = [
     name: 'QUANTITY_EXPORTED',
     width: 20,
   },
+  {
+    name: 'STATUS',
+    width: 20,
+  },
 ];
