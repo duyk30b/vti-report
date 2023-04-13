@@ -192,12 +192,12 @@
   },
   "REORDER_QUANTITY": {
     "TITLE": "THỐNG KÊ GIAO DỊCH CHI TIẾT\n{property}",
-    "FILE_NAME": "W017-Thống kê lượng hàng cần đặt (re-order)-{property}",
-    "SHEET_NAME": "W017-Thong_ke_luong_hang_can_dat-{property}"
+    "FILE_NAME": "W018-Thống kê lượng hàng cần đặt (re-order)-{property}",
+    "SHEET_NAME": "W018-Thong_ke_luong_hang_can_dat-{property}"
   },
   "TRANSACTION_DETAIL": {
     "TITLE": "THỐNG KÊ GIAO DỊCH CHI TIẾT\n{property}",
-    "FILE_NAME": "W018-Thống kê giao dịch chi tiết-{property}",
-    "SHEET_NAME": "W018-Thong_ke_giao_dich_chi_tiet-{property}"
+    "FILE_NAME": "W017-Thống kê giao dịch chi tiết-{property}",
+    "SHEET_NAME": "W017-Thong_ke_giao_dich_chi_tiet-{property}"
   }
 }
