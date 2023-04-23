@@ -1,41 +1,59 @@
-import { Schema, Types } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { DailyWarehouseItemStockInterface } from './interface/daily-warehouse-item-stock.interface';
 
-export const DailyWarehouseItemStockSchema = new Schema(
-  {
-    itemId: {
-      type: Types.ObjectId,
-      required: true,
-    },
-    stockQuantity: {
-      type: Number,
-      required: true,
-    },
-    warehouseId: {
-      type: Types.ObjectId,
-      required: true,
-    },
-    reportDate: {
-      type: String,
-      required: true,
-    },
-    minInventoryLimit: {
-      type: Number,
-      required: true,
-    },
-    inventoryLimit: {
-      type: Number,
-      required: true,
-    },
-    storageCost: {
-      type: Number,
-      required: true,
-    },
-    companyId: {
-      type: Types.ObjectId,
-      required: true,
-    },
-  },
-  {
-    timestamps: true,
-  },
+export type DailyWarehouseItemStockDocument = DailyWarehouseItemStock &
+  Document;
+
+@Schema({ collection: 'daily-warehouse-item-stock', timestamps: true })
+export class DailyWarehouseItemStock
+  implements DailyWarehouseItemStockInterface
+{
+  @Prop({ required: false })
+  reportDate: Date;
+
+  @Prop({ required: false })
+  stockQuantity: number;
+
+  @Prop({ required: false })
+  minInventoryLimit: number;
+
+  @Prop({ required: false })
+  inventoryLimit: number;
+
+  @Prop({ required: false })
+  storageCost: number;
+
+  @Prop({ required: false })
+  companyCode: string;
+
+  @Prop({ required: false })
+  companyName: string;
+
+  @Prop({ required: false })
+  companyAddress: string;
+
+  @Prop({ required: false })
+  itemName: string;
+
+  @Prop({ required: false })
+  itemCode: string;
+
+  @Prop({ required: false })
+  warehouseName: string;
+
+  @Prop({ required: false })
+  warehouseCode: string;
+
+  @Prop({ required: false })
+  unit: string;
+
+  @Prop({ required: false })
+  origin: string;
+
+  @Prop({ required: false })
+  note: string;
+}
+
+export const DailyWarehouseItemStockSchema = SchemaFactory.createForClass(
+  DailyWarehouseItemStock,
 );

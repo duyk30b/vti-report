@@ -6,24 +6,46 @@ export enum ErrorMessageEnum {
   FORBIDDEN = 'Access denied',
   BAD_REQUEST = 'Bad request',
   SUCCESS = 'Success',
-  TOKEN_EXPIRED = 'Token expired',
 
-  // ================= General User error message ===============================
-  UNIQUE_DATA_USERNAME = 'Dữ liệu Tên Đăng Nhập đã tồn tại',
-  UNIQUE_DATA_CODE = 'Dữ liệu Mã đã tồn tại',
-  UNIQUE_DATA_EMAIL = 'Dữ liệu Email đã tồn tại',
-  USER_ROLE_NOT_FOUND = 'Dữ liệu Quyền không tồn tại',
-  USER_NOT_FOUND = 'Dữ liệu Người Dùng không tồn tại',
-  COMPANY_NOT_FOUND = 'Dữ liệu Công Ty không tồn tại',
-  DEPARTMENT_NOT_FOUND = 'Dữ liệu Phòng Ban không tồn tại',
-  FACTORY_NOT_FOUND = 'Dữ liệu Nhà Máy không tồn tại',
+  // ================= END General error message ===============================
+
+  // ================= Ware error message ===============================
   WAREHOUSE_NOT_FOUND = 'Dữ liệu Kho không tồn tại',
+  WAREHOUSE_TYPE_NOT_FOUND = 'Dữ liệu Kiểu Kho không tồn tại',
+  COMPANY_NOT_FOUND = 'Dữ liệu Công Ty không tồn tại',
+  FACTORY_NOT_FOUND = 'Dữ liệu Nhà Máy không tồn tại',
+  CODE_IS_ALREADY_EXISTS = 'Dữ liệu Mã đã tồn tại',
   CODE_ALREADY_EXISTS = 'Dữ liệu Mã đã tồn tại',
   NAME_ALREADY_EXISTS = 'Dữ liệu Tên đã tồn tại',
-  OTP_CODE_NOT_CORRECT = 'Mã OTP không chính xác',
-  OTP_CODE_EXPIRED = 'Mã OTP đã hết hạn',
-  CAN_NOT_DELETE = 'Dữ liệu này không thể xóa',
+  INVALID_QUANTITY = 'Số lượng không hợp lệ',
+  UPDATE_FAILED = 'Sửa không thành công',
+  CAN_NOT_DELETE = 'Bản ghi này không thể xóa',
+  CAN_NOT_UPDATE = 'Bản ghi này không thể sửa',
+  //
 
-  // ================= General mail error message ===============================
-  SEND_MAIL_FAIL = 'Gửi email thất bại',
+  // ================= Inventory error message ===============================
+  CAN_NOT_DELETE_INVENTORY = 'Dữ liệu hàng tồn kho không thể xóa',
+  CAN_NOT_UPDATE_QUANTITY = 'Dữ liệu số lượng hàng tồn kho không thể sửa',
+  INVENOTRY_IS_EXIST = 'Dữ liệu hàng tồn kho đã tồn tại',
+  //
+
+  // ================= Sale error message ===============================
+  ORDER_ITEM_NOT_FOUND = 'Không thể tìm thấy dữ liệu sản phẩm trong đơn hàng',
+  ORDER_ITEM_QUANTITY_TOO_LARGE = 'Số lượng sản phẩm quá lớn',
+  ORDER_NOT_ENOUGH_ITEM_IN_STOCK = 'Không có đủ mặt hàng trong kho',
+  CODE_EXIST = 'Dữ liệu Mã đã tồn tại',
+  INVALID_DATE_RANGE = 'Phạm vi ngày không hợp lệ',
+  //
+
+  // ================= Transfer error message ===============================
+  CAN_NOT_UPDATE_TRANSFER = 'Không thể cập nhật chuyển khoản',
+  MUST_NOT_SAME_FACROTY = 'Phải không cùng một nhà máy',
+  MUST_SAME_FACROTY = 'Phải cùng một nhà máy',
+  //
+
+  // ================= Template sector template shelf error message ===============================
+  TEMPLATE_SECTOR_NOT_EXIST = 'Khu vực không tồn tại',
+  TEMPLATE_SHELF_NOT_EXIST = 'Kệ không tồn tại',
+  TEMPLATE_SHELF_FLOOR_NOT_EXIST = 'Tầng không tồn tại'
+  //
 }

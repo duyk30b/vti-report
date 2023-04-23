@@ -1,0 +1,211 @@
+{
+  "INDEX": "STT",
+  "ITEM_CODE": "Mã vật tư",
+  "ITEM_NAME": "Tên vật tư",
+  "IMPORT_IN": "Nhập trong kỳ",
+  "IMPORTED": "đã nhập kho",
+  "IMPORTING": "đang nhập kho",
+  "INVENTORY_COLUMN": "Tồn kho",
+  "NOT_YET_IMPORT": "chưa nhập kho",
+  "ORDER_EXPORT_CODE": "Phiếu xuất kho",
+  "ORDER_IMPORT_CODE": "Phiếu nhập kho",
+  "ORDER_REQUEST_EXPORT_ITEM": "Giấy đề nghị xuất VT",
+  "ORDER_CODE": "Phiếu yêu cầu",
+  "ORDER_ID_WMSX": "ID Phiếu WMS",
+  "ORDER_ID_IMPORT_WMSX": "ID Phiếu WMS",
+  "ORDER_NUMBER_EBS": "Số phiếu EBS",
+  "ORIGIN": "Nguồn gốc",
+  "UNIT": "ĐVT",
+  "UNIT_PRICE": "Đơn giá",
+  "UNIT_PRICE_SHORT": "ĐG",
+  "UNIT_IMPORT_PRICE": "Đơn vị nhập",
+  "LOT": "Lô",
+  "LOCATION_IMPORT": "Vị trí nhập",
+  "LOCATION_EXPORT": "Vị trí xuất",
+  "LOCATION": "Vị trí",
+  "LOCATION_GET": "Vị trí lấy",
+  "QUANTITY": "Số lượng",
+  "QUANTITY_MINIMUM": "SL tối thiểu",
+  "QUANTITY_STOCK": "SL Tồn",
+  "QUANTITY_SAFE": "SL an toàn",
+  "QUANTITY_IMPORT": "SL nhập kho",
+  "QUANTITY_RECEIVED": "SL đã cất",
+  "QUANTITY_RECEIVE": "SL chưa cất",
+  "QUANTITY_SHORT": "SL",
+  "QUANTITY_PYC": "SL theo PYC",
+  "QUANTITY_REQUIRE": "SL yêu cầu",
+  "QUANTITY_EXPORTED": "SL đã xuất",
+  "TOTAL": "TỔNG CỘNG",
+  "TOTAL_PRICE": "Thành tiền",
+  "TOTAL_PRICE_WAREHOUSE": "Tổng Kho: ",
+  "WAREHOUSE": "Kho",
+  "COMPANY": "Công ty",
+  "REORDER_QUANTITY_NUMBER": "Số lượng đặt hàng",
+  "ITEM_UNIT": "Đơn vị tính",
+  "TOTAL_SHORT": "TT",
+  "WAREHOUSE_GROUP_CODE": "Mã kho: ",
+  "WAREHOUSE_IMPORT": "Kho nhập",
+  "DATE_TEMPLATE_TO": "Ngày: {to}",
+  "DATE_TEMPLATE_TO_FROM": "Từ ngày: {from}  đến ngày: {to}",
+  "DATE_IMPORT": "Ngày nhập kho",
+  "DATE_EXPORT": "Ngày xuất kho",
+  "DATE": "Ngày",
+  "DELIVER": "Người giao hàng",
+  "DEB": "Nợ",
+  "DEVIANT": "Chênh lệch",
+  "ORDER_CREATED_DATE": "Ngày lập phiếu",
+  "REPORT_ALL": "TOÀN ĐƠN VỊ",
+  "REPORT_NUMBER": "Số:............",
+  "REASON_IMPORT": "Lý do nhập",
+  "RECEIVER": "Người nhận hàng",
+  "RECEIVER_DEPARMENT": "Bộ phận nhận",
+  "DEPARTMENT_RECEIPT": "Đơn vị nhận",
+  "REQUIRE": "Yêu cầu",
+  "CONTRUCTION": "Công trình",
+  "CONTRACT": "Hợp đồng",
+  "COST": "Chi phí",
+  "EXPORT_IN": "Xuất trong kỳ",
+  "EXPLAIN": "Diễn giải",
+  "EXPORT_ACTUAL": "Thực xuất",
+  "STOCK_QUANTITY_START": "Tồn đầu kỳ",
+  "STOCK_QUANTITY_END": "Tồn cuối kỳ",
+  "STATUS": "Trạng thái",
+  "NOTE": "Ghi chú",
+  "POST": "Chứng từ",
+  "PROVIDER_SHORT": "NCC",
+  "PARENT_COMPANY": "TỔNG CÔNG TY PHÁT ĐIỆN 3 - CÔNG TY CỔ PHẦN",
+  "ACCOUNT": "Tài khoản",
+  "ACCORDING_BOOK_QUANTITY": "Theo sổ sách",
+  "ACCORDING_INVENTORY": "Theo kiểm kê",
+  "HAVE": "Có",
+  "EXCESS": "Thừa",
+  "LACK": "Thiếu",
+  "CURRENCY_DONG": "Đơn vị tính: đồng",
+  "REASON": "Mục đích: ",
+  "MANUFACTURING_COUNTRY": "Nơi SX",
+  "REASON_EN": "Reason",
+  "SOURCE_EN": "Source",
+  "CONTRACT_NUMBER": "Số hợp đồng",
+  "ORIGIN_ITEM": "Xuất xứ",
+  "ORDER_CODE_WMS": "Số phiếu nhập, xuất, chuyển WMS",
+  "ORDER_CODE_EBS": "Số phiếu nhập, xuất, chuyển EBS",
+  "TYPE_TRANSACTION": "Loại giao dịch",
+  "VENDOR": "Nhà cung cấp",
+  "SIX_MONTH": "6 tháng",
+  "SIX_MONTH_TO_ONE_YEAR": "Từ 6 tháng đến < 1 năm",
+  "ONE_YEAR_TO_TWO_YEAR": "Từ 1 năm đến < 2 năm",
+  "TWO_YEAR_TO_THREE_YEAR": "Từ 2 năm đến < 3 năm",
+  "THREE_YEAR_TO_FOUR_YEAR": "Từ 3 năm đến < 4 năm",
+  "FOUR_YEAR_TO_FIVE_YEAR": "Từ 4 năm đến < 5 năm",
+  "GREATER_FIVE_YEAR": ">= 5 năm",
+  "MO9_REPORT_FOOTER_DATE": "Thủ Đức,  ngày ... tháng ... năm ....",
+  "030700_REPORT_FOOTER_DATE": "Quảng Ninh,  ngày ... tháng ... năm ....",
+  "030800_REPORT_FOOTER_DATE": "Bình Thuận,  ngày ... tháng ... năm ....",
+  "030400_REPORT_FOOTER_DATE": "Đắk Lắk,  ngày ... tháng ... năm ....",
+  "030600_REPORT_FOOTER_DATE": "Vũng Tàu,  ngày ... tháng ... năm ....",
+  "031300_REPORT_FOOTER_DATE": "Vũng Tàu,  ngày ... tháng ... năm ....",
+  "VOUCHERS_DATE": "Ngày Chứng Từ",
+  "REPORT_FOOTER_SCHEDULER": "Người lập biểu",
+  "REPORT_FOOTER_OFFICE_SUPPLIES": "Phòng Vật tư",
+  "REPORT_FOOTER_CHIEF_ACCOUNTANT": "Kế toán trưởng",
+  "REPORT_FOOTER_VICE_PRESIDENT": "Phó Giám đốc",
+  "REPORT_FOOTER_STOCKER": "Thủ kho",
+  "ITEM_INVENTORY_BELOW_MINIMUM": {
+    "TITLE": "BÁO CÁO HÀNG TỒN KHO DƯỚI MỨC TỒN KHO TỐI THIỂU\n{property}",
+    "FILE_NAME": "W006-Báo cáo hàng tồn kho dưới mức tồn kho tối thiểu-{property}",
+    "SHEET_NAME": "W006-Tồn_dưới_mức_tối_thiểu-{property}"
+  },
+  "ITEM_INVENTORY_BELOW_SAFE": {
+    "TITLE": "BÁO CÁO HÀNG TỒN KHO DƯỚI MỨC TỒN KHO AN TOÀN\n{property}",
+    "FILE_NAME": "W005-Báo cáo hàng tồn kho dưới mức tồn kho an toàn-{property}",
+    "SHEET_NAME": "W005-Tồn_dưới_mức_an_toàn-{property}"
+  },
+  "ORDER_TRANSFER_INCOMPLETED": {
+    "TITLE": "BÁO CÁO PHIẾU CHUYỂN KHO CHƯA CHUYỂN KHO TRÊN EBS\n{property}",
+    "FILE_NAME": "W004-Báo cáo phiếu chuyển kho chưa chuyển kho-{property}",
+    "SHEET_NAME": "W004-Chưa_CK_EBS-{property}"
+  },
+  "ORDER_EXPORT_INCOMPLETED": {
+    "TITLE": "BÁO CÁO PHIẾU XUẤT KHO CHƯA XUẤT KHO TRÊN EBS\n{property}",
+    "FILE_NAME": "W003-Báo cáo phiếu xuất kho chưa xuất kho trên EBS-{property}",
+    "SHEET_NAME": "W003-Chưa_XK_EBS-{property}"
+  },
+  "ORDER_IMPORT_INCOMPLETED": {
+    "TITLE": "BÁO CÁO THỐNG KÊ PHIẾU NHẬP KHO CHƯA NHẬP KHO TRÊN EBS\n{property}",
+    "FILE_NAME": "W001-Báo cáo thống kê phiếu nhập kho chưa nhập kho trên EBS-{property}",
+    "SHEET_NAME": "W001-Chưa_NK_EBS-{property}"
+  },
+  "ITEM_IMPORTED_BUT_NOT_PUT_TO_POSITION": {
+    "TITLE": "BÁO CÁO VẬT TƯ ĐÃ NHẬP KHO CHƯA CẤT VÀO VỊ TRÍ\n{property}",
+    "FILE_NAME": "W002-Báo cáo vật tư đã nhập kho chưa cất vào vị trí-{property}",
+    "SHEET_NAME": "W002-NK_chưa cất-{property}"
+  },
+  "ITEM_INVENTORY": {
+    "TITLE": "BÁO CÁO VẬT TƯ TỒN KHO\n{property}",
+    "FILE_NAME": "W010-Báo cáo vật tư tồn kho-{property}",
+    "SHEET_NAME": "EVN_INV_017-Bao_cao_nhap_xuat_ton-{property}"
+  },
+  "ORDER_IMPORT_BY_REQUEST_FOR_ITEM": {
+    "TITLE": "",
+    "FILE_NAME": "W008-Thống kê đơn nhập theo yêu cầu cấp vật tư-{property}",
+    "SHEET_NAME": "W008-NK_theo_yêu_cầu-{property}"
+  },
+  "INVENTORY": {
+    "TITLE": "THỐNG KÊ TỒN KHO HIỆN TẠI\n{property}",
+    "FILE_NAME": "W007-Thống kê tồn kho-{property}",
+    "SHEET_NAME": "EVN_INV_011-Bao_cao_vat_tu_ton_kho-{property}"
+  },
+  "ITEM_INVENTORY_IMPORTED_NO_QR_CODE": {
+    "TITLE": "",
+    "FILE_NAME": "W015-Thống kê vật tư đã nhập kho nhưng chưa in mã QR-{property}",
+    "SHEET_NAME": "W015-NK_chưa_in_QRcode-{property}"
+  },
+  "ORDER_EXPORT_BY_REQUEST_FOR_ITEM": {
+    "TITLE": "",
+    "FILE_NAME": "W016-Thống kê đơn xuất theo yêu cầu cấp vật tư-{property}",
+    "SHEET_NAME": "W016-XK_theo_ĐNXK-{property}"
+  },
+  "SITUATION_TRANSFER": {
+    "TITLE": "BẢNG LIỆT KÊ PHIẾU XUẤT NỘI BỘ KHO SXKD\n{property}",
+    "FILE_NAME": "W013-Thống kê tình hình chuyển kho-{property}",
+    "SHEET_NAME": "EVN_INV_008-Bang_liet_ke_phieu_xuat_vat_tu_noi_bo-{property}"
+  },
+  "SITUATION_INVENTORY_PERIOD": {
+    "TITLE": "BẢNG KIỂM KÊ VẬT TƯ, HÀNG HÓA TỒN KHO\n{property}",
+    "FILE_NAME": "W014-Thống kê tình hình kiểm kê theo kỳ-{property}",
+    "SHEET_NAME": "W014-Thống_kê_kiểm_kê-{property}"
+  },
+  "SITUATION_IMPORT_PERIOD": {
+    "TITLE": "BẢNG LIỆT KÊ CHỨNG TỪ NHẬP (SXKD)\n{property}",
+    "FILE_NAME": "W011-Thống kê tình hình nhập kho theo kỳ-{property}",
+    "SHEET_NAME": "EVN_INV_007-Bang_liet_ke_chung_tu_nhap-{property}"
+  },
+  "SITUATION_EXPORT_PERIOD": {
+    "TITLE": "BẢNG LIỆT KÊ PHIẾU XUẤT VẬT TƯ (SXKD)\n{property}",
+    "FILE_NAME": "W012-Thống kê tình hình xuất kho theo kỳ-{property}",
+    "SHEET_NAME": "EVN_INV_009-Bang_liet_ke_phieu_xuat_vat_tu-{property}"
+  },
+  "AGE_OF_ITEM_STOCK": {
+    "TITLE": "BÁO CÁO TUỔI HÀNG TỒN KHO\n{property}",
+    "FILE_NAME": "W009-Thống kê tuổi hàng tồn kho-{property}",
+    "SHEET_NAME": "EVN_INV_049-Bao_cao_tuoi_hang_ton_kho-{property}"
+  },
+  "REORDER_QUANTITY": {
+    "TITLE": "THỐNG KÊ GIAO DỊCH CHI TIẾT\n{property}",
+    "FILE_NAME": "W018-Thống kê lượng hàng cần đặt (re-order)-{property}",
+    "SHEET_NAME": "W018-Thong_ke_luong_hang_can_dat-{property}"
+  },
+  "TRANSACTION_DETAIL": {
+    "TITLE": "THỐNG KÊ GIAO DỊCH CHI TIẾT\n{property}",
+    "FILE_NAME": "W017-Thống kê giao dịch chi tiết-{property}",
+    "SHEET_NAME": "W017-Thong_ke_giao_dich_chi_tiet-{property}"
+  },
+  "statusSoExport": {
+    "pending": "Chờ xác nhận",
+    "confirmed": "Xác nhận",
+    "inCollecting": "Đang lấy hàng",
+    "completed": "Hoàn thành",
+    "rejected": "Từ chối",
+    "collected": "Chờ xuất kho"
+  }
+}

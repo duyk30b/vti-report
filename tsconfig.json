@@ -53,10 +53,15 @@
       ],
       "@responses/*": [
         "src/responses/*"
-      ]
-      ,
+      ],
       "@schemas/*": [
         "src/schemas/*"
+      ],
+      "@layout/*": [
+        "src/layouts/*"
+      ],
+      "@mapping/*": [
+        "src/mappings/*"
       ]
     }
   }

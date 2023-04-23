@@ -16,6 +16,7 @@ stages:
   - deploy_staging
   - build_demo
   - deploy_demo
+  - build_pkg
   - clean
 
 before_script:
@@ -23,6 +24,14 @@ before_script:
   - docker login $PRIVATE_REGISTRY_HOST -u $PRIVATE_REGISTRY_USERNAME -p $PRIVATE_REGISTRY_PASSWD
   - chmod +x ./setup_env.sh
   - ./setup_env.sh
+
+build_pkg:
+  stage: build_pkg
+  script:
+    - docker build --tag $PKG_CONTAINER_IMAGE -f Dockerfile.package .
+    - docker push $PKG_CONTAINER_IMAGE
+  only:
+    - tags
 
 build:
   stage: build
@@ -51,7 +60,7 @@ deploy:
     - >
       ssh $SSH_USER@10.1.47.52
       "docker login ${PRIVATE_REGISTRY_HOST} -u ${PRIVATE_REGISTRY_USERNAME} -p ${PRIVATE_REGISTRY_PASSWD};
-      cd ${PATH_TO_PROJECT}
+      cd ${PATH_TO_PROJECT};
       docker pull ${CONTAINER_DEV_IMAGE};
       docker-compose down;
       docker-compose -f docker-compose.yml -f docker-compose.production.yml up -d;
@@ -85,7 +94,7 @@ deploy_staging:
     - >
       ssh $SSH_STAGING_USER@10.1.47.52
       "docker login ${PRIVATE_REGISTRY_HOST} -u ${PRIVATE_REGISTRY_USERNAME} -p ${PRIVATE_REGISTRY_PASSWD};
-       cd ${PATH_TO_STAGING_PROJECT};
+      cd ${PATH_TO_STAGING_PROJECT};
       docker pull ${CONTAINER_STAGING_IMAGE};
       docker-compose down;
       docker-compose -f docker-compose.yml -f docker-compose.production.yml up -d;

@@ -2,7 +2,7 @@ import { BaseModel } from '@core/model/base.model';
 import { FilterQuery, Model, Types } from 'mongoose';
 import { BaseInterfaceRepository } from './base.interface.repository';
 
-export abstract class BaseAbstractRepository<T extends BaseModel>
+export abstract class BaseAbstractRepository<T>
   implements BaseInterfaceRepository<T>
 {
   protected model: Model<T>;
@@ -44,6 +44,10 @@ export abstract class BaseAbstractRepository<T extends BaseModel>
     return await this.find();
   }
 
+  public getModel(): Model<T> {
+    return this.model;
+  }
+
   public async remove(id: string): Promise<any> {
     return await this.model.remove(id);
   }
@@ -66,6 +70,10 @@ export abstract class BaseAbstractRepository<T extends BaseModel>
 
   public async createMany(data: T | any): Promise<any> {
     return await this.model.insertMany(data);
+  }
+
+  public async deleteAllByCondition(data: T | any): Promise<any> {
+    return await this.model.deleteMany(data);
   }
 
   public async softDelete(id: string, userId?: number): Promise<any> {
@@ -121,5 +129,9 @@ export abstract class BaseAbstractRepository<T extends BaseModel>
       dataUpdate,
       { upsert: true, new: true, runValidators: true },
     );
+  }
+
+  public async bulkWrite(bulkOps: any): Promise<any> {
+    return await this.model.bulkWrite(bulkOps);
   }
 }
