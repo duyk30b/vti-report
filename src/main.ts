@@ -8,14 +8,8 @@ import { FilterQueryPipe } from '@core/pipe/filter-query.pipe';
 import { SortQueryPipe } from '@core/pipe/sort-query.pipe';
 import { ExceptionInterceptor } from '@core/interceptors/exception.interceptor';
 import fastifyMultipart from 'fastify-multipart';
-import {
-  KafkaOptions,
-  MicroserviceOptions,
-  TcpOptions,
-  Transport,
-} from '@nestjs/microservices';
+import { KafkaOptions, TcpOptions, Transport } from '@nestjs/microservices';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { ClusterService } from '@core/cluster/cluster.service';
 import { APIPrefix } from '@core/common';
 import { ConfigService } from '@core/config/config.service';
 async function bootstrap() {
@@ -105,5 +99,5 @@ async function bootstrap() {
 }
 
 // process.env.NODE_ENV === 'development'
-  bootstrap()
-  // : ClusterService.clusterize(bootstrap);
+bootstrap();
+// : ClusterService.clusterize(bootstrap);
