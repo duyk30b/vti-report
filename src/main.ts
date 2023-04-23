@@ -48,8 +48,8 @@ async function bootstrap() {
           ssl: true,
           sasl: {
             mechanism: 'plain',
-            username: process.env.KAFKA_SASL_USERNAME,
-            password: process.env.KAFKA_SASL_PASSWD,
+            username: process.env.KAFKA_USERNAME,
+            password: process.env.KAFKA_PASSWORD,
           },
         },
         consumer: {
@@ -85,7 +85,7 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api/v1/reports/swagger-docs', app, document);
 
   let corsOptions = {};
   const configService = new ConfigService();
