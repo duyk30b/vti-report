@@ -1,50 +1,62 @@
-import { Schema, Types } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { DailyLocatorStockInterface } from './interface/daily-locator-stock.interface';
 
-export const DailyItemLocatorStockSchema = new Schema(
-  {
-    dailyWarehouseItemStockId: {
-      type: Types.ObjectId,
-      required: true,
-    },
-    warehouseId: {
-      type: Types.ObjectId,
-      required: true,
-    },
-    locatorId: {
-      type: Types.ObjectId,
-      required: true,
-    },
-    itemId: {
-      type: Types.ObjectId,
-      required: true,
-    },
-    stockQuantity: {
-      type: Number,
-      required: true,
-    },
+export type DailyItemLocatorStockDocument = DailyItemLocatorStock & Document;
 
-    reportDate: {
-      type: String,
-      required: true,
-    },
-    locatorName: {
-      type: String,
-      required: true,
-    },
-    locatorCode: {
-      type: String,
-      required: true,
-    },
-    storageCost: {
-      type: Number,
-      required: true,
-    },
-    companyId: {
-      type: Types.ObjectId,
-      required: true,
-    },
-  },
-  {
-    timestamps: true,
-  },
+@Schema({ collection: 'daily-item-locator-stock', timestamps: true })
+export class DailyItemLocatorStock implements DailyLocatorStockInterface {
+  @Prop({ required: false })
+  locatorName: string;
+
+  @Prop({ required: false })
+  locatorCode: string;
+
+  @Prop({ required: false })
+  itemCode: string;
+
+  @Prop({ required: false })
+  stockQuantity: number;
+
+  @Prop({ required: false })
+  reportDate: Date;
+
+  @Prop({ required: false })
+  companyCode: string;
+
+  @Prop({ required: false })
+  storageCost: number;
+
+  @Prop({ required: false })
+  itemName: string;
+
+  @Prop({ required: false })
+  warehouseName: string;
+
+  @Prop({ required: false })
+  warehouseCode: string;
+
+  @Prop({ required: false })
+  companyName: string;
+
+  @Prop({ required: false })
+  unit: string;
+
+  @Prop({ required: false })
+  minInventoryLimit: number;
+
+  @Prop({ required: false })
+  inventoryLimit: number;
+
+  @Prop({ required: false })
+  companyAddress: string;
+
+  @Prop({ required: false })
+  origin: string;
+
+  @Prop({ required: false })
+  note: string;
+}
+
+export const DailyItemLocatorStockSchema = SchemaFactory.createForClass(
+  DailyItemLocatorStock,
 );

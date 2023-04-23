@@ -1,6 +1,4 @@
-import { BaseModel } from '@core/model/base.model';
-
-export interface BaseInterfaceRepository<T extends BaseModel> {
+export interface BaseInterfaceRepository<T> {
   create(data: T | any): Promise<T>;
 
   findOneById(id: number | string): Promise<T>;
@@ -30,4 +28,6 @@ export interface BaseInterfaceRepository<T extends BaseModel> {
   updateManyByCondition(condition: any, dataUpdate: any): Promise<any>;
 
   createOrUpdate(dataUpdate: any): Promise<any>;
+
+  bulkWrite(bulkOps: any[]): Promise<any>;
 }

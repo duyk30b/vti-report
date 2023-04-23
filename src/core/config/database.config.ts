@@ -4,6 +4,7 @@ import {
   MongooseOptionsFactory,
 } from '@nestjs/mongoose';
 import * as dotenv from 'dotenv';
+import * as mongoose from 'mongoose';
 
 dotenv.config();
 
@@ -17,6 +18,9 @@ const mongoDbConfig = {
   database: process.env.DATABASE_NAME,
   logging: process.env.NODE_ENV === 'development',
 };
+
+mongoose.set('debug', true);
+
 
 @Injectable()
 export default class DatabaseConfigService implements MongooseOptionsFactory {
