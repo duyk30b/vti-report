@@ -1,3 +1,4 @@
+import { DailyItemWarehouseStockPrice, DailyItemWarehouseStockPriceSchema } from '@schemas/daily-item-warehouse-stock-price.schema';
 import { DailyLotLocatorStock } from './../../schemas/daily-lot-locator-stock.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DashboardService } from './dashboard.service';
@@ -6,6 +7,7 @@ import { DashboardController } from './dashboard.controller';
 import { ConfigService } from '@core/config/config.service';
 import { DailyLotLocatorStockRepository } from '@repositories/daily-lot-locator-stock.repository';
 import { DailyLotLocatorStockSchema } from '@schemas/daily-lot-locator-stock.schema';
+import { DailyItemWarehouseStockPriceRepository } from '@repositories/daily-item-warehouse-stock-price.repository';
 
 @Global()
 @Module({
@@ -14,6 +16,10 @@ import { DailyLotLocatorStockSchema } from '@schemas/daily-lot-locator-stock.sch
       {
         name: DailyLotLocatorStock.name,
         schema: DailyLotLocatorStockSchema,
+      },
+      {
+        name: DailyItemWarehouseStockPrice.name,
+        schema: DailyItemWarehouseStockPriceSchema,
       },
     ]),
   ],
@@ -29,6 +35,10 @@ import { DailyLotLocatorStockSchema } from '@schemas/daily-lot-locator-stock.sch
     {
       provide: DailyLotLocatorStockRepository.name,
       useClass: DailyLotLocatorStockRepository,
+    },
+    {
+      provide: DailyItemWarehouseStockPriceRepository.name,
+      useClass: DailyItemWarehouseStockPriceRepository,
     },
   ],
   controllers: [DashboardController],

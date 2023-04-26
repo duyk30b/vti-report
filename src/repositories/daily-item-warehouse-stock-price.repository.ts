@@ -8,6 +8,7 @@ import { Model } from 'mongoose';
 import * as moment from 'moment';
 import { DailyItemWarehouseStockPrice } from '@schemas/daily-item-warehouse-stock-price.schema';
 import { DataItemWarehousePriceRequestDto } from '@components/sync/dto/request/sync-item-warehouse-stock-price.request.dto';
+import { ReportItemStockHistoriesRequestDto } from '@components/dashboard/dto/request/report-item-stock-histories.request.dto';
 
 @Injectable()
 export class DailyItemWarehouseStockPriceRepository extends BaseAbstractRepository<DailyItemWarehouseStockPrice> {
@@ -116,5 +117,66 @@ export class DailyItemWarehouseStockPriceRepository extends BaseAbstractReposito
         },
       },
     ]);
+  }
+
+  async getItemStockHistories(
+    startDate,
+    endDate,
+    request: ReportItemStockHistoriesRequestDto,
+  ): Promise<any> {
+    const { warehouseCode, itemCode, companyCode } = request;
+    const conditions = {
+      $and: [
+        {
+          reportDate: {
+            $gte: startDate,
+            $lte: endDate,
+          },
+        },
+      ],
+    } as any;
+    if (warehouseCode) {
+      conditions['$and'].push({
+        warehouseCode: { $eq: warehouseCode },
+      });
+    }
+    if (itemCode) {
+      conditions['$and'].push({
+        itemCode: { $eq: itemCode },
+      });
+    }
+    if (companyCode) {
+      conditions['$and'].push({
+        companyCode: { $eq: companyCode },
+      });
+    }
+    const aggregateState = [
+      {
+        $match: conditions,
+      },
+      {
+        $group: {
+          _id: {
+            reportDate: '$reportDate',
+          },
+          quantity: { $sum: '$quantity' },
+          amount: { $sum: '$amount' },
+        },
+      },
+      {
+        $project: {
+          reportDate: '$_id.reportDate',
+          quantity: 1,
+          amount: 1,
+        },
+      },
+      {
+        $sort: {
+          reportDate: 1,
+        },
+      },
+    ];
+
+    return await this.dailyItemLocatorStockPrice.aggregate(aggregateState);
   }
 }
