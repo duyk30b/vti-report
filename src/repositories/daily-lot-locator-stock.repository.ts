@@ -814,67 +814,6 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
     return this.dailyLotLocatorStock.aggregate(aggregate);
   }
 
-  async getItemStockHistories(
-    startDate,
-    endDate,
-    request: ReportItemStockHistoriesRequestDto,
-  ): Promise<any> {
-    const { warehouseCode, itemCode, companyCode } = request;
-    const conditions = {
-      $and: [
-        {
-          reportDate: {
-            $gte: startDate,
-            $lte: endDate,
-          },
-        },
-      ],
-    } as any;
-    if (warehouseCode) {
-      conditions['$and'].push({
-        warehouseCode: { $eq: warehouseCode },
-      });
-    }
-    if (itemCode) {
-      conditions['$and'].push({
-        itemCode: { $eq: itemCode },
-      });
-    }
-    if (companyCode) {
-      conditions['$and'].push({
-        companyCode: { $eq: companyCode },
-      });
-    }
-    const aggregateState = [
-      {
-        $match: conditions,
-      },
-      {
-        $group: {
-          _id: {
-            reportDate: '$reportDate',
-          },
-          quantity: { $sum: '$stockQuantity' },
-          amount: { $sum: '$storageCost' },
-        },
-      },
-      {
-        $project: {
-          reportDate: '$_id.reportDate',
-          quantity: 1,
-          amount: 1,
-        },
-      },
-      {
-        $sort: {
-          reportDate: 1,
-        },
-      },
-    ];
-
-    return await this.dailyLotLocatorStock.aggregate(aggregateState);
-  }
-
   async getReportReOrderQuantity(request: ReportRequest): Promise<any[]> {
     const condition = {
       $and: [{}],
