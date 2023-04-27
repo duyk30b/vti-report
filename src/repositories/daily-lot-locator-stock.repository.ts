@@ -661,7 +661,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
                     $cond: {
                       if: '$quantity',
                       then: {
-                        $divide: ['$price', '$quantity'],
+                        $divide: ['$amount', '$quantity'],
                       },
                       else: 0,
                     },
