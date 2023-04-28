@@ -658,17 +658,25 @@ export class SyncService {
         }
       }
 
-      const itemLotReports = await this.reportOrderItemLotRepository.findAllByCondition({
-        companyCode: {$eq: company.code},
-        orderCode:  {$eq: request.code },
-        orderType:  {$eq: orderType },
-      });
+      const itemLotReports =
+        await this.reportOrderItemLotRepository.findAllByCondition({
+          companyCode: { $eq: company.code },
+          orderCode: { $eq: request.code },
+          orderType: { $eq: orderType },
+        });
 
       if (!isEmpty(itemLotReports)) {
         const baseIds = map(orderItemLots, 'id');
-        const idsRemove = itemLotReports.filter((itemLotReport) => itemLotReport.baseId && !baseIds.includes(itemLotReport.baseId)).map((itemLotReport) => itemLotReport._id);
+        const idsRemove = itemLotReports
+          .filter(
+            (itemLotReport) =>
+              itemLotReport.baseId && !baseIds.includes(itemLotReport.baseId),
+          )
+          .map((itemLotReport) => itemLotReport._id);
         if (!isEmpty(idsRemove)) {
-          await this.reportOrderItemLotRepository.removeDocumentByConditions({ _id: { $in: idsRemove } })
+          await this.reportOrderItemLotRepository.removeDocumentByConditions({
+            _id: { $in: idsRemove },
+          });
         }
       }
       const itemLotBulkWrite = orderItemLots.map((lot) => {
@@ -682,18 +690,63 @@ export class SyncService {
             },
             update: lot,
             upsert: true,
-          }
-        }
-      })
-      const response = await Promise.all([
+          },
+        };
+      });
+      await Promise.all([
         this.reportOrderRepository.bulkWriteOrderReport(orders),
         this.reportOrderItemRepository.bulkWriteOrderReportItem(orderItems),
-        this.reportOrderItemLotRepository.bulkWrite(
-          itemLotBulkWrite,
-        ),
+        this.reportOrderItemLotRepository.bulkWrite(itemLotBulkWrite),
       ]);
 
-      console.log('RESPONSE SYNC ORDER:', response);
+      const replaceLots = orderItemLots
+        .filter((lot) => lot.lotNumberOld && lot.lotNumberOld !== lot.lotNumber)
+        .map((lot) => ({
+          new: lot.lotNumber,
+          old: lot.lotNumberOld,
+        }));
+      if (!isEmpty(replaceLots)) {
+        const queryUpdate = [];
+        replaceLots.forEach((lot) => {
+          queryUpdate.push(
+            this.transactionItemRepository.updateManyByCondition(
+              {
+                lotNumber: lot.old,
+              },
+              {
+                $set: {
+                  lotNumber: lot.new,
+                },
+              },
+            ),
+          );
+          queryUpdate.push(
+            this.dailyLotLocatorStockRepository.updateManyByCondition(
+              {
+                lotNumber: lot.old,
+              },
+              {
+                $set: {
+                  lotNumber: lot.new,
+                },
+              },
+            ),
+          );
+          queryUpdate.push(
+            this.dailyItemWarehouseStockPriceRepository.updateManyByCondition(
+              {
+                lotNumber: lot.old,
+              },
+              {
+                $set: {
+                  lotNumber: lot.new,
+                },
+              },
+            ),
+          );
+        });
+        Promise.all(queryUpdate);
+      }
 
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.SUCCESS)
