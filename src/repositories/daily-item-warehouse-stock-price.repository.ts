@@ -160,7 +160,7 @@ export class DailyItemWarehouseStockPriceRepository extends BaseAbstractReposito
             reportDate: '$reportDate',
           },
           quantity: { $sum: '$quantity' },
-          amount: { $sum: '$amount' },
+          amount: { $sum: '$price' },
         },
       },
       {
