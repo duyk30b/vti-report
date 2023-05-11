@@ -12,7 +12,6 @@ export interface SituationTransferItem {
 }
 export interface SituationTransferGroupByPostCode {
   orderCode: string;
-  ebsNumber: string;
   orderCreatedAt: Date;
   warehouseImport: string;
   explain: string;

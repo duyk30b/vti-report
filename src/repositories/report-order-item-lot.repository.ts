@@ -348,9 +348,6 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
         break;
       case ReportType.ORDER_TRANSFER_INCOMPLETED:
         condition['$and'].push({
-          ebsNumber: { $eq: null },
-        });
-        condition['$and'].push({
           status: {
             $in: [
               WarehouseTransferStatusEnum.COMPLETED,
@@ -469,6 +466,7 @@ export class ReportOrderItemLotRepository extends BaseAbstractRepository<ReportO
         condition['$and'].push({
           orderType: { $in: [type, OrderType.INVENTORY_ADJUSTMENTS_IMPORT] },
         });
+        break;
 
       case OrderType.EXPORT:
         condition['$and'].push({
@@ -552,7 +550,6 @@ function reportItemImportedButNotPutToPosition(
           warehouseCode: '$warehouseCode',
           warehouseName: '$warehouseName',
           orderCode: '$orderCode',
-          ebsNumber: '$ebsNumber',
           reason: '$reason',
           explain: '$explain',
           itemCode: '$itemCode',
@@ -603,7 +600,6 @@ function reportItemImportedButNotPutToPosition(
               then: {
                 index: '',
                 orderCode: '$_id.orderCode',
-                ebsNumber: '$_id.ebsNumber',
                 reason: '$_id.reason',
                 explain: '$_id.explain',
                 itemCode: '$_id.itemCode',
@@ -691,7 +687,6 @@ function reportSituationExport(
           constructionName: '$constructionName',
           departmentReceiptName: '$departmentReceiptName',
           explain: '$explain',
-          ebsNumber: '$ebsNumber',
           transactionNumberCreated: '$transactionNumberCreated',
         },
         items: {
@@ -745,15 +740,6 @@ function reportSituationExport(
         orders: {
           $push: {
             orderCode: '$_id.orderCode',
-            ebsNumber: {
-              $concat: [
-                { $ifNull: ['$_id.ebsNumber', ''] },
-                '\n',
-                {
-                  $ifNull: ['$_id.transactionNumberCreated', ''],
-                },
-              ],
-            },
             orderCreatedAt: '$_id.orderCreatedAt',
             contract: '$_id.contract',
             constructionName: '$_id.constructionName',
@@ -863,7 +849,6 @@ function reportSituationImport(
           providerName: '$providerName',
           departmentReceiptName: '$departmentReceiptName',
           explain: '$explain',
-          ebsNumber: '$ebsNumber',
         },
         items: {
           $push: {
@@ -917,7 +902,6 @@ function reportSituationImport(
               if: { $gt: [{ $size: '$items' }, 0] },
               then: {
                 orderCode: '$_id.orderCode',
-                ebsNumber: '$_id.ebsNumber',
                 orderCreatedAt: '$_id.orderCreatedAt',
                 contract: '$_id.contract',
                 constructionName: '$_id.constructionName',
@@ -1012,7 +996,6 @@ function reportSituationTransfer(
           warehouseTargetName: '$warehouseTargetName',
           warehouseTargetCode: '$warehouseTargetCode',
           explain: '$explain',
-          ebsNumber: '$ebsNumber',
         },
         items: {
           $push: {
@@ -1057,7 +1040,6 @@ function reportSituationTransfer(
         orders: {
           $push: {
             orderCode: '$_id.orderCode',
-            ebsNumber: '$_id.ebsNumber',
             orderCreatedAt: '$_id.orderCreatedAt',
             totalPrice: { $sum: '$items.totalPrice' },
             warehouseImport: {
@@ -1282,7 +1264,6 @@ function reportTransactionDetail(
         storageCost: 1,
         amount: 1,
         orderCode: 1,
-        ebsNumber: 1,
         orderCreatedAt: 1,
         reason: 1,
         source: 1,

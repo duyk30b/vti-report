@@ -22,7 +22,6 @@ export function getItemImportedButNotPutToPositionMapped(
       const dataReturn: ItemImportedButNotStoreToPositionModel = {
         index: 0,
         orderCode: item.orderCode,
-        ebsNumber: item.ebsNumber,
         reason: item.reason,
         explain: item.explain,
         itemCode: item.itemCode,

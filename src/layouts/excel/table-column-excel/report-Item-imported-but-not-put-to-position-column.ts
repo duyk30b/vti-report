@@ -11,10 +11,6 @@ export const REPORT_ITEM_IMPORT_BUT_NOT_PUT_TO_POSITION_COLUMN: TableColumn[] =
       width: 20,
     },
     {
-      name: 'ORDER_NUMBER_EBS',
-      width: 20,
-    },
-    {
       name: 'REASON_IMPORT',
       width: 20,
     },

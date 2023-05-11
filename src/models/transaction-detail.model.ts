@@ -8,7 +8,6 @@ export interface TransactionDetailModel {
   amount: string;
   manufacturingCountry: string;
   orderCode: string;
-  ebsNumber: string;
   typeTransaction: string;
   orderCreatedAt: string;
   reason: string;
