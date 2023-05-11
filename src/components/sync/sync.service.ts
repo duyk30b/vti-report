@@ -46,7 +46,7 @@ import { InventoryQuantityNormsInterface } from '@schemas/interface/inventory-qu
 import { InventoryQuantityNormsRepository } from '@repositories/inventory-quantity-norms.repository';
 import { SyncItemWarehouseStockPriceRequestDto } from './dto/request/sync-item-warehouse-stock-price.request.dto';
 import { DailyItemWarehouseStockPriceRepository } from '@repositories/daily-item-warehouse-stock-price.repository';
-import { sleep } from '@utils/common';
+import { plus, sleep } from '@utils/common';
 import { DailyItemWarehouseStockPriceInterface } from '@schemas/interface/daily-item-warehouse-stock-price.interface';
 import { isNumber } from 'class-validator';
 import { ReceiptRequest } from '@requests/receipt.request';
@@ -600,8 +600,9 @@ export class SyncService {
       };
 
       orders.push(reportOrder);
-
       for (const item of request?.purchasedOrderImportDetails || []) {
+        let totalAmount = 0;
+        let totalPrice = 0;
         const reportOrderItem: ReportOrderItemInteface = {
           unit: item?.item?.itemUnit,
           performerName: request?.deliver,
@@ -633,7 +634,6 @@ export class SyncService {
           ...reportOrder,
           receiptNumber: request.receiptNumber,
         };
-        orderItems.push(reportOrderItem);
 
         for (const lot of item?.lots || []) {
           const reportOrderItemLot: ReportOrderItemLotInteface = {
@@ -652,10 +652,17 @@ export class SyncService {
             locatorName: null,
             locatorCode: null,
             amount: +lot?.amount ? lot.amount : 0,
+            storageCost:
+              lot?.price && isNumber(+lot?.price) ? Number(lot?.price) : 0,
             source: request?.source,
           };
+          totalAmount = plus(totalAmount, Number(lot?.amount) || 0);
+          totalPrice = plus(totalPrice, Number(lot?.price) || 0);
+          reportOrderItem.amount = totalAmount;
+          reportOrderItem.storageCost = totalPrice;
           orderItemLots.push(reportOrderItemLot);
         }
+        orderItems.push(reportOrderItem);
       }
 
       const itemLotReports =

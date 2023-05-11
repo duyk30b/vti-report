@@ -77,10 +77,14 @@ class PurchasedOrderImportWarehouseLot {
   @ApiProperty()
   @IsOptional()
   exportableQuantity: number;
-  
+
   @ApiProperty()
   @IsOptional()
   amount: number;
+
+  @ApiProperty()
+  @IsOptional()
+  price: number;
 }
 
 export class PoImportRelationData {
