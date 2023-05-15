@@ -303,13 +303,56 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
             itemCode: '$itemCode',
             itemName: '$itemName',
             lotNumber: '$lotNumber',
-            storageCost: '$storageCost',
             unit: '$unit',
           },
           quantityExported: { $sum: '$quantityExported' },
           quantityImported: { $sum: '$quantityImported' },
           quantityExportedCurDate: { $sum: '$quantityExportedCurDate' },
           quantityImportedCurDate: { $sum: '$quantityImportedCurDate' },
+        },
+      },
+      {
+        $lookup: {
+          from: 'daily-item-warehouse-stock-price',
+          let: {
+            companyCodeMap: '$_id.companyCode',
+            warehouseCodeMap: '$_id.warehouseCode',
+            itemCodeMap: '$_id.itemCode',
+            lotNumberMap: '$_id.lotNumber',
+          },
+          pipeline: [
+            {
+              $sort: { reportDate: -1 },
+            },
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$companyCode', '$$companyCodeMap'] },
+                    { $eq: ['$warehouseCode', '$$warehouseCodeMap'] },
+                    { $eq: ['$itemCode', '$$itemCodeMap'] },
+                    { $eq: ['$lotNumber', '$$lotNumberMap'] },
+                  ],
+                },
+              },
+            },
+            {
+              $project: {
+                price: 1,
+                quantity: 1,
+                averagePrice: {
+                  $cond: {
+                    if: '$quantity',
+                    then: {
+                      $divide: ['$price', '$quantity'],
+                    },
+                    else: 0,
+                  },
+                },
+              },
+            },
+          ],
+          as: 'priceItem',
         },
       },
       {
@@ -323,7 +366,7 @@ export class TransactionItemRepository extends BaseAbstractRepository<Transactio
           itemCode: '$_id.itemCode',
           itemName: '$_id.itemName',
           lotNumber: '$_id.lotNumber',
-          storageCost: '$_id.storageCost',
+          storageCost: { $arrayElemAt: ['$priceItem.averagePrice', 0] },
           unit: '$_id.unit',
           quantityExported: 1,
           quantityImported: 1,

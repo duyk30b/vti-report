@@ -60,7 +60,7 @@ import { getSituationTransferMapped } from '@mapping/common/age-of-item-mapped';
 import { TransactionItemRepository } from '@repositories/transaction-item.repository';
 import { UserService } from '@components/user/user.service';
 import { WarehouseServiceInterface } from '@components/warehouse/interface/warehouse.service.interface';
-import { getTimezone, minusBigNumber } from '@utils/common';
+import { getTimezone, minusBigNumber, plusBigNumber } from '@utils/common';
 import { FORMAT_DATE } from '@utils/constant';
 import { readDecimal } from '@constant/common';
 import { keyBy, isEmpty, concat, groupBy } from 'lodash';
@@ -574,6 +574,7 @@ export class ExportService {
       }
     }
     for (const key in keyByDailyItem) {
+      this.calculatorStock(keyByDailyItem[key]);
       keyByDailyItem[key].importIn = readDecimal(keyByDailyItem[key]?.importIn);
       keyByDailyItem[key].exportIn = readDecimal(keyByDailyItem[key]?.exportIn);
       keyByDailyItem[key].storageCost = readDecimal(
@@ -1108,5 +1109,25 @@ export class ExportService {
       company[0].name = company[0]?.name.toUpperCase();
     }
     return company;
+  }
+
+  private async calculatorStock(dailyItem: any) {
+    dailyItem.totalStockEnd = plusBigNumber(
+      dailyItem.totalStockStart || 0,
+      dailyItem.totalImportIn || 0,
+    );
+
+    dailyItem.totalStockEnd = minusBigNumber(
+      dailyItem.totalStockEnd || 0,
+      dailyItem.totalExportIn || 0,
+    );
+    dailyItem.stockEnd = plusBigNumber(
+      dailyItem.stockStart || 0,
+      dailyItem.importIn || 0,
+    );
+    dailyItem.stockEnd = minusBigNumber(
+      dailyItem.stockEnd || 0,
+      dailyItem.exportIn || 0,
+    );
   }
 }
