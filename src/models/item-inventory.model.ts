@@ -4,7 +4,6 @@ export interface ItemInventoryModel {
   itemName: string;
   unit: string;
   lotNumber: string;
-  storageCost: number;
   stockStart: number;
   totalStockStart: number;
   importIn: number;

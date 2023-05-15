@@ -484,6 +484,50 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
 
     aggregateState.push(
       {
+        $lookup: {
+          from: 'daily-item-warehouse-stock-price',
+          let: {
+            companyCodeMap: '$_id.companyCode',
+            warehouseCodeMap: '$_id.warehouseCode',
+            itemCodeMap: '$_id.itemCode',
+            lotNumberMap: '$_id.lotNumber',
+          },
+          pipeline: [
+            {
+              $sort: { reportDate: -1 },
+            },
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$companyCode', '$$companyCodeMap'] },
+                    { $eq: ['$warehouseCode', '$$warehouseCodeMap'] },
+                    { $eq: ['$itemCode', '$$itemCodeMap'] },
+                    { $eq: ['$lotNumber', '$$lotNumberMap'] },
+                  ],
+                },
+              },
+            },
+            {
+              $project: {
+                price: 1,
+                quantity: 1,
+                averagePrice: {
+                  $cond: {
+                    if: '$quantity',
+                    then: {
+                      $divide: ['$price', '$quantity'],
+                    },
+                    else: 0,
+                  },
+                },
+              },
+            },
+          ],
+          as: 'priceItem',
+        },
+      },
+      {
         $group: {
           _id: {
             companyCode: '$_id.companyCode',
@@ -498,14 +542,20 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
               itemName: '$_id.itemName',
               unit: '$_id.unit',
               lotNumber: '$_id.lotNumber',
-              storageCost: '$_id.storageCost',
+              storageCost: { $arrayElemAt: ['$priceItem.averagePrice', 0] },
               stockStart: '$stockStart',
               totalStockStart: {
-                $multiply: ['$_id.storageCost', '$stockStart'],
+                $multiply: [
+                  { $arrayElemAt: ['$priceItem.averagePrice', 0] },
+                  '$stockStart',
+                ],
               },
               stockEnd: '$stockEnd',
               totalStockEnd: {
-                $multiply: ['$_id.storageCost', '$stockEnd'],
+                $multiply: [
+                  { $arrayElemAt: ['$priceItem.averagePrice', 0] },
+                  '$stockEnd',
+                ],
               },
               note: '$_id.note',
             },

@@ -799,11 +799,6 @@ export const ITEM_INVENTORY_COLUMNS: TableColumn[] = [
     rowSpan: 2,
   },
   {
-    name: 'UNIT_PRICE',
-    width: 1,
-    rowSpan: 2,
-  },
-  {
     name: 'STOCK_QUANTITY_START',
     width: 1.8,
     columnSpan: 2,

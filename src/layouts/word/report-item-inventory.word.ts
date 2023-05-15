@@ -23,7 +23,7 @@ import { I18nRequestScopeService } from 'nestjs-i18n';
 import { setHeight, setWidth, wordFileStyle } from './word-common.styles';
 
 export async function generateReportItemInventory(
-  dataWord : TableData<ItemInventoryModel>[] ,
+  dataWord: TableData<ItemInventoryModel>[],
   companyName,
   companyAddress,
   companyCode,
@@ -283,22 +283,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: `${item?.storageCost || ''}`,
-                                  ...wordFileStyle.text_style,
-                                }),
-                              ],
-                            }),
-                          ],
-                        }),
-                        new TableCell({
-                          verticalAlign: VerticalAlign.CENTER,
-                          margins: wordFileStyle.margin_right,
-                          children: [
-                            new Paragraph({
-                              alignment: AlignmentType.RIGHT,
-                              children: [
-                                new TextRun({
-                                  text:`${item?.stockStart || ''}`,
+                                  text: `${item?.stockStart || ''}`,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -343,7 +328,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: `${item?.totalImportIn || ''}` ,
+                                  text: `${item?.totalImportIn || ''}`,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -358,7 +343,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: `${item?.exportIn || ''}` ,
+                                  text: `${item?.exportIn || ''}`,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -373,7 +358,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: `${item?.totalExportIn || ''}` ,
+                                  text: `${item?.totalExportIn || ''}`,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
@@ -403,7 +388,7 @@ export async function generateReportItemInventory(
                               alignment: AlignmentType.RIGHT,
                               children: [
                                 new TextRun({
-                                  text: `${item?.totalStockEnd || ''}`  ,
+                                  text: `${item?.totalStockEnd || ''}`,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
