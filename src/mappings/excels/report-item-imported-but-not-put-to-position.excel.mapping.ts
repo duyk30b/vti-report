@@ -24,7 +24,6 @@ export async function reportItemImportedButNotPutToPositionExcelMapping(
   const formatByKey: FormatByKey<ItemImportedButNotStoreToPositionModel> = {
     index: Alignment.CENTER,
     orderCode: Alignment.LEFT,
-    ebsNumber: Alignment.LEFT,
     reason: Alignment.LEFT,
     explain: Alignment.LEFT,
     itemCode: Alignment.LEFT,

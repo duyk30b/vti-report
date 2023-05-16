@@ -19,7 +19,6 @@ import {
   BORDER,
   CELL_ADDRESS_CHILD_COMPANY,
   CELL_CHILD_COMPANY,
-  CELL_PARENT_COMPANY,
   CELL_REPORT_NUMBER,
   CEll_REPORT_TIME,
   CELL_TITLE_REPORT,
@@ -155,18 +154,6 @@ export const generateTable = async (
       ]);
     } else {
       configCells(worksheet, i18n, [
-        {
-          nameCell: CELL_PARENT_COMPANY,
-          value: 'PARENT_COMPANY',
-          font: FONT_BOLD_10,
-          aligment: ALIGNMENT_LEFT,
-          translate: true,
-          merge: false,
-          heightRow: {
-            index: 1,
-            value: 30,
-          },
-        },
         {
           nameCell: CELL_CHILD_COMPANY,
           value: model.childCompany,

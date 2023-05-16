@@ -27,7 +27,7 @@ export function reportSituationTransferTemplateData(
   const cells: ConfigCells[] = [];
   data.forEach((item) => {
     cells.push({
-      nameCell: `A${curRowIdx}:O${curRowIdx}`,
+      nameCell: `A${curRowIdx}:N${curRowIdx}`,
       value: item.warehouseCode,
       font: FONT_BOLD_9,
       aligment: ALIGNMENT_LEFT,
@@ -37,7 +37,7 @@ export function reportSituationTransferTemplateData(
       merge: true,
     });
     cells.push({
-      nameCell: `P${curRowIdx}`,
+      nameCell: `O${curRowIdx}`,
       value: formatMoney(item.totalPrice) || '0',
       font: FONT_BOLD_8,
       aligment: ALIGNMENT_RIGHT,
@@ -69,27 +69,20 @@ export function reportSituationTransferTemplateData(
           },
           {
             nameCell: `C${curRowIdx}`,
-            value: order.ebsNumber || '',
-            font: FONT_NORMAL_9,
-            aligment: ALIGNMENT_CENTER,
-            border: BORDER,
-          },
-          {
-            nameCell: `D${curRowIdx}`,
             value: moment(order.orderCreatedAt).format(DATE_FOMAT_EXCELL) || '',
             font: FONT_NORMAL_9,
             aligment: ALIGNMENT_CENTER,
             border: BORDER,
           },
           {
-            nameCell: `E${curRowIdx}:`,
+            nameCell: `D${curRowIdx}:`,
             value: order.warehouseImport,
             font: FONT_NORMAL_9,
             aligment: ALIGNMENT_LEFT,
             border: BORDER,
           },
           {
-            nameCell: `F${curRowIdx}:O${curRowIdx}`,
+            nameCell: `E${curRowIdx}:N${curRowIdx}`,
             value: order.explain,
             font: FONT_NORMAL_9,
             aligment: ALIGNMENT_LEFT,
@@ -98,7 +91,7 @@ export function reportSituationTransferTemplateData(
             merge: true,
           },
           {
-            nameCell: `P${curRowIdx}`,
+            nameCell: `O${curRowIdx}`,
             value: formatMoney(order.totalPrice) || '0',
             font: FONT_NORMAL_9,
             aligment: ALIGNMENT_RIGHT,
@@ -112,7 +105,6 @@ export function reportSituationTransferTemplateData(
       order.items.forEach((row3) => {
         totalQuantity = plusBigNumber(totalQuantity, row3.totalPrice || 0);
         worksheet.mergeCells(`A${curRowIdx}:E${curRowIdx}`);
-        worksheet.mergeCells(`F${curRowIdx}:G${curRowIdx}`);
         cells.push(
           ...[
             {
@@ -123,28 +115,28 @@ export function reportSituationTransferTemplateData(
               border: BORDER,
             },
             {
-              nameCell: `F${curRowIdx}:G${curRowIdx}`,
+              nameCell: `F${curRowIdx}`,
               value: row3.itemCode,
               font: FONT_BOLD_8,
               aligment: ALIGNMENT_LEFT,
               border: BORDER,
             },
             {
-              nameCell: `H${curRowIdx}`,
+              nameCell: `G${curRowIdx}`,
               value: row3.itemName,
               font: FONT_NORMAL_9,
               aligment: ALIGNMENT_LEFT,
               border: BORDER,
             },
             {
-              nameCell: `I${curRowIdx}`,
+              nameCell: `H${curRowIdx}`,
               value: row3.lotNumber,
               font: FONT_NORMAL_9,
               aligment: ALIGNMENT_CENTER,
               border: BORDER,
             },
             {
-              nameCell: `J${curRowIdx}`,
+              nameCell: `I${curRowIdx}`,
               value: row3.accountDebt,
               font: FONT_NORMAL_9,
               aligment: ALIGNMENT_RIGHT,
@@ -152,7 +144,7 @@ export function reportSituationTransferTemplateData(
               numFmt: '### ### ### ###',
             },
             {
-              nameCell: `K${curRowIdx}`,
+              nameCell: `J${curRowIdx}`,
               value: row3.accountHave,
               font: FONT_NORMAL_9,
               aligment: ALIGNMENT_RIGHT,
@@ -160,14 +152,14 @@ export function reportSituationTransferTemplateData(
               numFmt: '### ### ### ###',
             },
             {
-              nameCell: `L${curRowIdx}`,
+              nameCell: `K${curRowIdx}`,
               value: row3.unit,
               font: FONT_NORMAL_9,
               aligment: ALIGNMENT_CENTER,
               border: BORDER,
             },
             {
-              nameCell: `M${curRowIdx}`,
+              nameCell: `L${curRowIdx}`,
               value: formatMoney(row3.actualQuantity, 2) || '0,00',
               font: FONT_NORMAL_9,
               aligment: ALIGNMENT_RIGHT,
@@ -175,14 +167,14 @@ export function reportSituationTransferTemplateData(
               numFmt: '### ### ###,##',
             },
             {
-              nameCell: `N${curRowIdx}`,
+              nameCell: `M${curRowIdx}`,
               value: row3.locatorCode,
               font: FONT_NORMAL_9,
               aligment: ALIGNMENT_LEFT,
               border: BORDER,
             },
             {
-              nameCell: `O${curRowIdx}`,
+              nameCell: `N${curRowIdx}`,
               value: formatMoney(row3.storageCost, 2) || '0,00',
               font: FONT_NORMAL_9,
               aligment: ALIGNMENT_RIGHT,
@@ -190,7 +182,7 @@ export function reportSituationTransferTemplateData(
               numFmt: '### ### ###,##',
             },
             {
-              nameCell: `P${curRowIdx}`,
+              nameCell: `O${curRowIdx}`,
               value: formatMoney(row3.totalPrice) || '0',
               font: FONT_NORMAL_9,
               aligment: ALIGNMENT_RIGHT,
@@ -206,7 +198,7 @@ export function reportSituationTransferTemplateData(
   cells.push(
     ...[
       {
-        nameCell: `A${curRowIdx}:O${curRowIdx}`,
+        nameCell: `A${curRowIdx}:N${curRowIdx}`,
         value: 'TOTAL',
         font: FONT_BOLD_8,
         aligment: ALIGNMENT_CENTER,
@@ -215,7 +207,7 @@ export function reportSituationTransferTemplateData(
         merge: true,
       },
       {
-        nameCell: `P${curRowIdx}`,
+        nameCell: `O${curRowIdx}`,
         value: formatMoney(totalQuantity) || '0',
         font: FONT_BOLD_8,
         aligment: ALIGNMENT_RIGHT,

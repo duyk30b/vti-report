@@ -21,6 +21,7 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
   ) {
     super(reportOrderItem);
   }
+
   saveMany(data: ReportOrderItemInteface[]) {
     return this.reportOrderItem.create(data);
   }
@@ -125,9 +126,6 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
     switch (request?.reportType) {
       case ReportType.ORDER_EXPORT_INCOMPLETED:
         condition['$and'].push({
-          ebsNumber: { $eq: null },
-        });
-        condition['$and'].push({
           status: {
             $in: [OrderStatus.Completed],
           },
@@ -135,9 +133,6 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
 
         break;
       case ReportType.ORDER_IMPORT_INCOMPLETED:
-        condition['$and'].push({
-          ebsNumber: { $eq: null },
-        });
         condition['$and'].push({
           status: {
             $in: [
@@ -150,9 +145,6 @@ export class ReportOrderItemRepository extends BaseAbstractRepository<ReportOrde
         break;
 
       case ReportType.ORDER_TRANSFER_INCOMPLETED:
-        condition['$and'].push({
-          ebsNumber: { $eq: null },
-        });
         condition['$and'].push({
           status: {
             $in: [

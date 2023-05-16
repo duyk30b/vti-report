@@ -55,17 +55,12 @@ function formatData(item: any, type: number, groupByWarehouseCode: any) {
   let warehouseCode = `${item?.warehouseCode} - ${item?.warehouseName}`;
   let warehouseName = `${item?.warehouseName}`;
   let typeTransaction = TYPE_TRANSACTION[item?.orderType];
-  const check = isEmpty(item?.transactionNumberCreated);
-  let ebsNumber = check
-    ? `${item?.ebsNumber || ''}`
-    : `${item?.transactionNumberCreated}\n${item?.ebsNumber || ''}`;
   const source = item?.source
     ? `${item?.source?.code} - ${item?.source?.name}`
     : '';
   if (type) {
     warehouseCode = `${item?.warehouseTargetCode} - ${item?.warehouseTargetName}`;
     warehouseName = `${item?.warehouseTargetName}`;
-    ebsNumber = '';
     typeTransaction = TYPE_TRANSACTION_TRANFER_IMPORT;
   }
   if (!groupByWarehouseCode[warehouseCode])
@@ -80,7 +75,6 @@ function formatData(item: any, type: number, groupByWarehouseCode: any) {
     amount: formatMoney(item?.amount),
     manufacturingCountry: item?.manufacturingCountry,
     orderCode: item?.orderCode,
-    ebsNumber: ebsNumber,
     typeTransaction: typeTransaction,
     orderCreatedAt: moment(item?.orderCreatedAt).format(DATE_FOMAT_EXCELL),
     reason: item?.reason,

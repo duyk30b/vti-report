@@ -25,7 +25,6 @@ export async function reportTransactionDetailExcelMapping(
     amount: Alignment.RIGHT,
     manufacturingCountry: Alignment.CENTER,
     orderCode: Alignment.LEFT,
-    ebsNumber: Alignment.LEFT,
     typeTransaction: Alignment.LEFT,
     orderCreatedAt: Alignment.CENTER,
     reason: Alignment.LEFT,

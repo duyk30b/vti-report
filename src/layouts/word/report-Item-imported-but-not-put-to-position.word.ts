@@ -1,4 +1,3 @@
-import { formatNumber } from '@constant/common';
 import { ItemImportedButNotStoreToPositionModel } from '@models/Item-imported-but-not-put-to-position.model';
 import { TableData } from '@models/report.model';
 import {
@@ -42,15 +41,6 @@ export async function generateReportItemImportedButNotPutToPosition(
         children: [
           new TableCell({
             children: [
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: i18n.translate(`report.PARENT_COMPANY`),
-                    ...wordFileStyle.company_info_style,
-                  }),
-                ],
-                style: 'formatSpacing',
-              }),
               new Paragraph({
                 children: [
                   new TextRun({
@@ -200,21 +190,6 @@ export async function generateReportItemImportedButNotPutToPosition(
                               children: [
                                 new TextRun({
                                   text: item.orderCode,
-                                  ...wordFileStyle.text_style,
-                                }),
-                              ],
-                            }),
-                          ],
-                        }),
-                        new TableCell({
-                          verticalAlign: VerticalAlign.CENTER,
-                          margins: wordFileStyle.margin_left,
-                          children: [
-                            new Paragraph({
-                              alignment: AlignmentType.LEFT,
-                              children: [
-                                new TextRun({
-                                  text: item.ebsNumber,
                                   ...wordFileStyle.text_style,
                                 }),
                               ],
