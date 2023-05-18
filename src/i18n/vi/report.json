@@ -141,9 +141,9 @@
     "SHEET_NAME": "W002-NK_chưa cất-{property}"
   },
   "ITEM_INVENTORY": {
-    "TITLE": "BÁO CÁO VẬT TƯ TỒN KHO\n{property}",
-    "FILE_NAME": "W010-Báo cáo vật tư tồn kho-{property}",
-    "SHEET_NAME": "EVN_INV_017-Bao_cao_nhap_xuat_ton-{property}"
+    "TITLE": "NHẬP XUẤT TỒN TỔNG HỢP\n{property}",
+    "FILE_NAME": "W010-Báo cáo nhập xuất tồn tổng hợp-{property}",
+    "SHEET_NAME": "EVN_INV_017-Bao_cao_nhap_xuat_ton_tong_hop-{property}"
   },
   "ORDER_IMPORT_BY_REQUEST_FOR_ITEM": {
     "TITLE": "",
