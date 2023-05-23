@@ -10,11 +10,11 @@ dotenv.config();
 
 const mongoDbConfig = {
   type: 'mongodb',
-  host: process.env.DATABASE_HOST,
-  port: parseInt(process.env.DATABASE_PORT),
+  host: process.env.DATABASE_MONG-_HOST,
+  port: parseInt(process.env.DATABASE_MONGO_PORT),
   maxPool: parseInt(process.env.DATABASE_MAX_POOL) || 20,
-  username: process.env.DATABASE_USERNAME,
-  password: process.env.DATABASE_PASSWORD,
+  username: process.env.DATABASE_MONGO_USERNAME,
+  password: process.env.DATABASE_MONGO_PASSWORD,
   database: process.env.DATABASE_NAME,
   logging: process.env.NODE_ENV === 'development',
 };
