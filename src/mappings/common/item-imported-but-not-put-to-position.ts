@@ -28,7 +28,7 @@ export function getItemImportedButNotPutToPositionMapped(
         itemName: item.itemName,
         unit: item.unit,
         lotNumber: item.lotNumber,
-        recievedQuantity: readDecimal(item.recievedQuantity, true),
+        recievedQuantity: readDecimal(item.planQuantity, true),
         actualQuantity: readDecimal(item.actualQuantity, true),
         remainQuantity: readDecimal(item.remainQuantity, true),
         performerName: item.performerName,

@@ -27,7 +27,6 @@ export async function reportItemInventoryExcelMapping(
     itemName: Alignment.LEFT,
     unit: Alignment.CENTER,
     lotNumber: Alignment.CENTER,
-    storageCost: Alignment.CENTER,
     stockStart: Alignment.RIGHT,
     totalStockStart: Alignment.RIGHT,
     importIn: Alignment.RIGHT,

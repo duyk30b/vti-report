@@ -484,6 +484,50 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
 
     aggregateState.push(
       {
+        $lookup: {
+          from: 'daily-item-warehouse-stock-price',
+          let: {
+            companyCodeMap: '$_id.companyCode',
+            warehouseCodeMap: '$_id.warehouseCode',
+            itemCodeMap: '$_id.itemCode',
+            lotNumberMap: '$_id.lotNumber',
+          },
+          pipeline: [
+            {
+              $sort: { reportDate: -1 },
+            },
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$companyCode', '$$companyCodeMap'] },
+                    { $eq: ['$warehouseCode', '$$warehouseCodeMap'] },
+                    { $eq: ['$itemCode', '$$itemCodeMap'] },
+                    { $eq: ['$lotNumber', '$$lotNumberMap'] },
+                  ],
+                },
+              },
+            },
+            {
+              $project: {
+                price: 1,
+                quantity: 1,
+                averagePrice: {
+                  $cond: {
+                    if: '$quantity',
+                    then: {
+                      $divide: ['$price', '$quantity'],
+                    },
+                    else: 0,
+                  },
+                },
+              },
+            },
+          ],
+          as: 'priceItem',
+        },
+      },
+      {
         $group: {
           _id: {
             companyCode: '$_id.companyCode',
@@ -498,14 +542,20 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
               itemName: '$_id.itemName',
               unit: '$_id.unit',
               lotNumber: '$_id.lotNumber',
-              storageCost: '$_id.storageCost',
+              storageCost: { $arrayElemAt: ['$priceItem.averagePrice', 0] },
               stockStart: '$stockStart',
               totalStockStart: {
-                $multiply: ['$_id.storageCost', '$stockStart'],
+                $multiply: [
+                  { $arrayElemAt: ['$priceItem.averagePrice', 0] },
+                  '$stockStart',
+                ],
               },
               stockEnd: '$stockEnd',
               totalStockEnd: {
-                $multiply: ['$_id.storageCost', '$stockEnd'],
+                $multiply: [
+                  { $arrayElemAt: ['$priceItem.averagePrice', 0] },
+                  '$stockEnd',
+                ],
               },
               note: '$_id.note',
             },
@@ -661,7 +711,7 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
                     $cond: {
                       if: '$quantity',
                       then: {
-                        $divide: ['$price', '$quantity'],
+                        $divide: ['$amount', '$quantity'],
                       },
                       else: 0,
                     },
@@ -812,67 +862,6 @@ export class DailyLotLocatorStockRepository extends BaseAbstractRepository<Daily
       ],
     );
     return this.dailyLotLocatorStock.aggregate(aggregate);
-  }
-
-  async getItemStockHistories(
-    startDate,
-    endDate,
-    request: ReportItemStockHistoriesRequestDto,
-  ): Promise<any> {
-    const { warehouseCode, itemCode, companyCode } = request;
-    const conditions = {
-      $and: [
-        {
-          reportDate: {
-            $gte: startDate,
-            $lte: endDate,
-          },
-        },
-      ],
-    } as any;
-    if (warehouseCode) {
-      conditions['$and'].push({
-        warehouseCode: { $eq: warehouseCode },
-      });
-    }
-    if (itemCode) {
-      conditions['$and'].push({
-        itemCode: { $eq: itemCode },
-      });
-    }
-    if (companyCode) {
-      conditions['$and'].push({
-        companyCode: { $eq: companyCode },
-      });
-    }
-    const aggregateState = [
-      {
-        $match: conditions,
-      },
-      {
-        $group: {
-          _id: {
-            reportDate: '$reportDate',
-          },
-          quantity: { $sum: '$stockQuantity' },
-          amount: { $sum: '$storageCost' },
-        },
-      },
-      {
-        $project: {
-          reportDate: '$_id.reportDate',
-          quantity: 1,
-          amount: 1,
-        },
-      },
-      {
-        $sort: {
-          reportDate: 1,
-        },
-      },
-    ];
-
-    return await this.dailyLotLocatorStock.aggregate(aggregateState);
   }
 
   async getReportReOrderQuantity(request: ReportRequest): Promise<any[]> {

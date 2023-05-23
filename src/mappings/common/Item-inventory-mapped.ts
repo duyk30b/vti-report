@@ -34,7 +34,6 @@ export function getItemInventoryDataMapping(
         itemName: cur.itemName,
         unit: cur.unit,
         lotNumber: cur.lotNumber,
-        storageCost: cur.storageCost,
         stockStart: cur.stockStart,
         totalStockStart: cur.totalStockStart,
         importIn: cur.importIn,

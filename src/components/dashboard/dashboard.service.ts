@@ -11,6 +11,7 @@ import { RangeDate } from './dto/request/report-by-type.response';
 import { DailyLotLocatorStockRepository } from '@repositories/daily-lot-locator-stock.repository';
 import { ReportItemHistoriesResponseDto } from './dto/response/report-item-histories.response.dto';
 import { plus } from '@utils/common';
+import { DailyItemWarehouseStockPriceRepository } from '@repositories/daily-item-warehouse-stock-price.repository';
 
 @Injectable()
 export class DashboardService implements DashboardServiceInterface {
@@ -22,6 +23,9 @@ export class DashboardService implements DashboardServiceInterface {
 
     @Inject(DailyLotLocatorStockRepository.name)
     private dailyLotLocatorStockRepository: DailyLotLocatorStockRepository,
+
+    @Inject(DailyItemWarehouseStockPriceRepository.name)
+    private dailyItemWarehouseStockPriceRepository: DailyItemWarehouseStockPriceRepository,
   ) {}
 
   async reportItemStockHistories(
@@ -34,7 +38,7 @@ export class DashboardService implements DashboardServiceInterface {
       to,
     );
     const data =
-      await this.dailyLotLocatorStockRepository.getItemStockHistories(
+      await this.dailyItemWarehouseStockPriceRepository.getItemStockHistories(
         startDate,
         endDate,
         request,
@@ -44,11 +48,11 @@ export class DashboardService implements DashboardServiceInterface {
       const { startDate: startRangeDate, endDate: endRangeDate } = rangeDate;
       const rangeDateStock = data.filter(
         (e) =>
-          moment(e.reportDate, 'YYYY-MM-DD').isSameOrAfter(
+          moment(e.reportDate).isSameOrAfter(
             moment(startRangeDate, 'YYYYMMDD'),
             'day',
           ) &&
-          moment(e.reportDate, 'YYYY-MM-DD').isSameOrBefore(
+          moment(e.reportDate).isSameOrBefore(
             moment(endRangeDate, 'YYYYMMDD'),
             'day',
           ),

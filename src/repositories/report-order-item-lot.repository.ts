@@ -566,8 +566,8 @@ function reportItemImportedButNotPutToPosition(
             },
           },
         },
-        totalRecievedQuantity: { $sum: '$receivedQuantity' },
-        totalActualQuantity: { $sum: '$actualQuantity' },
+        totalPlanQuantity: { $sum: '$planQuantity' },
+        totalActualQuantity: { $first: '$actualQuantity' },
       },
     },
     {
@@ -590,7 +590,7 @@ function reportItemImportedButNotPutToPosition(
                 $gt: [
                   {
                     $subtract: [
-                      { $sum: '$totalRecievedQuantity' },
+                      { $sum: '$totalPlanQuantity' },
                       { $sum: '$totalActualQuantity' },
                     ],
                   },
@@ -606,11 +606,11 @@ function reportItemImportedButNotPutToPosition(
                 itemName: '$_id.itemName',
                 unit: '$_id.unit',
                 lotNumber: '$_id.lotNumber',
-                recievedQuantity: { $sum: '$totalRecievedQuantity' },
+                planQuantity: { $sum: '$totalPlanQuantity' },
                 actualQuantity: { $sum: '$totalActualQuantity' },
                 remainQuantity: {
                   $subtract: [
-                    { $sum: '$totalRecievedQuantity' },
+                    { $sum: '$totalPlanQuantity' },
                     { $sum: '$totalActualQuantity' },
                   ],
                 },
