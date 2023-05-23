@@ -2,7 +2,12 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
-    "assets": ["i18n/**/*"],
+    "assets": [{
+      "include": "i18n/**/*.json"
+    },
+    {
+      "include": "cert/*.*"
+    }],
     "watchAssets": true
   }
 }

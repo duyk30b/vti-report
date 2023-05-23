@@ -12,6 +12,9 @@ import { KafkaOptions, TcpOptions, Transport } from '@nestjs/microservices';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { APIPrefix } from '@core/common';
 import { ConfigService } from '@core/config/config.service';
+import * as fs from 'fs';
+import * as path from 'path';
+
 async function bootstrap() {
   const fastifyAdapter = new FastifyAdapter();
 
@@ -33,28 +36,39 @@ async function bootstrap() {
     },
   );
 
-  app.connectMicroservice(
+   app.connectMicroservice(
     {
       transport: Transport.KAFKA,
       options: {
         client: {
-          brokers: process.env.KAFKA_BROKERS.split(','),
-          ssl: true,
-          sasl: {
-            mechanism: 'plain',
-            username: process.env.KAFKA_USERNAME,
-            password: process.env.KAFKA_PASSWORD,
+          brokers: process.env.KAFKA_BROKERS.split(',') || ['kafka:9092'],
+          ssl: {
+            rejectUnauthorized: false,
+            ca: [
+              fs.readFileSync(path.join(__dirname, '/cert/kafka.crt'), 'utf-8'),
+            ],
+            key: fs.readFileSync(
+              path.join(__dirname, '/cert/kafka.key'),
+              'utf-8',
+            ),
+            cert: fs.readFileSync(
+              path.join(__dirname, '/cert/kafka.pem'),
+              'utf-8',
+            ),
           },
         },
         consumer: {
-          groupId: 'hq_report_service',
-          maxInFlightRequests: 1,
-          maxPollRecords: 1,
+          groupId: `report-service`,
+          allowAutoTopicCreation: true,
+          waitForLeaders: true,
+          
         },
       },
-    } as KafkaOptions,
+    },
     { inheritAppConfig: true },
   );
+
+  
 
   app.connectMicroservice(
     {
@@ -98,6 +112,4 @@ async function bootstrap() {
   await app.listen(new ConfigService().get('httpPort'), '0.0.0.0');
 }
 
-// process.env.NODE_ENV === 'development'
 bootstrap();
-// : ClusterService.clusterize(bootstrap);

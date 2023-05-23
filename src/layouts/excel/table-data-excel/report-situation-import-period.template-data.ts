@@ -28,7 +28,7 @@ export function reportSituationImportPeriodTemplateData(
       cells.push(
         ...[
           {
-            nameCell: `A${curRowIdx}:R${curRowIdx}`,
+            nameCell: `A${curRowIdx}:Q${curRowIdx}`,
             value: item.warehouseCode,
             font: FONT_BOLD_9,
             aligment: ALIGNMENT_LEFT,
@@ -40,11 +40,11 @@ export function reportSituationImportPeriodTemplateData(
             },
           },
           {
-            nameCell: `S${curRowIdx}`,
+            nameCell: `R${curRowIdx}`,
             border: BORDER,
           },
           {
-            nameCell: `T${curRowIdx}`,
+            nameCell: `S${curRowIdx}`,
             value: item.totalPrice
               ? formatMoney(Math.round(item.totalPrice))
               : '0',
@@ -60,7 +60,7 @@ export function reportSituationImportPeriodTemplateData(
         cells.push(
           ...[
             {
-              nameCell: `A${curRowIdx}:R${curRowIdx}`,
+              nameCell: `A${curRowIdx}:Q${curRowIdx}`,
               value: i18n.translate('report.REASON') + reason.value,
               font: FONT_BOLD_9,
               aligment: ALIGNMENT_LEFT,
@@ -72,11 +72,11 @@ export function reportSituationImportPeriodTemplateData(
               },
             },
             {
-              nameCell: `S${curRowIdx}`,
+              nameCell: `R${curRowIdx}`,
               border: BORDER,
             },
             {
-              nameCell: `T${curRowIdx}`,
+              nameCell: `S${curRowIdx}`,
               value: formatMoney(Math.round(reason?.totalPrice || 0)) || '0',
               border: BORDER,
               font: FONT_BOLD_9,
@@ -105,54 +105,47 @@ export function reportSituationImportPeriodTemplateData(
               },
               {
                 nameCell: `C${curRowIdx}`,
-                value: order.ebsNumber || '',
-                border: BORDER,
-                font: FONT_NORMAL_9,
-                aligment: ALIGNMENT_CENTER,
-              },
-              {
-                nameCell: `D${curRowIdx}`,
                 value: moment(order.orderCreatedAt).format('DD/MM/YYYY') || '',
                 border: BORDER,
                 font: FONT_NORMAL_9,
                 aligment: ALIGNMENT_CENTER,
               },
               {
-                nameCell: `E${curRowIdx}`,
+                nameCell: `D${curRowIdx}`,
                 value: order.contract,
                 border: BORDER,
                 font: FONT_NORMAL_9,
                 aligment: ALIGNMENT_LEFT,
               },
               {
-                nameCell: `F${curRowIdx}`,
+                nameCell: `E${curRowIdx}`,
                 value: order.constructionName,
                 border: BORDER,
                 font: FONT_NORMAL_9,
                 aligment: ALIGNMENT_LEFT,
               },
               {
-                nameCell: `G${curRowIdx}`,
+                nameCell: `F${curRowIdx}`,
                 value: order.providerName,
                 border: BORDER,
                 font: FONT_NORMAL_9,
                 aligment: ALIGNMENT_LEFT,
               },
               {
-                nameCell: `H${curRowIdx}`,
+                nameCell: `G${curRowIdx}`,
                 value: order.departmentReceiptName,
                 border: BORDER,
                 font: FONT_NORMAL_9,
               },
               {
-                nameCell: `I${curRowIdx}:S${curRowIdx}`,
+                nameCell: `H${curRowIdx}:R${curRowIdx}`,
                 value: order.explain,
                 border: BORDER,
                 font: FONT_NORMAL_9,
                 merge: true,
               },
               {
-                nameCell: `T${curRowIdx}`,
+                nameCell: `S${curRowIdx}`,
                 value: order.totalPrice ? formatMoney(order.totalPrice) : '0',
                 border: BORDER,
                 font: FONT_BOLD_9,
@@ -172,50 +165,49 @@ export function reportSituationImportPeriodTemplateData(
                   merge: true,
                 },
                 {
-                  nameCell: `I${curRowIdx}:J${curRowIdx}`,
+                  nameCell: `I${curRowIdx}`,
                   value: item.itemCode,
                   font: FONT_BOLD_9,
                   aligment: ALIGNMENT_LEFT,
                   border: BORDER,
-                  merge: true,
                 },
                 {
-                  nameCell: `K${curRowIdx}`,
+                  nameCell: `J${curRowIdx}`,
                   value: item.itemName,
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_LEFT,
                   border: BORDER,
                 },
                 {
-                  nameCell: `L${curRowIdx}`,
+                  nameCell: `K${curRowIdx}`,
                   value: item.lotNumber,
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_CENTER,
                   border: BORDER,
                 },
                 {
-                  nameCell: `M${curRowIdx}`,
+                  nameCell: `L${curRowIdx}`,
                   value: item.accountDebt,
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_RIGHT,
                   border: BORDER,
                 },
                 {
-                  nameCell: `N${curRowIdx}`,
+                  nameCell: `M${curRowIdx}`,
                   value: item.accountHave,
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_RIGHT,
                   border: BORDER,
                 },
                 {
-                  nameCell: `O${curRowIdx}`,
+                  nameCell: `N${curRowIdx}`,
                   value: item.unit,
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_CENTER,
                   border: BORDER,
                 },
                 {
-                  nameCell: `P${curRowIdx}`,
+                  nameCell: `O${curRowIdx}`,
                   value: formatMoney(item.actualQuantity, 2),
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_CENTER,
@@ -223,28 +215,28 @@ export function reportSituationImportPeriodTemplateData(
                   numFmt: '### ### ### ###',
                 },
                 {
-                  nameCell: `Q${curRowIdx}`,
+                  nameCell: `P${curRowIdx}`,
                   value: item.locatorCode,
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_LEFT,
                   border: BORDER,
                 },
                 {
-                  nameCell: `R${curRowIdx}`,
+                  nameCell: `Q${curRowIdx}`,
                   value: formatMoney(item.storageCost, 2),
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_RIGHT,
                   border: BORDER,
                 },
                 {
-                  nameCell: `S${curRowIdx}`,
+                  nameCell: `R${curRowIdx}`,
                   value: '',
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_RIGHT,
                   border: BORDER,
                 },
                 {
-                  nameCell: `T${curRowIdx}`,
+                  nameCell: `S${curRowIdx}`,
                   value: formatMoney(item.totalPrice),
                   font: FONT_NORMAL_9,
                   aligment: ALIGNMENT_RIGHT,
@@ -262,7 +254,7 @@ export function reportSituationImportPeriodTemplateData(
     cells.push(
       ...[
         {
-          nameCell: `A${curRowIdx}:R${curRowIdx}`,
+          nameCell: `A${curRowIdx}:Q${curRowIdx}`,
           value: i18n.translate('report.TOTAL'),
           font: FONT_BOLD_9,
           aligment: ALIGNMENT_CENTER,
@@ -270,14 +262,14 @@ export function reportSituationImportPeriodTemplateData(
           merge: true,
         },
         {
-          nameCell: `S${curRowIdx}`,
+          nameCell: `R${curRowIdx}`,
           value: 0,
           font: FONT_BOLD_9,
           aligment: ALIGNMENT_RIGHT,
           border: BORDER,
         },
         {
-          nameCell: `T${curRowIdx}`,
+          nameCell: `S${curRowIdx}`,
           value: formatMoney(totalPrice),
           font: FONT_BOLD_9,
           aligment: ALIGNMENT_RIGHT,

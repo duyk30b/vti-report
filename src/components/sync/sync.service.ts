@@ -46,7 +46,7 @@ import { InventoryQuantityNormsInterface } from '@schemas/interface/inventory-qu
 import { InventoryQuantityNormsRepository } from '@repositories/inventory-quantity-norms.repository';
 import { SyncItemWarehouseStockPriceRequestDto } from './dto/request/sync-item-warehouse-stock-price.request.dto';
 import { DailyItemWarehouseStockPriceRepository } from '@repositories/daily-item-warehouse-stock-price.repository';
-import { sleep } from '@utils/common';
+import { plus, sleep } from '@utils/common';
 import { DailyItemWarehouseStockPriceInterface } from '@schemas/interface/daily-item-warehouse-stock-price.interface';
 import { isNumber } from 'class-validator';
 import { ReceiptRequest } from '@requests/receipt.request';
@@ -600,8 +600,9 @@ export class SyncService {
       };
 
       orders.push(reportOrder);
-
       for (const item of request?.purchasedOrderImportDetails || []) {
+        let totalAmount = 0;
+        let totalPrice = 0;
         const reportOrderItem: ReportOrderItemInteface = {
           unit: item?.item?.itemUnit,
           performerName: request?.deliver,
@@ -633,7 +634,6 @@ export class SyncService {
           ...reportOrder,
           receiptNumber: request.receiptNumber,
         };
-        orderItems.push(reportOrderItem);
 
         for (const lot of item?.lots || []) {
           const reportOrderItemLot: ReportOrderItemLotInteface = {
@@ -652,23 +652,38 @@ export class SyncService {
             locatorName: null,
             locatorCode: null,
             amount: +lot?.amount ? lot.amount : 0,
+            storageCost:
+              lot?.price && isNumber(+lot?.price) ? Number(lot?.price) : 0,
             source: request?.source,
           };
+          totalAmount = plus(totalAmount, Number(lot?.amount) || 0);
+          totalPrice = plus(totalPrice, Number(lot?.price) || 0);
+          reportOrderItem.amount = totalAmount;
+          reportOrderItem.storageCost = totalPrice;
           orderItemLots.push(reportOrderItemLot);
         }
+        orderItems.push(reportOrderItem);
       }
 
-      const itemLotReports = await this.reportOrderItemLotRepository.findAllByCondition({
-        companyCode: {$eq: company.code},
-        orderCode:  {$eq: request.code },
-        orderType:  {$eq: orderType },
-      });
+      const itemLotReports =
+        await this.reportOrderItemLotRepository.findAllByCondition({
+          companyCode: { $eq: company.code },
+          orderCode: { $eq: request.code },
+          orderType: { $eq: orderType },
+        });
 
       if (!isEmpty(itemLotReports)) {
         const baseIds = map(orderItemLots, 'id');
-        const idsRemove = itemLotReports.filter((itemLotReport) => itemLotReport.baseId && !baseIds.includes(itemLotReport.baseId)).map((itemLotReport) => itemLotReport._id);
+        const idsRemove = itemLotReports
+          .filter(
+            (itemLotReport) =>
+              itemLotReport.baseId && !baseIds.includes(itemLotReport.baseId),
+          )
+          .map((itemLotReport) => itemLotReport._id);
         if (!isEmpty(idsRemove)) {
-          await this.reportOrderItemLotRepository.removeDocumentByConditions({ _id: { $in: idsRemove } })
+          await this.reportOrderItemLotRepository.removeDocumentByConditions({
+            _id: { $in: idsRemove },
+          });
         }
       }
       const itemLotBulkWrite = orderItemLots.map((lot) => {
@@ -682,18 +697,63 @@ export class SyncService {
             },
             update: lot,
             upsert: true,
-          }
-        }
-      })
-      const response = await Promise.all([
+          },
+        };
+      });
+      await Promise.all([
         this.reportOrderRepository.bulkWriteOrderReport(orders),
         this.reportOrderItemRepository.bulkWriteOrderReportItem(orderItems),
-        this.reportOrderItemLotRepository.bulkWrite(
-          itemLotBulkWrite,
-        ),
+        this.reportOrderItemLotRepository.bulkWrite(itemLotBulkWrite),
       ]);
 
-      console.log('RESPONSE SYNC ORDER:', response);
+      const replaceLots = orderItemLots
+        .filter((lot) => lot.lotNumberOld && lot.lotNumberOld !== lot.lotNumber)
+        .map((lot) => ({
+          new: lot.lotNumber,
+          old: lot.lotNumberOld,
+        }));
+      if (!isEmpty(replaceLots)) {
+        const queryUpdate = [];
+        replaceLots.forEach((lot) => {
+          queryUpdate.push(
+            this.transactionItemRepository.updateManyByCondition(
+              {
+                lotNumber: lot.old,
+              },
+              {
+                $set: {
+                  lotNumber: lot.new,
+                },
+              },
+            ),
+          );
+          queryUpdate.push(
+            this.dailyLotLocatorStockRepository.updateManyByCondition(
+              {
+                lotNumber: lot.old,
+              },
+              {
+                $set: {
+                  lotNumber: lot.new,
+                },
+              },
+            ),
+          );
+          queryUpdate.push(
+            this.dailyItemWarehouseStockPriceRepository.updateManyByCondition(
+              {
+                lotNumber: lot.old,
+              },
+              {
+                $set: {
+                  lotNumber: lot.new,
+                },
+              },
+            ),
+          );
+        });
+        Promise.all(queryUpdate);
+      }
 
       return new ResponseBuilder()
         .withCode(ResponseCodeEnum.SUCCESS)

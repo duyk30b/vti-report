@@ -10,10 +10,6 @@ export const SITUATION_TRANSFER_COLUMN: TableColumn[] = [
     width: 15,
   },
   {
-    name: 'ORDER_NUMBER_EBS',
-    width: 15,
-  },
-  {
     name: 'DATE',
     width: 10,
   },

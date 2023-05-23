@@ -32,7 +32,6 @@ export function getItemInventoryDataMapping(
           itemName: i.itemName,
           unit: i.unit,
           lotNumber: i.lotNumber,
-          storageCost: i.storageCost || null,
           stockStart: i.stockStart || null,
           totalStockStart: i.totalStockStart || null,
           importIn: i.importIn || null,

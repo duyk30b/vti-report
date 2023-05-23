@@ -13,7 +13,6 @@
   "ORDER_CODE": "Phiếu yêu cầu",
   "ORDER_ID_WMSX": "ID Phiếu WMS",
   "ORDER_ID_IMPORT_WMSX": "ID Phiếu WMS",
-  "ORDER_NUMBER_EBS": "Số phiếu EBS",
   "ORIGIN": "Nguồn gốc",
   "UNIT": "ĐVT",
   "UNIT_PRICE": "Đơn giá",
@@ -54,7 +53,7 @@
   "DEB": "Nợ",
   "DEVIANT": "Chênh lệch",
   "ORDER_CREATED_DATE": "Ngày lập phiếu",
-  "REPORT_ALL": "TOÀN ĐƠN VỊ",
+  "REPORT_ALL": "TẤT CẢ KHO",
   "REPORT_NUMBER": "Số:............",
   "REASON_IMPORT": "Lý do nhập",
   "RECEIVER": "Người nhận hàng",
@@ -141,9 +140,9 @@
     "SHEET_NAME": "W002-NK_chưa cất-{property}"
   },
   "ITEM_INVENTORY": {
-    "TITLE": "BÁO CÁO VẬT TƯ TỒN KHO\n{property}",
-    "FILE_NAME": "W010-Báo cáo vật tư tồn kho-{property}",
-    "SHEET_NAME": "EVN_INV_017-Bao_cao_nhap_xuat_ton-{property}"
+    "TITLE": "NHẬP XUẤT TỒN TỔNG HỢP\n{property}",
+    "FILE_NAME": "W010-Báo cáo nhập xuất tồn tổng hợp-{property}",
+    "SHEET_NAME": "EVN_INV_017-Bao_cao_nhap_xuat_ton_tong_hop-{property}"
   },
   "ORDER_IMPORT_BY_REQUEST_FOR_ITEM": {
     "TITLE": "",
@@ -152,8 +151,8 @@
   },
   "INVENTORY": {
     "TITLE": "THỐNG KÊ TỒN KHO HIỆN TẠI\n{property}",
-    "FILE_NAME": "W007-Thống kê tồn kho-{property}",
-    "SHEET_NAME": "EVN_INV_011-Bao_cao_vat_tu_ton_kho-{property}"
+    "FILE_NAME": "W007-Thống kê tồn kho hiện tại-{property}",
+    "SHEET_NAME": "W007-Thong_ke_ton_kho_hien_tai-{property}"
   },
   "ITEM_INVENTORY_IMPORTED_NO_QR_CODE": {
     "TITLE": "",
@@ -162,43 +161,43 @@
   },
   "ORDER_EXPORT_BY_REQUEST_FOR_ITEM": {
     "TITLE": "",
-    "FILE_NAME": "W016-Thống kê đơn xuất theo yêu cầu cấp vật tư-{property}",
-    "SHEET_NAME": "W016-XK_theo_ĐNXK-{property}"
+    "FILE_NAME": "W011-Thống kê đơn xuất theo yêu cầu cấp sản phẩm-{property}",
+    "SHEET_NAME": "W011-XK_theo_ĐNXK-{property}"
   },
   "SITUATION_TRANSFER": {
-    "TITLE": "BẢNG LIỆT KÊ PHIẾU XUẤT NỘI BỘ KHO SXKD\n{property}",
-    "FILE_NAME": "W013-Thống kê tình hình chuyển kho-{property}",
-    "SHEET_NAME": "EVN_INV_008-Bang_liet_ke_phieu_xuat_vat_tu_noi_bo-{property}"
+    "TITLE": "THỐNG KÊ TÌNH HÌNH CHUYỂN KHO\n{property}",
+    "FILE_NAME": "W003-Thống kê tình hình chuyển kho-{property}",
+    "SHEET_NAME": "W003-Thong_ke_tinh_hinh_chuyen_kho-{property}"
   },
   "SITUATION_INVENTORY_PERIOD": {
-    "TITLE": "BẢNG KIỂM KÊ VẬT TƯ, HÀNG HÓA TỒN KHO\n{property}",
-    "FILE_NAME": "W014-Thống kê tình hình kiểm kê theo kỳ-{property}",
-    "SHEET_NAME": "W014-Thống_kê_kiểm_kê-{property}"
+    "TITLE": "BẢNG KIỂM KÊ SẢN PHẨM, HÀNG HÓA TỒN KHO\n{property}",
+    "FILE_NAME": "W010-Thống kê tình hình kiểm kê theo kỳ-{property}",
+    "SHEET_NAME": "W010-Thống_kê_kiểm_kê-{property}"
   },
   "SITUATION_IMPORT_PERIOD": {
-    "TITLE": "BẢNG LIỆT KÊ CHỨNG TỪ NHẬP (SXKD)\n{property}",
-    "FILE_NAME": "W011-Thống kê tình hình nhập kho theo kỳ-{property}",
-    "SHEET_NAME": "EVN_INV_007-Bang_liet_ke_chung_tu_nhap-{property}"
+    "TITLE": "THỐNG KÊ TÌNH HÌNH NHẬP KHO\n{property}",
+    "FILE_NAME": "Thống kê tình hình nhập kho-{property}",
+    "SHEET_NAME": "Thống kê tình hình nhập kho-{property}"
   },
   "SITUATION_EXPORT_PERIOD": {
-    "TITLE": "BẢNG LIỆT KÊ PHIẾU XUẤT VẬT TƯ (SXKD)\n{property}",
-    "FILE_NAME": "W012-Thống kê tình hình xuất kho theo kỳ-{property}",
-    "SHEET_NAME": "EVN_INV_009-Bang_liet_ke_phieu_xuat_vat_tu-{property}"
+    "TITLE": "THỐNG KÊ TÌNH HÌNH XUẤT KHO\n{property}",
+    "FILE_NAME": "W009-Thống kê tình hình xuất kho-{property}",
+    "SHEET_NAME": "W009-Thong_ke_tinh_hinh_xuat_kho-{property}"
   },
   "AGE_OF_ITEM_STOCK": {
     "TITLE": "BÁO CÁO TUỔI HÀNG TỒN KHO\n{property}",
     "FILE_NAME": "W009-Thống kê tuổi hàng tồn kho-{property}",
-    "SHEET_NAME": "EVN_INV_049-Bao_cao_tuoi_hang_ton_kho-{property}"
+    "SHEET_NAME": "W009-Bao_cao_tuoi_hang_ton_kho-{property}"
   },
   "REORDER_QUANTITY": {
     "TITLE": "THỐNG KÊ GIAO DỊCH CHI TIẾT\n{property}",
-    "FILE_NAME": "W018-Thống kê lượng hàng cần đặt (re-order)-{property}",
-    "SHEET_NAME": "W018-Thong_ke_luong_hang_can_dat-{property}"
+    "FILE_NAME": "W013-Thống kê lượng hàng cần đặt (re-order)-{property}",
+    "SHEET_NAME": "W013-Thong_ke_luong_hang_can_dat-{property}"
   },
   "TRANSACTION_DETAIL": {
     "TITLE": "THỐNG KÊ GIAO DỊCH CHI TIẾT\n{property}",
-    "FILE_NAME": "W017-Thống kê giao dịch chi tiết-{property}",
-    "SHEET_NAME": "W017-Thong_ke_giao_dich_chi_tiet-{property}"
+    "FILE_NAME": "W012-Thống kê giao dịch chi tiết theo mã sản phẩm-{property}",
+    "SHEET_NAME": "W012-Thong_ke_giao_dich_chi_tiet-{property}"
   },
   "statusSoExport": {
     "pending": "Chờ xác nhận",

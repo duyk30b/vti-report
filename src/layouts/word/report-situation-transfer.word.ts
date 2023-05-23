@@ -213,7 +213,7 @@ export async function generateReportSituationTransfer(
                               children: [],
                             }),
                             new TableCell({
-                              columnSpan: 2,
+                              columnSpan: 1,
                               verticalAlign: VerticalAlign.CENTER,
                               margins: wordFileStyle.margin_left,
                               children: [
@@ -398,20 +398,6 @@ export async function generateReportSituationTransfer(
                                     new TextRun({
                                       text: order.orderCode,
                                       ...wordFileStyle.text_style_bold,
-                                    }),
-                                  ],
-                                }),
-                              ],
-                            }),
-                            new TableCell({
-                              verticalAlign: VerticalAlign.CENTER,
-                              children: [
-                                new Paragraph({
-                                  alignment: AlignmentType.CENTER,
-                                  children: [
-                                    new TextRun({
-                                      text: order.ebsNumber || '',
-                                      ...wordFileStyle.text_style,
                                     }),
                                   ],
                                 }),

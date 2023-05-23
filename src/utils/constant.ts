@@ -563,10 +563,6 @@ export const ITEM_IMPORTED_BUT_NOT_PUT_TO_POSITION_COLUMNS: TableColumn[] = [
     width: 1.4,
   },
   {
-    name: 'ORDER_NUMBER_EBS',
-    width: 1.4,
-  },
-  {
     name: 'REASON_IMPORT',
     width: 1,
   },
@@ -799,11 +795,6 @@ export const ITEM_INVENTORY_COLUMNS: TableColumn[] = [
     rowSpan: 2,
   },
   {
-    name: 'UNIT_PRICE',
-    width: 1,
-    rowSpan: 2,
-  },
-  {
     name: 'STOCK_QUANTITY_START',
     width: 1.8,
     columnSpan: 2,
@@ -878,11 +869,6 @@ export const SITUATION_TRANSFER_COLUMNS: TableColumn[] = [
   },
   {
     name: 'POST',
-    width: 1,
-    rowSpan: 2,
-  },
-  {
-    name: 'ORDER_NUMBER_EBS',
     width: 1,
     rowSpan: 2,
   },
@@ -966,11 +952,6 @@ export const SITUATION_IMPORT_PERIOD_COLUMNS: TableColumn[] = [
   },
   {
     name: 'POST',
-    width: 1.4,
-    rowSpan: 2,
-  },
-  {
-    name: 'ORDER_NUMBER_EBS',
     width: 1.4,
     rowSpan: 2,
   },
@@ -1073,11 +1054,6 @@ export const SITUATION_EXPORT_PERIOD_COLUMNS: TableColumn[] = [
   },
   {
     name: 'POST',
-    width: 1,
-    rowSpan: 2,
-  },
-  {
-    name: 'ORDER_NUMBER_EBS',
     width: 1,
     rowSpan: 2,
   },

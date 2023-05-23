@@ -22,10 +22,6 @@ export const ITEM_INVENTORY_COLUMN: TableColumn[] = [
     width: 10,
   },
   {
-    name: 'UNIT_PRICE',
-    width: 10,
-  },
-  {
     name: 'STOCK_QUANTITY_START',
     child: [
       {
