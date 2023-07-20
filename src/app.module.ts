@@ -1,32 +1,32 @@
-import * as dotenv from 'dotenv';
 import { ValidationPipe } from '@core/pipe/validation.pipe';
 import { CacheModule, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import * as dotenv from 'dotenv';
 
-import { MongooseModule } from '@nestjs/mongoose';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { CoreModule } from '@core/core.module';
-import { I18nJsonLoader, I18nModule, QueryResolver } from 'nestjs-i18n';
-import * as path from 'path';
-import { APP_GUARD, APP_PIPE } from '@nestjs/core';
-import { BootModule } from '@nestcloud/boot';
-import { resolve } from 'path';
+import { AuthModule } from '@components/auth/auth.module';
+import { DashboardModule } from '@components/dashboard/dashboard.module';
+import { ExportModule } from '@components/export/export.module';
+import { SyncModule } from '@components/sync/sync.module';
 import { HttpClientModule } from '@core/components/http-client/http-client.module';
 import { KongGatewayModule } from '@core/components/kong-gateway/kong-gateway.module';
+import { ConfigService } from '@core/config/config.service';
+import DatabaseConfigService from '@core/config/database.config';
+import { CoreModule } from '@core/core.module';
+import { AuthorizationGuard } from '@core/guards/authorization.guard';
+import { NatsClientModule } from '@core/transporter/nats-transporter/nats-client.module';
+import { BootModule } from '@nestcloud/boot';
+import { BOOT, CONSUL } from '@nestcloud/common';
 import { ConsulModule } from '@nestcloud/consul';
 import { ServiceModule } from '@nestcloud/service';
-import { BOOT, CONSUL } from '@nestcloud/common';
-import { AuthModule } from '@components/auth/auth.module';
-import { AuthorizationGuard } from '@core/guards/authorization.guard';
-import DatabaseConfigService from '@core/config/database.config';
+import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { ClientOpts } from '@nestjs/microservices/external/redis.interface';
+import { MongooseModule } from '@nestjs/mongoose';
 import * as redisStore from 'cache-manager-redis-store';
-import { SyncModule } from '@components/sync/sync.module';
-import { ExportModule } from '@components/export/export.module';
-import { ClientProxyFactory } from '@nestjs/microservices';
-import { ConfigService } from '@core/config/config.service';
-import { DashboardModule } from '@components/dashboard/dashboard.module';
+import { I18nJsonLoader, I18nModule, QueryResolver } from 'nestjs-i18n';
+import * as path from 'path';
+import { resolve } from 'path';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 dotenv.config();
 @Module({
@@ -67,6 +67,7 @@ dotenv.config();
     SyncModule,
     ExportModule,
     DashboardModule,
+    NatsClientModule,
   ],
   controllers: [AppController],
   providers: [
@@ -79,14 +80,6 @@ dotenv.config();
       useClass: AuthorizationGuard,
     },
     ConfigService,
-    {
-      provide: 'USER_SERVICE',
-      useFactory: (configService: ConfigService) => {
-        const userServiceOptions = configService.get('userService');
-        return ClientProxyFactory.create(userServiceOptions);
-      },
-      inject: [ConfigService],
-    },
     AppService,
   ],
 })

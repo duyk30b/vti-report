@@ -1,19 +1,20 @@
+import { APIPrefix } from '@core/common';
+import { ConfigService } from '@core/config/config.service';
+import { NATS_REPORT, NatsConfig } from '@core/config/nats.config';
+import { ExceptionInterceptor } from '@core/interceptors/exception.interceptor';
+import { FilterQueryPipe } from '@core/pipe/filter-query.pipe';
+import { SortQueryPipe } from '@core/pipe/sort-query.pipe';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { TcpOptions, Transport } from '@nestjs/microservices';
 import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import { FilterQueryPipe } from '@core/pipe/filter-query.pipe';
-import { SortQueryPipe } from '@core/pipe/sort-query.pipe';
-import { ExceptionInterceptor } from '@core/interceptors/exception.interceptor';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import fastifyMultipart from 'fastify-multipart';
-import { KafkaOptions, TcpOptions, Transport } from '@nestjs/microservices';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { APIPrefix } from '@core/common';
-import { ConfigService } from '@core/config/config.service';
 import * as fs from 'fs';
 import * as path from 'path';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const fastifyAdapter = new FastifyAdapter();
@@ -36,7 +37,7 @@ async function bootstrap() {
     },
   );
 
-   app.connectMicroservice(
+  app.connectMicroservice(
     {
       transport: Transport.KAFKA,
       options: {
@@ -61,14 +62,11 @@ async function bootstrap() {
           groupId: `report-service`,
           allowAutoTopicCreation: true,
           waitForLeaders: true,
-          
         },
       },
     },
     { inheritAppConfig: true },
   );
-
-  
 
   app.connectMicroservice(
     {
@@ -81,14 +79,26 @@ async function bootstrap() {
     { inheritAppConfig: true },
   );
 
+  app.connectMicroservice(
+    {
+      transport: Transport.NATS,
+      options: {
+        servers: NatsConfig().servers,
+        queue: NATS_REPORT,
+      },
+    },
+    { inheritAppConfig: true },
+  );
+
   await app.startAllMicroservices();
   app.setGlobalPrefix(APIPrefix.Version);
 
   const options = new DocumentBuilder()
     .setTitle('API docs')
-    .addTag('users')
-    .addTag('tasks')
-    .addBearerAuth()
+    .addBearerAuth(
+      { type: 'http', description: 'Access token' },
+      'access-token',
+    )
     .setVersion('1.0')
     .build();
 
