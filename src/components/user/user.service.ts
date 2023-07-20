@@ -1,34 +1,30 @@
 import { ResponseCodeEnum } from '@constant/response-code.enum';
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { NatsClientService } from '@core/transporter/nats-transporter/nats-client.service';
+import { Injectable } from '@nestjs/common';
 import { escapeCharForSearch } from '@utils/common';
 import { plainToInstance } from 'class-transformer';
-import { flatMap, isEmpty, map, uniq, keyBy } from 'lodash';
+import { flatMap, isEmpty, keyBy, map, uniq } from 'lodash';
 import { DepartmentSettingResponseDto } from './dto/response/department-setting.response.dto';
 import { UserResponseDto } from './dto/response/user.response.dto';
 import { UserServiceInterface } from './interface/user.service.interface';
 
 @Injectable()
 export class UserService implements UserServiceInterface {
-  constructor(
-    @Inject('USER_SERVICE_CLIENT')
-    private readonly userServiceClient: ClientProxy,
-  ) {}
+  constructor(private readonly natsClientService: NatsClientService) {}
 
   async getCompanies(condition): Promise<any> {
-    return await this.userServiceClient
-      .send('get_companies', {
-        condition: condition,
-      })
-      .toPromise();
+    return await this.natsClientService.send('get_companies', {
+      condition: condition,
+    });
   }
 
   async getListCompanyByIds(ids: number[], serilize?: boolean): Promise<any> {
-    const response = await this.userServiceClient
-      .send('get_list_company_by_ids', {
+    const response = await this.natsClientService.send(
+      'get_list_company_by_ids',
+      {
         ids,
-      })
-      .toPromise();
+      },
+    );
     if (response.statusCode !== ResponseCodeEnum.SUCCESS)
       return serilize ? {} : [];
 
@@ -36,11 +32,9 @@ export class UserService implements UserServiceInterface {
   }
 
   async getUserByIds(ids: number[], serilize?: boolean): Promise<any> {
-    const response = await this.userServiceClient
-      .send('get_users_by_ids', {
-        userIds: ids,
-      })
-      .toPromise();
+    const response = await this.natsClientService.send('get_users_by_ids', {
+      userIds: ids,
+    });
     if (response.statusCode !== ResponseCodeEnum.SUCCESS) return [];
 
     const dataReturn = plainToInstance(UserResponseDto, <any[]>response.data, {
@@ -58,19 +52,15 @@ export class UserService implements UserServiceInterface {
   }
 
   async getFactories(condition?: any): Promise<any> {
-    return await this.userServiceClient
-      .send('get_factories', {
-        condition: condition,
-      })
-      .toPromise();
+    return await this.natsClientService.send('get_factories', {
+      condition: condition,
+    });
   }
 
   async getFactoriesByIds(ids, serilize?: boolean): Promise<any> {
-    const response = await this.userServiceClient
-      .send('get_factory_by_ids', {
-        ids: ids,
-      })
-      .toPromise();
+    const response = await this.natsClientService.send('get_factory_by_ids', {
+      ids: ids,
+    });
     if (serilize) {
       if (response.statusCode !== ResponseCodeEnum.SUCCESS) return [];
       const serilizeFactories = {};
@@ -85,28 +75,28 @@ export class UserService implements UserServiceInterface {
   }
 
   async deleteRecordUserWarehouses(condition): Promise<any> {
-    return await this.userServiceClient
-      .send('delete_user_warehouse_by_condition', {
+    return await this.natsClientService.send(
+      'delete_user_warehouse_by_condition',
+      {
         condition: condition,
-      })
-      .toPromise();
+      },
+    );
   }
 
   async getUsersByConditions(condition): Promise<any> {
-    return await this.userServiceClient
-      .send('get_users_by_conditions', {
-        condition: condition,
-      })
-      .toPromise();
+    return await this.natsClientService.send('get_users_by_conditions', {
+      condition: condition,
+    });
   }
 
   async getListCompanyByCodes(
     codes: string[],
     serilize?: boolean,
   ): Promise<any> {
-    const response = await this.userServiceClient
-      .send('get_list_company_by_codes', { codes: codes })
-      .toPromise();
+    const response = await this.natsClientService.send(
+      'get_list_company_by_codes',
+      { codes: codes },
+    );
 
     if (response.statusCode !== ResponseCodeEnum.SUCCESS) {
       return [];
@@ -147,15 +137,14 @@ export class UserService implements UserServiceInterface {
   }
 
   public async insertPermission(permissions): Promise<any> {
-    return await this.userServiceClient
-      .send('insert_permission', permissions)
-      .toPromise();
+    return await this.natsClientService.send('insert_permission', permissions);
   }
 
   public async deletePermissionNotActive(): Promise<any> {
-    return await this.userServiceClient
-      .send('delete_permission_not_active', {})
-      .toPromise();
+    return await this.natsClientService.send(
+      'delete_permission_not_active',
+      {},
+    );
   }
 
   /**
@@ -164,9 +153,9 @@ export class UserService implements UserServiceInterface {
    * @returns
    */
   public async getUserById(id: number): Promise<any> {
-    const responseUserService = await this.userServiceClient
-      .send('detail', { id: id })
-      .toPromise();
+    const responseUserService = await this.natsClientService.send('detail', {
+      id: id,
+    });
     if (responseUserService.statusCode != ResponseCodeEnum.SUCCESS) {
       return {};
     }
@@ -179,13 +168,14 @@ export class UserService implements UserServiceInterface {
    * @returns
    */
   public async getUserWarehousesById(id: number): Promise<any> {
-    const responseUserService = await this.userServiceClient
-      .send('get_warehouse_list_by_user', {
+    const responseUserService = await this.natsClientService.send(
+      'get_warehouse_list_by_user',
+      {
         userId: id,
         isGetAll: '1',
         basicInfor: '1',
-      })
-      .toPromise();
+      },
+    );
 
     if (responseUserService.statusCode != ResponseCodeEnum.SUCCESS) {
       return [];
@@ -198,11 +188,12 @@ export class UserService implements UserServiceInterface {
     onlyId?: boolean,
     serilize?: boolean,
   ): Promise<any> {
-    const response = await this.userServiceClient
-      .send('get_factories_by_name_keyword', {
+    const response = await this.natsClientService.send(
+      'get_factories_by_name_keyword',
+      {
         nameKeyword: filterByName.text,
-      })
-      .toPromise();
+      },
+    );
 
     if (response.statusCode !== ResponseCodeEnum.SUCCESS) {
       return [];
@@ -226,16 +217,19 @@ export class UserService implements UserServiceInterface {
   }
 
   public async getUsersByRoleCodes(roleCodes?: string[]): Promise<any> {
-    const result = await this.userServiceClient
-      .send('get_users_by_role_codes', { roleCodes })
-      .toPromise();
+    const result = await this.natsClientService.send(
+      'get_users_by_role_codes',
+      { roleCodes },
+    );
     if (result.statusCode !== ResponseCodeEnum.SUCCESS) return {};
     return result.data;
   }
+
   public async getFactoryById(id: number): Promise<any> {
-    const responseUserService = await this.userServiceClient
-      .send('detail_factory', { id: id })
-      .toPromise();
+    const responseUserService = await this.natsClientService.send(
+      'detail_factory',
+      { id: id },
+    );
     if (responseUserService.statusCode != ResponseCodeEnum.SUCCESS) {
       return {};
     }
@@ -243,9 +237,10 @@ export class UserService implements UserServiceInterface {
   }
 
   public async getListDepartment(): Promise<any> {
-    const responseUserService = await this.userServiceClient
-      .send('get_department_list', {})
-      .toPromise();
+    const responseUserService = await this.natsClientService.send(
+      'get_department_list',
+      {},
+    );
     if (responseUserService.statusCode != ResponseCodeEnum.SUCCESS) {
       return [];
     }
@@ -253,9 +248,10 @@ export class UserService implements UserServiceInterface {
   }
 
   public async getDepartmentReceiptByIds(ids: number[]): Promise<any> {
-    const response = await this.userServiceClient
-      .send('get_department_receipt_by_ids', { ids })
-      .toPromise();
+    const response = await this.natsClientService.send(
+      'get_department_receipt_by_ids',
+      { ids },
+    );
 
     if (response.statusCode != ResponseCodeEnum.SUCCESS) {
       return [];
@@ -267,11 +263,12 @@ export class UserService implements UserServiceInterface {
     ids: number[],
     serilize?: boolean,
   ): Promise<any> {
-    const response = await this.userServiceClient
-      .send('get_department_setting_by_ids', {
+    const response = await this.natsClientService.send(
+      'get_department_setting_by_ids',
+      {
         departmentSettingIds: ids,
-      })
-      .toPromise();
+      },
+    );
     if (response.statusCode !== ResponseCodeEnum.SUCCESS) return [];
     const dataReturn = plainToInstance(
       DepartmentSettingResponseDto,
