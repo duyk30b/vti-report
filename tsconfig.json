@@ -53,8 +53,7 @@
       ],
       "@responses/*": [
         "src/responses/*"
-      ]
-      ,
+      ],
       "@schemas/*": [
         "src/schemas/*"
       ],

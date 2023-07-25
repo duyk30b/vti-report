@@ -46,6 +46,6 @@ export enum ErrorMessageEnum {
   // ================= Template sector template shelf error message ===============================
   TEMPLATE_SECTOR_NOT_EXIST = 'Khu vực không tồn tại',
   TEMPLATE_SHELF_NOT_EXIST = 'Kệ không tồn tại',
-  TEMPLATE_SHELF_FLOOR_NOT_EXIST = 'Tầng không tồn tại'
+  TEMPLATE_SHELF_FLOOR_NOT_EXIST = 'Tầng không tồn tại',
   //
 }
