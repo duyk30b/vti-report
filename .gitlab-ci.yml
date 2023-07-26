@@ -22,6 +22,14 @@ stages:
 before_script:
   - docker login $PRIVATE_REGISTRY_HOST -u $PRIVATE_REGISTRY_USERNAME -p $PRIVATE_REGISTRY_PASSWD
 
+build_pkg:
+  stage: build_pkg
+  script:
+    - docker build --tag $PKG_CONTAINER_IMAGE -f Dockerfile.package .
+    - docker push $PKG_CONTAINER_IMAGE
+  only:
+    - tags
+
 build:
   stage: build
   script:
