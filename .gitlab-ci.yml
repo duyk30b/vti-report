@@ -13,6 +13,7 @@ services:
 stages:
   - build
   - deploy
+  - build_pkg
   - build_staging
   - deploy_staging
   - build_demo
