@@ -98,41 +98,6 @@ deploy_staging:
       docker-compose -f docker-compose.yml -f docker-compose.production.yml up -d;
       docker image prune -f;"
 
-build_staging:
-  stage: build_staging
-  script:
-    - docker build  --tag $CONTAINER_STAGING_IMAGE .
-    - docker push $CONTAINER_STAGING_IMAGE
-  only:
-    - staging
-
-deploy_staging:
-  stage: deploy_staging
-  variables:
-    GIT_STRATEGY: none
-  only:
-    - staging
-  script:
-    - eval `ssh-agent -s`
-
-    - bash -c 'echo "$SSH_PRIVATE_KEY" | ssh-add -'
-    - mkdir -p ~/.ssh
-
-    - ssh-keyscan -H $SSH_STAGING_SERVER_IP >> ~/.ssh/known_hosts
-
-    - mkdir -p ~/.ssh
-
-    - chmod 644 ~/.ssh/known_hosts
-
-    - >
-      ssh $SSH_STAGING_USER@$SSH_STAGING_SERVER_IP
-      "docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY};
-      cd ${PATH_TO_STAGING_PROJECT};
-      docker pull ${CONTAINER_STAGING_IMAGE};
-      docker-compose down;
-      docker-compose -f docker-compose.yml -f docker-compose.production.yml up -d;
-      docker image prune -f;"
-
 build_demo:
   before_script:
     - docker version
