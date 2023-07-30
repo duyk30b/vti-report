@@ -18,6 +18,7 @@ stages:
   - deploy_staging
   - build_demo
   - deploy_demo
+  - build_pkg
   - clean
 
 before_script:
