@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { AuthServiceInterface } from '@components/auth/interface/auth.service.interface';
-import { HttpService } from '@nestjs/axios';
 import { InjectService } from '@nestcloud/service';
-import { catchError, firstValueFrom, map, of, retry } from 'rxjs';
-import { genericRetryStrategy } from '@core/utils/rxjs-util';
+import { NATS_AUTH } from '@core/config/nats.config';
+import { NatsClientService } from '@core/transporter/nats-transporter/nats-client.service';
 
 @Injectable()
 export class AuthService implements AuthServiceInterface {
@@ -12,7 +11,8 @@ export class AuthService implements AuthServiceInterface {
   private endpoint;
 
   constructor(
-    private httpClientService: HttpService,
+    private readonly natsClientService: NatsClientService,
+
     @InjectService()
     private readonly service: any,
   ) {
@@ -39,30 +39,41 @@ export class AuthService implements AuthServiceInterface {
   }
 
   async validateToken(token: string, permissionCode: string): Promise<any> {
-    this.httpClientService.axiosRef.defaults.headers.common[
-      'authorization'
-    ] = `${token}`;
-    const url = await this.generateUrlInternalService(
-      this.httpConfig.serviceName,
-      `${this.endpoint}/token/validate`,
+    const response = await this.natsClientService.send(
+      `${NATS_AUTH}.validate_token`,
+      {
+        permissionCode,
+        token,
+      },
     );
-    return await firstValueFrom(
-      this.httpClientService
-        .get(url, {
-          params: {
-            permissionCode: permissionCode,
-          },
-        })
-        .pipe(
-          map((response) => response.data),
-          retry(
-            genericRetryStrategy({
-              scalingDuration: 1000,
-              excludedStatusCodes: [409],
-            }),
-          ),
-          catchError((error) => of(error)),
-        ),
-    );
+    return response;
   }
+
+  // async validateToken(token: string, permissionCode: string): Promise<any> {
+  //   this.httpClientService.axiosRef.defaults.headers.common[
+  //     'authorization'
+  //   ] = `${token}`;
+  //   const url = await this.generateUrlInternalService(
+  //     this.httpConfig.serviceName,
+  //     `${this.endpoint}/token/validate`,
+  //   );
+  //   return await firstValueFrom(
+  //     this.httpClientService
+  //       .get(url, {
+  //         params: {
+  //           permissionCode: permissionCode,
+  //         },
+  //       })
+  //       .pipe(
+  //         map((response) => response.data),
+  //         retry(
+  //           genericRetryStrategy({
+  //             scalingDuration: 1000,
+  //             excludedStatusCodes: [409],
+  //           }),
+  //         ),
+  //         catchError((error) => of(error)),
+  //       ),
+  //   );
+  // }
 }
