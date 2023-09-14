@@ -18,9 +18,6 @@ import { ResponseBuilder } from '@core/utils/response-builder';
 import { ResponseCodeEnum } from '@core/response-code.enum';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { Public } from '@core/decorator/set-public.decorator';
-import { ReportType } from '@enums/report-type.enum';
-import { FORMAT_DATE } from '@utils/constant';
-import { getTimezone } from '@utils/common';
 @Controller('')
 export class ExportController {
   constructor(
@@ -50,10 +47,13 @@ export class ExportController {
     if (responseError && !isEmpty(responseError)) {
       return responseError;
     }
-    if (request?.reportType !== ReportType.INVENTORY) {
-      request.dateFrom = getTimezone(request?.dateFrom, FORMAT_DATE);
-    }
+
     const result = await this.exportService.getReport(request);
+    return new ResponseBuilder<any>()
+      .withCode(ResponseCodeEnum.NOT_FOUND)
+      .withData(result)
+      .withMessage(await this.i18n.translate('error.BAD_REQUEST'))
+      .build();
     if (!result['error']) {
       let nameFile =
         request.exportType === ExportType.EXCEL

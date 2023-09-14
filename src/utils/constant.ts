@@ -1,4 +1,3 @@
-import { ReportType } from '@enums/report-type.enum';
 import { TableColumn } from '@models/report.model';
 
 export const LANG = {
@@ -182,62 +181,7 @@ export const ALIGNMENT_BOTTOM_RIGHT = {
   horizontal: 'right',
   vertical: 'bottom',
 };
-export const REPORT_INFO = {
-  [ReportType[ReportType.ITEM_INVENTORY_BELOW_MINIMUM]]: {
-    key: 'ITEM_INVENTORY_BELOW_MINIMUM',
-  },
-  [ReportType[ReportType.ITEM_INVENTORY_BELOW_SAFE]]: {
-    key: 'ITEM_INVENTORY_BELOW_SAFE',
-  },
-  [ReportType[ReportType.ORDER_TRANSFER_INCOMPLETED]]: {
-    key: 'ORDER_TRANSFER_INCOMPLETED',
-  },
-  [ReportType[ReportType.ORDER_EXPORT_INCOMPLETED]]: {
-    key: 'ORDER_EXPORT_INCOMPLETED',
-  },
-  [ReportType[ReportType.ORDER_IMPORT_INCOMPLETED]]: {
-    key: 'ORDER_IMPORT_INCOMPLETED',
-  },
-  [ReportType[ReportType.ITEM_IMPORTED_BUT_NOT_PUT_TO_POSITION]]: {
-    key: 'ITEM_IMPORTED_BUT_NOT_PUT_TO_POSITION',
-  },
-  [ReportType[ReportType.ITEM_INVENTORY]]: {
-    key: 'ITEM_INVENTORY',
-  },
-  [ReportType[ReportType.ORDER_IMPORT_BY_REQUEST_FOR_ITEM]]: {
-    key: 'ORDER_IMPORT_BY_REQUEST_FOR_ITEM',
-  },
-  [ReportType[ReportType.INVENTORY]]: {
-    key: 'INVENTORY',
-  },
-  [ReportType[ReportType.ITEM_INVENTORY_IMPORTED_NO_QR_CODE]]: {
-    key: 'ITEM_INVENTORY_IMPORTED_NO_QR_CODE',
-  },
-  [ReportType[ReportType.ORDER_EXPORT_BY_REQUEST_FOR_ITEM]]: {
-    key: 'ORDER_EXPORT_BY_REQUEST_FOR_ITEM',
-  },
-  [ReportType[ReportType.SITUATION_TRANSFER]]: {
-    key: 'SITUATION_TRANSFER',
-  },
-  [ReportType[ReportType.SITUATION_INVENTORY_PERIOD]]: {
-    key: 'SITUATION_INVENTORY_PERIOD',
-  },
-  [ReportType[ReportType.SITUATION_IMPORT_PERIOD]]: {
-    key: 'SITUATION_IMPORT_PERIOD',
-  },
-  [ReportType[ReportType.SITUATION_EXPORT_PERIOD]]: {
-    key: 'SITUATION_EXPORT_PERIOD',
-  },
-  [ReportType[ReportType.AGE_OF_ITEM_STOCK]]: {
-    key: 'AGE_OF_ITEM_STOCK',
-  },
-  [ReportType[ReportType.REORDER_QUANTITY]]: {
-    key: 'REORDER_QUANTITY',
-  },
-  [ReportType[ReportType.TRANSACTION_DETAIL]]: {
-    key: 'TRANSACTION_DETAIL',
-  },
-};
+
 export const FORMAT_DATE_EXCEL = 'DD/MM/YYYY';
 export const FORMAT_DATE = 'YYYY-MM-DD';
 
@@ -304,32 +248,6 @@ export const COLUMN_COLOR = {
   pattern: 'solid',
   fgColor: { argb: 'd6d6d6' },
 };
-
-export const ARR_REPORT_TYPE_CHANGE_TITLE_EXCELL = [
-  ReportType.ITEM_INVENTORY_BELOW_MINIMUM,
-  ReportType.AGE_OF_ITEM_STOCK,
-  ReportType.ORDER_IMPORT_INCOMPLETED,
-  ReportType.ITEM_IMPORTED_BUT_NOT_PUT_TO_POSITION,
-  ReportType.ORDER_EXPORT_INCOMPLETED,
-  ReportType.ORDER_TRANSFER_INCOMPLETED,
-  ReportType.ITEM_INVENTORY_BELOW_SAFE,
-  ReportType.ITEM_INVENTORY,
-  ReportType.SITUATION_INVENTORY_PERIOD,
-];
-
-export const ARR_REPORT_TYPE_TITLE_NO_COMPANY = [
-  REPORT_INFO[ReportType[ReportType.INVENTORY]].key,
-  REPORT_INFO[ReportType[ReportType.REORDER_QUANTITY]].key,
-];
-
-export const ARR_REPORT_DATA_HIDDEN_WAREHOUSE_CODE = [
-  ReportType.REORDER_QUANTITY,
-  ReportType.TRANSACTION_DETAIL,
-];
-
-export const ARR_REPORT_HEADER_DATA_LEFT_BOTTOM = [ReportType.REORDER_QUANTITY];
-
-export const ARR_REPORT_HEADER_DATA_CENTER = [ReportType.TRANSACTION_DETAIL];
 
 export const LOCATION_CELL_REPORT_TYPE_CHANGE_TITLE_EXCELL = {
   CELL_TITLE_REPORT: 'A4',

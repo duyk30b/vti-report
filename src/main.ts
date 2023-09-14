@@ -57,6 +57,11 @@ async function bootstrap() {
               'utf-8',
             ),
           },
+          sasl: {
+            mechanism: 'plain',
+            username: process.env.KAFKA_SASL_USERNAME,
+            password: process.env.KAFKA_SASL_PASSWD,
+          },
         },
         consumer: {
           groupId: `report-service`,
