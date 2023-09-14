@@ -4,7 +4,6 @@ import { ConfigModule } from '@nestjs/config';
 import * as dotenv from 'dotenv';
 
 import { AuthModule } from '@components/auth/auth.module';
-import { DashboardModule } from '@components/dashboard/dashboard.module';
 import { ExportModule } from '@components/export/export.module';
 import { SyncModule } from '@components/sync/sync.module';
 import { HttpClientModule } from '@core/components/http-client/http-client.module';
@@ -66,7 +65,6 @@ dotenv.config();
     AuthModule,
     SyncModule,
     ExportModule,
-    DashboardModule,
     NatsClientModule,
   ],
   controllers: [AppController],

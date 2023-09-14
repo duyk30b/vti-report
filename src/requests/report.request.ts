@@ -1,24 +1,18 @@
 import { BaseDto } from '@core/dto/base.dto';
 import { ExportType } from '@enums/export-type.enum';
-import { ReportType } from '@enums/report-type.enum';
+import { ReportTypeEnum } from '@enums/report-type.enum';
 import { getTimezone } from '@utils/common';
 import { FORMAT_DATE } from '@utils/constant';
 import { Transform } from 'class-transformer';
-import {
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class ReportRequest extends BaseDto {
   @IsNotEmpty()
-  @IsEnum(ReportType)
+  @IsEnum(ReportTypeEnum)
   @Transform(({ value }) => {
     return Number(value);
   })
-  reportType: ReportType;
+  reportType: ReportTypeEnum;
 
   @IsNotEmpty()
   @IsEnum(ExportType)
