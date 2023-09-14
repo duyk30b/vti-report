@@ -1,4 +1,3 @@
-import { BaseModel } from '@core/model/base.model';
 import { FilterQuery, Model, Types } from 'mongoose';
 import { BaseInterfaceRepository } from './base.interface.repository';
 
