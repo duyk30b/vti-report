@@ -21,6 +21,7 @@ stages:
 
 before_script:
   - docker login $PRIVATE_REGISTRY_HOST -u $PRIVATE_REGISTRY_USERNAME -p $PRIVATE_REGISTRY_PASSWD
+  - echo "Build Image $IMAGE_NAME/$CI_COMMIT_REF_SLUG"
 
 build_pkg:
   stage: build_pkg
@@ -57,10 +58,18 @@ deploy_develop:
     - >
       ssh $DEVELOP_SERVER_USERNAME@$DEVELOP_SERVER_IP
       "docker login ${PRIVATE_REGISTRY_HOST} -u ${PRIVATE_REGISTRY_USERNAME} -p ${PRIVATE_REGISTRY_PASSWD};
-      cd ${PATH_TO_DEVELOP_PROJECT};
+      ls -la;
+      cd ${SERVICE_PATH};
+      mkdir -p ${SERVICE_NAME};
+      cd ${SERVICE_NAME};
+      pwd;
       docker pull ${IMAGE_NAME}:${CI_COMMIT_REF_SLUG};
-      docker-compose down;
-      docker-compose -f docker-compose.yml -f docker-compose.production.yml up -d;
+      docker create --name ${SERVICE_NAME}_temp ${IMAGE_NAME}:${CI_COMMIT_REF_SLUG};
+      docker cp ${SERVICE_NAME}_temp:./docker-compose.yml ./;
+      ls -la;
+      docker rm -f ${SERVICE_NAME}_temp;
+      docker-compose -f docker-compose.yml down;
+      docker-compose -f docker-compose.yml up -d;
       docker image prune -f;"
 
 build_staging:
@@ -92,10 +101,19 @@ deploy_staging:
     - >
       ssh $SSH_STAGING_USER@$SSH_STAGING_SERVER_IP
       "docker login ${PRIVATE_REGISTRY_HOST} -u ${PRIVATE_REGISTRY_USERNAME} -p ${PRIVATE_REGISTRY_PASSWD};
-      cd ${PATH_TO_STAGING_PROJECT};
+      ls -la;
+      cd ${SERVICE_PATH};
+      mkdir -p ${SERVICE_NAME};
+      cd ${SERVICE_NAME};
+      pwd;
       docker pull ${IMAGE_NAME}:${CI_COMMIT_REF_SLUG};
-      docker-compose down;
-      docker-compose -f docker-compose.yml -f docker-compose.production.yml up -d;
+      docker create --name ${SERVICE_NAME}_temp ${IMAGE_NAME}:${CI_COMMIT_REF_SLUG};
+      docker cp ${SERVICE_NAME}_temp:./docker-compose.yml ./;
+      ls -la;
+      docker rm -f ${SERVICE_NAME}_temp;
+      docker-compose -f docker-compose.yml down;
+      docker-compose -f docker-compose.yml up -d;
+      docker-compose -f docker-compose.yml ps -a;
       docker image prune -f;"
 
 build_demo:
@@ -107,8 +125,10 @@ build_demo:
     - ./setup_env_demo.sh
   stage: build_demo
   script:
-    - docker build --tag $IMAGE_NAME:$CI_COMMIT_REF_SLUG .
+    - docker pull $IMAGE_NAME:latest || true
+    - docker build --cache-from $IMAGE_NAME:latest --tag $IMAGE_NAME:latest --tag $IMAGE_NAME:$CI_COMMIT_REF_SLUG .
     - docker push $IMAGE_NAME:$CI_COMMIT_REF_SLUG
+    - docker push $IMAGE_NAME:latest
   only:
     - master
 
@@ -133,11 +153,11 @@ deploy_demo:
 
     - >
       ssh $SSH_USER@$SSH_SERVER_IP
-      "docker login ${PRIVATE_REGISTRY_HOST} -u ${PRIVATE_REGISTRY_USERNAME} -p ${PRIVATE_REGISTRY_PASSWD}
+      "docker login ${PRIVATE_REGISTRY_HOST} -u ${PRIVATE_REGISTRY_USERNAME} -p ${PRIVATE_REGISTRY_PASSWD};
       cd ${PATH_TO_DEMO_PROJECT};
       docker pull ${IMAGE_NAME}:${CI_COMMIT_REF_SLUG};
       docker-compose down;
-      docker-compose -f docker-compose.yml -f docker-compose.production.yml up -d;
+      docker-compose -f docker-compose.yml up -d;
       docker image prune -f;"
 
 clean:
