@@ -23,9 +23,9 @@ export class SyncWarehouseImportService {
 		const daySync = new Date(timestamp - 24 * 60 * 60 * 1000) // đồng bộ tất cả dữ liệu ngày hôm trước
 		const daySyncString = timeToText(daySync, 'YYYY-MM-DD', -420)
 		const startTime = startOfDay(daySync, -420).getTime() // -420 để lấy theo giờ UTC+7
-		const endTime = endOfDay(daySync, -420).getTime()
+		const endTime = startOfDay(timestamp, -420).getTime()
 
-		const ticketImports = await this.natsClientTicketService.getWarehouseImportList({ createdAt: [startTime, endTime] })
+		const ticketImports = await this.natsClientTicketService.getWarehouseImportList({ confirmedTime: [startTime, endTime] })
 		if (!ticketImports.length) {
 			this.logger.log(`${daySyncString}: No Record Ticket Import`)
 			return

@@ -79,7 +79,6 @@ async function bootstrap() {
 
 	await app.listen(3000, () => {
 		logger.debug(`🚀 ===== [API] Server document: http://${APP_HOST}:${APP_CONTAINER_PORT}${API_PATH}/swagger-docs =====`)
-		logger.debug(`🚀 ===== [SQL] Database: ${mongoDbUri} =====`)
 	})
 }
 
