@@ -1,24 +1,13 @@
-FROM node:16-alpine AS development
-
+FROM node:16-alpine AS local
 WORKDIR /app
-
 COPY package*.json ./
-
-# Install app dependencies
 RUN npm install
-
 COPY . .
-
 RUN npm run build
 
 FROM node:16-alpine As production
-
 COPY package*.json ./
-
 RUN npm install --production
-
 COPY . .
-
-COPY --from=development /app/dist ./dist
-
+COPY --from=local /app/dist ./dist
 CMD [ "npm", "run", "start:prod" ]
