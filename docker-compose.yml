@@ -1,29 +1,25 @@
-# docker compose version
 version: '3.8'
-# all the containers have to declare inside services
+
 services:
   report-service:
-    container_name: ${NODE_ENV}-report-service
-    image: ${DOCKER_REGISTRY}/snp_smartwms/source/be/report-service:staging
+    container_name: report-service-production
+    image: 10.1.13.50:5000/snp_smartwms/source/be/report-service:${NODE_ENV:-develop}
     env_file:
       - .env
     build:
       context: .
       dockerfile: Dockerfile
+      target: production
     networks:
-      mesx-net:
+      mesx_network:
         ipv4_address: ${CONTAINER_NETWORK_IP}
     ports:
-      - ${APP_CONTAINER_PORT}:${SERVER_HTTP_PORT}
-    volumes:
-      - .:/app
-      - /app/node_modules
+      - ${APP_CONTAINER_PORT}:3000
     restart: unless-stopped
+    command: [ "sh", "-c", "npm run start:prod" ]
+
 networks:
-  mesx-net:
+  mesx_network:
     name: ${MESX_NET_NAME}
     external: true
 
-# save (persist) data
-volumes:
-  db_data: {}

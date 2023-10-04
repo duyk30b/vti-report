@@ -11,7 +11,7 @@ kong:
 service:
   id: ${{ SERVICE_NAME }}
   name: ${{ SERVICE_NAME }}
-  port: ${{ SERVER_HTTP_PORT }}
+  port: 3000
   apiPath: ${{ API_PATH }}
   tags: ["v1.0.1"]
   healthCheck:
