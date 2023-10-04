@@ -1,130 +1,86 @@
-import { APIPrefix } from '@core/common';
-import { ConfigService } from '@core/config/config.service';
-import { NATS_REPORT, NatsConfig } from '@core/config/nats.config';
-import { ExceptionInterceptor } from '@core/interceptors/exception.interceptor';
-import { FilterQueryPipe } from '@core/pipe/filter-query.pipe';
-import { SortQueryPipe } from '@core/pipe/sort-query.pipe';
-import { NestFactory } from '@nestjs/core';
-import { TcpOptions, Transport } from '@nestjs/microservices';
-import {
-  FastifyAdapter,
-  NestFastifyApplication,
-} from '@nestjs/platform-fastify';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import fastifyMultipart from 'fastify-multipart';
-import * as fs from 'fs';
-import * as path from 'path';
-import { AppModule } from './app.module';
+import { ClassSerializerInterceptor, Logger, ValidationError, ValidationPipe } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import { NestFactory, Reflector } from '@nestjs/core'
+import { KafkaOptions, NatsOptions } from '@nestjs/microservices'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import { AppModule } from './app.module'
+import { BusinessExceptionFilter } from './core/exception-filters/business-exception.filter'
+import { UnknownExceptionFilter } from './core/exception-filters/unknown-exception.filter'
+import { ValidationException, ValidationExceptionFilter } from './core/exception-filters/validation-exception.filter'
+import { AccessLogInterceptor } from './core/interceptor/access-log.interceptor'
+import { TransformResponseInterceptor } from './core/interceptor/transform-response.interceptor'
+import { KafkaConfig } from './modules/kafka/kafka.config'
+import { NatsConfig } from './modules/nats/nats.config'
+import { mongoDbUri } from './mongo/mongodb.config'
 
 async function bootstrap() {
-  const fastifyAdapter = new FastifyAdapter();
+	const logger = new Logger('bootstrap')
+	const app = await NestFactory.create(AppModule)
+	app.useLogger(['log', 'error', 'warn', 'debug', 'verbose'])
+	app.enableCors()
+	app.useGlobalInterceptors(
+		new AccessLogInterceptor(),
+		new ClassSerializerInterceptor(app.get(Reflector), {
+			excludeExtraneousValues: true,
+			exposeUnsetFields: false,
+		}),
+		new TransformResponseInterceptor()
+	)
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  fastifyAdapter.register(fastifyMultipart, {
-    attachFieldsToBody: true,
-    addToBody: true,
-  });
+	app.useGlobalFilters(
+		new UnknownExceptionFilter(),
+		new BusinessExceptionFilter(),
+		new ValidationExceptionFilter()
+	)
 
-  const app = await NestFactory.create<NestFastifyApplication>(
-    AppModule,
-    fastifyAdapter,
-    {
-      logger:
-        process.env.NODE_ENV === 'development'
-          ? ['debug', 'error', 'log', 'verbose', 'warn']
-          : ['error'],
-    },
-  );
+	app.useGlobalPipes(new ValidationPipe({
+		validationError: { target: false, value: true },
+		skipMissingProperties: true, // no validate field undefined
+		whitelist: true, // no field not in DTO
+		forbidNonWhitelisted: true, // exception when field not in DTO
+		transform: true, // use for DTO
+		transformOptions: {
+			excludeExtraneousValues: false, // exclude field not in class DTO => no
+			exposeUnsetFields: false, // expose field undefined in DTO => no
+		},
+		exceptionFactory: (errors: ValidationError[] = []) => new ValidationException(errors),
+	}))
 
-  app.connectMicroservice(
-    {
-      transport: Transport.KAFKA,
-      options: {
-        client: {
-          brokers: process.env.KAFKA_BROKERS.split(',') || ['kafka:9092'],
-          ssl: {
-            rejectUnauthorized: false,
-            ca: [
-              fs.readFileSync(path.join(__dirname, '/cert/kafka.crt'), 'utf-8'),
-            ],
-            key: fs.readFileSync(
-              path.join(__dirname, '/cert/kafka.key'),
-              'utf-8',
-            ),
-            cert: fs.readFileSync(
-              path.join(__dirname, '/cert/kafka.pem'),
-              'utf-8',
-            ),
-          },
-          sasl: {
-            mechanism: 'plain',
-            username: process.env.KAFKA_SASL_USERNAME,
-            password: process.env.KAFKA_SASL_PASSWD,
-          },
-        },
-        consumer: {
-          groupId: `report-service`,
-          allowAutoTopicCreation: true,
-          waitForLeaders: true,
-        },
-      },
-    },
-    { inheritAppConfig: true },
-  );
+	app.connectMicroservice<NatsOptions>(NatsConfig, { inheritAppConfig: true })
+	app.connectMicroservice<KafkaOptions>(KafkaConfig, { inheritAppConfig: true })
 
-  app.connectMicroservice(
-    {
-      transport: Transport.TCP,
-      options: {
-        host: '0.0.0.0',
-        port: new ConfigService().get('port'),
-      },
-    } as TcpOptions,
-    { inheritAppConfig: true },
-  );
+	await app.startAllMicroservices()
 
-  app.connectMicroservice(
-    {
-      transport: Transport.NATS,
-      options: {
-        servers: NatsConfig().servers,
-        queue: NATS_REPORT,
-      },
-    },
-    { inheritAppConfig: true },
-  );
+	const configService = app.get(ConfigService)
+	const NODE_ENV = configService.get<string>('NODE_ENV') || 'local'
+	const APP_HOST = configService.get<string>('APP_HOST') || 'localhost'
+	const APP_CONTAINER_PORT = configService.get<string>('APP_CONTAINER_PORT')
+	const API_PATH = configService.get<string>('API_PATH')
 
-  await app.startAllMicroservices();
-  app.setGlobalPrefix(APIPrefix.Version);
+	app.setGlobalPrefix(API_PATH)
 
-  const options = new DocumentBuilder()
-    .setTitle('API docs')
-    .addBearerAuth(
-      { type: 'http', description: 'Access token' },
-      'access-token',
-    )
-    .setVersion('1.0')
-    .build();
+	if (NODE_ENV !== 'production') {
+		const options = new DocumentBuilder()
+			.setTitle('API docs')
+			.setVersion('1.0')
+			.addBearerAuth(
+				{ type: 'http', description: 'Access token' },
+				'access-token'
+			)
+			.build()
+		const document = SwaggerModule.createDocument(app, options)
+		SwaggerModule.setup(
+			`${API_PATH}/swagger-docs`,
+			app,
+			document,
+			{ swaggerOptions: { persistAuthorization: true } }
+		)
+	}
 
-  const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('api/v1/reports/swagger-docs', app, document);
-
-  let corsOptions = {};
-  const configService = new ConfigService();
-  if (configService.get('corsOrigin')) {
-    corsOptions = {
-      origin: new ConfigService().get('corsOrigin'),
-    };
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  app.register(require('@fastify/cors'), corsOptions);
-  app.useGlobalPipes(new SortQueryPipe());
-  app.useGlobalPipes(new FilterQueryPipe());
-  app.useGlobalInterceptors(new ExceptionInterceptor());
-
-  await app.listen(new ConfigService().get('httpPort'), '0.0.0.0');
+	await app.listen(3000, () => {
+		logger.debug(`🚀 ===== [API] Server document: http://${APP_HOST}:${APP_CONTAINER_PORT}${API_PATH}/swagger-docs =====`)
+		logger.debug(`🚀 ===== [SQL] Database: ${mongoDbUri} =====`)
+	})
 }
 
-bootstrap();
+bootstrap()

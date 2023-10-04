@@ -1,0 +1,53 @@
+export enum ACTIVE_ENUM {
+	INACTIVE,
+	ACTIVE,
+}
+export const FORMAT_CODE_PERMISSION = 'MMS_'
+
+export const REPORT_GROUP_PERMISSION = {
+	name: 'Quản lý báo cáo',
+	code: FORMAT_CODE_PERMISSION + 'REPORT_GROUP',
+	status: ACTIVE_ENUM.ACTIVE,
+}
+
+export const REPORT_WAREHOUSE_IMPORT_PERMISSION = {
+	code: FORMAT_CODE_PERMISSION + 'REPORT_WAREHOUSE_IMPORT',
+	name: 'Báo cáo tình hình nhập kho',
+	groupPermissionSettingCode: REPORT_GROUP_PERMISSION.code,
+	status: ACTIVE_ENUM.ACTIVE,
+}
+
+export const REPORT_WAREHOUSE_EXPORT_PERMISSION = {
+	code: FORMAT_CODE_PERMISSION + 'REPORT_WAREHOUSE_EXPORT',
+	name: 'Báo cáo tình hình xuất kho',
+	groupPermissionSettingCode: REPORT_GROUP_PERMISSION.code,
+	status: ACTIVE_ENUM.ACTIVE,
+}
+
+export const REPORT_WAREHOUSE_TRANSFER_PERMISSION = {
+	code: FORMAT_CODE_PERMISSION + 'REPORT_WAREHOUSE_TRANSFER',
+	name: 'Báo cáo tình hình chuyển kho',
+	groupPermissionSettingCode: REPORT_GROUP_PERMISSION.code,
+	status: ACTIVE_ENUM.ACTIVE,
+}
+
+export const REPORT_WAREHOUSE_CHECKOUT_PERMISSION = {
+	code: FORMAT_CODE_PERMISSION + 'REPORT_WAREHOUSE_CHECKOUT',
+	name: 'Báo cáo tình hình kiểm kê',
+	groupPermissionSettingCode: REPORT_GROUP_PERMISSION.code,
+	status: ACTIVE_ENUM.ACTIVE,
+}
+
+export const PERMISSION = [
+	REPORT_WAREHOUSE_IMPORT_PERMISSION,
+	REPORT_WAREHOUSE_EXPORT_PERMISSION,
+	REPORT_WAREHOUSE_TRANSFER_PERMISSION,
+	REPORT_WAREHOUSE_CHECKOUT_PERMISSION,
+]
+
+export const GROUP_PERMISSION = [REPORT_GROUP_PERMISSION]
+
+export const INSERT_PERMISSION = {
+	permission: PERMISSION,
+	groupPermission: GROUP_PERMISSION,
+}
