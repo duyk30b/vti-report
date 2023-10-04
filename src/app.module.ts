@@ -12,14 +12,13 @@ import { resolve } from 'path'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { ApiModule } from './components/api/api.module'
+import { KafkaEventModule } from './components/kafka-event/kafka-event.module'
 import { NatsEventModule } from './components/nats-event/nats-event.module'
-import { TasksScheduleModule } from './components/schedule/tasks-schedule.module'
 import { AuthorizationGuard } from './core/guard/authorization.guard'
+import { KafkaClientModule } from './modules/kafka/kafka-client.module'
 import { KongGatewayModule } from './modules/kong-gateway/kong-gateway.module'
 import { NatsClientModule } from './modules/nats/nats-client.module'
 import { MongoDbConnectModule } from './mongo/mongodb-connect.module'
-import { KafkaClientModule } from './modules/kafka/kafka-client.module'
-import { KafkaEventModule } from './components/kafka-event/kafka-event.module'
 
 @Module({
 	imports: [
@@ -51,7 +50,7 @@ import { KafkaEventModule } from './components/kafka-event/kafka-event.module'
 		KafkaClientModule,
 		KafkaEventModule,
 		NatsEventModule,
-		TasksScheduleModule,
+		// TasksScheduleModule,
 		ApiModule,
 	],
 	controllers: [AppController],
