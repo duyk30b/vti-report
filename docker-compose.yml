@@ -3,7 +3,7 @@ version: '3.8'
 services:
   report-service:
     container_name: report-service-production
-    image: 10.1.13.50:5000/snp_smartwms/source/be/report-service:${NODE_ENV:-develop}
+    image: 10.1.14.120:5000/snp_smartwms/source/be/report-service:${NODE_ENV:-develop}
     env_file:
       - .env
     build:
