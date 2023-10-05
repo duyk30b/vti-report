@@ -47,7 +47,7 @@ async function bootstrap() {
 	}))
 
 	app.connectMicroservice<NatsOptions>(NatsConfig, { inheritAppConfig: true })
-	// app.connectMicroservice<KafkaOptions>(KafkaConfig, { inheritAppConfig: true })
+	app.connectMicroservice<KafkaOptions>(KafkaConfig, { inheritAppConfig: true })
 
 	await app.startAllMicroservices()
 
