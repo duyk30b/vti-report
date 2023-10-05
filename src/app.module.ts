@@ -53,7 +53,8 @@ import { MongoDbConnectModule } from './mongo/mongodb-connect.module'
 		// KafkaEventModule,
 		NatsEventModule,
 		// TasksScheduleModule,
-		
+
+		BullQueueModule.forRoot(),
 		BullQueueModule.registerProducer(),
 		BullProcessorModule,
 		ApiModule,

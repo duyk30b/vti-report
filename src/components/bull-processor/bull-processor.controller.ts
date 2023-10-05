@@ -8,8 +8,7 @@ export class BullProcessorController {
 
 	@Get('bull/ping')
 	async ping() {
-		console.log('🚀 ~ file: bull-processor.controller.ts:11 ~ BullProcessorController ~ ping ~ ping:')
-		const response = await this.bullQueueService.addDemoJob({
+		const response = await this.bullQueueService.addPingJob({
 			data: { message: 'ping' },
 			messageId: 'ping_' + new Date().toISOString(),
 			createTime: new Date().toISOString(),
