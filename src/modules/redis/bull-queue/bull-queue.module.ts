@@ -1,0 +1,65 @@
+import { BullModule, BullModuleOptions } from '@nestjs/bull'
+import { DynamicModule, Module } from '@nestjs/common'
+import { ConfigModule, ConfigType } from '@nestjs/config'
+import Bull from 'bull'
+import { BullQueueService } from './bull-queue.service'
+import { QUEUE_EVENT } from './bull-queue.variable'
+import { RedisConfig } from '../redis.config'
+
+const QUEUES: BullModuleOptions[] = [
+	{
+		name: QUEUE_EVENT.PING,
+		defaultJobOptions: { attempts: 3 },
+	},
+	{
+		name: QUEUE_EVENT.WAREHOUSE_IMPORT_CONFIRM,
+		limiter: { max: 1, duration: 200, groupKey: 'groupKey' },
+	},
+]
+
+@Module({})
+export class BullQueueModule {
+	static forRoot(): DynamicModule {
+		return {
+			module: BullQueueModule,
+			imports: [
+				BullModule.forRootAsync({
+					imports: [ConfigModule.forFeature(RedisConfig)],
+					inject: [RedisConfig.KEY],
+					useFactory: async (redisConfig: ConfigType<typeof RedisConfig>) => {
+						const bullConfig: Bull.QueueOptions = {
+							redis: {
+								host: redisConfig.host,
+								port: redisConfig.port,
+								password: redisConfig.password,
+								db: +redisConfig.db,
+							},
+							defaultJobOptions: { removeOnComplete: true },
+							prefix: 'report',
+						}
+						return bullConfig
+					},
+				}),
+			],
+		}
+	}
+
+	static registerProducer(): DynamicModule {
+		const base = BullQueueModule.register()
+		base.providers = [...(base.providers || []), BullQueueService]
+		base.exports = [...(base.exports || []), BullQueueService]
+		base.global = true
+		return base
+	}
+
+	static registerConsumer(): DynamicModule {
+		return BullQueueModule.register()
+	}
+
+	private static register(): DynamicModule {
+		return {
+			module: BullQueueModule,
+			imports: [BullModule.registerQueue(...QUEUES)],
+		}
+	}
+}
