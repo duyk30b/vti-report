@@ -23,8 +23,10 @@ export const KafkaConfig: KafkaOptions = {
 		},
 		producer: {
 			allowAutoTopicCreation: true,
+			idempotent: true, // Mỗi tin nhắn được gửi chính xác 1 lần
 			createPartitioner: Partitioners.LegacyPartitioner,
 		},
+		send: { acks: -1 }, // ack = -1 => "all": tất cả các replicas đều xác nhận đã ghi tin nhắn
 	},
 }
 
