@@ -7,7 +7,7 @@ import { KafkaConfig } from './kafka.config'
 @Module({
 	providers: [
 		{
-			provide: 'KAFKA_SERVICE',
+			provide: 'KAFKA_CLIENT',
 			useFactory: () => {
 				return ClientProxyFactory.create(KafkaConfig)
 			},

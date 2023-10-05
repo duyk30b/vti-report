@@ -12,12 +12,14 @@ import { resolve } from 'path'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { ApiModule } from './components/api/api.module'
+import { BullProcessorModule } from './components/bull-processor/bull-processor.module'
 import { KafkaEventModule } from './components/kafka-event/kafka-event.module'
 import { NatsEventModule } from './components/nats-event/nats-event.module'
 import { AuthorizationGuard } from './core/guard/authorization.guard'
 import { KafkaClientModule } from './modules/kafka/kafka-client.module'
 import { KongGatewayModule } from './modules/kong-gateway/kong-gateway.module'
 import { NatsClientModule } from './modules/nats/nats-client.module'
+import { BullQueueModule } from './modules/redis/bull-queue/bull-queue.module'
 import { MongoDbConnectModule } from './mongo/mongodb-connect.module'
 
 @Module({
@@ -51,6 +53,10 @@ import { MongoDbConnectModule } from './mongo/mongodb-connect.module'
 		KafkaEventModule,
 		NatsEventModule,
 		// TasksScheduleModule,
+
+		BullQueueModule.forRoot(),
+		BullQueueModule.registerProducer(),
+		BullProcessorModule,
 		ApiModule,
 	],
 	controllers: [AppController],
