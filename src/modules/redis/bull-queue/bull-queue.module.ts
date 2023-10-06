@@ -15,6 +15,7 @@ const QUEUES: BullModuleOptions[] = [
 		name: QUEUE_EVENT.WAREHOUSE_IMPORT_CONFIRM,
 		limiter: { max: 1, duration: 200, groupKey: 'groupKey' },
 	},
+	
 ]
 
 @Module({})

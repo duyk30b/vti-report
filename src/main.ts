@@ -37,7 +37,7 @@ async function bootstrap() {
 		validationError: { target: false, value: true },
 		skipMissingProperties: true, // no validate field undefined
 		whitelist: true, // no field not in DTO
-		forbidNonWhitelisted: true, // exception when field not in DTO
+		// forbidNonWhitelisted: true, // exception when field not in DTO
 		transform: true, // use for DTO
 		transformOptions: {
 			excludeExtraneousValues: false, // exclude field not in class DTO => no
