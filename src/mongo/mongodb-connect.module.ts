@@ -7,6 +7,8 @@ import { WarehouseExportRepository } from './repository/warehouse-export/warehou
 import { WarehouseExportSchema } from './repository/warehouse-export/warehouse-export.schema'
 import { WarehouseImportRepository } from './repository/warehouse-import/warehouse-import.repository'
 import { WarehouseImportSchema } from './repository/warehouse-import/warehouse-import.schema'
+import { WarehouseTransferSchema } from './repository/warehouse-transfer/warehouse-transfer.schema'
+import { WarehouseTransferRepository } from './repository/warehouse-transfer/warehouse-transfer.repository'
 
 @Global()
 @Module({
@@ -16,17 +18,20 @@ import { WarehouseImportSchema } from './repository/warehouse-import/warehouse-i
 			{ name: 'InventorySchema', schema: InventorySchema },
 			{ name: 'WarehouseImportSchema', schema: WarehouseImportSchema },
 			{ name: 'WarehouseExportSchema', schema: WarehouseExportSchema },
+			{ name: 'WarehouseTransferSchema', schema: WarehouseTransferSchema },
 		]),
 	],
 	providers: [
 		InventoryRepository,
 		WarehouseImportRepository,
 		WarehouseExportRepository,
+		WarehouseTransferRepository,
 	],
 	exports: [
 		InventoryRepository,
 		WarehouseImportRepository,
 		WarehouseExportRepository,
+		WarehouseTransferRepository,
 	],
 })
 export class MongoDbConnectModule { }

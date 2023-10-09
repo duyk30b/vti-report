@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { BaseSchema } from 'src/mongo/base.schema'
 
 @Schema({ timestamps: false })
-export class ItemExportBody {
+export class ItemTransferBody {
 	@Prop()
 	itemCode: string
 
@@ -12,14 +12,14 @@ export class ItemExportBody {
 	@Prop()
 	unit: string
 
-	@Prop()
-	importDate: Date                                    // Ngày nhập kho
-
 	@Prop({ required: false })
 	lot: string
 
 	@Prop({ required: false })
 	manufacturingDate: Date                             // Ngày sản xuất
+
+	@Prop()
+	importDate: Date                                    // Ngày nhập kho
 
 	@Prop()
 	quantity: number
@@ -30,18 +30,24 @@ export class ItemExportBody {
 	@Prop()
 	amount: number
 }
-export const ItemSchema = SchemaFactory.createForClass(ItemExportBody)
+export const ItemSchema = SchemaFactory.createForClass(ItemTransferBody)
 
-@Schema({ collection: 'warehouseExports', timestamps: true })
-export class WarehouseExport extends BaseSchema {
+@Schema({ collection: 'warehouseTransfers', timestamps: true })
+export class WarehouseTransfer extends BaseSchema {
 	@Prop()
 	timeSync: Date
 
 	@Prop()
-	warehouseId: number
+	warehouseExportId: number
 
 	@Prop()
-	warehouseName: string
+	warehouseExportName: string
+
+	@Prop()
+	warehouseImportId: number
+
+	@Prop()
+	warehouseImportName: string
 
 	@Prop()
 	templateCode: string
@@ -59,7 +65,10 @@ export class WarehouseExport extends BaseSchema {
 	documentDate: Date                                    // Ngày chứng từ
 
 	@Prop()
-	exportDate: Date                                      // Ngày thực xuất
+	transferDate: Date                                    // Ngày thực chuyển
+
+	@Prop()
+	transferStatus: number
 
 	@Prop({ required: false })
 	description: string
@@ -68,9 +77,9 @@ export class WarehouseExport extends BaseSchema {
 	amount: number
 
 	@Prop({ type: [ItemSchema], default: [] })
-	items: ItemExportBody[]
+	items: ItemTransferBody[]
 }
 
-const WarehouseExportSchema = SchemaFactory.createForClass(WarehouseExport)
+const WarehouseTransferSchema = SchemaFactory.createForClass(WarehouseTransfer)
 
-export { WarehouseExportSchema }
+export { WarehouseTransferSchema }

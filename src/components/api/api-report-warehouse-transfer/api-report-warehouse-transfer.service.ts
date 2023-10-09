@@ -3,32 +3,32 @@ import { Workbook, Worksheet } from 'exceljs'
 import { timeToText } from 'src/common/helpers'
 import { advanceLayoutExcel } from 'src/common/utils/excel-advance.util'
 import { NatsClientUserService } from 'src/modules/nats/service/nats-client-user.service'
-import { WarehouseExportRepository } from 'src/mongo/repository/warehouse-export/warehouse-export.repository'
-import { WarehouseExport } from 'src/mongo/repository/warehouse-export/warehouse-export.schema'
-import { ApiReportWarehouseExportQuery } from './api-report-warehouse-export.request'
+import { WarehouseTransferRepository } from 'src/mongo/repository/warehouse-transfer/warehouse-transfer.repository'
+import { WarehouseTransfer } from 'src/mongo/repository/warehouse-transfer/warehouse-transfer.schema'
+import { ApiReportWarehouseTransferQuery } from './api-report-warehouse-transfer.request'
 
 @Injectable()
-export class ApiReportWarehouseExportService {
+export class ApiReportWarehouseTransferService {
 	constructor(
-		private readonly warehouseExportRepository: WarehouseExportRepository,
+		private readonly warehouseExportRepository: WarehouseTransferRepository,
 		private readonly natsClientUserService: NatsClientUserService
 	) { }
 
-	async exportExcel(query: ApiReportWarehouseExportQuery, userId: number) {
+	async exportExcel(query: ApiReportWarehouseTransferQuery, userId: number) {
 		const { fromTime, toTime, warehouseId } = query
 
 		const warehouseGroup = await this.warehouseExportRepository.report({
-			warehouseId,
+			warehouseExportId: warehouseId,
 			fromTime,
 			toTime,
 		})
 		const [user] = await this.natsClientUserService.getUsersByIds({ userIds: [userId] })
 
-		const workbook = this.getWorkbookWarehouseExport(warehouseGroup, {
+		const workbook = this.getWorkbookWarehouseTransfer(warehouseGroup, {
 			fromTime,
 			toTime,
 			userFullName: user.fullName,
-			reportCode: 'W04',
+			reportCode: 'W05',
 			warehouseTitle: warehouseId ? (warehouseGroup[0]?.warehouseName || '') : 'TẤT CẢ KHO',
 			companyName: 'CÔNG TY CỔ PHẦN VTI',
 			companyAddress: 'VTI Building, Mễ Trì Hạ, Nam Từ Liêm, Hà Nội',
@@ -37,15 +37,15 @@ export class ApiReportWarehouseExportService {
 		const buffer = await workbook.xlsx.writeBuffer()
 		return {
 			xlsx: buffer,
-			filename: `W04_Báo cáo tình hình xuất kho_${timeToText(fromTime, 'DDMMYYYY')}-${timeToText(toTime, 'DDMMYYYY')}`,
+			filename: `W05_Báo cáo tình hình chuyển kho_${timeToText(fromTime, 'DDMMYYYY')}-${timeToText(toTime, 'DDMMYYYY')}`,
 		}
 	}
 
-	getWorkbookWarehouseExport(data: {
-		warehouseId: number,
-		warehouseName: string,
+	getWorkbookWarehouseTransfer(data: {
+		warehouseExportId: number,
+		warehouseExportName: string,
 		amount: number,
-		templates: { templateCode: string, templateName: string, amount: number, tickets: WarehouseExport[] }[]
+		templates: { templateCode: string, templateName: string, amount: number, tickets: WarehouseTransfer[] }[]
 	}[], meta: {
 		fromTime: Date,
 		toTime: Date,
@@ -63,7 +63,7 @@ export class ApiReportWarehouseExportService {
 					num: { mergeCells: { rowspan: 1, colspan: 12 }, alignment: { horizontal: 'left' } },
 					amount: { numFmt: '###,##0' },
 				},
-				data: [{ num: `Kho: ${w.warehouseId}_${w.warehouseName}`, amount: w.amount }],
+				data: [{ num: `Kho: ${w.warehouseExportId}_${w.warehouseExportName}`, amount: w.amount }],
 			}
 			dataRows.push(rowWarehouse)
 			w.templates.forEach((template) => {
@@ -76,12 +76,13 @@ export class ApiReportWarehouseExportService {
 					data: [{ num: `Loại nghiệp vụ: ${template.templateName}`, amount: template.amount }],
 				}
 				dataRows.push(rowTemplate)
-				template.tickets.forEach((ticket: WarehouseExport, ticketIndex: number) => {
+				template.tickets.forEach((ticket: WarehouseTransfer, ticketIndex: number) => {
 					const rowTicket = {
 						style: {
 							num: { alignment: { horizontal: 'center' } },
 							ticketCode: { font: { bold: true } },
 							documentDate: { alignment: { horizontal: 'center' }, numFmt: 'dd/mm/yyyy' },
+							transferStatus: {},
 							description: { mergeCells: { rowspan: 1, colspan: 9 } },
 							amount: { font: { bold: true }, numFmt: '###,##0' },
 						},
@@ -90,6 +91,8 @@ export class ApiReportWarehouseExportService {
 								num: ticketIndex + 1,
 								ticketCode: ticket.ticketCode,
 								documentDate: ticket.documentDate,
+								transferStatus: ticket.transferStatus,
+								warehouseImportName: ticket.warehouseImportName,
 								description: ticket.description || '',
 								amount: ticket.amount,
 							},
@@ -99,7 +102,7 @@ export class ApiReportWarehouseExportService {
 					ticket.items.forEach((item) => {
 						const rowItem = {
 							style: {
-								num: { mergeCells: { rowspan: 1, colspan: 3 } },
+								num: { mergeCells: { rowspan: 1, colspan: 5 } },
 								description: { font: { bold: true }, mergeCells: { rowspan: 1, colspan: 2 } },
 								unit: { alignment: { horizontal: 'center' } },
 								lot: { alignment: { horizontal: 'center' } },
@@ -115,9 +118,9 @@ export class ApiReportWarehouseExportService {
 									description: item.itemCode,
 									itemName: item.itemName,
 									unit: item.unit,
-									importDate: item.importDate || '',
 									lot: item.lot || '',
 									manufacturingDate: item.manufacturingDate || '',
+									importDate: item.importDate || '',
 									quantity: item.quantity,
 									price: item.price,
 									amount: item.amount,
@@ -159,7 +162,7 @@ export class ApiReportWarehouseExportService {
 						name: 'Times New Roman',
 					}
 				})
-				worksheet.addRow(['BÁO CÁO TÌNH XUẤT KHO']).eachCell((cell) => {
+				worksheet.addRow(['BÁO CÁO TÌNH CHUYỂN KHO']).eachCell((cell) => {
 					cell.font = {
 						size: 14,
 						bold: true,
@@ -189,14 +192,16 @@ export class ApiReportWarehouseExportService {
 				worksheet.mergeCells(5, 1, 5, 13)
 				worksheet.addRow([
 					'STT',
-					'Mã phiếu xuất',
+					'Mã lệnh chuyển',
 					'Ngày chứng từ',
+					'Trạng thái',
+					'Kho nhập',
 					'Diễn giải',
 					'Mã sản phẩm',
 					'Tên sản phẩm',
 					'ĐVT',
 					'Lô',
-					'Ngày sản xuất',
+					'NSX',
 					'Ngày nhập kho',
 					'Số lượng',
 					'Đơn giá',
@@ -226,6 +231,8 @@ export class ApiReportWarehouseExportService {
 				{ key: 'num', width: 10 },
 				{ key: 'ticketCode', width: 10 },
 				{ key: 'documentDate', width: 10 },
+				{ key: 'transferStatus', width: 10 },
+				{ key: 'warehouseImportName', width: 10 },
 				{ key: 'description', width: 10 },
 				{ key: 'itemCode', width: 10 },
 				{ key: 'itemName', width: 30 },

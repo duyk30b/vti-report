@@ -60,7 +60,7 @@ export class WarehouseImport extends BaseSchema {
 	documentDate: Date                                    // Ngày chứng từ
 
 	@Prop()
-	importDate: Date                                      // Ngày nhập kho
+	importDate: Date                                      // Ngày thực nhập
 
 	@Prop({ required: false })
 	description: string
