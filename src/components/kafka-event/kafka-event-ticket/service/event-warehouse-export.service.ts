@@ -3,26 +3,35 @@ import { timeToText } from 'src/common/helpers'
 import { NatsClientAttributeService } from 'src/modules/nats/service/nats-client-attribute.service'
 import { NatsClientItemService } from 'src/modules/nats/service/nats-client-item.service'
 import { NatsClientWarehouseService } from 'src/modules/nats/service/nats-client-warehouse.service'
-import { WarehouseImportRepository } from 'src/mongo/repository/warehouse-import/warehouse-import.repository'
-import { WarehouseImport } from 'src/mongo/repository/warehouse-import/warehouse-import.schema'
-import { KafkaTicketWarehouseImportConfirmRequest } from './request'
+import { WarehouseExportRepository } from 'src/mongo/repository/warehouse-export/warehouse-export.repository'
+import { WarehouseExport } from 'src/mongo/repository/warehouse-export/warehouse-export.schema'
+import { EventWarehouseExportConfirmRequest } from '../request'
 
 @Injectable()
-export class KafkaTicketEventService {
+export class EventWarehouseExportService {
 	constructor(
 		private readonly natsClientWarehouseService: NatsClientWarehouseService,
 		private readonly natsClientAttributeService: NatsClientAttributeService,
 		private readonly natsClientItemService: NatsClientItemService,
-		private readonly warehouseImportRepository: WarehouseImportRepository
+		private readonly warehouseExportRepository: WarehouseExportRepository
 	) { }
 
-	async ticketWarehouseImportConfirm(request: KafkaTicketWarehouseImportConfirmRequest) {
+	async warehouseExportConfirm(request: EventWarehouseExportConfirmRequest) {
 		const daySyncString = timeToText(new Date(), 'YYYY-MM-DD', -420)
 
 		const ticket = request.data
+		ticket.attributeMap = {}
+		ticket.attributes.forEach((atr: { code: string, value: any }) => {
+			ticket.attributeMap[atr.code] = atr.value
+		})
+
 		const itemIdSet = new Set<number>()
 		ticket.ticketDetails.forEach((td: any) => {
 			itemIdSet.add(td.itemId)
+			td.attributeMap = {} as Record<string, any>
+			td.attributes.forEach((atr: { code: string, value: any }) => {
+				td.attributeMap[atr.code] = atr.value
+			})
 		})
 		const itemIds = Array.from(itemIdSet)
 		const [warehouses, templates, items] = await Promise.all([
@@ -33,10 +42,7 @@ export class KafkaTicketEventService {
 		const itemMap: Record<string, any> = {}
 		items.forEach((i: any) => itemMap[i.id] = i)
 
-		const documentDate = ticket.attributes.find((i: any) => i.code === 'wmsxCreateReceiptDate')?.value
-		const description = ticket.attributes.find((i: any) => i.code === 'wmsxGeneralDescription')?.value
-
-		const warehouseImport: Partial<WarehouseImport> = {
+		const warehouseExport: Partial<WarehouseExport> = {
 			timeSync: new Date(daySyncString),
 			warehouseId: warehouses[0].id,
 			warehouseName: warehouses[0].name,
@@ -44,18 +50,22 @@ export class KafkaTicketEventService {
 			templateName: templates[0].name,
 			ticketId: ticket._id.toString(),
 			ticketCode: ticket.code,
-			documentDate: documentDate ? new Date(documentDate) : null,
-			importDate: ticket.ticketDetails[0]?.importDate ? new Date(ticket.ticketDetails[0]?.importDate) : null,
-			description,
-			amount: ticket.ticketDetails.reduce((acc: number, cur: any) => acc + cur.amount, 0),
+			documentDate: ticket.attributeMap['wmsxCreateReceiptDate'] ? new Date(ticket.attributeMap['wmsxCreateReceiptDate']) : null,
+			exportDate: ticket.exportDate ? new Date(ticket.exportDate) : new Date(),
+			description: ticket.attributeMap['wmsxGeneralDescription'] || '',
+			amount: ticket.ticketDetails.reduce((acc: number, cur: any) => {
+				return acc + (cur.quantity * (cur.price || cur.attributeMap['wmsxPrice']))
+			}, 0),
 			items: ticket.ticketDetails.map((ticketDetail: any) => {
 				const item = itemMap[ticketDetail.itemId]
+				const price = ticketDetail.price || ticketDetail.attributeMap['wmsxPrice']
+				const { quantity } = ticketDetail
 				return {
 					itemCode: item.code,
 					lot: ticketDetail.lot,
-					price: ticketDetail.price,
-					quantity: ticketDetail.quantity,
-					amount: ticketDetail.amount,
+					price,
+					quantity,
+					amount: ticketDetail.amount != null ? ticketDetail.amount : price * quantity,
 					manufacturingDate: ticketDetail.mfgDate ? new Date(ticketDetail.mfgDate) : null,
 					importDate: ticketDetail.importDate ? new Date(ticketDetail.importDate) : null,
 					itemName: item.name,
@@ -64,6 +74,6 @@ export class KafkaTicketEventService {
 			}),
 		}
 
-		await this.warehouseImportRepository.insertOne(warehouseImport)
+		await this.warehouseExportRepository.insertOne(warehouseExport)
 	}
 }

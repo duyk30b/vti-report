@@ -1,9 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Expose } from 'class-transformer'
 import { BaseSchema } from 'src/mongo/base.schema'
 
 @Schema({ timestamps: false })
-export class ItemImportBody {
+export class ItemExportBody {
 	@Prop()
 	itemCode: string
 
@@ -31,10 +30,10 @@ export class ItemImportBody {
 	@Prop()
 	amount: number
 }
-export const ItemSchema = SchemaFactory.createForClass(ItemImportBody)
+export const ItemSchema = SchemaFactory.createForClass(ItemExportBody)
 
-@Schema({ collection: 'warehouseImports', timestamps: true })
-export class WarehouseImport extends BaseSchema {
+@Schema({ collection: 'warehouseExports', timestamps: true })
+export class WarehouseExport extends BaseSchema {
 	@Prop()
 	timeSync: Date
 
@@ -60,7 +59,7 @@ export class WarehouseImport extends BaseSchema {
 	documentDate: Date                                    // Ngày chứng từ
 
 	@Prop()
-	importDate: Date                                      // Ngày nhập kho
+	exportDate: Date                                      // Ngày xuất kho
 
 	@Prop({ required: false })
 	description: string
@@ -69,9 +68,9 @@ export class WarehouseImport extends BaseSchema {
 	amount: number
 
 	@Prop({ type: [ItemSchema], default: [] })
-	items: ItemImportBody[]
+	items: ItemExportBody[]
 }
 
-const WarehouseImportSchema = SchemaFactory.createForClass(WarehouseImport)
+const WarehouseExportSchema = SchemaFactory.createForClass(WarehouseExport)
 
-export { WarehouseImportSchema }
+export { WarehouseExportSchema }

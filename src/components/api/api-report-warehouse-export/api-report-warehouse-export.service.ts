@@ -3,32 +3,32 @@ import { Workbook, Worksheet } from 'exceljs'
 import { timeToText } from 'src/common/helpers'
 import { advanceLayoutExcel } from 'src/common/utils/excel-advance.util'
 import { NatsClientUserService } from 'src/modules/nats/service/nats-client-user.service'
-import { WarehouseImportRepository } from 'src/mongo/repository/warehouse-import/warehouse-import.repository'
 import { WarehouseImport } from 'src/mongo/repository/warehouse-import/warehouse-import.schema'
-import { ApiReportWarehouseImportQuery } from './api-report-warehouse-import.request'
+import { ApiReportWarehouseExportQuery } from './api-report-warehouse-export.request'
+import { WarehouseExportRepository } from 'src/mongo/repository/warehouse-export/warehouse-export.repository'
 
 @Injectable()
-export class ApiReportWarehouseImportService {
+export class ApiReportWarehouseExportService {
 	constructor(
-		private readonly warehouseImportRepository: WarehouseImportRepository,
+		private readonly warehouseExportRepository: WarehouseExportRepository,
 		private readonly natsClientUserService: NatsClientUserService
 	) { }
 
-	async exportExcel(query: ApiReportWarehouseImportQuery, userId: number) {
+	async exportExcel(query: ApiReportWarehouseExportQuery, userId: number) {
 		const { fromTime, toTime, warehouseId } = query
 
-		const warehouseGroup = await this.warehouseImportRepository.report({
+		const warehouseGroup = await this.warehouseExportRepository.report({
 			warehouseId,
 			fromTime,
 			toTime,
 		})
 		const [user] = await this.natsClientUserService.getUsersByIds({ userIds: [userId] })
 
-		const workbook = this.getWorkbookWarehouseImport(warehouseGroup, {
+		const workbook = this.getWorkbookWarehouseExport(warehouseGroup, {
 			fromTime,
 			toTime,
 			userFullName: user.fullName,
-			reportCode: 'W3',
+			reportCode: 'W03',
 			warehouseTitle: warehouseId ? (warehouseGroup[0]?.warehouseName || '') : 'TẤT CẢ KHO',
 			companyName: 'CÔNG TY CỔ PHẦN VTI',
 			companyAddress: 'VTI Building, Mễ Trì Hạ, Nam Từ Liêm, Hà Nội',
@@ -41,76 +41,7 @@ export class ApiReportWarehouseImportService {
 		}
 	}
 
-	async getWarehouseImports() {
-		const fromTime = new Date('2023-09-17T17:00:00.000Z')
-		const toTime = new Date('2023-09-20T17:00:00.000Z')
-
-		const warehouseImports = await this.warehouseImportRepository.findManyBy({
-			$or: [
-				{
-					documentDate: {
-						$gte: fromTime,
-						$lt: toTime,
-					},
-				},
-				{
-					$and: [
-						{ documentDate: { $eq: null } },
-						{
-							importDate: {
-								$gte: fromTime,
-								$lt: toTime,
-							},
-						},
-					],
-				},
-			],
-		})
-		const warehouseGroup: any[] = []
-		warehouseImports.forEach((warehouseImport: WarehouseImport) => {
-			let warehouseGroupItem = warehouseGroup.find((i) => i.warehouseId === warehouseImport.warehouseId)
-			if (!warehouseGroupItem) {
-				warehouseGroupItem = {
-					warehouseId: warehouseImport.warehouseId,
-					warehouseName: warehouseImport.warehouseName,
-					amount: 0,
-					templates: [],
-				}
-				warehouseGroup.push(warehouseGroupItem)
-			}
-			warehouseGroupItem.amount += warehouseImport.amount
-
-			let templateGroupItem = warehouseGroupItem.templates.find((i: any) => i.templateCode === warehouseImport.templateCode)
-			if (!templateGroupItem) {
-				templateGroupItem = {
-					templateCode: warehouseImport.templateCode,
-					templateName: warehouseImport.templateName,
-					amount: 0,
-					tickets: [],
-				}
-				warehouseGroupItem.templates.push(templateGroupItem)
-			}
-			templateGroupItem.tickets.push(warehouseImport)
-
-			templateGroupItem.amount += warehouseImport.amount
-		})
-
-		const workbook = this.getWorkbookWarehouseImport(warehouseGroup, {
-			fromTime,
-			toTime,
-			userFullName: 'Bùi Minh',
-			reportCode: 'W3',
-			warehouseTitle: 'Kho example',
-			companyName: 'CÔNG TY CỔ PHẦN VTI',
-			companyAddress: 'VTI Building, Mễ Trì Hạ, Nam Từ Liêm, Hà Nội',
-		})
-
-		const buffer = await workbook.xlsx.writeBuffer()
-		// workbook.xlsx.writeFile(`demo${Math.floor(Math.random() * 1000)}.xlsx`);
-		return { xlsx: buffer }
-	}
-
-	getWorkbookWarehouseImport(data: {
+	getWorkbookWarehouseExport(data: {
 		warehouseId: number,
 		warehouseName: string,
 		amount: number,
@@ -122,7 +53,7 @@ export class ApiReportWarehouseImportService {
 		userFullName: string,
 		warehouseTitle: string,
 		companyName: string,
-		companyAddress: string,
+		companyAddress: string
 	}): Workbook {
 		const dataRows = []
 		data.forEach((w) => {
@@ -171,9 +102,9 @@ export class ApiReportWarehouseImportService {
 								num: { mergeCells: { rowspan: 1, colspan: 3 } },
 								description: { font: { bold: true }, mergeCells: { rowspan: 1, colspan: 2 } },
 								unit: { alignment: { horizontal: 'center' } },
-								importDate: { alignment: { horizontal: 'center' }, numFmt: 'dd/mm/yyyy' },
 								lot: { alignment: { horizontal: 'center' } },
 								manufacturingDate: { alignment: { horizontal: 'center' }, numFmt: 'dd/mm/yyyy' },
+								importDate: { alignment: { horizontal: 'center' }, numFmt: 'dd/mm/yyyy' },
 								quantity: { numFmt: '###,##0.00' },
 								price: { numFmt: '###,##0.00' },
 								amount: { numFmt: '###,##0' },
@@ -228,7 +159,7 @@ export class ApiReportWarehouseImportService {
 						name: 'Times New Roman',
 					}
 				})
-				worksheet.addRow(['BÁO CÁO TÌNH HÌNH NHẬP KHO']).eachCell((cell) => {
+				worksheet.addRow(['BÁO CÁO TÌNH XUẤT NHẬP KHO']).eachCell((cell) => {
 					cell.font = {
 						size: 14,
 						bold: true,
@@ -258,15 +189,15 @@ export class ApiReportWarehouseImportService {
 				worksheet.mergeCells(5, 1, 5, 13)
 				worksheet.addRow([
 					'STT',
-					'Mã phiếu nhập',
+					'Mã phiếu xuất',
 					'Ngày chứng từ',
 					'Diễn giải',
 					'Mã sản phẩm',
 					'Tên sản phẩm',
 					'ĐVT',
-					'Ngày nhập kho',
 					'Lô',
 					'Ngày sản xuất',
+					'Ngày nhập kho',
 					'Số lượng',
 					'Đơn giá',
 					'Thành tiền',
@@ -299,9 +230,9 @@ export class ApiReportWarehouseImportService {
 				{ key: 'itemCode', width: 10 },
 				{ key: 'itemName', width: 30 },
 				{ key: 'unit', width: 10 },
-				{ key: 'importDate', width: 10 },
 				{ key: 'lot', width: 10 },
 				{ key: 'manufacturingDate', width: 10 },
+				{ key: 'importDate', width: 10 },
 				{ key: 'quantity', width: 10 },
 				{ key: 'price', width: 10 },
 				{ key: 'amount', width: 10 },
