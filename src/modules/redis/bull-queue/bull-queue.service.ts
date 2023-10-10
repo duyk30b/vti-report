@@ -9,12 +9,18 @@ export class BullQueueService {
 	constructor(
 		@InjectQueue(QUEUE_EVENT.PING)
 		private readonly pingQueue: Queue,
+		@InjectQueue(QUEUE_EVENT.DEMO)
+		private readonly demoQueue: Queue,
 		@InjectQueue(QUEUE_EVENT.WAREHOUSE_IMPORT_CONFIRM)
 		private readonly warehouseImportConfirmQueue: Queue
 	) { }
 
 	async addPingJob(data: IPingQueueMessage) {
 		await this.pingQueue.add(data)
+	}
+
+	async addDemoJob(jobName: string, data: IPingQueueMessage) {
+		await this.demoQueue.add(jobName, data)
 	}
 
 	async addWarehouseImportJob(data: IWarehouseImportMessage) {

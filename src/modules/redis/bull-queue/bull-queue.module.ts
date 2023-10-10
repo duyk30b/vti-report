@@ -9,6 +9,10 @@ import { RedisConfig } from '../redis.config'
 const QUEUES: BullModuleOptions[] = [
 	{
 		name: QUEUE_EVENT.PING,
+		defaultJobOptions: { attempts: 3, removeOnComplete: true },
+	},
+	{
+		name: QUEUE_EVENT.DEMO,
 		defaultJobOptions: { attempts: 3 },
 	},
 	{
