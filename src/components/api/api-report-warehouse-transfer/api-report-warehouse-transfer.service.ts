@@ -60,7 +60,7 @@ export class ApiReportWarehouseTransferService {
 			const rowWarehouse = {
 				style: {
 					_all: { font: { bold: true } },
-					num: { mergeCells: { rowspan: 1, colspan: 12 }, alignment: { horizontal: 'left' } },
+					num: { mergeCells: { rowspan: 1, colspan: 14 }, alignment: { horizontal: 'left' } },
 					amount: { numFmt: '###,##0' },
 				},
 				data: [{ num: `Kho: ${w.warehouseExportId}_${w.warehouseExportName}`, amount: w.amount }],
@@ -70,7 +70,7 @@ export class ApiReportWarehouseTransferService {
 				const rowTemplate = {
 					style: {
 						_all: { font: { bold: true } },
-						num: { mergeCells: { rowspan: 1, colspan: 12 }, alignment: { horizontal: 'left' } },
+						num: { mergeCells: { rowspan: 1, colspan: 14 }, alignment: { horizontal: 'left' } },
 						amount: { numFmt: '###,##0' },
 					},
 					data: [{ num: `Loại nghiệp vụ: ${template.templateName}`, amount: template.amount }],
@@ -134,7 +134,7 @@ export class ApiReportWarehouseTransferService {
 		})
 		dataRows.push({
 			style: {
-				num: { font: { bold: true }, alignment: { horizontal: 'center' }, mergeCells: { rowspan: 1, colspan: 12 } },
+				num: { font: { bold: true }, alignment: { horizontal: 'center' }, mergeCells: { rowspan: 1, colspan: 14 } },
 				amount: { font: { bold: true }, numFmt: '###,##0' },
 			},
 			data: [{ num: 'TỔNG CỘNG', amount: data.reduce((acc, cur) => acc + cur.amount, 0) }],
@@ -170,7 +170,7 @@ export class ApiReportWarehouseTransferService {
 					}
 					cell.alignment = { horizontal: 'center' }
 				})
-				worksheet.mergeCells(3, 1, 3, 13)
+				worksheet.mergeCells(3, 1, 3, 15)
 				worksheet.addRow([meta.warehouseTitle.toUpperCase()]).eachCell((cell) => {
 					cell.font = {
 						size: 12,
@@ -179,7 +179,7 @@ export class ApiReportWarehouseTransferService {
 					}
 					cell.alignment = { horizontal: 'center' }
 				})
-				worksheet.mergeCells(4, 1, 4, 13)
+				worksheet.mergeCells(4, 1, 4, 15)
 				worksheet.addRow([`Từ ngày: ${timeToText(meta.fromTime, 'DD/MM/YYYY')} đến ngày ${timeToText(meta.toTime, 'DD/MM/YYYY')}`])
 					.eachCell((cell) => {
 						cell.font = {
@@ -189,7 +189,7 @@ export class ApiReportWarehouseTransferService {
 						}
 						cell.alignment = { horizontal: 'center' }
 					})
-				worksheet.mergeCells(5, 1, 5, 13)
+				worksheet.mergeCells(5, 1, 5, 15)
 				worksheet.addRow([
 					'STT',
 					'Mã lệnh chuyển',
@@ -232,7 +232,7 @@ export class ApiReportWarehouseTransferService {
 				{ key: 'ticketCode', width: 10 },
 				{ key: 'documentDate', width: 10 },
 				{ key: 'transferStatus', width: 10 },
-				{ key: 'warehouseImportName', width: 10 },
+				{ key: 'warehouseImportName', width: 30 },
 				{ key: 'description', width: 10 },
 				{ key: 'itemCode', width: 10 },
 				{ key: 'itemName', width: 30 },

@@ -32,6 +32,7 @@ export class EventWarehouseExportService {
 			td.attributes.forEach((atr: { code: string, value: any }) => {
 				td.attributeMap[atr.code] = atr.value
 			})
+			td.amount = td.quantity * (td.price || td.attributeMap['wmsxPrice'] || 0)
 		})
 		const itemIds = Array.from(itemIdSet)
 		const [warehouses, templates, items] = await Promise.all([
@@ -53,9 +54,7 @@ export class EventWarehouseExportService {
 			documentDate: ticket.attributeMap['wmsxCreateReceiptDate'] ? new Date(ticket.attributeMap['wmsxCreateReceiptDate']) : null,
 			exportDate: ticket.exportDate ? new Date(ticket.exportDate) : new Date(),
 			description: ticket.attributeMap['wmsxGeneralDescription'] || '',
-			amount: ticket.ticketDetails.reduce((acc: number, cur: any) => {
-				return acc + (cur.quantity * (cur.price || cur.attributeMap['wmsxPrice']))
-			}, 0),
+			amount: ticket.ticketDetails.reduce((acc: number, cur: any) => acc + cur.amount, 0),
 			items: ticket.ticketDetails.map((ticketDetail: any) => {
 				const item = itemMap[ticketDetail.itemId]
 				const price = ticketDetail.price || ticketDetail.attributeMap['wmsxPrice']
