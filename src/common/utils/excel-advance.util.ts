@@ -1,5 +1,4 @@
 import { Cell, Style, Workbook, Worksheet } from 'exceljs'
-import { merge } from 'lodash'
 import { mergeObject } from '../helpers/object.helper'
 
 export type TableColumn<T> = {
@@ -127,4 +126,25 @@ export const advanceLayoutExcel = <T extends string>(params: {
 	})
 
 	return workbook
+}
+
+export const cellHeaderStyle = (cell: Cell) => {
+	cell.font = {
+		size: 9,
+		bold: true,
+		name: 'Times New Roman',
+	}
+	cell.alignment = { horizontal: 'center', vertical: 'middle' }
+	cell.fill = {
+		type: 'pattern',
+		pattern: 'solid',
+		fgColor: { argb: 'D8D8D8' },
+		bgColor: { argb: 'D8D8D8' },
+	}
+	cell.border = {
+		top: { style: 'thin' },
+		left: { style: 'thin' },
+		bottom: { style: 'thin' },
+		right: { style: 'thin' },
+	}
 }

@@ -6,6 +6,7 @@ export type I18nTranslations = {
         "SUCCESS": string;
     };
     "error": {
+        "NotFound": string;
         "Event": {
             "NotFound": string;
         };

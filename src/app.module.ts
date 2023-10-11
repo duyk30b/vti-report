@@ -49,9 +49,9 @@ import { MongoDbConnectModule } from './mongo/mongodb-connect.module'
 		MongoDbConnectModule,
 		ScheduleModule.forRoot(),
 		NatsClientModule,
-		KafkaClientModule,
-		KafkaEventModule,
 		NatsEventModule,
+		// KafkaClientModule,
+		// KafkaEventModule,
 		// TasksScheduleModule,
 
 		BullQueueModule.forRoot(),
