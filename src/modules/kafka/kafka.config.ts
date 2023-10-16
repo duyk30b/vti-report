@@ -34,10 +34,22 @@ export const KafkaTopic = {
 	REPORT: { PING: 'report_service.ping' },
 	TICKET: {
 		PING: 'ticket_service.ping',
-		WAREHOUSE_IMPORT_CONFIRM: 'ticket_service.warehouse_import_confirm',
-		WAREHOUSE_EXPORT_CONFIRM: 'ticket_service.warehouse_export_confirm',
-		WAREHOUSE_TRANSFER_CONFIRM: 'ticket_service.warehouse_transfer_confirm',
-		WAREHOUSE_CHECKOUT_CONFIRM: 'ticket_service.warehouse_checkout_confirm',
+		WAREHOUSE_IMPORT: {
+			CONFIRM: 'ticket_service.warehouse_import.confirm',
+			COMPLETE: 'ticket_service.warehouse_import.complete',
+		},
+		WAREHOUSE_EXPORT: {
+			CONFIRM: 'ticket_service.warehouse_export.confirm',
+			COMPLETE: 'ticket_service.warehouse_export.complete',
+		},
+		WAREHOUSE_TRANSFER: {
+			CONFIRM: 'ticket_service.warehouse_transfer.confirm',
+			COMPLETE: 'ticket_service.warehouse_transfer.complete',
+		},
+		WAREHOUSE_CHECKOUT: {
+			CONFIRM: 'ticket_service.warehouse_checkout.confirm',
+			COMPLETE: 'ticket_service.warehouse_checkout.complete',
+		},
 	},
 	ITEM: {
 		PING: 'item_service.ping',

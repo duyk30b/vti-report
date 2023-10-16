@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { Workbook, Worksheet } from 'exceljs'
 import { timeToText } from 'src/common/helpers'
-import { advanceLayoutExcel } from 'src/common/utils/excel-advance.util'
+import { advanceLayoutExcel, cellHeaderStyle } from 'src/common/utils/excel-advance.util'
 import { NatsClientUserService } from 'src/modules/nats/service/nats-client-user.service'
 import { WarehouseImportRepository } from 'src/mongo/repository/warehouse-import/warehouse-import.repository'
 import { WarehouseImport } from 'src/mongo/repository/warehouse-import/warehouse-import.schema'
@@ -140,87 +140,45 @@ export class ApiReportWarehouseImportService {
 		const sheetName = `${meta.reportCode}_${timeToText(meta.fromTime, 'DDMMYYYY')}-${timeToText(meta.toTime, 'DDMMYYYY')}`
 
 		const workbook = advanceLayoutExcel({
-			layout: {
-				maxRowsTable: 1000,
-				sheetName,
-			},
+			layout: { maxRowsTable: 1000, sheetName },
 			headerSheet: (worksheet: Worksheet, index: number) => {
 				worksheet.addRow([meta.companyName]).eachCell((cell) => {
-					cell.font = {
-						size: 10,
-						bold: true,
-						name: 'Times New Roman',
-					}
+					cell.font = { size: 10, bold: true, name: 'Times New Roman' }
 				})
 				worksheet.addRow([meta.companyAddress]).eachCell((cell) => {
-					cell.font = {
-						size: 10,
-						bold: true,
-						name: 'Times New Roman',
-					}
+					cell.font = { size: 10, bold: true, name: 'Times New Roman' }
 				})
 				worksheet.addRow(['BÁO CÁO TÌNH HÌNH NHẬP KHO']).eachCell((cell) => {
-					cell.font = {
-						size: 14,
-						bold: true,
-						name: 'Times New Roman',
-					}
+					cell.font = { size: 14, bold: true, name: 'Times New Roman' }
 					cell.alignment = { horizontal: 'center' }
 				})
 				worksheet.mergeCells(3, 1, 3, 13)
 				worksheet.addRow([meta.warehouseTitle.toUpperCase()]).eachCell((cell) => {
-					cell.font = {
-						size: 12,
-						bold: true,
-						name: 'Times New Roman',
-					}
+					cell.font = { size: 12, bold: true, name: 'Times New Roman' }
 					cell.alignment = { horizontal: 'center' }
 				})
 				worksheet.mergeCells(4, 1, 4, 13)
 				worksheet.addRow([`Từ ngày: ${timeToText(meta.fromTime, 'DD/MM/YYYY')} đến ngày ${timeToText(meta.toTime, 'DD/MM/YYYY')}`])
 					.eachCell((cell) => {
-						cell.font = {
-							size: 10,
-							bold: true,
-							name: 'Times New Roman',
-						}
+						cell.font = { size: 10, bold: true, name: 'Times New Roman' }
 						cell.alignment = { horizontal: 'center' }
 					})
 				worksheet.mergeCells(5, 1, 5, 13)
-				worksheet.addRow([
-					'STT',
-					'Mã phiếu nhập',
-					'Ngày chứng từ',
-					'Diễn giải',
-					'Mã sản phẩm',
-					'Tên sản phẩm',
-					'ĐVT',
-					'Ngày nhập kho',
-					'Lô',
-					'Ngày sản xuất',
-					'Số lượng',
-					'Đơn giá',
-					'Thành tiền',
-				]).eachCell((cell) => {
-					cell.font = {
-						size: 9,
-						bold: true,
-						name: 'Times New Roman',
-					}
-					cell.alignment = { horizontal: 'center', vertical: 'middle' }
-					cell.fill = {
-						type: 'pattern',
-						pattern: 'solid',
-						fgColor: { argb: 'D8D8D8' },
-						bgColor: { argb: 'D8D8D8' },
-					}
-					cell.border = {
-						top: { style: 'thin' },
-						left: { style: 'thin' },
-						bottom: { style: 'thin' },
-						right: { style: 'thin' },
-					}
-				})
+				worksheet.addRow({
+					num: 'STT',
+					ticketCode: 'Mã phiếu nhập',
+					documentDate: 'Ngày chứng từ',
+					description: 'Diễn giải',
+					itemCode: 'Mã sản phẩm',
+					itemName: 'Tên sản phẩm',
+					unit: 'ĐVT',
+					importDate: 'Ngày nhập kho',
+					lot: 'Lô',
+					manufacturingDate: 'Ngày sản xuất',
+					quantity: 'Số lượng',
+					price: 'Đơn giá',
+					amount: 'Thành tiền',
+				}).eachCell(cellHeaderStyle)
 			},
 			columns: [
 				{ key: 'num', width: 10 },
@@ -243,12 +201,7 @@ export class ApiReportWarehouseImportService {
 				worksheet
 					.addRow([`${meta.reportCode}, ${meta.userFullName}, ngày in: ${timeToText(new Date(), 'DD/MM/YYYY hh:mm:ss')}`])
 					.eachCell((cell) => {
-						cell.font = {
-							size: 10,
-							bold: true,
-							italic: true,
-							name: 'Times New Roman',
-						}
+						cell.font = { size: 10, bold: true, italic: true, name: 'Times New Roman' }
 					})
 			},
 		})

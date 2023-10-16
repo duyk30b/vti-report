@@ -30,7 +30,7 @@ export class ItemExportBody {
 	@Prop()
 	amount: number
 }
-export const ItemSchema = SchemaFactory.createForClass(ItemExportBody)
+export const ItemExportSchema = SchemaFactory.createForClass(ItemExportBody)
 
 @Schema({ collection: 'warehouseExports', timestamps: true })
 export class WarehouseExport extends BaseSchema {
@@ -67,10 +67,11 @@ export class WarehouseExport extends BaseSchema {
 	@Prop()
 	amount: number
 
-	@Prop({ type: [ItemSchema], default: [] })
+	@Prop({ type: [ItemExportSchema], default: [] })
 	items: ItemExportBody[]
 }
 
 const WarehouseExportSchema = SchemaFactory.createForClass(WarehouseExport)
+WarehouseExportSchema.index({ timeSync: 1 }, { unique: false })
 
 export { WarehouseExportSchema }

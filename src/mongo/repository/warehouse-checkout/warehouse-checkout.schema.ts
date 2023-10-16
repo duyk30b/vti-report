@@ -63,7 +63,7 @@ export class ItemCheckoutBody {
 	@Prop()
 	shortageAmount: number
 }
-export const ItemSchema = SchemaFactory.createForClass(ItemCheckoutBody)
+export const ItemCheckoutSchema = SchemaFactory.createForClass(ItemCheckoutBody)
 
 @Schema({ timestamps: false })
 export class WarehouseBody {
@@ -73,7 +73,7 @@ export class WarehouseBody {
 	@Prop()
 	warehouseName: string
 
-	@Prop({ type: [ItemSchema], default: [] })
+	@Prop({ type: [ItemCheckoutSchema], default: [] })
 	items: ItemCheckoutBody[]
 }
 export const WarehouseSchema = SchemaFactory.createForClass(WarehouseBody)
@@ -112,5 +112,6 @@ export class WarehouseCheckout extends BaseSchema {
 }
 
 const WarehouseCheckoutSchema = SchemaFactory.createForClass(WarehouseCheckout)
+WarehouseCheckoutSchema.index({ timeSync: 1 }, { unique: false })
 
 export { WarehouseCheckoutSchema }

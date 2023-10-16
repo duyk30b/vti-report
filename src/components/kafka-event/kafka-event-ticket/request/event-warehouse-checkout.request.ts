@@ -1,8 +1,8 @@
 import { Expose, Type } from 'class-transformer'
-import { IsArray, IsDate, IsDefined, IsNumber, IsObject, IsString, ValidateNested } from 'class-validator'
+import { IsArray, IsDefined, IsNumber, IsObject, IsString, ValidateNested } from 'class-validator'
 import { KafkaBaseRequest } from 'src/modules/kafka/kafka-base.request'
 
-export class WarehouseExportData {
+export class WarehouseCheckoutData {
 	@Expose()
 	@IsDefined()
 	@IsString()
@@ -24,16 +24,9 @@ export class WarehouseExportData {
 	warehouseId: number
 
 	@Expose()
-	@Type(() => Date)
-	@IsDate()
-	exportDate: Date // ngày thực xuất
-
-	@Expose()
 	@IsDefined()
 	@IsArray()
 	attributes: any[]
-
-	attributeMap: Record<string, any>
 
 	@Expose()
 	@IsDefined()
@@ -41,11 +34,11 @@ export class WarehouseExportData {
 	ticketDetails: any[]
 }
 
-export class EventWarehouseExportConfirmRequest extends KafkaBaseRequest {
-	@Type(() => WarehouseExportData)
+export class EventWarehouseCheckoutRequest extends KafkaBaseRequest {
+	@Type(() => WarehouseCheckoutData)
 	@Expose()
 	@IsDefined()
 	@IsObject()
 	@ValidateNested({ each: true })
-	data: WarehouseExportData
+	data: WarehouseCheckoutData
 }

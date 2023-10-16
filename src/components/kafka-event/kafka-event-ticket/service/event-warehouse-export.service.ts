@@ -5,7 +5,7 @@ import { NatsClientItemService } from 'src/modules/nats/service/nats-client-item
 import { NatsClientWarehouseService } from 'src/modules/nats/service/nats-client-warehouse.service'
 import { WarehouseExportRepository } from 'src/mongo/repository/warehouse-export/warehouse-export.repository'
 import { WarehouseExport } from 'src/mongo/repository/warehouse-export/warehouse-export.schema'
-import { EventWarehouseExportConfirmRequest } from '../request'
+import { EventWarehouseExportRequest } from '../request'
 
 @Injectable()
 export class EventWarehouseExportService {
@@ -16,7 +16,7 @@ export class EventWarehouseExportService {
 		private readonly warehouseExportRepository: WarehouseExportRepository
 	) { }
 
-	async warehouseExportConfirm(request: EventWarehouseExportConfirmRequest) {
+	async warehouseExportComplete(request: EventWarehouseExportRequest) {
 		const daySyncString = timeToText(new Date(), 'YYYY-MM-DD', -420)
 
 		const ticket = request.data

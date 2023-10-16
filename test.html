@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <script>
+    const btnClick = async () => {
+      const url = document.getElementById('urlSelectElement').value
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjk2Mzg1MTU2LCJleHAiOjE2OTgxODUxNTZ9.CWjBBOwGEENBpBZNCH616m8DgtGlGEnVI1ojk9HiGLw'
+        }
+      })
+      const resJson = await response.json()
+      const rawArr = resJson.data.xlsx.data
+      const filename = resJson.data.filename
+
+      const buffer = new Uint8Array(rawArr)
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+      const blobURL = window.URL.createObjectURL(blob)
+      const tempLink = document.createElement('a')
+      tempLink.style.display = 'none'
+      tempLink.href = blobURL
+      tempLink.setAttribute('download', `${filename}.xlsx`)
+      // Safari thinks _blank anchor are pop ups. 
+      // We only want to set _blank target if the browser does not support the HTML5 download attribute.
+      // This allows you to download files in desktop safari if pop up blocking is enabled.
+      if (typeof tempLink.download === 'undefined') {
+        tempLink.setAttribute('target', '_blank')
+      }
+
+      document.body.appendChild(tempLink)
+      tempLink.click()
+      document.body.removeChild(tempLink)
+      setTimeout(() => {
+        // For Firefox it is necessary to delay revoking the ObjectURL
+        window.URL.revokeObjectURL(blobURL)
+      }, 100)
+    };
+  </script>
+</head>
+
+<body>
+  <label>URL: </label>
+  <select id="urlSelectElement">
+    <option
+      value="http://localhost:10120/api/v1/reports/item/export-excel?time=2023-09-17T17%3A00%3A00.000Z&warehouseId=42">
+      Item
+    </option>
+    <option
+      value="http://localhost:10120/api/v1/reports/warehouse-import/export-excel?warehouseId=42&fromTime=2023-09-17T17%3A00%3A00.000Z&toTime=2023-09-20T17%3A00%3A00.000Z">
+      Warehouse Import
+    </option>
+    <option
+      value="http://localhost:10120/api/v1/reports/warehouse-export/export-excel?warehouseId=42&fromTime=2023-09-17T17%3A00%3A00.000Z&toTime=2023-09-20T17%3A00%3A00.000Z">
+      Warehouse Export
+    </option>
+    <option
+      value="http://localhost:10120/api/v1/reports/warehouse-transfer/export-excel?warehouseId=42&fromTime=2023-09-17T17%3A00%3A00.000Z&toTime=2023-09-20T17%3A00%3A00.000Z">
+      Warehouse Transfer
+    </option>
+    <option
+      value="http://localhost:10120/api/v1/reports/warehouse-checkout/export-excel?fromTime=2023-09-17T17%3A00%3A00.000Z&toTime=2023-09-20T17%3A00%3A00.000Z&ticketCode=XXX222GG&warehouseId=42">
+      Warehouse Checkout
+    </option>
+
+    <option value="mercedes">Mercedes</option>
+    <option value="audi">Audi</option>
+  </select><br /><br />
+  <button onclick="btnClick()">Download</button><br /><br />
+</body>
+
+</html>

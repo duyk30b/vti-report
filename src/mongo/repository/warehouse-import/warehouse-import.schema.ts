@@ -31,7 +31,7 @@ export class ItemImportBody {
 	@Prop()
 	amount: number
 }
-export const ItemSchema = SchemaFactory.createForClass(ItemImportBody)
+export const ItemImportSchema = SchemaFactory.createForClass(ItemImportBody)
 
 @Schema({ collection: 'warehouseImports', timestamps: true })
 export class WarehouseImport extends BaseSchema {
@@ -68,10 +68,11 @@ export class WarehouseImport extends BaseSchema {
 	@Prop()
 	amount: number
 
-	@Prop({ type: [ItemSchema], default: [] })
+	@Prop({ type: [ItemImportSchema], default: [] })
 	items: ItemImportBody[]
 }
 
 const WarehouseImportSchema = SchemaFactory.createForClass(WarehouseImport)
+WarehouseImportSchema.index({ timeSync: 1 }, { unique: false })
 
 export { WarehouseImportSchema }

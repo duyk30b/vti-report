@@ -7,7 +7,7 @@ export type TableColumn<T> = {
 }
 
 export type CellStyle<T extends string> = {
-	[P in T & '_all']?: Partial<Style & { mergeCells: { colspan: number, rowspan: number } }>
+	[P in T & '_all']?: Partial<Style & { mergeCells?: { colspan?: number, rowspan?: number } }>
 }
 
 export type RowData<T extends string> = {
@@ -73,9 +73,9 @@ export const advanceLayoutExcel = <T extends string>(params: {
 			worksheet.addRow(item).eachCell((cell: Cell) => {
 				const keyColumn = (cell as any)._column._key
 				const style: Partial<Style & {
-					mergeCells: {
-						colspan: number,
-						rowspan: number
+					mergeCells?: {
+						colspan?: number,
+						rowspan?: number
 					}
 				}> = {
 					border: {
@@ -99,9 +99,9 @@ export const advanceLayoutExcel = <T extends string>(params: {
 				if (style.mergeCells) {
 					const { value } = cell
 					const endRow = Number(cell.row)
-					const startRow = endRow - (style.mergeCells.rowspan - 1)
+					const startRow = endRow - ((style.mergeCells.rowspan || 1) - 1)
 					const startColumn = Number(cell.col)
-					const endColumn = startColumn + (style.mergeCells.colspan - 1)
+					const endColumn = startColumn + ((style.mergeCells.colspan || 1) - 1)
 					worksheet.mergeCells(startRow, startColumn, endRow, endColumn)
 					cell = worksheet.getCell(startRow, startColumn)
 					cell.value = value

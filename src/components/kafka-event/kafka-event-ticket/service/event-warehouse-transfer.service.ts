@@ -3,9 +3,9 @@ import { timeToText } from 'src/common/helpers'
 import { NatsClientAttributeService } from 'src/modules/nats/service/nats-client-attribute.service'
 import { NatsClientItemService } from 'src/modules/nats/service/nats-client-item.service'
 import { NatsClientWarehouseService } from 'src/modules/nats/service/nats-client-warehouse.service'
-import { WarehouseTransfer } from 'src/mongo/repository/warehouse-transfer/warehouse-transfer.schema'
-import { EventWarehouseTransferConfirmRequest } from '../request'
 import { WarehouseTransferRepository } from 'src/mongo/repository/warehouse-transfer/warehouse-transfer.repository'
+import { WarehouseTransfer } from 'src/mongo/repository/warehouse-transfer/warehouse-transfer.schema'
+import { EventWarehouseTransferRequest } from '../request'
 
 @Injectable()
 export class EventWarehouseTransferService {
@@ -16,7 +16,7 @@ export class EventWarehouseTransferService {
 		private readonly warehouseTransferRepository: WarehouseTransferRepository
 	) { }
 
-	async warehouseTransferConfirm(request: EventWarehouseTransferConfirmRequest) {
+	async warehouseTransferComplete(request: EventWarehouseTransferRequest) {
 		const daySyncString = timeToText(new Date(), 'YYYY-MM-DD', -420)
 
 		const ticket = request.data

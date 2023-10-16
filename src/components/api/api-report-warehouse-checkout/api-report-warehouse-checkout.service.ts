@@ -161,61 +161,33 @@ export class ApiReportWarehouseCheckoutService {
 		const sheetName = `${meta.reportCode}_${timeToText(meta.fromTime, 'DDMMYYYY')}-${timeToText(meta.toTime, 'DDMMYYYY')}`
 
 		const workbook = advanceLayoutExcel({
-			layout: {
-				maxRowsTable: 1000,
-				sheetName,
-			},
+			layout: { maxRowsTable: 1000, sheetName },
 			headerSheet: (worksheet: Worksheet, index: number) => {
 				worksheet.addRow([meta.companyName]).eachCell((cell) => {
-					cell.font = {
-						size: 10,
-						bold: true,
-						name: 'Times New Roman',
-					}
+					cell.font = { size: 10, bold: true, name: 'Times New Roman' }
 				})
 				worksheet.addRow([meta.companyAddress]).eachCell((cell) => {
-					cell.font = {
-						size: 10,
-						bold: true,
-						name: 'Times New Roman',
-					}
+					cell.font = { size: 10, bold: true, name: 'Times New Roman' }
 				})
 				worksheet.addRow(['BÁO CÁO TÌNH KIỂM KÊ']).eachCell((cell) => {
-					cell.font = {
-						size: 14,
-						bold: true,
-						name: 'Times New Roman',
-					}
+					cell.font = { size: 14, bold: true, name: 'Times New Roman' }
 					cell.alignment = { horizontal: 'center' }
 				})
 				worksheet.mergeCells(3, 1, 3, 17)
 				worksheet.addRow([`Từ ngày: ${timeToText(data.startTime, 'DD/MM/YYYY')} đến ngày: ${timeToText(data.endTime, 'DD/MM/YYYY')}`])
 					.eachCell((cell) => {
-						cell.font = {
-							size: 10,
-							bold: true,
-							name: 'Times New Roman',
-						}
+						cell.font = { size: 10, bold: true, name: 'Times New Roman' }
 						cell.alignment = { horizontal: 'center' }
 					})
 				worksheet.mergeCells(4, 1, 4, 17)
 				worksheet.addRow([`Mã lệnh kiểm kê: ${data.ticketCode}`]).eachCell((cell) => {
-					cell.font = {
-						size: 9,
-						name: 'Times New Roman',
-					}
+					cell.font = { size: 9, name: 'Times New Roman' }
 				})
 				worksheet.addRow([`Tại kho: ${meta.warehouseTitle}`]).eachCell((cell) => {
-					cell.font = {
-						size: 9,
-						name: 'Times New Roman',
-					}
+					cell.font = { size: 9, name: 'Times New Roman' }
 				})
 				worksheet.addRow([`Loại kiểm kê: ${data.checkoutType} - ${data.checkoutForm}`]).eachCell((cell) => {
-					cell.font = {
-						size: 9,
-						name: 'Times New Roman',
-					}
+					cell.font = { size: 9, name: 'Times New Roman' }
 				})
 				worksheet.addRow([''])
 				worksheet.addRow({
@@ -285,12 +257,7 @@ export class ApiReportWarehouseCheckoutService {
 				worksheet
 					.addRow([`${meta.reportCode}, ${meta.userFullName}, ngày in: ${timeToText(new Date(), 'DD/MM/YYYY hh:mm:ss')}`])
 					.eachCell((cell) => {
-						cell.font = {
-							size: 10,
-							bold: true,
-							italic: true,
-							name: 'Times New Roman',
-						}
+						cell.font = { size: 10, bold: true, italic: true, name: 'Times New Roman' }
 					})
 			},
 		})
