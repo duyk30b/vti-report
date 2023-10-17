@@ -4,7 +4,7 @@ import { timeToText } from 'src/common/helpers'
 import { advanceLayoutExcel, cellHeaderStyle } from 'src/common/utils/excel-advance.util'
 import { NatsClientUserService } from 'src/modules/nats/service/nats-client-user.service'
 import { WarehouseImportRepository } from 'src/mongo/repository/warehouse-import/warehouse-import.repository'
-import { WarehouseImport } from 'src/mongo/repository/warehouse-import/warehouse-import.schema'
+import { WarehouseImport, WarehouseImportType } from 'src/mongo/repository/warehouse-import/warehouse-import.schema'
 import { ApiReportWarehouseImportQuery } from './api-report-warehouse-import.request'
 
 @Injectable()
@@ -45,7 +45,7 @@ export class ApiReportWarehouseImportService {
 		warehouseId: number,
 		warehouseName: string,
 		amount: number,
-		templates: { templateCode: string, templateName: string, amount: number, tickets: WarehouseImport[] }[]
+		templates: { templateCode: string, templateName: string, amount: number, tickets: WarehouseImportType[] }[]
 	}[], meta: {
 		fromTime: Date,
 		toTime: Date,
@@ -57,15 +57,14 @@ export class ApiReportWarehouseImportService {
 	}): Workbook {
 		const dataRows = []
 		data.forEach((w) => {
-			const rowWarehouse = {
+			dataRows.push({
 				style: {
 					_all: { font: { bold: true } },
 					num: { mergeCells: { rowspan: 1, colspan: 12 }, alignment: { horizontal: 'left' } },
 					amount: { numFmt: '###,##0' },
 				},
 				data: [{ num: `Kho: ${w.warehouseId}_${w.warehouseName}`, amount: w.amount }],
-			}
-			dataRows.push(rowWarehouse)
+			})
 			w.templates.forEach((template) => {
 				const rowTemplate = {
 					style: {

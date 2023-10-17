@@ -4,7 +4,7 @@ import { timeToText } from 'src/common/helpers'
 import { advanceLayoutExcel, cellHeaderStyle } from 'src/common/utils/excel-advance.util'
 import { NatsClientUserService } from 'src/modules/nats/service/nats-client-user.service'
 import { WarehouseTransferRepository } from 'src/mongo/repository/warehouse-transfer/warehouse-transfer.repository'
-import { WarehouseTransfer } from 'src/mongo/repository/warehouse-transfer/warehouse-transfer.schema'
+import { WarehouseTransfer, WarehouseTransferType } from 'src/mongo/repository/warehouse-transfer/warehouse-transfer.schema'
 import { ApiReportWarehouseTransferQuery } from './api-report-warehouse-transfer.request'
 
 @Injectable()
@@ -45,7 +45,7 @@ export class ApiReportWarehouseTransferService {
 		warehouseExportId: number,
 		warehouseExportName: string,
 		amount: number,
-		templates: { templateCode: string, templateName: string, amount: number, tickets: WarehouseTransfer[] }[]
+		templates: { templateCode: string, templateName: string, amount: number, tickets: WarehouseTransferType[] }[]
 	}[], meta: {
 		fromTime: Date,
 		toTime: Date,

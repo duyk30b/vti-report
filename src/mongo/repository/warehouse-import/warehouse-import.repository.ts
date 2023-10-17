@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { FilterQuery, Model } from 'mongoose'
 import { NoExtraProperties } from 'src/common/helpers/typescript.helper'
-import { WarehouseImport } from './warehouse-import.schema'
 import { WarehouseImportConditionDto } from './warehouse-import.dto'
+import { WarehouseImport, WarehouseImportType } from './warehouse-import.schema'
 
 @Injectable()
 export class WarehouseImportRepository {
@@ -23,24 +23,24 @@ export class WarehouseImportRepository {
 		return filter
 	}
 
-	async findOneBy(condition: WarehouseImportConditionDto): Promise<WarehouseImport> {
+	async findOneBy(condition: WarehouseImportConditionDto): Promise<WarehouseImportType> {
 		const filter = this.getFilterOptions(condition)
 		const doc = await this.warehouseImportModel.findOne(filter)
 		return doc.toObject()
 	}
 
-	async findManyBy(condition: any): Promise<WarehouseImport[]> {
+	async findManyBy(condition: any): Promise<WarehouseImportType[]> {
 		const docs = await this.warehouseImportModel.find(condition).exec()
 		return docs.map((i) => i.toObject())
 	}
 
-	async insertOne<T extends Partial<WarehouseImport>>(data: NoExtraProperties<Partial<WarehouseImport>, T>): Promise<WarehouseImport> {
+	async insertOne<T extends Partial<WarehouseImportType>>(data: NoExtraProperties<Partial<WarehouseImportType>, T>): Promise<WarehouseImportType> {
 		const model = new this.warehouseImportModel(data)
 		const inventorySnap = await model.save()
 		return inventorySnap.toObject()
 	}
 
-	async insertMany<T extends Partial<WarehouseImport>>(data: NoExtraProperties<Partial<WarehouseImport>, T>[]): Promise<WarehouseImport[]> {
+	async insertMany<T extends Partial<WarehouseImportType>>(data: NoExtraProperties<Partial<WarehouseImportType>, T>[]): Promise<WarehouseImportType[]> {
 		const hydratedDocument = await this.warehouseImportModel.insertMany(data)
 		return hydratedDocument.map((i: any) => i.toObject())
 	}

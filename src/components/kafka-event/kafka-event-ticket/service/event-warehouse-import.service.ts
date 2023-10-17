@@ -4,7 +4,7 @@ import { NatsClientAttributeService } from 'src/modules/nats/service/nats-client
 import { NatsClientItemService } from 'src/modules/nats/service/nats-client-item.service'
 import { NatsClientWarehouseService } from 'src/modules/nats/service/nats-client-warehouse.service'
 import { WarehouseImportRepository } from 'src/mongo/repository/warehouse-import/warehouse-import.repository'
-import { WarehouseImport } from 'src/mongo/repository/warehouse-import/warehouse-import.schema'
+import { WarehouseImport, WarehouseImportType } from 'src/mongo/repository/warehouse-import/warehouse-import.schema'
 import { EventWarehouseImportRequest } from '../request'
 
 @Injectable()
@@ -36,7 +36,7 @@ export class EventWarehouseImportService {
 		const documentDate = ticket.attributes.find((i: any) => i.code === 'wmsxCreateReceiptDate')?.value
 		const description = ticket.attributes.find((i: any) => i.code === 'wmsxGeneralDescription')?.value
 
-		const warehouseImport: Partial<WarehouseImport> = {
+		const warehouseImport: WarehouseImportType = {
 			timeSync: new Date(daySyncString),
 			warehouseId: warehouses[0].id,
 			warehouseName: warehouses[0].name,

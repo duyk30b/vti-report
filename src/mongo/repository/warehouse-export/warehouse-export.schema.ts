@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { Document } from 'mongoose'
 import { BaseSchema } from 'src/mongo/base.schema'
 
 @Schema({ timestamps: false })
@@ -75,3 +76,5 @@ const WarehouseExportSchema = SchemaFactory.createForClass(WarehouseExport)
 WarehouseExportSchema.index({ timeSync: 1 }, { unique: false })
 
 export { WarehouseExportSchema }
+
+export type WarehouseExportType = Omit<WarehouseExport, keyof Document<WarehouseExport>>

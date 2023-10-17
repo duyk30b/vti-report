@@ -4,7 +4,7 @@ import { NatsClientAttributeService } from 'src/modules/nats/service/nats-client
 import { NatsClientItemService } from 'src/modules/nats/service/nats-client-item.service'
 import { NatsClientWarehouseService } from 'src/modules/nats/service/nats-client-warehouse.service'
 import { WarehouseExportRepository } from 'src/mongo/repository/warehouse-export/warehouse-export.repository'
-import { WarehouseExport } from 'src/mongo/repository/warehouse-export/warehouse-export.schema'
+import { WarehouseExportType } from 'src/mongo/repository/warehouse-export/warehouse-export.schema'
 import { EventWarehouseExportRequest } from '../request'
 
 @Injectable()
@@ -43,7 +43,7 @@ export class EventWarehouseExportService {
 		const itemMap: Record<string, any> = {}
 		items.forEach((i: any) => itemMap[i.id] = i)
 
-		const warehouseExport: Partial<WarehouseExport> = {
+		const warehouseExport: WarehouseExportType = {
 			timeSync: new Date(daySyncString),
 			warehouseId: warehouses[0].id,
 			warehouseName: warehouses[0].name,

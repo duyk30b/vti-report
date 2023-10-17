@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose'
 import { FilterQuery, Model } from 'mongoose'
 import { NoExtraProperties } from 'src/common/helpers/typescript.helper'
 import { ItemConditionDto } from './item.dto'
-import { Item } from './item.schema'
+import { Item, ItemType } from './item.schema'
 
 @Injectable()
 export class ItemRepository {
@@ -18,24 +18,24 @@ export class ItemRepository {
 		return filter
 	}
 
-	async findOneBy(condition: ItemConditionDto): Promise<Item> {
+	async findOneBy(condition: ItemConditionDto): Promise<ItemType> {
 		const filter = this.getFilterOptions(condition)
 		const doc = await this.itemModel.findOne(filter)
 		return doc.toObject()
 	}
 
-	async findManyBy(condition: ItemConditionDto): Promise<Item[]> {
+	async findManyBy(condition: ItemConditionDto): Promise<ItemType[]> {
 		const docs = await this.itemModel.find(condition).exec()
 		return docs.map((i) => i.toObject())
 	}
 
-	async insertOne<T extends Partial<Item>>(data: NoExtraProperties<Partial<Item>, T>): Promise<Item> {
+	async insertOne<T extends Partial<ItemType>>(data: NoExtraProperties<Partial<ItemType>, T>): Promise<ItemType> {
 		const model = new this.itemModel(data)
 		const inventorySnap = await model.save()
 		return inventorySnap.toObject()
 	}
 
-	async insertMany<T extends Partial<Item>>(data: NoExtraProperties<Partial<Item>, T>[]): Promise<Item[]> {
+	async insertMany<T extends Partial<ItemType>>(data: NoExtraProperties<Partial<ItemType>, T>[]): Promise<ItemType[]> {
 		const hydratedDocument = await this.itemModel.insertMany(data)
 		return hydratedDocument.map((i: any) => i.toObject())
 	}

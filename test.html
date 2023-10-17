@@ -6,8 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Document</title>
   <script>
-    const btnClick = async () => {
-      const url = document.getElementById('urlSelectElement').value
+    const startDownload = async (url) => {
       const response = await fetch(url, {
         headers: {
           'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjk2Mzg1MTU2LCJleHAiOjE2OTgxODUxNTZ9.CWjBBOwGEENBpBZNCH616m8DgtGlGEnVI1ojk9HiGLw'
@@ -38,38 +37,37 @@
         // For Firefox it is necessary to delay revoking the ObjectURL
         window.URL.revokeObjectURL(blobURL)
       }, 100)
-    };
+    }
+
+    const downloadItem = async () => {
+      const url = 'http://localhost:10120/api/v1/reports/item/export-excel?time=2023-09-17T17%3A00%3A00.000Z&warehouseId=42'
+      await startDownload(url)
+    }
+    const downloadWarehouseImport = async () => {
+      const url = 'http://localhost:10120/api/v1/reports/warehouse-import/export-excel?warehouseId=42&fromTime=2023-09-17T17%3A00%3A00.000Z&toTime=2023-11-20T17%3A00%3A00.000Z'
+      await startDownload(url)
+    }
+    const downloadWarehouseExport = async () => {
+      const url = 'http://localhost:10120/api/v1/reports/warehouse-export/export-excel?warehouseId=42&fromTime=2023-09-17T17%3A00%3A00.000Z&toTime=2023-11-20T17%3A00%3A00.000Z'
+      await startDownload(url)
+    }
+    const downloadWarehouseTransfer = async () => {
+      const url = 'http://localhost:10120/api/v1/reports/warehouse-transfer/export-excel?warehouseId=42&fromTime=2023-09-17T17%3A00%3A00.000Z&toTime=2023-11-20T17%3A00%3A00.000Z'
+      await startDownload(url)
+    }
+    const downloadWarehouseCheckout = async () => {
+      const url = 'http://localhost:10120/api/v1/reports/warehouse-checkout/export-excel?fromTime=2023-09-17T17%3A00%3A00.000Z&toTime=2023-11-20T17%3A00%3A00.000Z&ticketCode=XXX222GG&warehouseId=42'
+      await startDownload(url)
+    }
   </script>
 </head>
 
 <body>
-  <label>URL: </label>
-  <select id="urlSelectElement">
-    <option
-      value="http://localhost:10120/api/v1/reports/item/export-excel?time=2023-09-17T17%3A00%3A00.000Z&warehouseId=42">
-      Item
-    </option>
-    <option
-      value="http://localhost:10120/api/v1/reports/warehouse-import/export-excel?warehouseId=42&fromTime=2023-09-17T17%3A00%3A00.000Z&toTime=2023-09-20T17%3A00%3A00.000Z">
-      Warehouse Import
-    </option>
-    <option
-      value="http://localhost:10120/api/v1/reports/warehouse-export/export-excel?warehouseId=42&fromTime=2023-09-17T17%3A00%3A00.000Z&toTime=2023-09-20T17%3A00%3A00.000Z">
-      Warehouse Export
-    </option>
-    <option
-      value="http://localhost:10120/api/v1/reports/warehouse-transfer/export-excel?warehouseId=42&fromTime=2023-09-17T17%3A00%3A00.000Z&toTime=2023-09-20T17%3A00%3A00.000Z">
-      Warehouse Transfer
-    </option>
-    <option
-      value="http://localhost:10120/api/v1/reports/warehouse-checkout/export-excel?fromTime=2023-09-17T17%3A00%3A00.000Z&toTime=2023-09-20T17%3A00%3A00.000Z&ticketCode=XXX222GG&warehouseId=42">
-      Warehouse Checkout
-    </option>
-
-    <option value="mercedes">Mercedes</option>
-    <option value="audi">Audi</option>
-  </select><br /><br />
-  <button onclick="btnClick()">Download</button><br /><br />
+  <button onclick="downloadItem()">Download Item</button><br /><br />
+  <button onclick="downloadWarehouseImport()">Download Warehouse Import</button><br /><br />
+  <button onclick="downloadWarehouseExport()">Download Warehouse Export</button><br /><br />
+  <button onclick="downloadWarehouseTransfer()">Download Warehouse Transfer</button><br /><br />
+  <button onclick="downloadWarehouseCheckout()">Download Warehouse Checkout</button><br /><br />
 </body>
 
 </html>

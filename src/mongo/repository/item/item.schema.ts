@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { Document, HydratedDocument } from 'mongoose'
 import { BaseSchema } from 'src/mongo/base.schema'
 
 export enum EItemStatus {
@@ -50,3 +51,5 @@ const ItemSchema = SchemaFactory.createForClass(Item)
 ItemSchema.index({ timeSync: 1 }, { unique: false })
 
 export { ItemSchema }
+
+export type ItemType = Omit<Item, keyof Document<Item>>

@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { Document } from 'mongoose'
 import { BaseSchema } from 'src/mongo/base.schema'
 
 export enum ECheckoutType {
@@ -115,3 +116,5 @@ const WarehouseCheckoutSchema = SchemaFactory.createForClass(WarehouseCheckout)
 WarehouseCheckoutSchema.index({ timeSync: 1 }, { unique: false })
 
 export { WarehouseCheckoutSchema }
+
+export type WarehouseCheckoutType = Omit<WarehouseCheckout, keyof Document<WarehouseCheckout>>

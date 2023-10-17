@@ -36,7 +36,8 @@ export const advanceLayoutExcel = <T extends string>(params: {
 	const workbook = new Workbook()
 
 	let indexSheet = 0
-	rows.forEach((row, index) => {
+
+	for (let index = 0; index <= rows.length; index++) {
 		const sheetCurrentName = `${sheetName}_${(indexSheet + 1)}`
 		if (index % maxRowsTable === 0) {
 			const worksheet: Worksheet = workbook.addWorksheet(
@@ -69,7 +70,8 @@ export const advanceLayoutExcel = <T extends string>(params: {
 
 		const worksheet = workbook.getWorksheet(sheetCurrentName)
 
-		row.data.forEach((item) => {
+		const row = rows[index]
+		row && row.data.forEach((item) => {
 			worksheet.addRow(item).eachCell((cell: Cell) => {
 				const keyColumn = (cell as any)._column._key
 				const style: Partial<Style & {
@@ -91,7 +93,7 @@ export const advanceLayoutExcel = <T extends string>(params: {
 					},
 					alignment: { wrapText: true, vertical: 'middle' },
 				}
-				const styleAll: Partial<Style> = row.style['_all'] || {}
+				const styleAll: Partial<Style> = row.style?.['_all'] || {}
 				const styleCurrent: Partial<Style> = row.style?.[keyColumn] || {}
 
 				mergeObject(style, styleAll, styleCurrent)
@@ -123,7 +125,7 @@ export const advanceLayoutExcel = <T extends string>(params: {
 		if (index % maxRowsTable === maxRowsTable - 1) {
 			indexSheet++
 		}
-	})
+	}
 
 	return workbook
 }

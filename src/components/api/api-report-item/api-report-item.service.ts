@@ -24,7 +24,7 @@ export class ApiReportItemService {
 		})
 		const [user] = await this.natsClientUserService.getUsersByIds({ userIds: [userId] })
 
-		const workbook = this.getWorkbookWarehouseImport(warehouseGroup, {
+		const workbook = this.getWorkbookItem(warehouseGroup, {
 			time,
 			userFullName: user.fullName,
 			reportCode: 'W01',
@@ -40,11 +40,7 @@ export class ApiReportItemService {
 		}
 	}
 
-	getWorkbookWarehouseImport(data: {
-		warehouseId: number,
-		warehouseName: string,
-		items: Item[]
-	}[], meta: {
+	getWorkbookItem(data: { warehouseId: number, warehouseName: string, items: Item[] }[], meta: {
 		time: Date,
 		reportCode: string,
 		userFullName: string,

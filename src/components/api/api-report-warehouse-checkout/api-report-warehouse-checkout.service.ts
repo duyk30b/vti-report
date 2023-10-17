@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common'
-import { Style, Workbook, Worksheet } from 'exceljs'
+import { Workbook, Worksheet } from 'exceljs'
 import { timeToText } from 'src/common/helpers'
 import { advanceLayoutExcel, cellHeaderStyle } from 'src/common/utils/excel-advance.util'
-import { NatsClientUserService } from 'src/modules/nats/service/nats-client-user.service'
-import { ApiReportWarehouseCheckoutQuery } from './api-report-warehouse-checkout.request'
-import { WarehouseCheckoutRepository } from 'src/mongo/repository/warehouse-checkout/warehouse-checkout.repository'
-import { ECheckoutForm, ECheckoutType, WarehouseCheckout } from 'src/mongo/repository/warehouse-checkout/warehouse-checkout.schema'
 import { BusinessException } from 'src/core/exception-filters/business-exception.filter'
+import { NatsClientUserService } from 'src/modules/nats/service/nats-client-user.service'
+import { WarehouseCheckoutRepository } from 'src/mongo/repository/warehouse-checkout/warehouse-checkout.repository'
+import { ECheckoutForm, ECheckoutType, WarehouseCheckoutType } from 'src/mongo/repository/warehouse-checkout/warehouse-checkout.schema'
+import { ApiReportWarehouseCheckoutQuery } from './api-report-warehouse-checkout.request'
 
 @Injectable()
 export class ApiReportWarehouseCheckoutService {
@@ -90,7 +90,7 @@ export class ApiReportWarehouseCheckoutService {
 		}
 	}
 
-	getWorkbookWarehouseCheckout(data: WarehouseCheckout, meta: {
+	getWorkbookWarehouseCheckout(data: WarehouseCheckoutType, meta: {
 		fromTime: Date,
 		toTime: Date,
 		reportCode: string,
