@@ -1,10 +1,13 @@
 import { Module } from '@nestjs/common'
-import { SyncWarehouseImportService } from './jobs/sync-warehouse-import.service'
+import { SyncItemService } from './jobs/sync-item.service'
 import { TasksScheduleService } from './tasks-schedule.service'
 
 @Module({
 	imports: [],
 	controllers: [],
-	providers: [TasksScheduleService, SyncWarehouseImportService],
+	providers: [
+		TasksScheduleService,
+		SyncItemService,
+	],
 })
 export class TasksScheduleModule { }

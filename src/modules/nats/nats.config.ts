@@ -6,6 +6,7 @@ export const NatsService = {
 	USER: process.env.NATS_USER_SERVICE || 'user_service',
 	WEBHOOK: process.env.NATS_WEBHOOK_SERVICE || 'webhook_service',
 	WAREHOUSE: process.env.NATS_WAREHOUSE || 'warehouse_service',
+	WAREHOUSE_LAYOUT: process.env.NATS_WAREHOUSE || 'warehouse_layout_service',
 	REPORT: process.env.NATS_REPORT_SERVICE || 'report_service',
 	TICKET: process.env.NATS_TICKET_SERVICE || 'ticket_service',
 	ITEM: process.env.NATS_ITEM_SERVICE || 'item_service',
@@ -37,6 +38,10 @@ export const NatsSubject = {
 		PING: NatsService.WAREHOUSE + '.ping',
 		GET_WAREHOUSES_BY_IDS: NatsService.WAREHOUSE + '.get_warehouses_by_ids',
 	},
+	WAREHOUSE_LAYOUT: {
+		PING: NatsService.WAREHOUSE_LAYOUT + '.ping',
+		GET_LOCATORS: NatsService.WAREHOUSE_LAYOUT + '.get_locators',
+	},
 	TICKET: {
 		PING: NatsService.TICKET + '.ping',
 		GET_WAREHOUSE_IMPORT_LIST: NatsService.TICKET + '.get_warehouse_import_list',
@@ -46,6 +51,7 @@ export const NatsSubject = {
 	},
 	ITEM: {
 		PING: NatsService.ITEM + '.ping',
+		GET_ITEMS_REPORT: NatsService.ITEM + '.get_items_report',
 		GET_ITEMS_BY_IDS: NatsService.ITEM + '.get_items_by_ids',
 		STOCK_MOVEMENT: NatsService.ITEM + '.stock_movement',
 	},

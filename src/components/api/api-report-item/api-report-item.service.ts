@@ -4,7 +4,7 @@ import { endOfDay, startOfDay, timeToText } from 'src/common/helpers'
 import { advanceLayoutExcel, cellHeaderStyle } from 'src/common/utils/excel-advance.util'
 import { NatsClientUserService } from 'src/modules/nats/service/nats-client-user.service'
 import { ItemRepository } from 'src/mongo/repository/item/item.repository'
-import { Item } from 'src/mongo/repository/item/item.schema'
+import { ItemType } from 'src/mongo/repository/item/item.schema'
 import { ApiReportItemQuery } from './api-report-item.request'
 
 @Injectable()
@@ -40,7 +40,7 @@ export class ApiReportItemService {
 		}
 	}
 
-	getWorkbookItem(data: { warehouseId: number, warehouseName: string, items: Item[] }[], meta: {
+	getWorkbookItem(data: { warehouseId: number, warehouseName: string, items: ItemType[] }[], meta: {
 		time: Date,
 		reportCode: string,
 		userFullName: string,
@@ -54,6 +54,24 @@ export class ApiReportItemService {
 				style: { num: { font: { bold: true }, mergeCells: { colspan: 10 } } },
 				data: [{ num: `Kho: ${w.warehouseId}_${w.warehouseName}` }],
 			})
+
+			const dataItem: any[] = []
+			w.items.forEach((item, index) => {
+				item.stocks.forEach((stock) => {
+					dataItem.push({
+						itemCode: item.itemCode,
+						itemName: item.itemName,
+						unit: item.unit,
+						lot: stock.lot,
+						manufacturingDate: stock.manufacturingDate,
+						importDate: stock.importDate,
+						locatorName: stock.locatorName,
+						status: stock.status,
+						quantity: stock.quantity,
+					})
+				})
+			})
+
 			dataRows.push({
 				style: {
 					num: { alignment: { horizontal: 'center' } },
@@ -64,17 +82,9 @@ export class ApiReportItemService {
 					status: { alignment: { horizontal: 'center' } },
 					quantity: { numFmt: '###,##0.00' },
 				},
-				data: w.items.map((item, index) => ({
+				data: dataItem.map((item, index) => ({
 					num: index + 1,
-					itemCode: item.itemCode,
-					itemName: item.itemName,
-					unit: item.unit,
-					lot: item.lot,
-					manufacturingDate: item.manufacturingDate,
-					importDate: item.importDate,
-					locatorName: item.locatorName,
-					status: item.status,
-					quantity: item.quantity,
+					...item,
 				})),
 			})
 		})

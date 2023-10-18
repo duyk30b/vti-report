@@ -8,23 +8,8 @@ export enum EItemStatus {
 	Pickup = 3,              // Lấy chưa xuất
 }
 
-@Schema({ collection: 'items', timestamps: true })
-export class Item extends BaseSchema {
-	@Prop()
-	timeSync: Date
-
-	@Prop()
-	warehouseId: number
-
-	@Prop()
-	itemCode: string
-
-	@Prop()
-	itemName: string
-
-	@Prop()
-	unit: string
-
+@Schema({ timestamps: false })
+export class StockBody {
 	@Prop()
 	lot: string
 
@@ -35,13 +20,41 @@ export class Item extends BaseSchema {
 	importDate: Date                                    // Ngày nhập kho
 
 	@Prop()
-	locatorCode: string
+	locatorId: string
 
 	@Prop()
 	locatorName: string
 
 	@Prop({ type: Number, enum: EItemStatus })
 	status: EItemStatus
+
+	@Prop()
+	quantity: number
+}
+export const StockSchema = SchemaFactory.createForClass(StockBody)
+
+@Schema({ collection: 'items', timestamps: true })
+export class Item extends BaseSchema {
+	@Prop()
+	timeSync: Date
+
+	@Prop()
+	warehouseId: number
+
+	@Prop()
+	itemId: number
+
+	@Prop()
+	itemCode: string
+
+	@Prop()
+	itemName: string
+
+	@Prop()
+	unit: string
+
+	@Prop({ type: [StockSchema], default: [] })
+	stocks: StockBody[]
 
 	@Prop()
 	quantity: number

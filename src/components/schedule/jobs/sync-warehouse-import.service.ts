@@ -1,11 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { endOfDay, startOfDay, timeToText } from 'src/common/helpers'
+import { startOfDay, timeToText } from 'src/common/helpers'
 import { NatsClientAttributeService } from 'src/modules/nats/service/nats-client-attribute.service'
 import { NatsClientItemService } from 'src/modules/nats/service/nats-client-item.service'
 import { NatsClientTicketService } from 'src/modules/nats/service/nats-client-ticket.service'
 import { NatsClientWarehouseService } from 'src/modules/nats/service/nats-client-warehouse.service'
 import { WarehouseImportRepository } from 'src/mongo/repository/warehouse-import/warehouse-import.repository'
-import { WarehouseImport } from 'src/mongo/repository/warehouse-import/warehouse-import.schema'
+import { WarehouseImportType } from 'src/mongo/repository/warehouse-import/warehouse-import.schema'
 
 @Injectable()
 export class SyncWarehouseImportService {
@@ -61,7 +61,7 @@ export class SyncWarehouseImportService {
 		templates.forEach((i: any) => templateMap[i._id] = i)
 		items.forEach((i: any) => itemMap[i.id] = i)
 
-		const warehouseImports: Partial<WarehouseImport>[] = ticketImports.map((ticket: any) => {
+		const warehouseImports: WarehouseImportType[] = ticketImports.map((ticket: any) => {
 			const warehouse = warehouseMap[ticket.warehouseId]
 			const template = templateMap[ticket.templateId]
 

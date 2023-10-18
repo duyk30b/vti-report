@@ -8,6 +8,7 @@ import { NatsClientItemService } from './service/nats-client-item.service'
 import { NatsClientTicketService } from './service/nats-client-ticket.service'
 import { NatsClientUserService } from './service/nats-client-user.service'
 import { NatsClientWarehouseService } from './service/nats-client-warehouse.service'
+import { NatsClientWarehouseLayoutService } from './service/nats-client-warehouse-layout.service'
 
 @Global()
 @Module({
@@ -22,6 +23,7 @@ import { NatsClientWarehouseService } from './service/nats-client-warehouse.serv
 		NatsClientAuthService,
 		NatsClientTicketService,
 		NatsClientWarehouseService,
+		NatsClientWarehouseLayoutService,
 		NatsClientItemService,
 		NatsClientAttributeService,
 		NatsClientUserService,
@@ -31,6 +33,7 @@ import { NatsClientWarehouseService } from './service/nats-client-warehouse.serv
 		NatsClientAuthService,
 		NatsClientTicketService,
 		NatsClientWarehouseService,
+		NatsClientWarehouseLayoutService,
 		NatsClientItemService,
 		NatsClientAttributeService,
 		NatsClientUserService,
