@@ -36,7 +36,7 @@ export const NatsSubject = {
 	REPORT: { PING: NatsService.REPORT + '.ping' },
 	WAREHOUSE: {
 		PING: NatsService.WAREHOUSE + '.ping',
-		GET_WAREHOUSES_BY_IDS: NatsService.WAREHOUSE + '.get_warehouses_by_ids',
+		GET_WAREHOUSES: NatsService.WAREHOUSE + '.get_warehouses',
 	},
 	WAREHOUSE_LAYOUT: {
 		PING: NatsService.WAREHOUSE_LAYOUT + '.ping',

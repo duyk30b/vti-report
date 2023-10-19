@@ -36,7 +36,7 @@ export class EventWarehouseExportService {
 		})
 		const itemIds = Array.from(itemIdSet)
 		const [warehouses, templates, items] = await Promise.all([
-			this.natsClientWarehouseService.getWarehousesByIds({ warehouseIds: [ticket.warehouseId] }),
+			this.natsClientWarehouseService.getWarehouses({ ids: [ticket.warehouseId] }),
 			this.natsClientAttributeService.getTemplatesByIds({ ids: [ticket.templateId.toString()] }),
 			this.natsClientItemService.getItemsByIds({ itemIds }),
 		])

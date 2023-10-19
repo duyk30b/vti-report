@@ -47,7 +47,7 @@ export class SyncItemService {
 		const locatorIds = Array.from(locatorIdSet)
 
 		const [warehouses, locators, locatorsVirtual] = await Promise.all([
-			this.natsClientWarehouseService.getWarehousesByIds({ warehouseIds }),
+			this.natsClientWarehouseService.getWarehouses({ ids: warehouseIds }),
 			this.natsClientWarehouseLayoutService.getLocatorsBy({ ids: locatorIds }),
 			this.natsClientWarehouseLayoutService.getLocatorsBy({ warehouseIds, level: 0 }), // level=0 là vị trí ảo
 		])

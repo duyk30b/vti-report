@@ -34,6 +34,17 @@ export class NatsEventController {
 		return response
 	}
 
+	@Get('nats/ping-warehouse')
+	async pingWarehouse() {
+		const response = await this.natsClientService.send(NatsSubject.WAREHOUSE.PING, {
+			client: 'report-service',
+			server: 'warehouse-service',
+			message: 'ping',
+			time: Date.now(),
+		})
+		return response
+	}
+
 	@MessagePattern(NatsSubject.REPORT.PING, Transport.NATS)
 	pong(@Payload() payload: any, @Ctx() context: NatsContext) {
 		return this.natsEventService.pong(payload)

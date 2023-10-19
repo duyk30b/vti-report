@@ -48,7 +48,7 @@ export class SyncWarehouseImportService {
 		const itemIds = Array.from(itemIdSet)
 
 		const [warehouses, templates, items] = await Promise.all([
-			this.natsClientWarehouseService.getWarehousesByIds({ warehouseIds }),
+			this.natsClientWarehouseService.getWarehouses({ ids: warehouseIds }),
 			this.natsClientAttributeService.getTemplatesByIds({ ids: templateIds }),
 			this.natsClientItemService.getItemsByIds({ itemIds }),
 		])

@@ -3,6 +3,7 @@ import { Workbook, Worksheet } from 'exceljs'
 import { endOfDay, startOfDay, timeToText } from 'src/common/helpers'
 import { advanceLayoutExcel, cellHeaderStyle } from 'src/common/utils/excel-advance.util'
 import { NatsClientUserService } from 'src/modules/nats/service/nats-client-user.service'
+import { NatsClientWarehouseService } from 'src/modules/nats/service/nats-client-warehouse.service'
 import { ItemRepository } from 'src/mongo/repository/item/item.repository'
 import { ItemType } from 'src/mongo/repository/item/item.schema'
 import { ApiReportItemQuery } from './api-report-item.request'
@@ -11,11 +12,16 @@ import { ApiReportItemQuery } from './api-report-item.request'
 export class ApiReportItemService {
 	constructor(
 		private readonly itemRepository: ItemRepository,
-		private readonly natsClientUserService: NatsClientUserService
+		private readonly natsClientUserService: NatsClientUserService,
+		private readonly natsClientWarehouseService: NatsClientWarehouseService
 	) { }
 
 	async exportExcel(query: ApiReportItemQuery, userId: number) {
 		const { time, warehouseId } = query
+
+		const x = await this.natsClientWarehouseService.getWarehouses({ ids: [48] })
+		console.log('🚀 ~ file: api-report-item.service.ts:23 ~ ApiReportItemService ~ exportExcel ~ x:', x)
+		return x
 
 		const warehouseGroup = await this.itemRepository.report({
 			warehouseId,
