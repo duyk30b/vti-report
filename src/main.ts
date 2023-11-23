@@ -50,6 +50,7 @@ async function bootstrap() {
 	await app.startAllMicroservices()
 
 	const configService = app.get(ConfigService)
+	
 	const NODE_ENV = configService.get<string>('NODE_ENV') || 'local'
 	const APP_HOST = configService.get<string>('APP_HOST') || 'localhost'
 	const APP_CONTAINER_PORT = configService.get<string>('APP_CONTAINER_PORT')
@@ -67,7 +68,11 @@ async function bootstrap() {
 		SwaggerModule.setup(`${API_PATH}/swagger-docs`, app, document, { swaggerOptions: { persistAuthorization: true } })
 	}
 
-	await app.listen(3000, () => {})
+	await app.listen(3000, () => {
+		logger.debug(
+			`🚀 ===== [API] Server document: http://${APP_HOST}:${APP_CONTAINER_PORT}${API_PATH}/swagger-docs =====`
+		)
+	})
 }
 
 bootstrap()

@@ -53,6 +53,7 @@
 		"nats": "^2.16.0",
 		"nestjs-i18n": "^10.3.4",
 		"pg": "^8.11.3",
+		"redlock": "^5.0.0-beta.2",
 		"reflect-metadata": "^0.1.13",
 		"rxjs": "^7.8.1",
 		"ts-loader": "^9.4.3",
