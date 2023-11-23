@@ -9,7 +9,7 @@ import { QUEUE_EVENT } from 'src/modules/redis/bull-queue/bull-queue.variable'
 export class PingProcessor {
 	private readonly logger = new Logger(PingProcessor.name)
 
-	constructor(private readonly bullQueueService: BullQueueService) { }
+	constructor(private readonly bullQueueService: BullQueueService) {}
 
 	@Process()
 	async handleProcess({ data }: Job<IPingQueueMessage>) {

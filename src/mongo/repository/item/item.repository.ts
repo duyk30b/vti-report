@@ -7,7 +7,7 @@ import { Item, ItemType } from './item.schema'
 
 @Injectable()
 export class ItemRepository {
-	constructor(@InjectModel('ItemSchema') private readonly itemModel: Model<Item>) { }
+	constructor(@InjectModel('ItemSchema') private readonly itemModel: Model<Item>) {}
 
 	getFilterOptions(condition: ItemConditionDto) {
 		const filter: FilterQuery<Item> = {}
@@ -45,7 +45,7 @@ export class ItemRepository {
 		return await this.itemModel.deleteMany(filter)
 	}
 
-	async report(filter: { fromTime: Date, toTime: Date, warehouseId?: number }): Promise<any> {
+	async report(filter: { fromTime: Date; toTime: Date; warehouseId?: number }): Promise<any> {
 		return await this.itemModel.aggregate([
 			{
 				$match: {

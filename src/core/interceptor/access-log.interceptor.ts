@@ -32,8 +32,7 @@ export class AccessLogInterceptor implements NestInterceptor {
 			if (showData) {
 				msgRequest += `| ${JSON.stringify(body)} `
 			}
-		}
-		else if (context.getType() === 'rpc') {
+		} else if (context.getType() === 'rpc') {
 			if (res.constructor.name === 'NatsContext') {
 				const response: NatsContext = res
 				msgRequest = `[NATS] | ${response.getSubject()} | ${className} | ${funcName}() `

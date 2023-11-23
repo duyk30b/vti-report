@@ -3,15 +3,10 @@ export const mergeObject = (...params: Record<string, any>[]) => {
 		for (const key in target) {
 			if (target[key] === undefined) continue
 
-			if (typeof target[key] !== 'object'
-				|| Array.isArray(target[key])
-				|| target[key] instanceof Date) {
+			if (typeof target[key] !== 'object' || Array.isArray(target[key]) || target[key] instanceof Date) {
 				source[key] = target[key]
-			}
-			else {
-				if (typeof source[key] !== 'object'
-					|| Array.isArray(target[key])
-					|| target[key] instanceof Date) {
+			} else {
+				if (typeof source[key] !== 'object' || Array.isArray(target[key]) || target[key] instanceof Date) {
 					source[key] = {}
 				}
 				mergeTwoObject(source[key], target[key])

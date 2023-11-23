@@ -7,4 +7,4 @@ import { NatsEventService } from './nats-event.service'
 	controllers: [NatsEventController],
 	providers: [NatsEventService],
 })
-export class NatsEventModule { }
+export class NatsEventModule {}

@@ -2,7 +2,7 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common'
 import { Request } from 'express'
 
 export type TExternal = {
-	user?: Record<string, any>,
+	user?: Record<string, any>
 }
 
 export interface RequestExternal extends Request {

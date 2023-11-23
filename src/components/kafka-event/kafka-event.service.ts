@@ -2,8 +2,7 @@ import { Injectable } from '@nestjs/common'
 
 @Injectable()
 export class KafkaEventService {
-	constructor() { }
+	constructor() {}
 
-	async pong(data: any) {
-	}
+	async pong(data: any) {}
 }

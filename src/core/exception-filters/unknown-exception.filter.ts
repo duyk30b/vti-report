@@ -5,7 +5,7 @@ import { from } from 'rxjs'
 
 @Catch(Error)
 export class UnknownExceptionFilter implements ExceptionFilter {
-	constructor(private readonly logger = new Logger(UnknownExceptionFilter.name)) { }
+	constructor(private readonly logger = new Logger(UnknownExceptionFilter.name)) {}
 
 	catch(exception: Error, host: ArgumentsHost) {
 		const statusCode = HttpStatus.INTERNAL_SERVER_ERROR
@@ -23,8 +23,7 @@ export class UnknownExceptionFilter implements ExceptionFilter {
 				path: request.url,
 				timestamp: new Date().toISOString(),
 			})
-		}
-		else if (host.getType() === 'rpc') {
+		} else if (host.getType() === 'rpc') {
 			if (res.constructor.name === 'NatsContext') {
 				// const response = host.switchToRpc().getContext<NatsContext>()
 				const response: NatsContext = res
@@ -38,9 +37,7 @@ export class UnknownExceptionFilter implements ExceptionFilter {
 					},
 				}
 				return from([info])
-			}
-
-			else if (res.constructor.name === 'KafkaContext') {
+			} else if (res.constructor.name === 'KafkaContext') {
 				// const response = host.switchToRpc().getContext<KafkaContext>()
 				const response: KafkaContext = res
 				const info: Record<string, any> = {

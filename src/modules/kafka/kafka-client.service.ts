@@ -8,7 +8,7 @@ export class KafkaClientService implements OnModuleInit, OnModuleDestroy {
 	private readonly logger = new Logger(KafkaClientService.name)
 	private kafkaProducer: Producer
 
-	constructor(@Inject('KAFKA_CLIENT') private kafkaClient: ClientKafka) { }
+	constructor(@Inject('KAFKA_CLIENT') private kafkaClient: ClientKafka) {}
 
 	async onModuleInit() {
 		try {

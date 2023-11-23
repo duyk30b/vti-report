@@ -14,13 +14,13 @@ export class ItemExportBody {
 	unit: string
 
 	@Prop()
-	importDate: Date                                    // Ngày nhập kho
+	importDate: Date // Ngày nhập kho
 
 	@Prop({ required: false })
 	lot: string
 
 	@Prop({ required: false })
-	manufacturingDate: Date                             // Ngày sản xuất
+	manufacturingDate: Date // Ngày sản xuất
 
 	@Prop()
 	quantity: number
@@ -57,10 +57,10 @@ export class WarehouseExport extends BaseSchema {
 	ticketCode: string
 
 	@Prop()
-	documentDate: Date                                    // Ngày chứng từ
+	documentDate: Date // Ngày chứng từ
 
 	@Prop()
-	exportDate: Date                                      // Ngày thực xuất
+	exportDate: Date // Ngày thực xuất
 
 	@Prop({ required: false })
 	description: string

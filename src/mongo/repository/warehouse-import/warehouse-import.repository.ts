@@ -7,8 +7,10 @@ import { WarehouseImport, WarehouseImportType } from './warehouse-import.schema'
 
 @Injectable()
 export class WarehouseImportRepository {
-	constructor(@InjectModel('WarehouseImportSchema')
-	private readonly warehouseImportModel: Model<WarehouseImport>) { }
+	constructor(
+		@InjectModel('WarehouseImportSchema')
+		private readonly warehouseImportModel: Model<WarehouseImport>
+	) {}
 
 	getFilterOptions(condition: WarehouseImportConditionDto) {
 		const filter: FilterQuery<WarehouseImport> = {}
@@ -34,13 +36,17 @@ export class WarehouseImportRepository {
 		return docs.map((i) => i.toObject())
 	}
 
-	async insertOne<T extends Partial<WarehouseImportType>>(data: NoExtraProperties<Partial<WarehouseImportType>, T>): Promise<WarehouseImportType> {
+	async insertOne<T extends Partial<WarehouseImportType>>(
+		data: NoExtraProperties<Partial<WarehouseImportType>, T>
+	): Promise<WarehouseImportType> {
 		const model = new this.warehouseImportModel(data)
 		const inventorySnap = await model.save()
 		return inventorySnap.toObject()
 	}
 
-	async insertMany<T extends Partial<WarehouseImportType>>(data: NoExtraProperties<Partial<WarehouseImportType>, T>[]): Promise<WarehouseImportType[]> {
+	async insertMany<T extends Partial<WarehouseImportType>>(
+		data: NoExtraProperties<Partial<WarehouseImportType>, T>[]
+	): Promise<WarehouseImportType[]> {
 		const hydratedDocument = await this.warehouseImportModel.insertMany(data)
 		return hydratedDocument.map((i: any) => i.toObject())
 	}
@@ -50,7 +56,7 @@ export class WarehouseImportRepository {
 		return await this.warehouseImportModel.deleteMany(filter)
 	}
 
-	async report(filter: { fromTime: Date, toTime: Date, warehouseId?: number }): Promise<any> {
+	async report(filter: { fromTime: Date; toTime: Date; warehouseId?: number }): Promise<any> {
 		return await this.warehouseImportModel.aggregate([
 			{
 				$match: {

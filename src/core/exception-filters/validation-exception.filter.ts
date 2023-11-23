@@ -41,8 +41,7 @@ export class ValidationExceptionFilter implements ExceptionFilter {
 				path: request.url,
 				timestamp: new Date().toISOString(),
 			})
-		}
-		else if (host.getType() === 'rpc') {
+		} else if (host.getType() === 'rpc') {
 			if (res.constructor.name === 'NatsContext') {
 				// const response = host.switchToRpc().getContext<NatsContext>()
 				const response: NatsContext = res
@@ -56,9 +55,7 @@ export class ValidationExceptionFilter implements ExceptionFilter {
 					},
 				}
 				return from([info])
-			}
-
-			else if (res.constructor.name === 'KafkaContext') {
+			} else if (res.constructor.name === 'KafkaContext') {
 				// const response = host.switchToRpc().getContext<KafkaContext>()
 				const response: KafkaContext = res
 				const info: Record<string, any> = {

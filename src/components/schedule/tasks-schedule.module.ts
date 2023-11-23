@@ -5,9 +5,6 @@ import { TasksScheduleService } from './tasks-schedule.service'
 @Module({
 	imports: [],
 	controllers: [],
-	providers: [
-		TasksScheduleService,
-		SyncItemService,
-	],
+	providers: [TasksScheduleService, SyncItemService],
 })
-export class TasksScheduleModule { }
+export class TasksScheduleModule {}

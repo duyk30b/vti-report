@@ -17,4 +17,4 @@ import { PostgresConfig } from './postgres.config'
 	// providers: [WarehouseImportRepository],
 	// exports: [WarehouseImportRepository],
 })
-export class PostgresModule { }
+export class PostgresModule {}

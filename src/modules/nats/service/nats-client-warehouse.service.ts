@@ -14,13 +14,10 @@ export type GetWarehousesRequest = {
 }
 @Injectable()
 export class NatsClientWarehouseService {
-	constructor(private readonly natsClient: NatsClientService) { }
+	constructor(private readonly natsClient: NatsClientService) {}
 
 	async getWarehouses(data: GetWarehousesRequest): Promise<any[]> {
-		const response: NatsResponseInterface = await this.natsClient.send(
-			NatsSubject.WAREHOUSE.GET_WAREHOUSES,
-			data
-		)
+		const response: NatsResponseInterface = await this.natsClient.send(NatsSubject.WAREHOUSE.GET_WAREHOUSES, data)
 		if (response.statusCode !== 200) {
 			throw new BusinessException(response.message as any)
 		}

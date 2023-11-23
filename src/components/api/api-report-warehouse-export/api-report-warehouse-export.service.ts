@@ -12,7 +12,7 @@ export class ApiReportWarehouseExportService {
 	constructor(
 		private readonly warehouseExportRepository: WarehouseExportRepository,
 		private readonly natsClientUserService: NatsClientUserService
-	) { }
+	) {}
 
 	async exportExcel(query: ApiReportWarehouseExportQuery, userId: number) {
 		const { fromTime, toTime, warehouseId } = query
@@ -29,7 +29,7 @@ export class ApiReportWarehouseExportService {
 			toTime,
 			userFullName: user.fullName,
 			reportCode: 'W04',
-			warehouseTitle: warehouseId ? (warehouseGroup[0]?.warehouseName || '') : 'TẤT CẢ KHO',
+			warehouseTitle: warehouseId ? warehouseGroup[0]?.warehouseName || '' : 'TẤT CẢ KHO',
 			companyName: 'CÔNG TY CỔ PHẦN VTI',
 			companyAddress: 'VTI Building, Mễ Trì Hạ, Nam Từ Liêm, Hà Nội',
 		})
@@ -41,20 +41,23 @@ export class ApiReportWarehouseExportService {
 		}
 	}
 
-	getWorkbookWarehouseExport(data: {
-		warehouseId: number,
-		warehouseName: string,
-		amount: number,
-		templates: { templateCode: string, templateName: string, amount: number, tickets: WarehouseExportType[] }[]
-	}[], meta: {
-		fromTime: Date,
-		toTime: Date,
-		reportCode: string,
-		userFullName: string,
-		warehouseTitle: string,
-		companyName: string,
-		companyAddress: string
-	}): Workbook {
+	getWorkbookWarehouseExport(
+		data: {
+			warehouseId: number
+			warehouseName: string
+			amount: number
+			templates: { templateCode: string; templateName: string; amount: number; tickets: WarehouseExportType[] }[]
+		}[],
+		meta: {
+			fromTime: Date
+			toTime: Date
+			reportCode: string
+			userFullName: string
+			warehouseTitle: string
+			companyName: string
+			companyAddress: string
+		}
+	): Workbook {
 		const dataRows = []
 		data.forEach((w) => {
 			const rowWarehouse = {
@@ -137,7 +140,10 @@ export class ApiReportWarehouseExportService {
 			data: [{ num: 'TỔNG CỘNG', amount: data.reduce((acc, cur) => acc + cur.amount, 0) }],
 		})
 
-		const sheetName = `${meta.reportCode}_${timeToText(meta.fromTime, 'DDMMYYYY')}-${timeToText(meta.toTime, 'DDMMYYYY')}`
+		const sheetName = `${meta.reportCode}_${timeToText(meta.fromTime, 'DDMMYYYY')}-${timeToText(
+			meta.toTime,
+			'DDMMYYYY'
+		)}`
 
 		const workbook = advanceLayoutExcel({
 			layout: {
@@ -161,27 +167,32 @@ export class ApiReportWarehouseExportService {
 					cell.alignment = { horizontal: 'center' }
 				})
 				worksheet.mergeCells(4, 1, 4, 13)
-				worksheet.addRow([`Từ ngày: ${timeToText(meta.fromTime, 'DD/MM/YYYY')} đến ngày ${timeToText(meta.toTime, 'DD/MM/YYYY')}`])
+				worksheet
+					.addRow([
+						`Từ ngày: ${timeToText(meta.fromTime, 'DD/MM/YYYY')} đến ngày ${timeToText(meta.toTime, 'DD/MM/YYYY')}`,
+					])
 					.eachCell((cell) => {
 						cell.font = { size: 10, bold: true, name: 'Times New Roman' }
 						cell.alignment = { horizontal: 'center' }
 					})
 				worksheet.mergeCells(5, 1, 5, 13)
-				worksheet.addRow({
-					num: 'STT',
-					ticketCode: 'Mã phiếu xuất',
-					documentDate: 'Ngày chứng từ',
-					description: 'Diễn giải',
-					itemCode: 'Mã sản phẩm',
-					itemName: 'Tên sản phẩm',
-					unit: 'ĐVT',
-					lot: 'Lô',
-					manufacturingDate: 'Ngày sản xuất',
-					importDate: 'Ngày nhập kho',
-					quantity: 'Số lượng',
-					price: 'Đơn giá',
-					amount: 'Thành tiền',
-				}).eachCell(cellHeaderStyle)
+				worksheet
+					.addRow({
+						num: 'STT',
+						ticketCode: 'Mã phiếu xuất',
+						documentDate: 'Ngày chứng từ',
+						description: 'Diễn giải',
+						itemCode: 'Mã sản phẩm',
+						itemName: 'Tên sản phẩm',
+						unit: 'ĐVT',
+						lot: 'Lô',
+						manufacturingDate: 'Ngày sản xuất',
+						importDate: 'Ngày nhập kho',
+						quantity: 'Số lượng',
+						price: 'Đơn giá',
+						amount: 'Thành tiền',
+					})
+					.eachCell(cellHeaderStyle)
 			},
 			columns: [
 				{ key: 'num', width: 10 },
@@ -202,7 +213,9 @@ export class ApiReportWarehouseExportService {
 			footerSheet: (worksheet: Worksheet, index: number) => {
 				worksheet.addRow([''])
 				worksheet
-					.addRow([`${meta.reportCode}, ${meta.userFullName}, ngày in: ${timeToText(new Date(), 'DD/MM/YYYY hh:mm:ss')}`])
+					.addRow([
+						`${meta.reportCode}, ${meta.userFullName}, ngày in: ${timeToText(new Date(), 'DD/MM/YYYY hh:mm:ss')}`,
+					])
 					.eachCell((cell) => {
 						cell.font = { size: 10, bold: true, italic: true, name: 'Times New Roman' }
 					})

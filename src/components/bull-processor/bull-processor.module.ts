@@ -8,10 +8,6 @@ import { DemoProcessor } from './processor/demo-processor.service'
 @Module({
 	imports: [BullQueueModule.registerConsumer()],
 	controllers: [BullProcessorController],
-	providers: [
-		PingProcessor,
-		DemoProcessor,
-		WarehouseImportConfirmProcessor,
-	],
+	providers: [PingProcessor, DemoProcessor, WarehouseImportConfirmProcessor],
 })
-export class BullProcessorModule { }
+export class BullProcessorModule {}

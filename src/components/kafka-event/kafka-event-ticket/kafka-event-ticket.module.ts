@@ -15,4 +15,4 @@ import { EventWarehouseTransferService } from './service/event-warehouse-transfe
 		EventWarehouseCheckoutService,
 	],
 })
-export class KafkaEventTicketModule { }
+export class KafkaEventTicketModule {}

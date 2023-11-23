@@ -13,7 +13,7 @@ export class BullQueueService {
 		private readonly demoQueue: Queue,
 		@InjectQueue(QUEUE_EVENT.WAREHOUSE_IMPORT_CONFIRM)
 		private readonly warehouseImportConfirmQueue: Queue
-	) { }
+	) {}
 
 	async addPingJob(data: IPingQueueMessage) {
 		await this.pingQueue.add(data)

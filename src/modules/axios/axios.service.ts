@@ -6,58 +6,68 @@ import { catchError, lastValueFrom } from 'rxjs'
 @Injectable()
 export class AxiosService {
 	private readonly logger = new Logger(AxiosService.name)
-	constructor(private httpService: HttpService) { }
+	constructor(private httpService: HttpService) {}
 
-	async get(params: { url: string, config?: AxiosRequestConfig }) {
+	async get(params: { url: string; config?: AxiosRequestConfig }) {
 		const { url, config } = params
 
-		const start = this.httpService
-			.get(url, config)
-			.pipe(catchError((error: AxiosError) => { throw error }))
+		const start = this.httpService.get(url, config).pipe(
+			catchError((error: AxiosError) => {
+				throw error
+			})
+		)
 
 		const response = await lastValueFrom(start)
 		return response.data
 	}
 
-	async post(params: { url: string, data?: Record<string, any>, config?: AxiosRequestConfig }) {
+	async post(params: { url: string; data?: Record<string, any>; config?: AxiosRequestConfig }) {
 		const { url, data, config } = params
 
-		const start = this.httpService
-			.post(url, data, config)
-			.pipe(catchError((error: AxiosError) => { throw error }))
+		const start = this.httpService.post(url, data, config).pipe(
+			catchError((error: AxiosError) => {
+				throw error
+			})
+		)
 
 		const response = await lastValueFrom(start)
 		return response.data
 	}
 
-	async put(params: { url: string, data?: Record<string, any>, config?: AxiosRequestConfig }) {
+	async put(params: { url: string; data?: Record<string, any>; config?: AxiosRequestConfig }) {
 		const { url, data, config } = params
 
-		const start = this.httpService
-			.put(url, data, config)
-			.pipe(catchError((error: AxiosError) => { throw error }))
+		const start = this.httpService.put(url, data, config).pipe(
+			catchError((error: AxiosError) => {
+				throw error
+			})
+		)
 
 		const response = await lastValueFrom(start)
 		return response.data
 	}
 
-	async patch(params: { url: string, data?: Record<string, any>, config?: AxiosRequestConfig }) {
+	async patch(params: { url: string; data?: Record<string, any>; config?: AxiosRequestConfig }) {
 		const { url, data, config } = params
 
-		const start = this.httpService
-			.patch(url, data, config)
-			.pipe(catchError((error: AxiosError) => { throw error }))
+		const start = this.httpService.patch(url, data, config).pipe(
+			catchError((error: AxiosError) => {
+				throw error
+			})
+		)
 
 		const response = await lastValueFrom(start)
 		return response.data
 	}
 
-	async delete(params: { url: string, config?: AxiosRequestConfig }) {
+	async delete(params: { url: string; config?: AxiosRequestConfig }) {
 		const { url, config } = params
 
-		const start = this.httpService
-			.delete(url, config)
-			.pipe(catchError((error: AxiosError) => { throw error }))
+		const start = this.httpService.delete(url, config).pipe(
+			catchError((error: AxiosError) => {
+				throw error
+			})
+		)
 
 		const response = await lastValueFrom(start)
 		return response.data

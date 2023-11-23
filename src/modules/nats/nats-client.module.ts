@@ -39,4 +39,4 @@ import { NatsClientWarehouseLayoutService } from './service/nats-client-warehous
 		NatsClientUserService,
 	],
 })
-export class NatsClientModule { }
+export class NatsClientModule {}

@@ -10,7 +10,7 @@ import { ApiReportWarehouseCheckoutService } from './api-report-warehouse-checko
 @ApiTags('Warehouse Checkout')
 @ApiBearerAuth('access-token')
 export class ApiReportWarehouseCheckoutController {
-	constructor(private readonly apiReportWarehouseCheckoutService: ApiReportWarehouseCheckoutService) { }
+	constructor(private readonly apiReportWarehouseCheckoutService: ApiReportWarehouseCheckoutService) {}
 
 	@PermissionCode(REPORT_WAREHOUSE_CHECKOUT_PERMISSION.code)
 	@Get('export-excel')

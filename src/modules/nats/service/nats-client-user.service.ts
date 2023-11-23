@@ -6,13 +6,10 @@ import { NatsResponseInterface } from '../nats.interface'
 
 @Injectable()
 export class NatsClientUserService {
-	constructor(private readonly natsClient: NatsClientService) { }
+	constructor(private readonly natsClient: NatsClientService) {}
 
-	async insertPermission(data: { permission: any[], groupPermission: any[] }): Promise<any> {
-		const response: NatsResponseInterface = await this.natsClient.send(
-			NatsSubject.USER.INSERT_PERMISSION,
-			data
-		)
+	async insertPermission(data: { permission: any[]; groupPermission: any[] }): Promise<any> {
+		const response: NatsResponseInterface = await this.natsClient.send(NatsSubject.USER.INSERT_PERMISSION, data)
 		if (response.statusCode !== 200) {
 			throw new BusinessException(response.message as any)
 		}
@@ -31,10 +28,7 @@ export class NatsClientUserService {
 	}
 
 	async getUsersByIds(data: { userIds: number[] }): Promise<any[]> {
-		const response: NatsResponseInterface = await this.natsClient.send(
-			NatsSubject.USER.GET_USERS_BY_IDS,
-			data
-		)
+		const response: NatsResponseInterface = await this.natsClient.send(NatsSubject.USER.GET_USERS_BY_IDS, data)
 		if (response.statusCode !== 200) {
 			throw new BusinessException(response.message as any)
 		}

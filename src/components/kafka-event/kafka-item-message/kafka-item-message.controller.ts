@@ -6,8 +6,7 @@ import { KafkaItemCreateItemRequest, KafkaItemUpdateItemRequest } from './reques
 
 @Controller()
 export class KafkaItemMessageController {
-	constructor(private readonly kafkaItemMessageService: KafkaItemMessageService) {
-	}
+	constructor(private readonly kafkaItemMessageService: KafkaItemMessageService) {}
 
 	@MessagePattern(KafkaTopic.ITEM.CREATE_ITEM, Transport.KAFKA)
 	async itemCreateItem(@Payload() payload: KafkaItemCreateItemRequest) {

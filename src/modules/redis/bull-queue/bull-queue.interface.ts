@@ -4,8 +4,7 @@ export interface IQueueMessage {
 	createTime: string
 }
 
-export interface IPingQueueMessage extends IQueueMessage {
-}
+export interface IPingQueueMessage extends IQueueMessage {}
 
 export interface IWarehouseImportMessage extends IQueueMessage {
 	groupKey: string

@@ -9,8 +9,7 @@ export class NatsEventController {
 	constructor(
 		private readonly natsClientService: NatsClientService,
 		private readonly natsEventService: NatsEventService
-	) {
-	}
+	) {}
 
 	@Get('nats/ping-report')
 	async pingReport() {

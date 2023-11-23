@@ -7,8 +7,10 @@ import { WarehouseCheckout, WarehouseCheckoutType } from './warehouse-checkout.s
 
 @Injectable()
 export class WarehouseCheckoutRepository {
-	constructor(@InjectModel('WarehouseCheckoutSchema')
-	private readonly warehouseCheckoutModel: Model<WarehouseCheckout>) { }
+	constructor(
+		@InjectModel('WarehouseCheckoutSchema')
+		private readonly warehouseCheckoutModel: Model<WarehouseCheckout>
+	) {}
 
 	getFilterOptions(condition: WarehouseCheckoutConditionDto) {
 		const filter: FilterQuery<WarehouseCheckout> = {}
@@ -36,13 +38,17 @@ export class WarehouseCheckoutRepository {
 		return docs.map((i) => i.toObject())
 	}
 
-	async insertOne<T extends Partial<WarehouseCheckoutType>>(data: NoExtraProperties<Partial<WarehouseCheckoutType>, T>): Promise<WarehouseCheckoutType> {
+	async insertOne<T extends Partial<WarehouseCheckoutType>>(
+		data: NoExtraProperties<Partial<WarehouseCheckoutType>, T>
+	): Promise<WarehouseCheckoutType> {
 		const model = new this.warehouseCheckoutModel(data)
 		const inventorySnap = await model.save()
 		return inventorySnap.toObject()
 	}
 
-	async insertMany<T extends Partial<WarehouseCheckoutType>>(data: NoExtraProperties<Partial<WarehouseCheckoutType>, T>[]): Promise<WarehouseCheckoutType[]> {
+	async insertMany<T extends Partial<WarehouseCheckoutType>>(
+		data: NoExtraProperties<Partial<WarehouseCheckoutType>, T>[]
+	): Promise<WarehouseCheckoutType[]> {
 		const hydratedDocument = await this.warehouseCheckoutModel.insertMany(data)
 		return hydratedDocument.map((i: any) => i.toObject())
 	}

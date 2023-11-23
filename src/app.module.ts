@@ -36,10 +36,7 @@ import { TasksScheduleModule } from './components/schedule/tasks-schedule.module
 				path: path.join(__dirname, '/i18n/'),
 				watch: true,
 			},
-			resolvers: [
-				{ use: QueryResolver, options: ['lang', 'locale', 'l'] },
-				new HeaderResolver(['lang', 'x-lang']),
-			],
+			resolvers: [{ use: QueryResolver, options: ['lang', 'locale', 'l'] }, new HeaderResolver(['lang', 'x-lang'])],
 			typesOutputPath: path.join(__dirname, '../src/generated/i18n.generated.ts'),
 		}),
 		BootModule.forRoot({ filePath: resolve(__dirname, '../config.yaml') }),
@@ -69,4 +66,4 @@ import { TasksScheduleModule } from './components/schedule/tasks-schedule.module
 		AppService,
 	],
 })
-export class AppModule { }
+export class AppModule {}

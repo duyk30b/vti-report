@@ -17,7 +17,7 @@ export class SyncWarehouseImportService {
 		private readonly natsClientAttributeService: NatsClientAttributeService,
 		private readonly natsClientItemService: NatsClientItemService,
 		private readonly warehouseImportRepository: WarehouseImportRepository
-	) { }
+	) {}
 
 	async startSyncTime(timestamp: number) {
 		const daySync = new Date(timestamp - 24 * 60 * 60 * 1000) // đồng bộ tất cả dữ liệu ngày hôm trước
@@ -25,7 +25,9 @@ export class SyncWarehouseImportService {
 		const startTime = startOfDay(daySync, -420).getTime() // -420 để lấy theo giờ UTC+7
 		const endTime = startOfDay(timestamp, -420).getTime()
 
-		const ticketImports = await this.natsClientTicketService.getWarehouseImportList({ confirmedTime: [startTime, endTime] })
+		const ticketImports = await this.natsClientTicketService.getWarehouseImportList({
+			confirmedTime: [startTime, endTime],
+		})
 		if (!ticketImports.length) {
 			this.logger.log(`${daySyncString}: No Record Ticket Import`)
 			return
@@ -57,9 +59,9 @@ export class SyncWarehouseImportService {
 		const templateMap: Record<string, any> = {}
 		const itemMap: Record<string, any> = {}
 
-		warehouses.forEach((i: any) => warehouseMap[i.id] = i)
-		templates.forEach((i: any) => templateMap[i._id] = i)
-		items.forEach((i: any) => itemMap[i.id] = i)
+		warehouses.forEach((i: any) => (warehouseMap[i.id] = i))
+		templates.forEach((i: any) => (templateMap[i._id] = i))
+		items.forEach((i: any) => (itemMap[i.id] = i))
 
 		const warehouseImports: WarehouseImportType[] = ticketImports.map((ticket: any) => {
 			const warehouse = warehouseMap[ticket.warehouseId]

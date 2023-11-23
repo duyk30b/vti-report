@@ -6,24 +6,18 @@ import { BusinessException } from 'src/core/exception-filters/business-exception
 
 @Injectable()
 export class NatsClientItemService {
-	constructor(private readonly natsClient: NatsClientService) { }
+	constructor(private readonly natsClient: NatsClientService) {}
 
 	async getItemsByIds(data: { itemIds: number[] }): Promise<any[]> {
-		const response: NatsResponseInterface = await this.natsClient.send(
-			NatsSubject.ITEM.GET_ITEMS_BY_IDS,
-			data
-		)
+		const response: NatsResponseInterface = await this.natsClient.send(NatsSubject.ITEM.GET_ITEMS_BY_IDS, data)
 		if (response.statusCode !== 200) {
 			throw new BusinessException(response.message as any)
 		}
 		return response.data
 	}
 
-	async getItemsReport(data: { page: number, limit: number }) {
-		const response = await this.natsClient.send(
-			NatsSubject.ITEM.GET_ITEMS_REPORT,
-			data
-		)
-		return response as unknown as { total: number, page: number, limit: number, data: any[] }
+	async getItemsReport(data: { page: number; limit: number }) {
+		const response = await this.natsClient.send(NatsSubject.ITEM.GET_ITEMS_REPORT, data)
+		return response as unknown as { total: number; page: number; limit: number; data: any[] }
 	}
 }

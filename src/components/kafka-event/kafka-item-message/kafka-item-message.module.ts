@@ -7,4 +7,4 @@ import { KafkaItemMessageService } from './kafka-item-message.service'
 	controllers: [KafkaItemMessageController],
 	providers: [KafkaItemMessageService],
 })
-export class KafkaItemMessageModule { }
+export class KafkaItemMessageModule {}

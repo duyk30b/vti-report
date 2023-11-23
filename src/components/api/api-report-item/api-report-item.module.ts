@@ -7,4 +7,4 @@ import { ApiReportItemService } from './api-report-item.service'
 	controllers: [ApiReportItemController],
 	providers: [ApiReportItemService],
 })
-export class ApiReportItemModule { }
+export class ApiReportItemModule {}

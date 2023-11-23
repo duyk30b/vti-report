@@ -34,8 +34,7 @@ export class BusinessExceptionFilter implements ExceptionFilter {
 				path: request.url,
 				timestamp: new Date().toISOString(),
 			})
-		}
-		else if (host.getType() === 'rpc') {
+		} else if (host.getType() === 'rpc') {
 			if (res.constructor.name === 'NatsContext') {
 				const response: NatsContext = res
 

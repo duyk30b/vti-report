@@ -9,8 +9,7 @@ export class KafkaEventController {
 	constructor(
 		private readonly kafkaClientService: KafkaClientService,
 		private readonly kafkaEventService: KafkaEventService
-	) {
-	}
+	) {}
 
 	@Get('kafka/ping')
 	async ping() {

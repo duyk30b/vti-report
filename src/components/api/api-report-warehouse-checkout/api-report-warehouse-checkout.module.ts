@@ -7,4 +7,4 @@ import { ApiReportWarehouseCheckoutService } from './api-report-warehouse-checko
 	controllers: [ApiReportWarehouseCheckoutController],
 	providers: [ApiReportWarehouseCheckoutService],
 })
-export class ApiReportWarehouseCheckoutModule { }
+export class ApiReportWarehouseCheckoutModule {}

@@ -4,7 +4,7 @@ import { BaseSchema } from 'src/mongo/base.schema'
 
 export enum ECheckoutType {
 	Periodic = 'Periodic', // Định kỳ
-	Surprise = 'Surprise' // Đột xuất
+	Surprise = 'Surprise', // Đột xuất
 }
 
 export enum ECheckoutForm {
@@ -29,10 +29,10 @@ export class ItemCheckoutBody {
 	lot: string
 
 	@Prop({ required: false })
-	manufacturingDate: Date                             // Ngày sản xuất
+	manufacturingDate: Date // Ngày sản xuất
 
 	@Prop()
-	recordQuantity: number                              // Theo sổ sách
+	recordQuantity: number // Theo sổ sách
 
 	@Prop()
 	recordPrice: number
@@ -41,7 +41,7 @@ export class ItemCheckoutBody {
 	recordAmount: number
 
 	@Prop()
-	checkoutQuantity: number                             // Số lượng theo kiểm kê
+	checkoutQuantity: number // Số lượng theo kiểm kê
 
 	@Prop()
 	checkoutPrice: number
@@ -50,16 +50,16 @@ export class ItemCheckoutBody {
 	checkoutAmount: number
 
 	@Prop()
-	checkoutQuality: number                              // chất lượng theo kiểm kê
+	checkoutQuality: number // chất lượng theo kiểm kê
 
 	@Prop()
-	excessQuantity: number                               // Chênh lệch: số lượng thừa
+	excessQuantity: number // Chênh lệch: số lượng thừa
 
 	@Prop()
 	excessAmount: number
 
 	@Prop()
-	shortageQuantity: number                             // Chênh lệch: số lượng thiếu
+	shortageQuantity: number // Chênh lệch: số lượng thiếu
 
 	@Prop()
 	shortageAmount: number

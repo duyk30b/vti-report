@@ -17,10 +17,10 @@ export class ItemTransferBody {
 	lot: string
 
 	@Prop({ required: false })
-	manufacturingDate: Date                             // Ngày sản xuất
+	manufacturingDate: Date // Ngày sản xuất
 
 	@Prop()
-	importDate: Date                                    // Ngày nhập kho
+	importDate: Date // Ngày nhập kho
 
 	@Prop()
 	quantity: number
@@ -63,10 +63,10 @@ export class WarehouseTransfer extends BaseSchema {
 	ticketCode: string
 
 	@Prop()
-	documentDate: Date                                    // Ngày chứng từ
+	documentDate: Date // Ngày chứng từ
 
 	@Prop()
-	transferDate: Date                                    // Ngày thực chuyển
+	transferDate: Date // Ngày thực chuyển
 
 	@Prop()
 	transferStatus: number

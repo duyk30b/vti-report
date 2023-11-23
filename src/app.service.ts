@@ -7,7 +7,7 @@ import { sleep } from './common/helpers'
 export class AppService {
 	private readonly logger = new Logger(AppService.name)
 
-	constructor(private readonly natsClientUserService: NatsClientUserService) { }
+	constructor(private readonly natsClientUserService: NatsClientUserService) {}
 
 	async onModuleInit() {
 		this.logger.log('------- Init Module -------')

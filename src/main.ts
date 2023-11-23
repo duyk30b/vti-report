@@ -27,27 +27,25 @@ async function bootstrap() {
 		new TransformResponseInterceptor()
 	)
 
-	app.useGlobalFilters(
-		new UnknownExceptionFilter(),
-		new BusinessExceptionFilter(),
-		new ValidationExceptionFilter()
+	app.useGlobalFilters(new UnknownExceptionFilter(), new BusinessExceptionFilter(), new ValidationExceptionFilter())
+
+	app.useGlobalPipes(
+		new ValidationPipe({
+			validationError: { target: false, value: true },
+			skipMissingProperties: true, // no validate field undefined
+			whitelist: true, // no field not in DTO
+			// forbidNonWhitelisted: true, // exception when field not in DTO
+			transform: true, // use for DTO
+			transformOptions: {
+				excludeExtraneousValues: false, // exclude field not in class DTO => no
+				exposeUnsetFields: false, // expose field undefined in DTO => no
+			},
+			exceptionFactory: (errors: ValidationError[] = []) => new ValidationException(errors),
+		})
 	)
 
-	app.useGlobalPipes(new ValidationPipe({
-		validationError: { target: false, value: true },
-		skipMissingProperties: true, // no validate field undefined
-		whitelist: true, // no field not in DTO
-		// forbidNonWhitelisted: true, // exception when field not in DTO
-		transform: true, // use for DTO
-		transformOptions: {
-			excludeExtraneousValues: false, // exclude field not in class DTO => no
-			exposeUnsetFields: false, // expose field undefined in DTO => no
-		},
-		exceptionFactory: (errors: ValidationError[] = []) => new ValidationException(errors),
-	}))
-
 	app.connectMicroservice<NatsOptions>(NatsConfig, { inheritAppConfig: true })
-	// app.connectMicroservice<KafkaOptions>(KafkaConfig, { inheritAppConfig: true })
+	app.connectMicroservice<KafkaOptions>(KafkaConfig, { inheritAppConfig: true })
 
 	await app.startAllMicroservices()
 
@@ -63,23 +61,13 @@ async function bootstrap() {
 		const options = new DocumentBuilder()
 			.setTitle('API docs')
 			.setVersion('1.0')
-			.addBearerAuth(
-				{ type: 'http', description: 'Access token' },
-				'access-token'
-			)
+			.addBearerAuth({ type: 'http', description: 'Access token' }, 'access-token')
 			.build()
 		const document = SwaggerModule.createDocument(app, options)
-		SwaggerModule.setup(
-			`${API_PATH}/swagger-docs`,
-			app,
-			document,
-			{ swaggerOptions: { persistAuthorization: true } }
-		)
+		SwaggerModule.setup(`${API_PATH}/swagger-docs`, app, document, { swaggerOptions: { persistAuthorization: true } })
 	}
 
-	await app.listen(3000, () => {
-		logger.debug(`🚀 ===== [API] Server document: http://${APP_HOST}:${APP_CONTAINER_PORT}${API_PATH}/swagger-docs =====`)
-	})
+	await app.listen(3000, () => {})
 }
 
 bootstrap()

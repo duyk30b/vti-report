@@ -1,9 +1,10 @@
 version: '3.8'
+name: smc_project
 
 services:
   report-service:
-    container_name: report-service-local
-    image: report-service-image
+    container_name: smc-report-service-local
+    image: smc-report-service-image
     build:
       context: .
       dockerfile: Dockerfile
@@ -11,10 +12,10 @@ services:
     networks:
       mesx_network:
         ipv4_address: ${CONTAINER_NETWORK_IP}
+    restart: unless-stopped
     volumes:
       - .:/app
-      - report_node_modules:/app/node_modules/
-    restart: unless-stopped
+      - smc_report_node_modules:/app/node_modules/
     command: npm run start:debug
     ports:
       - ${APP_CONTAINER_PORT}:3000
@@ -26,4 +27,4 @@ networks:
     external: true
 
 volumes:
-  report_node_modules:
+  smc_report_node_modules:

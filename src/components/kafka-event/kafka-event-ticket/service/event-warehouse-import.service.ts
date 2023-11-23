@@ -14,7 +14,7 @@ export class EventWarehouseImportService {
 		private readonly natsClientAttributeService: NatsClientAttributeService,
 		private readonly natsClientItemService: NatsClientItemService,
 		private readonly warehouseImportRepository: WarehouseImportRepository
-	) { }
+	) {}
 
 	async warehouseImportComplete(request: EventWarehouseImportRequest) {
 		const daySyncString = timeToText(new Date(), 'YYYY-MM-DD', -420)
@@ -31,7 +31,7 @@ export class EventWarehouseImportService {
 			this.natsClientItemService.getItemsByIds({ itemIds }),
 		])
 		const itemMap: Record<string, any> = {}
-		items.forEach((i: any) => itemMap[i.id] = i)
+		items.forEach((i: any) => (itemMap[i.id] = i))
 
 		const documentDate = ticket.attributes.find((i: any) => i.code === 'wmsxCreateReceiptDate')?.value
 		const description = ticket.attributes.find((i: any) => i.code === 'wmsxGeneralDescription')?.value

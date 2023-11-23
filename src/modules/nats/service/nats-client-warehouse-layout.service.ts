@@ -15,13 +15,10 @@ export type GetLocatorsRequest = {
 
 @Injectable()
 export class NatsClientWarehouseLayoutService {
-	constructor(private readonly natsClient: NatsClientService) { }
+	constructor(private readonly natsClient: NatsClientService) {}
 
 	async getLocatorsBy(data: GetLocatorsRequest): Promise<any[]> {
-		const response: NatsResponseInterface = await this.natsClient.send(
-			NatsSubject.WAREHOUSE_LAYOUT.GET_LOCATORS,
-			data
-		)
+		const response: NatsResponseInterface = await this.natsClient.send(NatsSubject.WAREHOUSE_LAYOUT.GET_LOCATORS, data)
 		if (response.statusCode !== 200) {
 			throw new BusinessException(response.message as any)
 		}

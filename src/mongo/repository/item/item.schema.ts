@@ -3,9 +3,9 @@ import { Document, HydratedDocument } from 'mongoose'
 import { BaseSchema } from 'src/mongo/base.schema'
 
 export enum EItemStatus {
-	Import = 1,              // Nhập chưa cất
-	ImportAndPutAway = 2,    // Nhập đã cẩt
-	Pickup = 3,              // Lấy chưa xuất
+	Import = 1, // Nhập chưa cất
+	ImportAndPutAway = 2, // Nhập đã cẩt
+	Pickup = 3, // Lấy chưa xuất
 }
 
 @Schema({ timestamps: false })
@@ -14,10 +14,10 @@ export class StockBody {
 	lot: string
 
 	@Prop()
-	manufacturingDate: Date                             // Ngày sản xuất
+	manufacturingDate: Date // Ngày sản xuất
 
 	@Prop()
-	importDate: Date                                    // Ngày nhập kho
+	importDate: Date // Ngày nhập kho
 
 	@Prop()
 	locatorId: string

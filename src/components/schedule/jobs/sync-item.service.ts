@@ -16,7 +16,7 @@ export class SyncItemService {
 		private readonly natsClientWarehouseService: NatsClientWarehouseService,
 		private readonly natsClientWarehouseLayoutService: NatsClientWarehouseLayoutService,
 		private readonly itemRepository: ItemRepository
-	) { }
+	) {}
 
 	async startSyncTime(timestamp: number) {
 		const daySync = new Date(timestamp - 24 * 60 * 60 * 1000) // đồng bộ tất cả dữ liệu ngày hôm trước
@@ -53,7 +53,7 @@ export class SyncItemService {
 		])
 		const locatorVirtualIds = locatorsVirtual.map((locator) => locator._id)
 		const locatorMap: Record<string, any> = {}
-		locators.forEach((locator) => locatorMap[locator._id] = locator)
+		locators.forEach((locator) => (locatorMap[locator._id] = locator))
 
 		const itemMapWithWarehouse: Record<string, ItemType> = {}
 		data.forEach((itemRoot: any) => {

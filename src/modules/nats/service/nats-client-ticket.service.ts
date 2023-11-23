@@ -6,11 +6,11 @@ import { BusinessException } from 'src/core/exception-filters/business-exception
 
 @Injectable()
 export class NatsClientTicketService {
-	constructor(private readonly natsClient: NatsClientService) { }
+	constructor(private readonly natsClient: NatsClientService) {}
 
 	async getWarehouseImportList(condition?: {
-		limit?: number,
-		confirmedTime?: [number, number],
+		limit?: number
+		confirmedTime?: [number, number]
 		createdAt?: [number, number]
 	}): Promise<any[]> {
 		const response: NatsResponseInterface = await this.natsClient.send(

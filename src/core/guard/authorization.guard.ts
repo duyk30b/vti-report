@@ -1,11 +1,4 @@
-import {
-	CanActivate,
-	ExecutionContext,
-	HttpStatus,
-	Injectable,
-	Scope,
-	SetMetadata,
-} from '@nestjs/common'
+import { CanActivate, ExecutionContext, HttpStatus, Injectable, Scope, SetMetadata } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { NatsClientAuthService } from 'src/modules/nats/service/nats-client-auth.service'
 import { RequestExternal } from '../decorator/request-external'
@@ -22,17 +15,17 @@ export class AuthorizationGuard implements CanActivate {
 	constructor(
 		private reflector: Reflector,
 		private readonly natsClientAuthService: NatsClientAuthService
-	) { }
+	) {}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		if (context.getType() === 'rpc') {
 			return true
 		}
 
-		const permissionCode = this.reflector.getAllAndOverride<string>(
-			PERMISSION_CODE,
-			[context.getHandler(), context.getClass()]
-		)
+		const permissionCode = this.reflector.getAllAndOverride<string>(PERMISSION_CODE, [
+			context.getHandler(),
+			context.getClass(),
+		])
 		if (!permissionCode) return true
 
 		const request: RequestExternal = await context.switchToHttp().getRequest()

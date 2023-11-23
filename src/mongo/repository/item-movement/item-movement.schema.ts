@@ -25,10 +25,10 @@ export class ItemMovement extends BaseSchema {
 	lot: string
 
 	@Prop()
-	importDate: Date                                    // Ngày nhập kho
+	importDate: Date // Ngày nhập kho
 
 	@Prop({ required: false })
-	manufacturingDate: Date                             // Ngày sản xuất
+	manufacturingDate: Date // Ngày sản xuất
 
 	@Prop()
 	quantity: number

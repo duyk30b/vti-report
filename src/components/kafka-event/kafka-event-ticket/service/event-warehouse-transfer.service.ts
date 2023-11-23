@@ -14,14 +14,14 @@ export class EventWarehouseTransferService {
 		private readonly natsClientAttributeService: NatsClientAttributeService,
 		private readonly natsClientItemService: NatsClientItemService,
 		private readonly warehouseTransferRepository: WarehouseTransferRepository
-	) { }
+	) {}
 
 	async warehouseTransferComplete(request: EventWarehouseTransferRequest) {
 		const daySyncString = timeToText(new Date(), 'YYYY-MM-DD', -420)
 
 		const ticket = request.data
 		ticket.attributeMap = {}
-		ticket.attributes.forEach((atr: { code: string, value: any }) => {
+		ticket.attributes.forEach((atr: { code: string; value: any }) => {
 			ticket.attributeMap[atr.code] = atr.value
 		})
 
@@ -29,7 +29,7 @@ export class EventWarehouseTransferService {
 		ticket.ticketDetails.forEach((td: any) => {
 			itemIdSet.add(td.itemId)
 			td.attributeMap = {} as Record<string, any>
-			td.attributes.forEach((atr: { code: string, value: any }) => {
+			td.attributes.forEach((atr: { code: string; value: any }) => {
 				td.attributeMap[atr.code] = atr.value
 			})
 			td.amount = td.quantity * (td.price || 0)
@@ -47,9 +47,9 @@ export class EventWarehouseTransferService {
 			this.natsClientItemService.getItemsByIds({ itemIds }),
 		])
 		const itemMap: Record<string, any> = {}
-		items.forEach((i: any) => itemMap[i.id] = i)
+		items.forEach((i: any) => (itemMap[i.id] = i))
 		const warehouseMap: Record<string, any> = {}
-		warehouses.forEach((i: any) => warehouseMap[i.id] = i)
+		warehouses.forEach((i: any) => (warehouseMap[i.id] = i))
 
 		const warehouseTransfer: WarehouseTransferType = {
 			timeSync: new Date(daySyncString),
@@ -61,7 +61,9 @@ export class EventWarehouseTransferService {
 			templateName: templates[0].name,
 			ticketId: ticket._id.toString(),
 			ticketCode: ticket.code,
-			documentDate: ticket.attributeMap['wmsxCreateReceiptDate'] ? new Date(ticket.attributeMap['wmsxCreateReceiptDate']) : null,
+			documentDate: ticket.attributeMap['wmsxCreateReceiptDate']
+				? new Date(ticket.attributeMap['wmsxCreateReceiptDate'])
+				: null,
 			transferDate: ticket.transferDate ? new Date(ticket.transferDate) : new Date(),
 			description: ticket.attributeMap['wmsxGeneralDescription'] || '',
 			transferStatus: ticket.status,

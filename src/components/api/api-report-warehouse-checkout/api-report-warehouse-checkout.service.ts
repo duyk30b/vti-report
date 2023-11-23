@@ -5,7 +5,11 @@ import { advanceLayoutExcel, cellHeaderStyle } from 'src/common/utils/excel-adva
 import { BusinessException } from 'src/core/exception-filters/business-exception.filter'
 import { NatsClientUserService } from 'src/modules/nats/service/nats-client-user.service'
 import { WarehouseCheckoutRepository } from 'src/mongo/repository/warehouse-checkout/warehouse-checkout.repository'
-import { ECheckoutForm, ECheckoutType, WarehouseCheckoutType } from 'src/mongo/repository/warehouse-checkout/warehouse-checkout.schema'
+import {
+	ECheckoutForm,
+	ECheckoutType,
+	WarehouseCheckoutType,
+} from 'src/mongo/repository/warehouse-checkout/warehouse-checkout.schema'
 import { ApiReportWarehouseCheckoutQuery } from './api-report-warehouse-checkout.request'
 
 @Injectable()
@@ -13,7 +17,7 @@ export class ApiReportWarehouseCheckoutService {
 	constructor(
 		private readonly warehouseCheckoutRepository: WarehouseCheckoutRepository,
 		private readonly natsClientUserService: NatsClientUserService
-	) { }
+	) {}
 
 	async createOne() {
 		return await this.warehouseCheckoutRepository.insertOne({
@@ -78,7 +82,7 @@ export class ApiReportWarehouseCheckoutService {
 			toTime,
 			userFullName: user.fullName,
 			reportCode: 'W06',
-			warehouseTitle: warehouseId ? (warehouseCheckout.warehouses[0]?.warehouseName || '') : 'TẤT CẢ KHO',
+			warehouseTitle: warehouseId ? warehouseCheckout.warehouses[0]?.warehouseName || '' : 'TẤT CẢ KHO',
 			companyName: 'CÔNG TY CỔ PHẦN VTI',
 			companyAddress: 'VTI Building, Mễ Trì Hạ, Nam Từ Liêm, Hà Nội',
 		})
@@ -90,16 +94,19 @@ export class ApiReportWarehouseCheckoutService {
 		}
 	}
 
-	getWorkbookWarehouseCheckout(data: WarehouseCheckoutType, meta: {
-		fromTime: Date,
-		toTime: Date,
-		reportCode: string,
-		userFullName: string,
-		warehouseTitle: string,
-		companyName: string,
-		companyAddress: string
-	}): Workbook {
-		const dataRows: { style: any, data: any }[] = []
+	getWorkbookWarehouseCheckout(
+		data: WarehouseCheckoutType,
+		meta: {
+			fromTime: Date
+			toTime: Date
+			reportCode: string
+			userFullName: string
+			warehouseTitle: string
+			companyName: string
+			companyAddress: string
+		}
+	): Workbook {
+		const dataRows: { style: any; data: any }[] = []
 		data.warehouses.forEach((w) => {
 			dataRows.push({
 				style: { num: { font: { bold: true }, mergeCells: { rowspan: 1, colspan: 17 } } },
@@ -158,7 +165,10 @@ export class ApiReportWarehouseCheckoutService {
 			],
 		})
 
-		const sheetName = `${meta.reportCode}_${timeToText(meta.fromTime, 'DDMMYYYY')}-${timeToText(meta.toTime, 'DDMMYYYY')}`
+		const sheetName = `${meta.reportCode}_${timeToText(meta.fromTime, 'DDMMYYYY')}-${timeToText(
+			meta.toTime,
+			'DDMMYYYY'
+		)}`
 
 		const workbook = advanceLayoutExcel({
 			layout: { maxRowsTable: 1000, sheetName },
@@ -174,7 +184,10 @@ export class ApiReportWarehouseCheckoutService {
 					cell.alignment = { horizontal: 'center' }
 				})
 				worksheet.mergeCells(3, 1, 3, 17)
-				worksheet.addRow([`Từ ngày: ${timeToText(data.startTime, 'DD/MM/YYYY')} đến ngày: ${timeToText(data.endTime, 'DD/MM/YYYY')}`])
+				worksheet
+					.addRow([
+						`Từ ngày: ${timeToText(data.startTime, 'DD/MM/YYYY')} đến ngày: ${timeToText(data.endTime, 'DD/MM/YYYY')}`,
+					])
 					.eachCell((cell) => {
 						cell.font = { size: 10, bold: true, name: 'Times New Roman' }
 						cell.alignment = { horizontal: 'center' }
@@ -190,41 +203,47 @@ export class ApiReportWarehouseCheckoutService {
 					cell.font = { size: 9, name: 'Times New Roman' }
 				})
 				worksheet.addRow([''])
-				worksheet.addRow({
-					num: 'STT',
-					itemCode: 'Mã sản phẩm',
-					itemName: 'Tên sản phẩm',
-					unit: 'ĐVT',
-					lot: 'Lô',
-					manufacturingDate: 'Ngày sản xuất',
-					excessQuantity: 'Chênh lệch',
-					recordQuantity: 'Theo sổ sách',
-					checkoutQuantity: 'Theo kiểm kê',
-				}).eachCell(cellHeaderStyle)
+				worksheet
+					.addRow({
+						num: 'STT',
+						itemCode: 'Mã sản phẩm',
+						itemName: 'Tên sản phẩm',
+						unit: 'ĐVT',
+						lot: 'Lô',
+						manufacturingDate: 'Ngày sản xuất',
+						excessQuantity: 'Chênh lệch',
+						recordQuantity: 'Theo sổ sách',
+						checkoutQuantity: 'Theo kiểm kê',
+					})
+					.eachCell(cellHeaderStyle)
 				worksheet.mergeCells(9, 14, 9, 17)
 
-				worksheet.addRow({
-					excessQuantity: 'Thừa',
-					shortageQuantity: 'Thiếu',
-				}).eachCell(cellHeaderStyle)
+				worksheet
+					.addRow({
+						excessQuantity: 'Thừa',
+						shortageQuantity: 'Thiếu',
+					})
+					.eachCell(cellHeaderStyle)
 				worksheet.mergeCells(9, 7, 10, 9)
 				worksheet.mergeCells(9, 10, 10, 13)
 				worksheet.mergeCells(10, 14, 10, 15)
 				worksheet.mergeCells(10, 16, 10, 17)
 
-				worksheet.addRow({
-					recordQuantity: 'Số lượng',
-					recordPrice: 'Đơn giá',
-					recordAmount: 'Thành tiền',
-					checkoutQuantity: 'Số lượng',
-					checkoutPrice: 'Đơn giá',
-					checkoutAmount: 'Thành tiền',
-					checkoutQuality: 'Chất lượng',
-					excessQuantity: 'Số lượng',
-					excessAmount: 'Thành tiền',
-					shortageQuantity: 'Số lượng',
-					shortageAmount: 'Thành tiền',
-				}).eachCell(cellHeaderStyle)
+				worksheet
+					.addRow({
+						recordQuantity: 'Số lượng',
+						recordPrice: 'Đơn giá',
+						recordAmount: 'Thành tiền',
+						checkoutQuantity: 'Số lượng',
+						checkoutPrice: 'Đơn giá',
+						checkoutAmount: 'Thành tiền',
+						checkoutQuality: 'Chất lượng',
+						excessQuantity: 'Số lượng',
+						excessAmount: 'Thành tiền',
+						shortageQuantity: 'Số lượng',
+						shortageAmount: 'Thành tiền',
+					})
+					.eachCell(cellHeaderStyle)
 				worksheet.mergeCells(9, 1, 11, 1)
 				worksheet.mergeCells(9, 2, 11, 2)
 				worksheet.mergeCells(9, 3, 11, 3)
@@ -246,7 +265,7 @@ export class ApiReportWarehouseCheckoutService {
 				{ key: 'checkoutPrice', width: 10 },
 				{ key: 'checkoutAmount', width: 10 },
 				{ key: 'checkoutQuality', width: 10 },
-				{ key: 'excessQuantity', width: 10 },  // số lượng thừa
+				{ key: 'excessQuantity', width: 10 }, // số lượng thừa
 				{ key: 'excessAmount', width: 10 },
 				{ key: 'shortageQuantity', width: 10 }, // số lượng thiếu
 				{ key: 'shortageAmount', width: 10 },
@@ -255,7 +274,9 @@ export class ApiReportWarehouseCheckoutService {
 			footerSheet: (worksheet: Worksheet, index: number) => {
 				worksheet.addRow([''])
 				worksheet
-					.addRow([`${meta.reportCode}, ${meta.userFullName}, ngày in: ${timeToText(new Date(), 'DD/MM/YYYY hh:mm:ss')}`])
+					.addRow([
+						`${meta.reportCode}, ${meta.userFullName}, ngày in: ${timeToText(new Date(), 'DD/MM/YYYY hh:mm:ss')}`,
+					])
 					.eachCell((cell) => {
 						cell.font = { size: 10, bold: true, italic: true, name: 'Times New Roman' }
 					})

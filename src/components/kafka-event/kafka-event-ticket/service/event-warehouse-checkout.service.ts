@@ -10,9 +10,12 @@ export class EventWarehouseCheckoutService {
 		private readonly natsClientWarehouseService: NatsClientWarehouseService,
 		private readonly natsClientAttributeService: NatsClientAttributeService,
 		private readonly natsClientItemService: NatsClientItemService
-	) { }
+	) {}
 
 	async warehouseCheckoutComplete(request: EventWarehouseCheckoutRequest) {
-		console.log('🚀 ~ file: event-warehouse-checkout.service.ts:16 ~ EventWarehouseCheckoutService ~ warehouseCheckoutConfirm ~ request:', request)
+		console.log(
+			'🚀 ~ file: event-warehouse-checkout.service.ts:16 ~ EventWarehouseCheckoutService ~ warehouseCheckoutConfirm ~ request:',
+			request
+		)
 	}
 }

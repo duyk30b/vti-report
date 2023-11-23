@@ -10,7 +10,7 @@ import { ApiReportItemService } from './api-report-item.service'
 @ApiTags('Items')
 @ApiBearerAuth('access-token')
 export class ApiReportItemController {
-	constructor(private readonly apiReportItemService: ApiReportItemService) { }
+	constructor(private readonly apiReportItemService: ApiReportItemService) {}
 
 	@PermissionCode(REPORT_ITEM_PERMISSION.code)
 	@Get('export-excel')

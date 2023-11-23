@@ -14,7 +14,7 @@ export class ApiReportItemService {
 		private readonly itemRepository: ItemRepository,
 		private readonly natsClientUserService: NatsClientUserService,
 		private readonly natsClientWarehouseService: NatsClientWarehouseService
-	) { }
+	) {}
 
 	async exportExcel(query: ApiReportItemQuery, userId: number) {
 		const { time, warehouseId } = query
@@ -34,7 +34,7 @@ export class ApiReportItemService {
 			time,
 			userFullName: user.fullName,
 			reportCode: 'W01',
-			warehouseTitle: warehouseId ? (warehouseGroup[0]?.warehouseName || '') : 'TẤT CẢ KHO',
+			warehouseTitle: warehouseId ? warehouseGroup[0]?.warehouseName || '' : 'TẤT CẢ KHO',
 			companyName: 'CÔNG TY CỔ PHẦN VTI',
 			companyAddress: 'VTI Building, Mễ Trì Hạ, Nam Từ Liêm, Hà Nội',
 		})
@@ -46,14 +46,17 @@ export class ApiReportItemService {
 		}
 	}
 
-	getWorkbookItem(data: { warehouseId: number, warehouseName: string, items: ItemType[] }[], meta: {
-		time: Date,
-		reportCode: string,
-		userFullName: string,
-		warehouseTitle: string,
-		companyName: string,
-		companyAddress: string,
-	}): Workbook {
+	getWorkbookItem(
+		data: { warehouseId: number; warehouseName: string; items: ItemType[] }[],
+		meta: {
+			time: Date
+			reportCode: string
+			userFullName: string
+			warehouseTitle: string
+			companyName: string
+			companyAddress: string
+		}
+	): Workbook {
 		const dataRows = []
 		data.forEach((w) => {
 			dataRows.push({
@@ -116,24 +119,25 @@ export class ApiReportItemService {
 					cell.alignment = { horizontal: 'center' }
 				})
 				worksheet.mergeCells(4, 1, 4, 10)
-				worksheet.addRow([`Ngày: ${timeToText(meta.time, 'DD/MM/YYYY hh:mm:ss')}`])
-					.eachCell((cell) => {
-						cell.font = { size: 10, bold: true, name: 'Times New Roman' }
-						cell.alignment = { horizontal: 'center' }
-					})
+				worksheet.addRow([`Ngày: ${timeToText(meta.time, 'DD/MM/YYYY hh:mm:ss')}`]).eachCell((cell) => {
+					cell.font = { size: 10, bold: true, name: 'Times New Roman' }
+					cell.alignment = { horizontal: 'center' }
+				})
 				worksheet.mergeCells(5, 1, 5, 10)
-				worksheet.addRow({
-					num: 'STT',
-					itemCode: 'Mã sản phẩm',
-					itemName: 'Tên vật tư',
-					unit: 'ĐVT',
-					lot: 'Lô',
-					manufacturingDate: 'Ngày sản xuất',
-					importDate: 'Ngày nhập kho',
-					locatorName: 'Vị trí',
-					status: 'Trạng thái',
-					quantity: 'SL Tồn',
-				}).eachCell(cellHeaderStyle)
+				worksheet
+					.addRow({
+						num: 'STT',
+						itemCode: 'Mã sản phẩm',
+						itemName: 'Tên vật tư',
+						unit: 'ĐVT',
+						lot: 'Lô',
+						manufacturingDate: 'Ngày sản xuất',
+						importDate: 'Ngày nhập kho',
+						locatorName: 'Vị trí',
+						status: 'Trạng thái',
+						quantity: 'SL Tồn',
+					})
+					.eachCell(cellHeaderStyle)
 			},
 			columns: [
 				{ key: 'num', width: 10 },
@@ -151,7 +155,9 @@ export class ApiReportItemService {
 			footerSheet: (worksheet: Worksheet, index: number) => {
 				worksheet.addRow([''])
 				worksheet
-					.addRow([`${meta.reportCode}, ${meta.userFullName}, ngày in: ${timeToText(new Date(), 'DD/MM/YYYY hh:mm:ss')}`])
+					.addRow([
+						`${meta.reportCode}, ${meta.userFullName}, ngày in: ${timeToText(new Date(), 'DD/MM/YYYY hh:mm:ss')}`,
+					])
 					.eachCell((cell) => {
 						cell.font = { size: 10, bold: true, italic: true, name: 'Times New Roman' }
 					})

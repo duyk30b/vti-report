@@ -6,8 +6,7 @@ import { genericRetryStrategy } from 'src/common/utils/rxjs.util'
 import { KongGatewayServiceInterface } from './interface/kong-gateway.service.interface'
 
 @Injectable()
-export class KongGatewayService
-implements KongGatewayServiceInterface, OnApplicationBootstrap {
+export class KongGatewayService implements KongGatewayServiceInterface, OnApplicationBootstrap {
 	private host: string
 	private port: string
 	private upstreamName: string
@@ -38,60 +37,65 @@ implements KongGatewayServiceInterface, OnApplicationBootstrap {
 	}
 
 	async createOrUpdateService(): Promise<any> {
-		let service = await firstValueFrom(this.httpClientService
-			.get(`${this.host}:${this.port}/services/${this.upstreamName}`)
-			.pipe(
+		let service = await firstValueFrom(
+			this.httpClientService.get(`${this.host}:${this.port}/services/${this.upstreamName}`).pipe(
 				map((response) => response.data),
 				catchError((error) => of(error))
-			))
+			)
+		)
 
 		if (!service.id) {
-			service = await firstValueFrom(this.httpClientService
-				.put(`${this.host}:${this.port}/services/${this.upstreamName}`, {
-					name: this.upstreamName,
-					protocol: 'http',
-					host: this.dns,
-					port: 3000,
-					path: '/',
-				})
-				.pipe(
-					map((response) => response.data),
-					retry(genericRetryStrategy({
-						scalingDuration: 1000,
-						excludedStatusCodes: [409],
-					})),
-					catchError((error) => of(error))
-				))
+			service = await firstValueFrom(
+				this.httpClientService
+					.put(`${this.host}:${this.port}/services/${this.upstreamName}`, {
+						name: this.upstreamName,
+						protocol: 'http',
+						host: this.dns,
+						port: 3000,
+						path: '/',
+					})
+					.pipe(
+						map((response) => response.data),
+						retry(
+							genericRetryStrategy({
+								scalingDuration: 1000,
+								excludedStatusCodes: [409],
+							})
+						),
+						catchError((error) => of(error))
+					)
+			)
 		}
 		this.logger.log(`KONG SERVICE: ${service?.id} registered!`)
 	}
 
 	async createOrUpdateRoute(): Promise<any> {
-		let route = await firstValueFrom(this.httpClientService
-			.get(`${this.host}:${this.port}/routes/${this.upstreamName}`)
-			.pipe(
+		let route = await firstValueFrom(
+			this.httpClientService.get(`${this.host}:${this.port}/routes/${this.upstreamName}`).pipe(
 				map((response) => response.data),
 				catchError((error) => of(error))
-			))
+			)
+		)
 		if (!route.id) {
-			route = await firstValueFrom(this.httpClientService
-				.put(
-					`${this.host}:${this.port}/services/${this.upstreamName}/routes/${this.serviceName}`,
-					{
+			route = await firstValueFrom(
+				this.httpClientService
+					.put(`${this.host}:${this.port}/services/${this.upstreamName}/routes/${this.serviceName}`, {
 						name: this.serviceName,
 						protocols: ['http', 'https'],
 						paths: [this.apiPath],
 						strip_path: false,
-					}
-				)
-				.pipe(
-					map((response) => response.data),
-					retry(genericRetryStrategy({
-						scalingDuration: 1000,
-						excludedStatusCodes: [409],
-					})),
-					catchError((error) => of(error))
-				))
+					})
+					.pipe(
+						map((response) => response.data),
+						retry(
+							genericRetryStrategy({
+								scalingDuration: 1000,
+								excludedStatusCodes: [409],
+							})
+						),
+						catchError((error) => of(error))
+					)
+			)
 		}
 		this.logger.log(`KONG ROUTE: ${route?.id} registered!`)
 	}

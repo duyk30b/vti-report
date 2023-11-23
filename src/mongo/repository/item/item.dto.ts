@@ -1,4 +1,4 @@
 export interface ItemConditionDto {
-  id?: string;
-  ids?: string[];
+	id?: string
+	ids?: string[]
 }

@@ -31,7 +31,7 @@ export class WarehouseTransferData {
 	@Expose()
 	@Type(() => Date)
 	@IsDate()
-	transferDate: Date                // ngày thực chuyển
+	transferDate: Date // ngày thực chuyển
 
 	@Expose()
 	@IsNumber()

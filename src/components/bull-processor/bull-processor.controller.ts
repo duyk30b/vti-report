@@ -3,8 +3,7 @@ import { BullQueueService } from 'src/modules/redis/bull-queue/bull-queue.servic
 
 @Controller()
 export class BullProcessorController {
-	constructor(private readonly bullQueueService: BullQueueService) {
-	}
+	constructor(private readonly bullQueueService: BullQueueService) {}
 
 	@Get('bull/ping')
 	async ping() {

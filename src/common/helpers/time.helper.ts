@@ -29,14 +29,14 @@ export const timeToText = (time?: Date | string | number | null, pattern = 'DD/M
 }
 
 export const startOfDay = (time: string | number | Date, offset?: number): Date => {
-	if (typeof time !== 'object') time = new Date(time)                     // time: '2023-09-20T22:39:46.711Z'
-	const offsetSystem = time.getTimezoneOffset()                           // offsetSystem: -420
+	if (typeof time !== 'object') time = new Date(time) // time: '2023-09-20T22:39:46.711Z'
+	const offsetSystem = time.getTimezoneOffset() // offsetSystem: -420
 
-	const timeMove = new Date(time.getTime() - offsetSystem * 60 * 1000)    // timeMove: '2023-09-21T05:39:46.711Z'
-	timeMove.setUTCHours(0, 0, 0, 0)                                        // timeMove: '2023-09-21T00:00:00.000Z'
+	const timeMove = new Date(time.getTime() - offsetSystem * 60 * 1000) // timeMove: '2023-09-21T05:39:46.711Z'
+	timeMove.setUTCHours(0, 0, 0, 0) // timeMove: '2023-09-21T00:00:00.000Z'
 
 	offset = offset != null ? offset : offsetSystem
-	const result = new Date(timeMove.getTime() + offset * 60 * 1000)        // result: '2023-09-20T17:00:00.000Z'
+	const result = new Date(timeMove.getTime() + offset * 60 * 1000) // result: '2023-09-20T17:00:00.000Z'
 
 	return result
 }

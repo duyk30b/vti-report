@@ -16,4 +16,4 @@ import { KafkaConfig } from './kafka.config'
 	],
 	exports: [KafkaClientService],
 })
-export class KafkaClientModule { }
+export class KafkaClientModule {}

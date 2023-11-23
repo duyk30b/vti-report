@@ -39,4 +39,4 @@ import { WarehouseTransferSchema } from './repository/warehouse-transfer/warehou
 		WarehouseCheckoutRepository,
 	],
 })
-export class MongoDbConnectModule { }
+export class MongoDbConnectModule {}

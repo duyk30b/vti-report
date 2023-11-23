@@ -16,4 +16,4 @@ import { ApiReportWarehouseTransferModule } from './api-report-warehouse-transfe
 	controllers: [],
 	providers: [],
 })
-export class ApiModule { }
+export class ApiModule {}

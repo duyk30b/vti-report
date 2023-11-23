@@ -10,7 +10,7 @@ import { ApiReportWarehouseTransferService } from './api-report-warehouse-transf
 @ApiTags('Warehouse Transfer')
 @ApiBearerAuth('access-token')
 export class ApiReportWarehouseTransferController {
-	constructor(private readonly apiReportWarehouseTransferService: ApiReportWarehouseTransferService) { }
+	constructor(private readonly apiReportWarehouseTransferService: ApiReportWarehouseTransferService) {}
 
 	@PermissionCode(REPORT_WAREHOUSE_TRANSFER_PERMISSION.code)
 	@Get('export-excel')
