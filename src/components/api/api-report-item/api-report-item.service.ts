@@ -65,21 +65,21 @@ export class ApiReportItemService {
 			})
 
 			const dataItem: any[] = []
-			w.items.forEach((item, index) => {
-				item.stocks.forEach((stock) => {
-					dataItem.push({
-						itemCode: item.itemCode,
-						itemName: item.itemName,
-						unit: item.unit,
-						lot: stock.lot,
-						manufacturingDate: stock.manufacturingDate,
-						importDate: stock.importDate,
-						locatorName: stock.locatorName,
-						status: stock.status,
-						quantity: stock.quantity,
-					})
-				})
-			})
+			// w.items.forEach((item, index) => {
+			// 	item.stocks.forEach((stock) => {
+			// 		dataItem.push({
+			// 			itemCode: item.itemCode,
+			// 			itemName: item.itemName,
+			// 			unit: item.unit,
+			// 			lot: stock.lot,
+			// 			manufacturingDate: stock.manufacturingDate,
+			// 			importDate: stock.importDate,
+			// 			locatorName: stock.locatorName,
+			// 			status: stock.status,
+			// 			quantity: stock.quantity,
+			// 		})
+			// 	})
+			// })
 
 			dataRows.push({
 				style: {

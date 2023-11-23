@@ -8,35 +8,10 @@ export enum EItemStatus {
 	Pickup = 3, // Lấy chưa xuất
 }
 
-@Schema({ timestamps: false })
-export class StockBody {
-	@Prop()
-	lot: string
-
-	@Prop()
-	manufacturingDate: Date // Ngày sản xuất
-
-	@Prop()
-	importDate: Date // Ngày nhập kho
-
-	@Prop()
-	locatorId: string
-
-	@Prop()
-	locatorName: string
-
-	@Prop({ type: Number, enum: EItemStatus })
-	status: EItemStatus
-
-	@Prop()
-	quantity: number
-}
-export const StockSchema = SchemaFactory.createForClass(StockBody)
-
 @Schema({ collection: 'items', timestamps: true })
 export class Item extends BaseSchema {
 	@Prop()
-	timeSync: Date
+	timestampSync: number
 
 	@Prop()
 	warehouseId: number
@@ -45,23 +20,80 @@ export class Item extends BaseSchema {
 	itemId: number
 
 	@Prop()
-	itemCode: string
+	code: string
 
 	@Prop()
-	itemName: string
+	nameVn: string
 
 	@Prop()
-	unit: string
-
-	@Prop({ type: [StockSchema], default: [] })
-	stocks: StockBody[]
+	nameJp: string
 
 	@Prop()
-	quantity: number
+	nameEn: string
+
+	@Prop()
+	typeCode: string // Mã loại sản phẩm
+
+	@Prop()
+	typeName: string // Tên loại sản phẩm
+
+	@Prop()
+	costCenter: string // Cost center
+
+	@Prop()
+	lot: string // Lô
+
+	@Prop()
+	bomVersion: string // BOM version
+
+	@Prop()
+	quality: string // Chất lượng
+
+	@Prop()
+	packingCode: string // Mã quy cách đóng gói
+
+	@Prop()
+	packingName: string // Tên quy cách đóng gói
+
+	@Prop()
+	bundle: string // Bundle
+
+	@Prop()
+	boxCode: string // Bundle
+
+	@Prop()
+	importDate: Date // Ngày nhập kho
+
+	@Prop()
+	locatorId: string // ID vị trí
+
+	@Prop()
+	locatorName: string // Tên vị trí
+
+	@Prop({ type: Number, enum: EItemStatus })
+	status: EItemStatus
+
+	@Prop()
+	quantityPrimary: number // số lượng tính theo đơn vị tính chính
+
+	@Prop()
+	quantitySecondary: number // số lượng tính theo đơn vị tính phụ
+
+	@Prop()
+	unitCodePrimary: number // mã đơn vị tính chính
+
+	@Prop()
+	unitCodeSecondary: number // mã đơn vị tính phụ
+
+	@Prop()
+	unitNamePrimary: number // tên đơn vị tính chính
+
+	@Prop()
+	unitNameSecondary: number // tên đơn vị tính phụ
 }
 
 const ItemSchema = SchemaFactory.createForClass(Item)
-ItemSchema.index({ timeSync: 1 }, { unique: false })
+ItemSchema.index({ timestampSync: 1 }, { unique: false })
 
 export { ItemSchema }
 

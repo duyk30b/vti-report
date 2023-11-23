@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { SyncItemService } from './jobs/sync-item.service'
 import { SyncWarehouseImportService } from './jobs/sync-warehouse-import.service'
+import { DTimer } from 'src/common/utils/time.helper'
 
 @Injectable()
 export class TasksScheduleService {
@@ -19,9 +20,9 @@ export class TasksScheduleService {
 	// 	}
 	// }
 
-	@Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT, { timeZone: 'Asia/Ho_Chi_Minh' })
+	@Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT, { utcOffset: 7 })
 	async startSyncToday() {
-		const now = new Date()
-		await this.syncItemService.startSyncTime(now.getTime())
+		const startOfToday = DTimer.startOfDate(new Date(), 7)
+		await this.syncItemService.startSync(startOfToday.getTime() - 1)
 	}
 }

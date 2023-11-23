@@ -18,22 +18,19 @@ export class SyncItemService {
 		private readonly itemRepository: ItemRepository
 	) {}
 
-	async startSyncTime(timestamp: number) {
-		const daySync = new Date(timestamp - 24 * 60 * 60 * 1000) // đồng bộ tất cả dữ liệu ngày hôm trước
-		const daySyncString = timeToText(daySync, 'YYYY-MM-DD', -420)
-
+	async startSync(timestampSync: number) {
 		let page = 1
 		let total: number
 		const limit = 1000
 		do {
 			const response = await this.natsClientItemService.getItemsReport({ page, limit })
-			await this.syncBatch(response.data, daySyncString)
+			await this.syncBatch(response.data, timestampSync)
 			total = response.total as number
 			page++
 		} while (page * limit < total)
 	}
 
-	async syncBatch(data: any, daySyncString: string) {
+	async syncBatch(data: any, timestampSync: number) {
 		const locatorIdSet = new Set<string>()
 		const warehouseIdSet = new Set<number>()
 
@@ -55,49 +52,49 @@ export class SyncItemService {
 		const locatorMap: Record<string, any> = {}
 		locators.forEach((locator) => (locatorMap[locator._id] = locator))
 
-		const itemMapWithWarehouse: Record<string, ItemType> = {}
-		data.forEach((itemRoot: any) => {
-			itemRoot.stocks.forEach((stockRoot: any) => {
-				const key = `${stockRoot.warehouseId}_${stockRoot.itemId}`
-				if (!itemMapWithWarehouse[key]) {
-					itemMapWithWarehouse[key] = {
-						timeSync: new Date(daySyncString),
-						warehouseId: stockRoot.warehouseId,
-						itemId: stockRoot.itemId,
-						itemCode: itemRoot.code,
-						itemName: itemRoot.name,
-						unit: itemRoot.itemUnit?.name,
-						stocks: [],
-						quantity: 0,
-					}
-				}
+		// const itemMapWithWarehouse: Record<string, ItemType> = {}
+		// data.forEach((itemRoot: any) => {
+		// 	itemRoot.stocks.forEach((stockRoot: any) => {
+		// 		const key = `${stockRoot.warehouseId}_${stockRoot.itemId}`
+		// 		if (!itemMapWithWarehouse[key]) {
+		// 			itemMapWithWarehouse[key] = {
+		// 				timestampSync,
+		// 				warehouseId: stockRoot.warehouseId,
+		// 				itemId: stockRoot.itemId,
+		// 				code: itemRoot.code,
+		// 				itemName: itemRoot.name,
+		// 				unit: itemRoot.itemUnit?.name,
+		// 				stocks: [],
+		// 				quantity: 0,
+		// 			}
+		// 		}
 
-				let status: EItemStatus
-				if (locatorVirtualIds.includes(stockRoot.ticketLocatorId)) {
-					status = EItemStatus.Import
-				}
-				if (stockRoot?.isPutAway) {
-					status = EItemStatus.ImportAndPutAway
-				}
-				if (stockRoot?.isPickedUp) {
-					status = EItemStatus.Pickup
-				}
+		// 		let status: EItemStatus
+		// 		if (locatorVirtualIds.includes(stockRoot.ticketLocatorId)) {
+		// 			status = EItemStatus.Import
+		// 		}
+		// 		if (stockRoot?.isPutAway) {
+		// 			status = EItemStatus.ImportAndPutAway
+		// 		}
+		// 		if (stockRoot?.isPickedUp) {
+		// 			status = EItemStatus.Pickup
+		// 		}
 
-				itemMapWithWarehouse[key].stocks.push({
-					lot: stockRoot.lotNumber,
-					manufacturingDate: stockRoot.mfg ? new Date(stockRoot.mfg) : null,
-					importDate: stockRoot.storageDate ? new Date(stockRoot.storageDate) : null,
-					locatorId: stockRoot.ticketLocatorId,
-					locatorName: locatorMap[stockRoot.ticketLocatorId]?.pathName,
-					status,
-					quantity: Number(stockRoot.quantity),
-				})
-				itemMapWithWarehouse[key].quantity += Number(stockRoot.quantity)
-			})
-		})
+		// 		itemMapWithWarehouse[key].stocks.push({
+		// 			lot: stockRoot.lotNumber,
+		// 			manufacturingDate: stockRoot.mfg ? new Date(stockRoot.mfg) : null,
+		// 			importDate: stockRoot.storageDate ? new Date(stockRoot.storageDate) : null,
+		// 			locatorId: stockRoot.ticketLocatorId,
+		// 			locatorName: locatorMap[stockRoot.ticketLocatorId]?.pathName,
+		// 			status,
+		// 			quantity: Number(stockRoot.quantity),
+		// 		})
+		// 		itemMapWithWarehouse[key].quantity += Number(stockRoot.quantity)
+		// 	})
+		// })
 
-		const itemSnap: ItemType[] = Object.values(itemMapWithWarehouse)
+		// const itemSnap: ItemType[] = Object.values(itemMapWithWarehouse)
 
-		await this.itemRepository.insertMany(itemSnap)
+		// await this.itemRepository.insertMany(itemSnap)
 	}
 }
