@@ -33,7 +33,11 @@ export const NatsSubject = {
 		INSERT_PERMISSION: NatsService.USER + '.insert_permission',
 		DELETE_PERMISSION_NOT_ACTIVE: NatsService.USER + '.delete_permission_not_active',
 	},
-	REPORT: { PING: NatsService.REPORT + '.ping' },
+	REPORT: {
+		PING: NatsService.REPORT + '.ping',
+		SNAPSHOT_ITEMS: NatsService.REPORT + '.snapshot_items',
+		SNAPSHOT_ITEM_MOVEMENT: NatsService.REPORT + '.snapshot_item_movement',
+	},
 	WAREHOUSE: {
 		PING: NatsService.WAREHOUSE + '.ping',
 		GET_WAREHOUSES: NatsService.WAREHOUSE + '.get_warehouses',

@@ -17,6 +17,9 @@ export class Item extends BaseSchema {
 	warehouseId: number
 
 	@Prop()
+	warehouseName: string
+
+	@Prop()
 	itemId: number
 
 	@Prop()

@@ -1,7 +1,8 @@
+import { ComparisonType } from 'src/mongo/common/variable'
+
 export interface ItemMovementConditionDto {
 	id?: string
 	ids?: string[]
 
-	timeSync?: Date | { [P in '$gte' | '$gt' | '$lt' | '$lte']?: Date }
-	documentDate?: Date | { [P in '$gte' | '$gt' | '$lt' | '$lte']?: Date }
+	timestampSync?: number | [ComparisonType, number?, number?]
 }

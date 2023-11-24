@@ -40,6 +40,11 @@ export class ItemRepository {
 		return hydratedDocument.map((i: any) => i.toObject())
 	}
 
+	async insertManyFullField<T extends ItemType>(data: NoExtraProperties<ItemType, T>[]): Promise<ItemType[]> {
+		const hydratedDocument = await this.itemModel.insertMany(data)
+		return hydratedDocument.map((i: any) => i.toObject())
+	}
+
 	async deleteMany(condition: ItemConditionDto): Promise<any> {
 		const filter = this.getFilterOptions(condition)
 		return await this.itemModel.deleteMany(filter)
