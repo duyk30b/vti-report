@@ -3,47 +3,47 @@ import { IsArray, IsDate, IsDefined, IsNumber, IsObject, IsString, ValidateNeste
 import { KafkaBaseRequest } from 'src/modules/kafka/kafka-base.request'
 
 export class WarehouseImportData {
-	@Expose()
-	@IsDefined()
-	@IsString()
-	_id: string
+  @Expose()
+  @IsDefined()
+  @IsString()
+  _id: string
 
-	@Expose()
-	@IsDefined()
-	@IsString()
-	code: string
+  @Expose()
+  @IsDefined()
+  @IsString()
+  code: string
 
-	@Expose()
-	@IsDefined()
-	@IsString()
-	templateId: string
+  @Expose()
+  @IsDefined()
+  @IsString()
+  templateId: string
 
-	@Expose()
-	@IsDefined()
-	@IsNumber()
-	warehouseId: number
+  @Expose()
+  @IsDefined()
+  @IsNumber()
+  warehouseId: number
 
-	@Expose()
-	@Type(() => Date)
-	@IsDate()
-	importDate: Date // ngày thực nhập
+  @Expose()
+  @Type(() => Date)
+  @IsDate()
+  importDate: Date // ngày thực nhập
 
-	@Expose()
-	@IsDefined()
-	@IsArray()
-	attributes: any[]
+  @Expose()
+  @IsDefined()
+  @IsArray()
+  attributes: any[]
 
-	@Expose()
-	@IsDefined()
-	@IsArray()
-	ticketDetails: any[]
+  @Expose()
+  @IsDefined()
+  @IsArray()
+  ticketDetails: any[]
 }
 
 export class EventWarehouseImportRequest extends KafkaBaseRequest {
-	@Type(() => WarehouseImportData)
-	@Expose()
-	@IsDefined()
-	@IsObject()
-	@ValidateNested({ each: true })
-	data: WarehouseImportData
+  @Type(() => WarehouseImportData)
+  @Expose()
+  @IsDefined()
+  @IsObject()
+  @ValidateNested({ each: true })
+  data: WarehouseImportData
 }

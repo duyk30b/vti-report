@@ -9,61 +9,61 @@ import { EventWarehouseImportRequest } from '../request'
 
 @Injectable()
 export class EventWarehouseImportService {
-	constructor(
-		private readonly natsClientWarehouseService: NatsClientWarehouseService,
-		private readonly natsClientAttributeService: NatsClientAttributeService,
-		private readonly natsClientItemService: NatsClientItemService,
-		private readonly warehouseImportRepository: WarehouseImportRepository
-	) {}
+  constructor(
+    private readonly natsClientWarehouseService: NatsClientWarehouseService,
+    private readonly natsClientAttributeService: NatsClientAttributeService,
+    private readonly natsClientItemService: NatsClientItemService,
+    private readonly warehouseImportRepository: WarehouseImportRepository
+  ) {}
 
-	async warehouseImportComplete(request: EventWarehouseImportRequest) {
-		const daySyncString = timeToText(new Date(), 'YYYY-MM-DD', -420)
+  async warehouseImportComplete(request: EventWarehouseImportRequest) {
+    const daySyncString = timeToText(new Date(), 'YYYY-MM-DD', -420)
 
-		const ticket = request.data
-		const itemIdSet = new Set<number>()
-		ticket.ticketDetails.forEach((td: any) => {
-			itemIdSet.add(td.itemId)
-		})
-		const itemIds = Array.from(itemIdSet)
-		const [warehouses, templates, items] = await Promise.all([
-			this.natsClientWarehouseService.getWarehouses({ ids: [ticket.warehouseId] }),
-			this.natsClientAttributeService.getTemplatesByIds({ ids: [ticket.templateId.toString()] }),
-			this.natsClientItemService.getItemsByIds({ itemIds }),
-		])
-		const itemMap: Record<string, any> = {}
-		items.forEach((i: any) => (itemMap[i.id] = i))
+    const ticket = request.data
+    const itemIdSet = new Set<number>()
+    ticket.ticketDetails.forEach((td: any) => {
+      itemIdSet.add(td.itemId)
+    })
+    const itemIds = Array.from(itemIdSet)
+    const [warehouses, templates, items] = await Promise.all([
+      this.natsClientWarehouseService.getWarehouses({ ids: [ticket.warehouseId] }),
+      this.natsClientAttributeService.getTemplatesByIds({ ids: [ticket.templateId.toString()] }),
+      this.natsClientItemService.getItemsByIds({ itemIds }),
+    ])
+    const itemMap: Record<string, any> = {}
+    items.forEach((i: any) => (itemMap[i.id] = i))
 
-		const documentDate = ticket.attributes.find((i: any) => i.code === 'wmsxCreateReceiptDate')?.value
-		const description = ticket.attributes.find((i: any) => i.code === 'wmsxGeneralDescription')?.value
+    const documentDate = ticket.attributes.find((i: any) => i.code === 'wmsxCreateReceiptDate')?.value
+    const description = ticket.attributes.find((i: any) => i.code === 'wmsxGeneralDescription')?.value
 
-		const warehouseImport: WarehouseImportType = {
-			timeSync: new Date(daySyncString),
-			warehouseId: warehouses[0].id,
-			warehouseName: warehouses[0].name,
-			templateCode: templates[0].code,
-			templateName: templates[0].name,
-			ticketId: ticket._id.toString(),
-			ticketCode: ticket.code,
-			documentDate: documentDate ? new Date(documentDate) : null,
-			importDate: ticket.importDate ? new Date(ticket.importDate) : new Date(),
-			description,
-			amount: ticket.ticketDetails.reduce((acc: number, cur: any) => acc + cur.amount, 0),
-			items: ticket.ticketDetails.map((ticketDetail: any) => {
-				const item = itemMap[ticketDetail.itemId]
-				return {
-					itemCode: item.code,
-					lot: ticketDetail.lot,
-					price: ticketDetail.price,
-					quantity: ticketDetail.quantity,
-					amount: ticketDetail.amount,
-					manufacturingDate: ticketDetail.mfgDate ? new Date(ticketDetail.mfgDate) : null,
-					importDate: ticketDetail.importDate ? new Date(ticketDetail.importDate) : null,
-					itemName: item.name,
-					unit: item.itemUnit.name,
-				}
-			}),
-		}
+    const warehouseImport: WarehouseImportType = {
+      timeSync: new Date(daySyncString),
+      warehouseId: warehouses[0].id,
+      warehouseName: warehouses[0].name,
+      templateCode: templates[0].code,
+      templateName: templates[0].name,
+      ticketId: ticket._id.toString(),
+      ticketCode: ticket.code,
+      documentDate: documentDate ? new Date(documentDate) : null,
+      importDate: ticket.importDate ? new Date(ticket.importDate) : new Date(),
+      description,
+      amount: ticket.ticketDetails.reduce((acc: number, cur: any) => acc + cur.amount, 0),
+      items: ticket.ticketDetails.map((ticketDetail: any) => {
+        const item = itemMap[ticketDetail.itemId]
+        return {
+          itemCode: item.code,
+          lot: ticketDetail.lot,
+          price: ticketDetail.price,
+          quantity: ticketDetail.quantity,
+          amount: ticketDetail.amount,
+          manufacturingDate: ticketDetail.mfgDate ? new Date(ticketDetail.mfgDate) : null,
+          importDate: ticketDetail.importDate ? new Date(ticketDetail.importDate) : null,
+          itemName: item.name,
+          unit: item.itemUnit.name,
+        }
+      }),
+    }
 
-		await this.warehouseImportRepository.insertOne(warehouseImport)
-	}
+    await this.warehouseImportRepository.insertOne(warehouseImport)
+  }
 }

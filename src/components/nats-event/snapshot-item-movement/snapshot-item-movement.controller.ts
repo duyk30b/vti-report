@@ -6,10 +6,10 @@ import { SnapshotItemMovementService } from './snapshot-item-movement.service'
 
 @Controller()
 export class SnapshotItemMovementController {
-	constructor(private readonly snapshotItemMovementService: SnapshotItemMovementService) {}
+  constructor(private readonly snapshotItemMovementService: SnapshotItemMovementService) {}
 
-	@MessagePattern(NatsSubject.REPORT.SNAPSHOT_ITEM_MOVEMENT, Transport.NATS)
-	async createManyItemMovement(@Payload() payload: SnapshotItemMovementRequest) {
-		return this.snapshotItemMovementService.createManyItemMovement(payload)
-	}
+  @MessagePattern(NatsSubject.REPORT.SNAPSHOT_ITEM_MOVEMENT, Transport.NATS)
+  async createManyItemMovement(@Payload() payload: SnapshotItemMovementRequest) {
+    return this.snapshotItemMovementService.createManyItemMovement(payload)
+  }
 }

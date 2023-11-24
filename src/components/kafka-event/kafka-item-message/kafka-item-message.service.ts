@@ -3,9 +3,9 @@ import { KafkaItemCreateItemRequest, KafkaItemUpdateItemRequest } from './reques
 
 @Injectable()
 export class KafkaItemMessageService {
-	constructor() {}
+  constructor() {}
 
-	async itemCreateItem({ data }: KafkaItemCreateItemRequest) {}
+  async itemCreateItem({ data }: KafkaItemCreateItemRequest) {}
 
-	async itemUpdateItem({ data }: KafkaItemUpdateItemRequest) {}
+  async itemUpdateItem({ data }: KafkaItemUpdateItemRequest) {}
 }

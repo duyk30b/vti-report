@@ -1,30 +1,30 @@
 {
-	"files.eol": "\n",
-	"editor.tabSize": 2,
-	"cSpell.words": [
-		"acks",
-		"argb",
-		"colspan",
-		"exceljs",
-		"jdbc",
-		"kafkajs",
-		"Minh",
-		"Partitioner",
-		"Partitioners",
-		"Redlock",
-		"rowspan",
-		"typeorm",
-		"virtuals"
-	],
-	"[typescript]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode",
-		"editor.tabSize": 2,
-		"editor.insertSpaces": false,
-		"editor.detectIndentation": false
-	},
-	"javascript.preferences.quoteStyle": "single",
-	"typescript.preferences.quoteStyle": "single",
-	"typescript.format.semicolons": "remove",
-	"javascript.format.semicolons": "remove",
-	"git.allowForcePush": true
+  "files.eol": "\n",
+  "editor.tabSize": 2,
+  "cSpell.words": [
+    "acks",
+    "argb",
+    "colspan",
+    "exceljs",
+    "jdbc",
+    "kafkajs",
+    "Minh",
+    "Partitioner",
+    "Partitioners",
+    "Redlock",
+    "rowspan",
+    "typeorm",
+    "virtuals"
+  ],
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2,
+    "editor.insertSpaces": false,
+    "editor.detectIndentation": false
+  },
+  "javascript.preferences.quoteStyle": "single",
+  "typescript.preferences.quoteStyle": "single",
+  "typescript.format.semicolons": "remove",
+  "javascript.format.semicolons": "remove",
+  "git.allowForcePush": true
 }

@@ -9,92 +9,92 @@ import { WarehouseImport } from 'src/mongo/repository/warehouse-import/warehouse
 
 @Injectable()
 export class SyncItemService {
-	private readonly logger = new Logger(SyncItemService.name)
+  private readonly logger = new Logger(SyncItemService.name)
 
-	constructor(
-		private readonly natsClientItemService: NatsClientItemService,
-		private readonly natsClientWarehouseService: NatsClientWarehouseService,
-		private readonly natsClientWarehouseLayoutService: NatsClientWarehouseLayoutService,
-		private readonly itemRepository: ItemRepository
-	) {}
+  constructor(
+    private readonly natsClientItemService: NatsClientItemService,
+    private readonly natsClientWarehouseService: NatsClientWarehouseService,
+    private readonly natsClientWarehouseLayoutService: NatsClientWarehouseLayoutService,
+    private readonly itemRepository: ItemRepository
+  ) {}
 
-	async startSync(timestampSync: number) {
-		let page = 1
-		let total: number
-		const limit = 1000
-		do {
-			const response = await this.natsClientItemService.getItemsReport({ page, limit })
-			await this.syncBatch(response.data, timestampSync)
-			total = response.total as number
-			page++
-		} while (page * limit < total)
-	}
+  async startSync(timestampSync: number) {
+    let page = 1
+    let total: number
+    const limit = 1000
+    do {
+      const response = await this.natsClientItemService.getItemsReport({ page, limit })
+      await this.syncBatch(response.data, timestampSync)
+      total = response.total as number
+      page++
+    } while (page * limit < total)
+  }
 
-	async syncBatch(data: any, timestampSync: number) {
-		const locatorIdSet = new Set<string>()
-		const warehouseIdSet = new Set<number>()
+  async syncBatch(data: any, timestampSync: number) {
+    const locatorIdSet = new Set<string>()
+    const warehouseIdSet = new Set<number>()
 
-		data.forEach((itemRoot: any) => {
-			itemRoot.stocks.forEach((stockRoot: any) => {
-				warehouseIdSet.add(stockRoot.warehouseId)
-				locatorIdSet.add(stockRoot.ticketLocatorId)
-			})
-		})
-		const warehouseIds = Array.from(warehouseIdSet)
-		const locatorIds = Array.from(locatorIdSet)
+    data.forEach((itemRoot: any) => {
+      itemRoot.stocks.forEach((stockRoot: any) => {
+        warehouseIdSet.add(stockRoot.warehouseId)
+        locatorIdSet.add(stockRoot.ticketLocatorId)
+      })
+    })
+    const warehouseIds = Array.from(warehouseIdSet)
+    const locatorIds = Array.from(locatorIdSet)
 
-		const [warehouses, locators, locatorsVirtual] = await Promise.all([
-			this.natsClientWarehouseService.getWarehouses({ ids: warehouseIds }),
-			this.natsClientWarehouseLayoutService.getLocatorsBy({ ids: locatorIds }),
-			this.natsClientWarehouseLayoutService.getLocatorsBy({ warehouseIds, level: 0 }), // level=0 là vị trí ảo
-		])
-		const locatorVirtualIds = locatorsVirtual.map((locator) => locator._id)
-		const locatorMap: Record<string, any> = {}
-		locators.forEach((locator) => (locatorMap[locator._id] = locator))
+    const [warehouses, locators, locatorsVirtual] = await Promise.all([
+      this.natsClientWarehouseService.getWarehouses({ ids: warehouseIds }),
+      this.natsClientWarehouseLayoutService.getLocatorsBy({ ids: locatorIds }),
+      this.natsClientWarehouseLayoutService.getLocatorsBy({ warehouseIds, level: 0 }), // level=0 là vị trí ảo
+    ])
+    const locatorVirtualIds = locatorsVirtual.map((locator) => locator._id)
+    const locatorMap: Record<string, any> = {}
+    locators.forEach((locator) => (locatorMap[locator._id] = locator))
 
-		// const itemMapWithWarehouse: Record<string, ItemType> = {}
-		// data.forEach((itemRoot: any) => {
-		// 	itemRoot.stocks.forEach((stockRoot: any) => {
-		// 		const key = `${stockRoot.warehouseId}_${stockRoot.itemId}`
-		// 		if (!itemMapWithWarehouse[key]) {
-		// 			itemMapWithWarehouse[key] = {
-		// 				timestampSync,
-		// 				warehouseId: stockRoot.warehouseId,
-		// 				itemId: stockRoot.itemId,
-		// 				code: itemRoot.code,
-		// 				itemName: itemRoot.name,
-		// 				unit: itemRoot.itemUnit?.name,
-		// 				stocks: [],
-		// 				quantity: 0,
-		// 			}
-		// 		}
+    // const itemMapWithWarehouse: Record<string, ItemType> = {}
+    // data.forEach((itemRoot: any) => {
+    // 	itemRoot.stocks.forEach((stockRoot: any) => {
+    // 		const key = `${stockRoot.warehouseId}_${stockRoot.itemId}`
+    // 		if (!itemMapWithWarehouse[key]) {
+    // 			itemMapWithWarehouse[key] = {
+    // 				timestampSync,
+    // 				warehouseId: stockRoot.warehouseId,
+    // 				itemId: stockRoot.itemId,
+    // 				code: itemRoot.code,
+    // 				itemName: itemRoot.name,
+    // 				unit: itemRoot.itemUnit?.name,
+    // 				stocks: [],
+    // 				quantity: 0,
+    // 			}
+    // 		}
 
-		// 		let status: EItemStatus
-		// 		if (locatorVirtualIds.includes(stockRoot.ticketLocatorId)) {
-		// 			status = EItemStatus.Import
-		// 		}
-		// 		if (stockRoot?.isPutAway) {
-		// 			status = EItemStatus.ImportAndPutAway
-		// 		}
-		// 		if (stockRoot?.isPickedUp) {
-		// 			status = EItemStatus.Pickup
-		// 		}
+    // 		let status: EItemStatus
+    // 		if (locatorVirtualIds.includes(stockRoot.ticketLocatorId)) {
+    // 			status = EItemStatus.Import
+    // 		}
+    // 		if (stockRoot?.isPutAway) {
+    // 			status = EItemStatus.ImportAndPutAway
+    // 		}
+    // 		if (stockRoot?.isPickedUp) {
+    // 			status = EItemStatus.Pickup
+    // 		}
 
-		// 		itemMapWithWarehouse[key].stocks.push({
-		// 			lot: stockRoot.lotNumber,
-		// 			manufacturingDate: stockRoot.mfg ? new Date(stockRoot.mfg) : null,
-		// 			importDate: stockRoot.storageDate ? new Date(stockRoot.storageDate) : null,
-		// 			locatorId: stockRoot.ticketLocatorId,
-		// 			locatorName: locatorMap[stockRoot.ticketLocatorId]?.pathName,
-		// 			status,
-		// 			quantity: Number(stockRoot.quantity),
-		// 		})
-		// 		itemMapWithWarehouse[key].quantity += Number(stockRoot.quantity)
-		// 	})
-		// })
+    // 		itemMapWithWarehouse[key].stocks.push({
+    // 			lot: stockRoot.lotNumber,
+    // 			manufacturingDate: stockRoot.mfg ? new Date(stockRoot.mfg) : null,
+    // 			importDate: stockRoot.storageDate ? new Date(stockRoot.storageDate) : null,
+    // 			locatorId: stockRoot.ticketLocatorId,
+    // 			locatorName: locatorMap[stockRoot.ticketLocatorId]?.pathName,
+    // 			status,
+    // 			quantity: Number(stockRoot.quantity),
+    // 		})
+    // 		itemMapWithWarehouse[key].quantity += Number(stockRoot.quantity)
+    // 	})
+    // })
 
-		// const itemSnap: ItemType[] = Object.values(itemMapWithWarehouse)
+    // const itemSnap: ItemType[] = Object.values(itemMapWithWarehouse)
 
-		// await this.itemRepository.insertMany(itemSnap)
-	}
+    // await this.itemRepository.insertMany(itemSnap)
+  }
 }

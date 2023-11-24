@@ -1,7 +1,7 @@
 export class WarehouseImportCondition {
-	id?: number
+  id?: number
 }
 
 export type WarehouseImportOrder = {
-	[P in 'id']?: 'ASC' | 'DESC'
+  [P in 'id']?: 'ASC' | 'DESC'
 }

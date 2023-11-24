@@ -10,11 +10,11 @@ import { ApiReportWarehouseImportService } from './api-report-warehouse-import.s
 @ApiTags('Warehouse Import')
 @ApiBearerAuth('access-token')
 export class ApiReportWarehouseImportController {
-	constructor(private readonly apiReportWarehouseImportService: ApiReportWarehouseImportService) {}
+  constructor(private readonly apiReportWarehouseImportService: ApiReportWarehouseImportService) {}
 
-	@PermissionCode(REPORT_WAREHOUSE_IMPORT_PERMISSION.code)
-	@Get('export-excel')
-	async export(@Query() query: ApiReportWarehouseImportQuery, @External() { user }: any) {
-		return await this.apiReportWarehouseImportService.exportExcel(query, user.id)
-	}
+  @PermissionCode(REPORT_WAREHOUSE_IMPORT_PERMISSION.code)
+  @Get('export-excel')
+  async export(@Query() query: ApiReportWarehouseImportQuery, @External() { user }: any) {
+    return await this.apiReportWarehouseImportService.exportExcel(query, user.id)
+  }
 }

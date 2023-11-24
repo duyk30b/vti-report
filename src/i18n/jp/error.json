@@ -1,6 +1,6 @@
 {
-	"NotFound": "Not found",
-	"Event": {
-		"NotFound": "Event not found"
-	}
+  "NotFound": "Not found",
+  "Event": {
+    "NotFound": "Event not found"
+  }
 }

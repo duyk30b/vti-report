@@ -9,15 +9,15 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 @ApiTags('Snapshot Item')
 @ApiBearerAuth('access-token')
 export class SnapshotItemController {
-	constructor(private readonly snapshotItemService: SnapshotItemService) {}
+  constructor(private readonly snapshotItemService: SnapshotItemService) {}
 
-	@MessagePattern(NatsSubject.REPORT.SNAPSHOT_ITEMS, Transport.NATS)
-	async createManyItem(@Payload() payload: SnapshotItemRequest) {
-		return this.snapshotItemService.createManyItem(payload)
-	}
+  @MessagePattern(NatsSubject.REPORT.SNAPSHOT_ITEMS, Transport.NATS)
+  async createManyItem(@Payload() payload: SnapshotItemRequest) {
+    return this.snapshotItemService.createManyItem(payload)
+  }
 
-	@Post('demo-item')
-	async testBody(@Body() body: SnapshotItemRequest) {
-		return this.snapshotItemService.createManyItem(body)
-	}
+  @Post('demo-item')
+  async testBody(@Body() body: SnapshotItemRequest) {
+    return this.snapshotItemService.createManyItem(body)
+  }
 }

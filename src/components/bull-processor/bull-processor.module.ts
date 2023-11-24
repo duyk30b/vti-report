@@ -6,8 +6,8 @@ import { WarehouseImportConfirmProcessor } from './processor/warehouse-import-pr
 import { DemoProcessor } from './processor/demo-processor.service'
 
 @Module({
-	imports: [BullQueueModule.registerConsumer()],
-	controllers: [BullProcessorController],
-	providers: [PingProcessor, DemoProcessor, WarehouseImportConfirmProcessor],
+  imports: [BullQueueModule.registerConsumer()],
+  controllers: [BullProcessorController],
+  providers: [PingProcessor, DemoProcessor, WarehouseImportConfirmProcessor],
 })
 export class BullProcessorModule {}

@@ -4,72 +4,72 @@ import { BaseSchema } from 'src/mongo/base.schema'
 
 @Schema({ timestamps: false })
 export class ItemExportBody {
-	@Prop()
-	itemCode: string
+  @Prop()
+  itemCode: string
 
-	@Prop()
-	itemName: string
+  @Prop()
+  itemName: string
 
-	@Prop()
-	unit: string
+  @Prop()
+  unit: string
 
-	@Prop()
-	importDate: Date // Ngày nhập kho
+  @Prop()
+  importDate: Date // Ngày nhập kho
 
-	@Prop({ required: false })
-	lot: string
+  @Prop({ required: false })
+  lot: string
 
-	@Prop({ required: false })
-	manufacturingDate: Date // Ngày sản xuất
+  @Prop({ required: false })
+  manufacturingDate: Date // Ngày sản xuất
 
-	@Prop()
-	quantity: number
+  @Prop()
+  quantity: number
 
-	@Prop()
-	price: number
+  @Prop()
+  price: number
 
-	@Prop()
-	amount: number
+  @Prop()
+  amount: number
 }
 export const ItemExportSchema = SchemaFactory.createForClass(ItemExportBody)
 
 @Schema({ collection: 'warehouseExports', timestamps: true })
 export class WarehouseExport extends BaseSchema {
-	@Prop()
-	timeSync: Date
+  @Prop()
+  timeSync: Date
 
-	@Prop()
-	warehouseId: number
+  @Prop()
+  warehouseId: number
 
-	@Prop()
-	warehouseName: string
+  @Prop()
+  warehouseName: string
 
-	@Prop()
-	templateCode: string
+  @Prop()
+  templateCode: string
 
-	@Prop()
-	templateName: string
+  @Prop()
+  templateName: string
 
-	@Prop()
-	ticketId: string
+  @Prop()
+  ticketId: string
 
-	@Prop()
-	ticketCode: string
+  @Prop()
+  ticketCode: string
 
-	@Prop()
-	documentDate: Date // Ngày chứng từ
+  @Prop()
+  documentDate: Date // Ngày chứng từ
 
-	@Prop()
-	exportDate: Date // Ngày thực xuất
+  @Prop()
+  exportDate: Date // Ngày thực xuất
 
-	@Prop({ required: false })
-	description: string
+  @Prop({ required: false })
+  description: string
 
-	@Prop()
-	amount: number
+  @Prop()
+  amount: number
 
-	@Prop({ type: [ItemExportSchema], default: [] })
-	items: ItemExportBody[]
+  @Prop({ type: [ItemExportSchema], default: [] })
+  items: ItemExportBody[]
 }
 
 const WarehouseExportSchema = SchemaFactory.createForClass(WarehouseExport)

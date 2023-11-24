@@ -10,11 +10,11 @@ import { ApiReportWarehouseTransferService } from './api-report-warehouse-transf
 @ApiTags('Warehouse Transfer')
 @ApiBearerAuth('access-token')
 export class ApiReportWarehouseTransferController {
-	constructor(private readonly apiReportWarehouseTransferService: ApiReportWarehouseTransferService) {}
+  constructor(private readonly apiReportWarehouseTransferService: ApiReportWarehouseTransferService) {}
 
-	@PermissionCode(REPORT_WAREHOUSE_TRANSFER_PERMISSION.code)
-	@Get('export-excel')
-	async export(@Query() query: ApiReportWarehouseTransferQuery, @External() { user }: any) {
-		return await this.apiReportWarehouseTransferService.exportExcel(query, user.id)
-	}
+  @PermissionCode(REPORT_WAREHOUSE_TRANSFER_PERMISSION.code)
+  @Get('export-excel')
+  async export(@Query() query: ApiReportWarehouseTransferQuery, @External() { user }: any) {
+    return await this.apiReportWarehouseTransferService.exportExcel(query, user.id)
+  }
 }

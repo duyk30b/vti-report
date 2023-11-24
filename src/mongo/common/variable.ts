@@ -3,5 +3,5 @@ export const ComparisonType = ['LIKE', 'BETWEEN', 'IS_NULL', 'NOT_NULL', '>', '<
 export type ComparisonType = (typeof ComparisonType)[number]
 
 export const escapeSearch = (str = '') => {
-	return str.toLowerCase().replace(/[?%\\_]/gi, (x) => '\\' + x)
+  return str.toLowerCase().replace(/[?%\\_]/gi, (x) => '\\' + x)
 }

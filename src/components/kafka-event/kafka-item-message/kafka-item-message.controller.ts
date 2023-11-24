@@ -6,15 +6,15 @@ import { KafkaItemCreateItemRequest, KafkaItemUpdateItemRequest } from './reques
 
 @Controller()
 export class KafkaItemMessageController {
-	constructor(private readonly kafkaItemMessageService: KafkaItemMessageService) {}
+  constructor(private readonly kafkaItemMessageService: KafkaItemMessageService) {}
 
-	@MessagePattern(KafkaTopic.ITEM.CREATE_ITEM, Transport.KAFKA)
-	async itemCreateItem(@Payload() payload: KafkaItemCreateItemRequest) {
-		return this.kafkaItemMessageService.itemCreateItem(payload)
-	}
+  @MessagePattern(KafkaTopic.ITEM.CREATE_ITEM, Transport.KAFKA)
+  async itemCreateItem(@Payload() payload: KafkaItemCreateItemRequest) {
+    return this.kafkaItemMessageService.itemCreateItem(payload)
+  }
 
-	@MessagePattern(KafkaTopic.ITEM.UPDATE_ITEM, Transport.KAFKA)
-	async itemUpdateItem(@Payload() payload: KafkaItemUpdateItemRequest) {
-		return this.kafkaItemMessageService.itemUpdateItem(payload)
-	}
+  @MessagePattern(KafkaTopic.ITEM.UPDATE_ITEM, Transport.KAFKA)
+  async itemUpdateItem(@Payload() payload: KafkaItemUpdateItemRequest) {
+    return this.kafkaItemMessageService.itemUpdateItem(payload)
+  }
 }

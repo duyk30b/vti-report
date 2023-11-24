@@ -7,18 +7,18 @@ import { QUEUE_EVENT } from 'src/modules/redis/bull-queue/bull-queue.variable'
 
 @Processor(QUEUE_EVENT.PING)
 export class PingProcessor {
-	private readonly logger = new Logger(PingProcessor.name)
+  private readonly logger = new Logger(PingProcessor.name)
 
-	constructor(private readonly bullQueueService: BullQueueService) {}
+  constructor(private readonly bullQueueService: BullQueueService) {}
 
-	@Process()
-	async handleProcess({ data }: Job<IPingQueueMessage>) {
-		console.log('🚀 ~ file: ~ PingProcessor ~ handleProcess ~ data:', data)
-	}
+  @Process()
+  async handleProcess({ data }: Job<IPingQueueMessage>) {
+    console.log('🚀 ~ file: ~ PingProcessor ~ handleProcess ~ data:', data)
+  }
 
-	@OnQueueFailed()
-	async handleFailed(job: Job<IPingQueueMessage>, err: Error) {
-		const { messageId, data, createTime } = job.data
-		this.logger.error(`[${messageId}] handleFailed, error ${err.message}`)
-	}
+  @OnQueueFailed()
+  async handleFailed(job: Job<IPingQueueMessage>, err: Error) {
+    const { messageId, data, createTime } = job.data
+    this.logger.error(`[${messageId}] handleFailed, error ${err.message}`)
+  }
 }

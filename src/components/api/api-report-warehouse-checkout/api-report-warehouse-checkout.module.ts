@@ -3,8 +3,8 @@ import { ApiReportWarehouseCheckoutController } from './api-report-warehouse-che
 import { ApiReportWarehouseCheckoutService } from './api-report-warehouse-checkout.service'
 
 @Module({
-	imports: [],
-	controllers: [ApiReportWarehouseCheckoutController],
-	providers: [ApiReportWarehouseCheckoutService],
+  imports: [],
+  controllers: [ApiReportWarehouseCheckoutController],
+  providers: [ApiReportWarehouseCheckoutService],
 })
 export class ApiReportWarehouseCheckoutModule {}

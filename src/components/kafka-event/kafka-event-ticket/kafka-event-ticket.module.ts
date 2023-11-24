@@ -6,13 +6,13 @@ import { EventWarehouseImportService } from './service/event-warehouse-import.se
 import { EventWarehouseTransferService } from './service/event-warehouse-transfer.service'
 
 @Module({
-	imports: [],
-	controllers: [KafkaEventTicketController],
-	providers: [
-		EventWarehouseImportService,
-		EventWarehouseExportService,
-		EventWarehouseTransferService,
-		EventWarehouseCheckoutService,
-	],
+  imports: [],
+  controllers: [KafkaEventTicketController],
+  providers: [
+    EventWarehouseImportService,
+    EventWarehouseExportService,
+    EventWarehouseTransferService,
+    EventWarehouseCheckoutService,
+  ],
 })
 export class KafkaEventTicketModule {}

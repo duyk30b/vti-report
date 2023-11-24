@@ -5,8 +5,8 @@ import { KafkaEventService } from './kafka-event.service'
 import { KafkaItemMessageModule } from './kafka-item-message/kafka-item-message.module'
 
 @Module({
-	imports: [KafkaEventTicketModule, KafkaItemMessageModule],
-	controllers: [KafkaEventController],
-	providers: [KafkaEventService],
+  imports: [KafkaEventTicketModule, KafkaItemMessageModule],
+  controllers: [KafkaEventController],
+  providers: [KafkaEventService],
 })
 export class KafkaEventModule {}

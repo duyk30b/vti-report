@@ -10,11 +10,11 @@ import { ApiReportItemService } from './api-report-item.service'
 @ApiTags('Items')
 @ApiBearerAuth('access-token')
 export class ApiReportItemController {
-	constructor(private readonly apiReportItemService: ApiReportItemService) {}
+  constructor(private readonly apiReportItemService: ApiReportItemService) {}
 
-	@PermissionCode(REPORT_ITEM_PERMISSION.code)
-	@Get('export-excel')
-	async export(@Query() query: ApiReportItemQuery, @External() { user }: any) {
-		return await this.apiReportItemService.exportExcel(query, user.id)
-	}
+  @PermissionCode(REPORT_ITEM_PERMISSION.code)
+  @Get('export-excel')
+  async export(@Query() query: ApiReportItemQuery, @External() { user }: any) {
+    return await this.apiReportItemService.exportExcel(query, user.id)
+  }
 }

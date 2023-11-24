@@ -3,8 +3,8 @@ import { ApiReportWarehouseImportController } from './api-report-warehouse-impor
 import { ApiReportWarehouseImportService } from './api-report-warehouse-import.service'
 
 @Module({
-	imports: [],
-	controllers: [ApiReportWarehouseImportController],
-	providers: [ApiReportWarehouseImportService],
+  imports: [],
+  controllers: [ApiReportWarehouseImportController],
+  providers: [ApiReportWarehouseImportService],
 })
 export class ApiReportWarehouseImportModule {}

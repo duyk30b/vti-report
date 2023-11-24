@@ -6,10 +6,10 @@ import { NatsResponseInterface } from './nats.interface'
 
 @Injectable()
 export class NatsClientService {
-	constructor(@Inject('NATS_CLIENT_SERVICE') private readonly natsClient: ClientNats) {}
+  constructor(@Inject('NATS_CLIENT_SERVICE') private readonly natsClient: ClientNats) {}
 
-	async send(pattern: string, data: any): Promise<NatsResponseInterface> {
-		const request = this.natsClient.send(pattern, data)
-		return await firstValueFrom(request)
-	}
+  async send(pattern: string, data: any): Promise<NatsResponseInterface> {
+    const request = this.natsClient.send(pattern, data)
+    return await firstValueFrom(request)
+  }
 }

@@ -4,9 +4,9 @@ import { ItemMovementRepository } from 'src/mongo/repository/item-movement/item-
 
 @Injectable()
 export class SnapshotItemMovementService {
-	constructor(private readonly itemMovementRepository: ItemMovementRepository) {}
+  constructor(private readonly itemMovementRepository: ItemMovementRepository) {}
 
-	async createManyItemMovement({ data }: SnapshotItemMovementRequest) {
-		await this.itemMovementRepository.insertManyFullField(data)
-	}
+  async createManyItemMovement({ data }: SnapshotItemMovementRequest) {
+    await this.itemMovementRepository.insertManyFullField(data)
+  }
 }

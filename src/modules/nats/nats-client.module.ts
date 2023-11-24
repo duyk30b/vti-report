@@ -12,31 +12,31 @@ import { NatsClientWarehouseLayoutService } from './service/nats-client-warehous
 
 @Global()
 @Module({
-	providers: [
-		{
-			provide: 'NATS_CLIENT_SERVICE',
-			useFactory: () => {
-				return ClientProxyFactory.create(NatsConfig)
-			},
-		},
-		NatsClientService,
-		NatsClientAuthService,
-		NatsClientTicketService,
-		NatsClientWarehouseService,
-		NatsClientWarehouseLayoutService,
-		NatsClientItemService,
-		NatsClientAttributeService,
-		NatsClientUserService,
-	],
-	exports: [
-		NatsClientService,
-		NatsClientAuthService,
-		NatsClientTicketService,
-		NatsClientWarehouseService,
-		NatsClientWarehouseLayoutService,
-		NatsClientItemService,
-		NatsClientAttributeService,
-		NatsClientUserService,
-	],
+  providers: [
+    {
+      provide: 'NATS_CLIENT_SERVICE',
+      useFactory: () => {
+        return ClientProxyFactory.create(NatsConfig)
+      },
+    },
+    NatsClientService,
+    NatsClientAuthService,
+    NatsClientTicketService,
+    NatsClientWarehouseService,
+    NatsClientWarehouseLayoutService,
+    NatsClientItemService,
+    NatsClientAttributeService,
+    NatsClientUserService,
+  ],
+  exports: [
+    NatsClientService,
+    NatsClientAuthService,
+    NatsClientTicketService,
+    NatsClientWarehouseService,
+    NatsClientWarehouseLayoutService,
+    NatsClientItemService,
+    NatsClientAttributeService,
+    NatsClientUserService,
+  ],
 })
 export class NatsClientModule {}

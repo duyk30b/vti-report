@@ -4,8 +4,8 @@ import { NatsEventService } from './nats-event.service'
 import { SnapshotItemModule } from './snapshot-item/snapshot-item.module'
 
 @Module({
-	imports: [SnapshotItemModule],
-	controllers: [NatsEventController],
-	providers: [NatsEventService],
+  imports: [SnapshotItemModule],
+  controllers: [NatsEventController],
+  providers: [NatsEventService],
 })
 export class NatsEventModule {}

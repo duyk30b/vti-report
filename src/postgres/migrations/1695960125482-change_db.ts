@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class ChangeDb1695960125482 implements MigrationInterface {
-	name = 'ChangeDb1695960125482'
+  name = 'ChangeDb1695960125482'
 
-	public async up(queryRunner: QueryRunner): Promise<void> {
-		await queryRunner.query(`
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
             CREATE TABLE "warehouse_import" (
                 "id" SERIAL NOT NULL,
                 "warehouse_id" integer NOT NULL,
@@ -27,11 +27,11 @@ export class ChangeDb1695960125482 implements MigrationInterface {
                 CONSTRAINT "PK_2146ffe69ee6883a8a19859eb6e" PRIMARY KEY ("id")
             )
         `)
-	}
+  }
 
-	public async down(queryRunner: QueryRunner): Promise<void> {
-		await queryRunner.query(`
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
             DROP TABLE "warehouse_import"
         `)
-	}
+  }
 }

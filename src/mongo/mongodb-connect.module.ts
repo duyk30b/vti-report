@@ -14,29 +14,29 @@ import { WarehouseTransferSchema } from './repository/warehouse-transfer/warehou
 
 @Global()
 @Module({
-	imports: [
-		MongooseModule.forRootAsync({ useClass: MongodbConfigService }),
-		MongooseModule.forFeature([
-			{ name: 'ItemSchema', schema: ItemSchema },
-			{ name: 'WarehouseImportSchema', schema: WarehouseImportSchema },
-			{ name: 'WarehouseExportSchema', schema: WarehouseExportSchema },
-			{ name: 'WarehouseTransferSchema', schema: WarehouseTransferSchema },
-			{ name: 'WarehouseCheckoutSchema', schema: WarehouseCheckoutSchema },
-		]),
-	],
-	providers: [
-		ItemRepository,
-		WarehouseImportRepository,
-		WarehouseExportRepository,
-		WarehouseTransferRepository,
-		WarehouseCheckoutRepository,
-	],
-	exports: [
-		ItemRepository,
-		WarehouseImportRepository,
-		WarehouseExportRepository,
-		WarehouseTransferRepository,
-		WarehouseCheckoutRepository,
-	],
+  imports: [
+    MongooseModule.forRootAsync({ useClass: MongodbConfigService }),
+    MongooseModule.forFeature([
+      { name: 'ItemSchema', schema: ItemSchema },
+      { name: 'WarehouseImportSchema', schema: WarehouseImportSchema },
+      { name: 'WarehouseExportSchema', schema: WarehouseExportSchema },
+      { name: 'WarehouseTransferSchema', schema: WarehouseTransferSchema },
+      { name: 'WarehouseCheckoutSchema', schema: WarehouseCheckoutSchema },
+    ]),
+  ],
+  providers: [
+    ItemRepository,
+    WarehouseImportRepository,
+    WarehouseExportRepository,
+    WarehouseTransferRepository,
+    WarehouseCheckoutRepository,
+  ],
+  exports: [
+    ItemRepository,
+    WarehouseImportRepository,
+    WarehouseExportRepository,
+    WarehouseTransferRepository,
+    WarehouseCheckoutRepository,
+  ],
 })
 export class MongoDbConnectModule {}

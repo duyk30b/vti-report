@@ -24,46 +24,46 @@ import { MongoDbConnectModule } from './mongo/mongodb-connect.module'
 import { TasksScheduleModule } from './components/schedule/tasks-schedule.module'
 
 @Module({
-	imports: [
-		ConfigModule.forRoot({
-			envFilePath: [`.env.${process.env.NODE_ENV || 'local'}`, '.env'],
-			isGlobal: true,
-		}),
-		I18nModule.forRoot({
-			fallbackLanguage: 'vi',
-			loader: I18nJsonLoader,
-			loaderOptions: {
-				path: path.join(__dirname, '/i18n/'),
-				watch: true,
-			},
-			resolvers: [{ use: QueryResolver, options: ['lang', 'locale', 'l'] }, new HeaderResolver(['lang', 'x-lang'])],
-			typesOutputPath: path.join(__dirname, '../src/generated/i18n.generated.ts'),
-		}),
-		BootModule.forRoot({ filePath: resolve(__dirname, '../config.yaml') }),
-		ConsulModule.forRootAsync({ inject: [BOOT] }),
-		ServiceModule.forRootAsync({ inject: [BOOT, CONSUL] }),
-		KongGatewayModule.forRootAsync(),
-		// PostgresModule,
-		MongoDbConnectModule,
-		ScheduleModule.forRoot(),
-		NatsClientModule,
-		NatsEventModule,
-		// KafkaClientModule,
-		// KafkaEventModule,
-		TasksScheduleModule,
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: [`.env.${process.env.NODE_ENV || 'local'}`, '.env'],
+      isGlobal: true,
+    }),
+    I18nModule.forRoot({
+      fallbackLanguage: 'vi',
+      loader: I18nJsonLoader,
+      loaderOptions: {
+        path: path.join(__dirname, '/i18n/'),
+        watch: true,
+      },
+      resolvers: [{ use: QueryResolver, options: ['lang', 'locale', 'l'] }, new HeaderResolver(['lang', 'x-lang'])],
+      typesOutputPath: path.join(__dirname, '../src/generated/i18n.generated.ts'),
+    }),
+    BootModule.forRoot({ filePath: resolve(__dirname, '../config.yaml') }),
+    ConsulModule.forRootAsync({ inject: [BOOT] }),
+    ServiceModule.forRootAsync({ inject: [BOOT, CONSUL] }),
+    KongGatewayModule.forRootAsync(),
+    // PostgresModule,
+    MongoDbConnectModule,
+    ScheduleModule.forRoot(),
+    NatsClientModule,
+    NatsEventModule,
+    // KafkaClientModule,
+    // KafkaEventModule,
+    TasksScheduleModule,
 
-		BullQueueModule.forRoot(),
-		BullQueueModule.registerProducer(),
-		BullProcessorModule,
-		ApiModule,
-	],
-	controllers: [AppController],
-	providers: [
-		{
-			provide: APP_GUARD,
-			useClass: AuthorizationGuard,
-		},
-		AppService,
-	],
+    BullQueueModule.forRoot(),
+    BullQueueModule.registerProducer(),
+    BullProcessorModule,
+    ApiModule,
+  ],
+  controllers: [AppController],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthorizationGuard,
+    },
+    AppService,
+  ],
 })
 export class AppModule {}

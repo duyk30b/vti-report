@@ -6,14 +6,14 @@ import { ApiReportWarehouseImportModule } from './api-report-warehouse-import/ap
 import { ApiReportWarehouseTransferModule } from './api-report-warehouse-transfer/api-report-warehouse-transfer.module'
 
 @Module({
-	imports: [
-		ApiReportItemModule,
-		ApiReportWarehouseImportModule,
-		ApiReportWarehouseExportModule,
-		ApiReportWarehouseTransferModule,
-		ApiReportWarehouseCheckoutModule,
-	],
-	controllers: [],
-	providers: [],
+  imports: [
+    ApiReportItemModule,
+    ApiReportWarehouseImportModule,
+    ApiReportWarehouseExportModule,
+    ApiReportWarehouseTransferModule,
+    ApiReportWarehouseCheckoutModule,
+  ],
+  controllers: [],
+  providers: [],
 })
 export class ApiModule {}

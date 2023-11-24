@@ -6,15 +6,15 @@ import { PostgresConfig } from './postgres.config'
 
 @Global()
 @Module({
-	imports: [
-		TypeOrmModule.forRootAsync({
-			imports: [ConfigModule.forFeature(PostgresConfig)],
-			inject: [PostgresConfig.KEY],
-			useFactory: (postgresConfig: ConfigType<typeof PostgresConfig>) => postgresConfig,
-		}),
-		// TypeOrmModule.forFeature([WarehouseImport]),
-	],
-	// providers: [WarehouseImportRepository],
-	// exports: [WarehouseImportRepository],
+  imports: [
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule.forFeature(PostgresConfig)],
+      inject: [PostgresConfig.KEY],
+      useFactory: (postgresConfig: ConfigType<typeof PostgresConfig>) => postgresConfig,
+    }),
+    // TypeOrmModule.forFeature([WarehouseImport]),
+  ],
+  // providers: [WarehouseImportRepository],
+  // exports: [WarehouseImportRepository],
 })
 export class PostgresModule {}

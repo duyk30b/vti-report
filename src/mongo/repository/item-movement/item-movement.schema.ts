@@ -4,80 +4,80 @@ import { BaseSchema } from 'src/mongo/base.schema'
 
 @Schema({ collection: 'item_movements', timestamps: true })
 export class ItemMovement extends BaseSchema {
-	@Prop()
-	timeSync: Date
+  @Prop()
+  timeSync: Date
 
-	@Prop()
-	warehouseId: number
+  @Prop()
+  warehouseId: number
 
-	@Prop()
-	warehouseName: string
+  @Prop()
+  warehouseName: string
 
-	@Prop()
-	itemId: number
+  @Prop()
+  itemId: number
 
-	@Prop()
-	code: string
+  @Prop()
+  code: string
 
-	@Prop()
-	nameVn: string
+  @Prop()
+  nameVn: string
 
-	@Prop()
-	nameJp: string
+  @Prop()
+  nameJp: string
 
-	@Prop()
-	nameEn: string
+  @Prop()
+  nameEn: string
 
-	@Prop()
-	typeCode: string // Mã loại sản phẩm
+  @Prop()
+  typeCode: string // Mã loại sản phẩm
 
-	@Prop()
-	typeName: string // Tên loại sản phẩm
+  @Prop()
+  typeName: string // Tên loại sản phẩm
 
-	@Prop()
-	costCenter: string // Cost center
+  @Prop()
+  costCenter: string // Cost center
 
-	@Prop()
-	lot: string // Lô
+  @Prop()
+  lot: string // Lô
 
-	@Prop()
-	unitCodePrimary: string // mã đơn vị tính chính
+  @Prop()
+  unitCodePrimary: string // mã đơn vị tính chính
 
-	@Prop()
-	unitCodeSecondary: string // mã đơn vị tính phụ
+  @Prop()
+  unitCodeSecondary: string // mã đơn vị tính phụ
 
-	@Prop()
-	unitNamePrimary: string // tên đơn vị tính chính
+  @Prop()
+  unitNamePrimary: string // tên đơn vị tính chính
 
-	@Prop()
-	unitNameSecondary: string // tên đơn vị tính phụ
+  @Prop()
+  unitNameSecondary: string // tên đơn vị tính phụ
 
-	@Prop()
-	quantityPrimaryStart: number // số lượng đầu kỳ tính theo đơn vị tính chính
+  @Prop()
+  quantityPrimaryStart: number // số lượng đầu kỳ tính theo đơn vị tính chính
 
-	@Prop()
-	quantitySecondaryStart: number // số lượng  đầu kỳ tính theo đơn vị tính phụ
+  @Prop()
+  quantitySecondaryStart: number // số lượng  đầu kỳ tính theo đơn vị tính phụ
 
-	@Prop()
-	quantityPrimaryImport: number // số lượng nhập trong kỳ tính theo đơn vị tính chính
+  @Prop()
+  quantityPrimaryImport: number // số lượng nhập trong kỳ tính theo đơn vị tính chính
 
-	@Prop()
-	quantitySecondaryImport: number // số lượng  nhập trong kỳ tính theo đơn vị tính phụ
+  @Prop()
+  quantitySecondaryImport: number // số lượng  nhập trong kỳ tính theo đơn vị tính phụ
 
-	@Prop()
-	quantityPrimaryExport: number // số lượng xuất trong kỳ tính theo đơn vị tính chính
+  @Prop()
+  quantityPrimaryExport: number // số lượng xuất trong kỳ tính theo đơn vị tính chính
 
-	@Prop()
-	quantitySecondaryExport: number // số lượng  xuất trong kỳ tính theo đơn vị tính phụ
+  @Prop()
+  quantitySecondaryExport: number // số lượng  xuất trong kỳ tính theo đơn vị tính phụ
 
-	@Prop()
-	quantityPrimaryEnd: number // số lượng cuối kỳ tính theo đơn vị tính chính
+  @Prop()
+  quantityPrimaryEnd: number // số lượng cuối kỳ tính theo đơn vị tính chính
 
-	@Prop()
-	quantitySecondaryEnd: number // số lượng  cuối kỳ tính theo đơn vị tính phụ
+  @Prop()
+  quantitySecondaryEnd: number // số lượng  cuối kỳ tính theo đơn vị tính phụ
 
-	@Prop()
-	note: string
+  @Prop()
+  note: string
 }
 
 const ItemMovementSchema = SchemaFactory.createForClass(ItemMovement)

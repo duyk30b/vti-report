@@ -3,8 +3,8 @@ import { ApiReportWarehouseTransferController } from './api-report-warehouse-tra
 import { ApiReportWarehouseTransferService } from './api-report-warehouse-transfer.service'
 
 @Module({
-	imports: [],
-	controllers: [ApiReportWarehouseTransferController],
-	providers: [ApiReportWarehouseTransferService],
+  imports: [],
+  controllers: [ApiReportWarehouseTransferController],
+  providers: [ApiReportWarehouseTransferService],
 })
 export class ApiReportWarehouseTransferModule {}
