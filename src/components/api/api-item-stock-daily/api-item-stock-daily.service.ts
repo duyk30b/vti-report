@@ -1,32 +1,32 @@
 import { Injectable } from '@nestjs/common'
 import { Workbook, Worksheet } from 'exceljs'
-import { endOfDay, startOfDay, timeToText } from 'src/common/helpers'
 import { advanceLayoutExcel, cellHeaderStyle } from 'src/common/utils/excel-advance.util'
 import { NatsClientUserService } from 'src/modules/nats/service/nats-client-user.service'
 import { NatsClientWarehouseService } from 'src/modules/nats/service/nats-client-warehouse.service'
-import { ApiReportItemQuery } from './api-report-item.request'
+import { ApiItemStockDailyQuery } from './api-item-stock-daily.request'
 import { ItemStockDailyRepository } from 'src/mongo/repository/item-stock-daily/item-stock-daily.repository'
 import { ItemStockDailyType } from 'src/mongo/repository/item-stock-daily/item-stock-daily.schema'
+import { Timer } from 'src/common/helpers/time.helper'
 
 @Injectable()
-export class ApiReportItemService {
+export class ApiItemStockDailyService {
   constructor(
     private readonly itemStockDailyRepository: ItemStockDailyRepository,
     private readonly natsClientUserService: NatsClientUserService,
     private readonly natsClientWarehouseService: NatsClientWarehouseService
   ) {}
 
-  async exportExcel(query: ApiReportItemQuery, userId: number) {
+  async exportExcel(query: ApiItemStockDailyQuery, userId: number) {
     const { time, warehouseId } = query
 
     const x = await this.natsClientWarehouseService.getWarehouses({ ids: [48] })
-    console.log('🚀 ~ file: api-report-item.service.ts:23 ~ ApiReportItemService ~ exportExcel ~ x:', x)
+    console.log('🚀 ~ file: api-report-item.service.ts:23 ~ ApiItemStockDailyService ~ exportExcel ~ x:', x)
     return x
 
     const warehouseGroup = await this.itemStockDailyRepository.report({
       warehouseId,
-      fromTime: startOfDay(time, -420),
-      toTime: endOfDay(time, -420),
+      fromTime: Timer.startOfDate(time, -420),
+      toTime: Timer.endOfDate(time, -420),
     })
     const [user] = await this.natsClientUserService.getUsersByIds({ userIds: [userId] })
 
@@ -42,7 +42,7 @@ export class ApiReportItemService {
     const buffer = await workbook.xlsx.writeBuffer()
     return {
       xlsx: buffer,
-      filename: `W01_Thong ke ton kho_${timeToText(time, 'DDMMYYYY')}`,
+      filename: `W01_Thong ke ton kho_${Timer.timeToText(time, 'DDMMYYYY')}`,
     }
   }
 
@@ -98,7 +98,7 @@ export class ApiReportItemService {
       })
     })
 
-    const sheetName = `${meta.reportCode}_${timeToText(meta.time, 'DDMMYYYY')}`
+    const sheetName = `${meta.reportCode}_${Timer.timeToText(meta.time, 'DDMMYYYY')}`
 
     const workbook = advanceLayoutExcel({
       layout: { maxRowsTable: 1000, sheetName },
@@ -119,7 +119,7 @@ export class ApiReportItemService {
           cell.alignment = { horizontal: 'center' }
         })
         worksheet.mergeCells(4, 1, 4, 10)
-        worksheet.addRow([`Ngày: ${timeToText(meta.time, 'DD/MM/YYYY hh:mm:ss')}`]).eachCell((cell) => {
+        worksheet.addRow([`Ngày: ${Timer.timeToText(meta.time, 'DD/MM/YYYY hh:mm:ss')}`]).eachCell((cell) => {
           cell.font = { size: 10, bold: true, name: 'Times New Roman' }
           cell.alignment = { horizontal: 'center' }
         })
@@ -156,7 +156,7 @@ export class ApiReportItemService {
         worksheet.addRow([''])
         worksheet
           .addRow([
-            `${meta.reportCode}, ${meta.userFullName}, ngày in: ${timeToText(new Date(), 'DD/MM/YYYY hh:mm:ss')}`,
+            `${meta.reportCode}, ${meta.userFullName}, ngày in: ${Timer.timeToText(new Date(), 'DD/MM/YYYY hh:mm:ss')}`,
           ])
           .eachCell((cell) => {
             cell.font = { size: 10, bold: true, italic: true, name: 'Times New Roman' }

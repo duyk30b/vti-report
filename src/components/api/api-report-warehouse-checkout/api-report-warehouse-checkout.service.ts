@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common'
 import { Workbook, Worksheet } from 'exceljs'
-import { timeToText } from 'src/common/helpers'
 import { advanceLayoutExcel, cellHeaderStyle } from 'src/common/utils/excel-advance.util'
 import { BusinessException } from 'src/core/exception-filters/business-exception.filter'
 import { NatsClientUserService } from 'src/modules/nats/service/nats-client-user.service'
@@ -11,6 +10,7 @@ import {
   WarehouseCheckoutType,
 } from 'src/mongo/repository/warehouse-checkout/warehouse-checkout.schema'
 import { ApiReportWarehouseCheckoutQuery } from './api-report-warehouse-checkout.request'
+import { Timer } from 'src/common/helpers/time.helper'
 
 @Injectable()
 export class ApiReportWarehouseCheckoutService {
@@ -90,7 +90,10 @@ export class ApiReportWarehouseCheckoutService {
     const buffer = await workbook.xlsx.writeBuffer()
     return {
       xlsx: buffer,
-      filename: `W04_Báo cáo tình hình kiểm kê_${timeToText(fromTime, 'DDMMYYYY')}-${timeToText(toTime, 'DDMMYYYY')}`,
+      filename: `W04_Báo cáo tình hình kiểm kê_${Timer.timeToText(fromTime, 'DDMMYYYY')}-${Timer.timeToText(
+        toTime,
+        'DDMMYYYY'
+      )}`,
     }
   }
 
@@ -165,7 +168,7 @@ export class ApiReportWarehouseCheckoutService {
       ],
     })
 
-    const sheetName = `${meta.reportCode}_${timeToText(meta.fromTime, 'DDMMYYYY')}-${timeToText(
+    const sheetName = `${meta.reportCode}_${Timer.timeToText(meta.fromTime, 'DDMMYYYY')}-${Timer.timeToText(
       meta.toTime,
       'DDMMYYYY'
     )}`
@@ -186,7 +189,10 @@ export class ApiReportWarehouseCheckoutService {
         worksheet.mergeCells(3, 1, 3, 17)
         worksheet
           .addRow([
-            `Từ ngày: ${timeToText(data.startTime, 'DD/MM/YYYY')} đến ngày: ${timeToText(data.endTime, 'DD/MM/YYYY')}`,
+            `Từ ngày: ${Timer.timeToText(data.startTime, 'DD/MM/YYYY')} đến ngày: ${Timer.timeToText(
+              data.endTime,
+              'DD/MM/YYYY'
+            )}`,
           ])
           .eachCell((cell) => {
             cell.font = { size: 10, bold: true, name: 'Times New Roman' }
@@ -275,7 +281,7 @@ export class ApiReportWarehouseCheckoutService {
         worksheet.addRow([''])
         worksheet
           .addRow([
-            `${meta.reportCode}, ${meta.userFullName}, ngày in: ${timeToText(new Date(), 'DD/MM/YYYY hh:mm:ss')}`,
+            `${meta.reportCode}, ${meta.userFullName}, ngày in: ${Timer.timeToText(new Date(), 'DD/MM/YYYY hh:mm:ss')}`,
           ])
           .eachCell((cell) => {
             cell.font = { size: 10, bold: true, italic: true, name: 'Times New Roman' }

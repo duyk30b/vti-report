@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common'
 import { Workbook, Worksheet } from 'exceljs'
-import { timeToText } from 'src/common/helpers'
 import { advanceLayoutExcel, cellHeaderStyle } from 'src/common/utils/excel-advance.util'
 import { NatsClientUserService } from 'src/modules/nats/service/nats-client-user.service'
 import { WarehouseTransferRepository } from 'src/mongo/repository/warehouse-transfer/warehouse-transfer.repository'
@@ -9,6 +8,7 @@ import {
   WarehouseTransferType,
 } from 'src/mongo/repository/warehouse-transfer/warehouse-transfer.schema'
 import { ApiReportWarehouseTransferQuery } from './api-report-warehouse-transfer.request'
+import { Timer } from 'src/common/helpers/time.helper'
 
 @Injectable()
 export class ApiReportWarehouseTransferService {
@@ -40,7 +40,7 @@ export class ApiReportWarehouseTransferService {
     const buffer = await workbook.xlsx.writeBuffer()
     return {
       xlsx: buffer,
-      filename: `W05_Báo cáo tình hình chuyển kho_${timeToText(fromTime, 'DDMMYYYY')}-${timeToText(
+      filename: `W05_Báo cáo tình hình chuyển kho_${Timer.timeToText(fromTime, 'DDMMYYYY')}-${Timer.timeToText(
         toTime,
         'DDMMYYYY'
       )}`,
@@ -149,7 +149,7 @@ export class ApiReportWarehouseTransferService {
       data: [{ num: 'TỔNG CỘNG', amount: data.reduce((acc, cur) => acc + cur.amount, 0) }],
     })
 
-    const sheetName = `${meta.reportCode}_${timeToText(meta.fromTime, 'DDMMYYYY')}-${timeToText(
+    const sheetName = `${meta.reportCode}_${Timer.timeToText(meta.fromTime, 'DDMMYYYY')}-${Timer.timeToText(
       meta.toTime,
       'DDMMYYYY'
     )}`
@@ -175,7 +175,10 @@ export class ApiReportWarehouseTransferService {
         worksheet.mergeCells(4, 1, 4, 15)
         worksheet
           .addRow([
-            `Từ ngày: ${timeToText(meta.fromTime, 'DD/MM/YYYY')} đến ngày ${timeToText(meta.toTime, 'DD/MM/YYYY')}`,
+            `Từ ngày: ${Timer.timeToText(meta.fromTime, 'DD/MM/YYYY')} đến ngày ${Timer.timeToText(
+              meta.toTime,
+              'DD/MM/YYYY'
+            )}`,
           ])
           .eachCell((cell) => {
             cell.font = { size: 10, bold: true, name: 'Times New Roman' }
@@ -224,7 +227,7 @@ export class ApiReportWarehouseTransferService {
         worksheet.addRow([''])
         worksheet
           .addRow([
-            `${meta.reportCode}, ${meta.userFullName}, ngày in: ${timeToText(new Date(), 'DD/MM/YYYY hh:mm:ss')}`,
+            `${meta.reportCode}, ${meta.userFullName}, ngày in: ${Timer.timeToText(new Date(), 'DD/MM/YYYY hh:mm:ss')}`,
           ])
           .eachCell((cell) => {
             cell.font = { size: 10, bold: true, italic: true, name: 'Times New Roman' }

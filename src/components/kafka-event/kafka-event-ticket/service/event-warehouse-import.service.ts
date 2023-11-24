@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common'
-import { timeToText } from 'src/common/helpers'
 import { NatsClientAttributeService } from 'src/modules/nats/service/nats-client-attribute.service'
 import { NatsClientItemService } from 'src/modules/nats/service/nats-client-item.service'
 import { NatsClientWarehouseService } from 'src/modules/nats/service/nats-client-warehouse.service'
 import { WarehouseImportRepository } from 'src/mongo/repository/warehouse-import/warehouse-import.repository'
 import { WarehouseImport, WarehouseImportType } from 'src/mongo/repository/warehouse-import/warehouse-import.schema'
 import { EventWarehouseImportRequest } from '../request'
+import { Timer } from 'src/common/helpers/time.helper'
 
 @Injectable()
 export class EventWarehouseImportService {
@@ -17,7 +17,7 @@ export class EventWarehouseImportService {
   ) {}
 
   async warehouseImportComplete(request: EventWarehouseImportRequest) {
-    const daySyncString = timeToText(new Date(), 'YYYY-MM-DD', -420)
+    const daySyncString = Timer.timeToText(new Date(), 'YYYY-MM-DD', -420)
 
     const ticket = request.data
     const itemIdSet = new Set<number>()
