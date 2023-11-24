@@ -33,55 +33,79 @@ export class SnapshotItemData {
 	@Expose()
 	@IsDefined()
 	@IsString()
-	code: string
+	itemCode: string
 
 	@ApiProperty({ example: 'Thịt đông lạnh' })
 	@Expose()
 	@IsDefined()
 	@IsString()
-	nameVn: string
-
-	@ApiProperty({ example: '' })
-	@Expose()
-	@IsDefined()
-	@IsString()
-	nameJp: string
+	itemNameVn: string
 
 	@ApiProperty({ example: 'mean' })
 	@Expose()
 	@IsDefined()
 	@IsString()
-	nameEn: string
+	itemNameJp: string
+
+	@ApiProperty({ example: 'mean' })
+	@Expose()
+	@IsDefined()
+	@IsString()
+	itemNameEn: string
 
 	@ApiProperty({ example: 'UNIT_Z' })
 	@Expose()
 	@IsDefined()
 	@IsString()
-	typeCode: string // Mã loại sản phẩm
+	itemTypeCode: string // Mã loại sản phẩm
 
 	@ApiProperty({ example: 'kg' })
 	@Expose()
 	@IsDefined()
 	@IsString()
-	typeName: string // Tên loại sản phẩm
+	itemTypeName: string // Tên loại sản phẩm
 
 	@ApiProperty({ example: 'Z02' })
 	@Expose()
 	@IsDefined()
 	@IsString()
-	costCenter: string // Cost center
+	costCenterCode: string // Cost center
+
+	@ApiProperty({ example: 'Z02' })
+	@Expose()
+	@IsDefined()
+	@IsString()
+	costCenterNameEn: string // Cost center
+
+	@ApiProperty({ example: 'Z02' })
+	@Expose()
+	@IsDefined()
+	@IsString()
+	costCenterNameVi: string // Cost center
+
+	@ApiProperty({ example: 'Z02' })
+	@Expose()
+	@IsDefined()
+	@IsString()
+	costCenterNameJp: string // Cost center
 
 	@ApiProperty({ example: '2css02' })
 	@Expose()
 	@IsDefined()
 	@IsString()
-	lot: string // Lô
+	lotNumber: string // Lô
+
+	@ApiProperty({ example: 23 })
+	@Expose()
+	@IsDefined()
+	@IsString()
+	bomVersionId: number // BOM version
 
 	@ApiProperty({ example: 'Kwe' })
 	@Expose()
 	@IsDefined()
 	@IsString()
-	bomVersion: string // BOM version
+	bomVersionCode: string // BOM version
 
 	@ApiProperty({ example: '60%' })
 	@Expose()

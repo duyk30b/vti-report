@@ -23,31 +23,43 @@ export class Item extends BaseSchema {
 	itemId: number
 
 	@Prop()
-	code: string
+	itemCode: string
 
 	@Prop()
-	nameVn: string
+	itemNameVn: string
 
 	@Prop()
-	nameJp: string
+	itemNameJp: string
 
 	@Prop()
-	nameEn: string
+	itemNameEn: string
 
 	@Prop()
-	typeCode: string // Mã loại sản phẩm
+	itemTypeCode: string // Mã loại sản phẩm
 
 	@Prop()
-	typeName: string // Tên loại sản phẩm
+	itemTypeName: string // Tên loại sản phẩm
 
 	@Prop()
-	costCenter: string // Cost center
+	costCenterCode: string // Cost center
 
 	@Prop()
-	lot: string // Lô
+	costCenterNameEn: string // Cost center
 
 	@Prop()
-	bomVersion: string // BOM version
+	costCenterNameVi: string // Cost center
+
+	@Prop()
+	costCenterNameJp: string // Cost center
+
+	@Prop()
+	lotNumber: string // Lô
+
+	@Prop()
+	bomVersionId: number // BOM version ID
+
+	@Prop()
+	bomVersionCode: string // BOM version
 
 	@Prop()
 	quality: string // Chất lượng
