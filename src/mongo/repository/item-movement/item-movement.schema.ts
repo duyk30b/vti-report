@@ -41,16 +41,16 @@ export class ItemMovement extends BaseSchema {
 	lot: string // Lô
 
 	@Prop()
-	unitCodePrimary: number // mã đơn vị tính chính
+	unitCodePrimary: string // mã đơn vị tính chính
 
 	@Prop()
-	unitCodeSecondary: number // mã đơn vị tính phụ
+	unitCodeSecondary: string // mã đơn vị tính phụ
 
 	@Prop()
-	unitNamePrimary: number // tên đơn vị tính chính
+	unitNamePrimary: string // tên đơn vị tính chính
 
 	@Prop()
-	unitNameSecondary: number // tên đơn vị tính phụ
+	unitNameSecondary: string // tên đơn vị tính phụ
 
 	@Prop()
 	quantityPrimaryStart: number // số lượng đầu kỳ tính theo đơn vị tính chính

@@ -67,22 +67,22 @@ export class SnapshotItemMovementData {
 	@Expose()
 	@IsDefined()
 	@IsString()
-	unitCodePrimary: number // mã đơn vị tính chính
+	unitCodePrimary: string // mã đơn vị tính chính
 
 	@Expose()
 	@IsDefined()
 	@IsString()
-	unitCodeSecondary: number // mã đơn vị tính phụ
+	unitCodeSecondary: string // mã đơn vị tính phụ
 
 	@Expose()
 	@IsDefined()
 	@IsString()
-	unitNamePrimary: number // tên đơn vị tính chính
+	unitNamePrimary: string // tên đơn vị tính chính
 
 	@Expose()
 	@IsDefined()
 	@IsString()
-	unitNameSecondary: number // tên đơn vị tính phụ
+	unitNameSecondary: string // tên đơn vị tính phụ
 
 	@Expose()
 	@IsDefined()

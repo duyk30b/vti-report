@@ -62,7 +62,7 @@ export class Item extends BaseSchema {
 	bundle: string // Bundle
 
 	@Prop()
-	boxCode: string // Bundle
+	boxCode: string // Mã thùng
 
 	@Prop()
 	importDate: Date // Ngày nhập kho
@@ -83,16 +83,16 @@ export class Item extends BaseSchema {
 	quantitySecondary: number // số lượng tính theo đơn vị tính phụ
 
 	@Prop()
-	unitCodePrimary: number // mã đơn vị tính chính
+	unitCodePrimary: string // mã đơn vị tính chính
 
 	@Prop()
-	unitCodeSecondary: number // mã đơn vị tính phụ
+	unitCodeSecondary: string // mã đơn vị tính phụ
 
 	@Prop()
-	unitNamePrimary: number // tên đơn vị tính chính
+	unitNamePrimary: string // tên đơn vị tính chính
 
 	@Prop()
-	unitNameSecondary: number // tên đơn vị tính phụ
+	unitNameSecondary: string // tên đơn vị tính phụ
 }
 
 const ItemSchema = SchemaFactory.createForClass(Item)
