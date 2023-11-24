@@ -1,7 +1,5 @@
 import { Expose, Type } from 'class-transformer'
-import { IsArray, IsDateString, IsDefined, IsIn, IsMongoId, IsNumber, IsString, ValidateNested } from 'class-validator'
-import { keysEnum, objectEnum } from 'src/common/helpers'
-import { EItemStatus } from 'src/mongo/repository/item/item.schema'
+import { IsArray, IsDefined, IsNumber, IsString, ValidateNested } from 'class-validator'
 
 export class SnapshotItemMovementData {
   @Expose()

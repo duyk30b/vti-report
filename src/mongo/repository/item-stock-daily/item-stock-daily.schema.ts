@@ -1,15 +1,15 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Document, HydratedDocument } from 'mongoose'
+import { Document } from 'mongoose'
 import { BaseSchema } from 'src/mongo/base.schema'
 
-export enum EItemStatus {
+export enum EItemStockStatus {
   Import = 1, // Nhập chưa cất
   ImportAndPutAway = 2, // Nhập đã cẩt
   Pickup = 3, // Lấy chưa xuất
 }
 
-@Schema({ collection: 'items', timestamps: true })
-export class Item extends BaseSchema {
+@Schema({ collection: 'item_stock_daily', timestamps: true })
+export class ItemStockDaily extends BaseSchema {
   @Prop()
   timestampSync: number
 
@@ -85,8 +85,8 @@ export class Item extends BaseSchema {
   @Prop()
   locatorName: string // Tên vị trí
 
-  @Prop({ type: Number, enum: EItemStatus })
-  status: EItemStatus
+  @Prop({ type: Number, enum: EItemStockStatus })
+  status: EItemStockStatus
 
   @Prop()
   quantityPrimary: number // số lượng tính theo đơn vị tính chính
@@ -107,9 +107,9 @@ export class Item extends BaseSchema {
   unitNameSecondary: string // tên đơn vị tính phụ
 }
 
-const ItemSchema = SchemaFactory.createForClass(Item)
-ItemSchema.index({ timestampSync: 1 }, { unique: false })
+const ItemStockDailySchema = SchemaFactory.createForClass(ItemStockDaily)
+ItemStockDailySchema.index({ timestampSync: 1 }, { unique: false })
 
-export { ItemSchema }
+export { ItemStockDailySchema }
 
-export type ItemType = Omit<Item, keyof Document<Item>>
+export type ItemStockDailyType = Omit<ItemStockDaily, keyof Document<ItemStockDaily>>

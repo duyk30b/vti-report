@@ -4,14 +4,14 @@ import { endOfDay, startOfDay, timeToText } from 'src/common/helpers'
 import { advanceLayoutExcel, cellHeaderStyle } from 'src/common/utils/excel-advance.util'
 import { NatsClientUserService } from 'src/modules/nats/service/nats-client-user.service'
 import { NatsClientWarehouseService } from 'src/modules/nats/service/nats-client-warehouse.service'
-import { ItemRepository } from 'src/mongo/repository/item/item.repository'
-import { ItemType } from 'src/mongo/repository/item/item.schema'
 import { ApiReportItemQuery } from './api-report-item.request'
+import { ItemStockDailyRepository } from 'src/mongo/repository/item-stock-daily/item-stock-daily.repository'
+import { ItemStockDailyType } from 'src/mongo/repository/item-stock-daily/item-stock-daily.schema'
 
 @Injectable()
 export class ApiReportItemService {
   constructor(
-    private readonly itemRepository: ItemRepository,
+    private readonly itemStockDailyRepository: ItemStockDailyRepository,
     private readonly natsClientUserService: NatsClientUserService,
     private readonly natsClientWarehouseService: NatsClientWarehouseService
   ) {}
@@ -23,7 +23,7 @@ export class ApiReportItemService {
     console.log('🚀 ~ file: api-report-item.service.ts:23 ~ ApiReportItemService ~ exportExcel ~ x:', x)
     return x
 
-    const warehouseGroup = await this.itemRepository.report({
+    const warehouseGroup = await this.itemStockDailyRepository.report({
       warehouseId,
       fromTime: startOfDay(time, -420),
       toTime: endOfDay(time, -420),
@@ -47,7 +47,7 @@ export class ApiReportItemService {
   }
 
   getWorkbookItem(
-    data: { warehouseId: number; warehouseName: string; items: ItemType[] }[],
+    data: { warehouseId: number; warehouseName: string; items: ItemStockDailyType[] }[],
     meta: {
       time: Date
       reportCode: string

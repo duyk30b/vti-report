@@ -21,7 +21,6 @@ import { KongGatewayModule } from './modules/kong-gateway/kong-gateway.module'
 import { NatsClientModule } from './modules/nats/nats-client.module'
 import { BullQueueModule } from './modules/redis/bull-queue/bull-queue.module'
 import { MongoDbConnectModule } from './mongo/mongodb-connect.module'
-import { TasksScheduleModule } from './components/schedule/tasks-schedule.module'
 
 @Module({
   imports: [
@@ -43,14 +42,12 @@ import { TasksScheduleModule } from './components/schedule/tasks-schedule.module
     ConsulModule.forRootAsync({ inject: [BOOT] }),
     ServiceModule.forRootAsync({ inject: [BOOT, CONSUL] }),
     KongGatewayModule.forRootAsync(),
-    // PostgresModule,
     MongoDbConnectModule,
     ScheduleModule.forRoot(),
     NatsClientModule,
     NatsEventModule,
     // KafkaClientModule,
     // KafkaEventModule,
-    TasksScheduleModule,
 
     BullQueueModule.forRoot(),
     BullQueueModule.registerProducer(),

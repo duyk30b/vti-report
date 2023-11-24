@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { Expose, Type } from 'class-transformer'
 import { IsArray, IsDateString, IsDefined, IsIn, IsMongoId, IsNumber, IsString, ValidateNested } from 'class-validator'
-import { keysEnum, objectEnum, valuesEnum } from 'src/common/helpers'
-import { EItemStatus } from 'src/mongo/repository/item/item.schema'
+import { objectEnum, valuesEnum } from 'src/common/helpers'
+import { EItemStockStatus } from 'src/mongo/repository/item-stock-daily/item-stock-daily.schema'
 
-export class SnapshotItemData {
+export class NatsItemStockDailyData {
   @ApiProperty({ example: 1700845208999 })
   @Expose()
   @IsDefined()
@@ -98,7 +98,7 @@ export class SnapshotItemData {
   @ApiProperty({ example: 23 })
   @Expose()
   @IsDefined()
-  @IsString()
+  @IsNumber()
   bomVersionId: number // BOM version
 
   @ApiProperty({ example: 'Kwe' })
@@ -155,11 +155,13 @@ export class SnapshotItemData {
   @IsString()
   locatorName: string // Tên vị trí
 
-  @ApiProperty({ example: EItemStatus.ImportAndPutAway })
+  @ApiProperty({ example: EItemStockStatus.ImportAndPutAway })
   @Expose()
   @IsDefined()
-  @IsIn(valuesEnum(EItemStatus), { message: `status must be enum: ${JSON.stringify(objectEnum(EItemStatus))}` })
-  status: EItemStatus
+  @IsIn(valuesEnum(EItemStockStatus), {
+    message: `status must be enum: ${JSON.stringify(objectEnum(EItemStockStatus))}`,
+  })
+  status: EItemStockStatus
 
   @ApiProperty({ example: 14 })
   @Expose()
@@ -198,12 +200,12 @@ export class SnapshotItemData {
   unitNameSecondary: string // tên đơn vị tính phụ
 }
 
-export class SnapshotItemRequest {
-  @ApiProperty({ type: SnapshotItemData, isArray: true })
+export class NatsItemStockDailyRequest {
+  @ApiProperty({ type: NatsItemStockDailyData, isArray: true })
   @Expose()
-  @Type(() => SnapshotItemData)
+  @Type(() => NatsItemStockDailyData)
   @IsDefined()
   @IsArray()
   @ValidateNested({ each: true })
-  data: SnapshotItemData[]
+  data: NatsItemStockDailyData[]
 }

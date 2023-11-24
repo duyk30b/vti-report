@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common'
 import { NatsEventController } from './nats-event.controller'
 import { NatsEventService } from './nats-event.service'
-import { SnapshotItemModule } from './snapshot-item/snapshot-item.module'
+import { NatsItemStockDailyModule } from './nats-item-stock-daily/nats-item-stock-daily.module'
 
 @Module({
-  imports: [SnapshotItemModule],
+  imports: [NatsItemStockDailyModule],
   controllers: [NatsEventController],
   providers: [NatsEventService],
 })

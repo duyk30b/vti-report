@@ -1,8 +1,8 @@
 import { Global, Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
 import MongodbConfigService from './mongodb.config'
-import { ItemRepository } from './repository/item/item.repository'
-import { ItemSchema } from './repository/item/item.schema'
+import { ItemStockDailyRepository } from './repository/item-stock-daily/item-stock-daily.repository'
+import { ItemStockDailySchema } from './repository/item-stock-daily/item-stock-daily.schema'
 import { WarehouseCheckoutRepository } from './repository/warehouse-checkout/warehouse-checkout.repository'
 import { WarehouseCheckoutSchema } from './repository/warehouse-checkout/warehouse-checkout.schema'
 import { WarehouseExportRepository } from './repository/warehouse-export/warehouse-export.repository'
@@ -17,7 +17,7 @@ import { WarehouseTransferSchema } from './repository/warehouse-transfer/warehou
   imports: [
     MongooseModule.forRootAsync({ useClass: MongodbConfigService }),
     MongooseModule.forFeature([
-      { name: 'ItemSchema', schema: ItemSchema },
+      { name: 'ItemStockDailySchema', schema: ItemStockDailySchema },
       { name: 'WarehouseImportSchema', schema: WarehouseImportSchema },
       { name: 'WarehouseExportSchema', schema: WarehouseExportSchema },
       { name: 'WarehouseTransferSchema', schema: WarehouseTransferSchema },
@@ -25,14 +25,14 @@ import { WarehouseTransferSchema } from './repository/warehouse-transfer/warehou
     ]),
   ],
   providers: [
-    ItemRepository,
+    ItemStockDailyRepository,
     WarehouseImportRepository,
     WarehouseExportRepository,
     WarehouseTransferRepository,
     WarehouseCheckoutRepository,
   ],
   exports: [
-    ItemRepository,
+    ItemStockDailyRepository,
     WarehouseImportRepository,
     WarehouseExportRepository,
     WarehouseTransferRepository,
